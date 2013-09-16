@@ -20,11 +20,11 @@ public class Alarm {
 	}
 	
 	public int getHour() {
-		return hour;
+		return this.hour;
 	}
 	
 	public int getMinute() {
-		return minute;
+		return this.minute;
 	}
 	
 	public void setActivated(boolean isActivated) {
@@ -34,4 +34,39 @@ public class Alarm {
 	public boolean isActivated() {
 		return this.isActivated;
 	}
+	
+	@Override
+	public String toString() {
+		return hour + ":" + minute + " is" + (isActivated ? " " : " NOT ") + "activated.";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + hour;
+		result = prime * result + (isActivated ? 1231 : 1237);
+		result = prime * result + minute;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Alarm other = (Alarm) obj;
+		if (hour != other.hour)
+			return false;
+		if (isActivated != other.isActivated)
+			return false;
+		if (minute != other.minute)
+			return false;
+		return true;
+	}
+	
+	
 }
