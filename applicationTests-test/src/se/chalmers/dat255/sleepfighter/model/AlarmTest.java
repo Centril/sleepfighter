@@ -55,4 +55,23 @@ public class AlarmTest extends TestCase {
 		// compare with null
 		assertFalse(alarm1.equals(null));
 	}
+	
+	public void testCanHappen() {
+		Alarm alarm = new Alarm(3, 1);
+		alarm.setActivated(false);
+		// does it respect isActivated?
+		assertFalse(alarm.canHappen());
+		
+		alarm.setActivated(true);
+		
+		// does it respect enabledDays?
+		 boolean[] enabledDays =  { false, false, false, false, false, false, true };
+		 alarm.setEnabledDays(enabledDays);
+		 assertTrue(alarm.canHappen());
+		 
+		 boolean[] enabledDays2 =  { false, false, false, false, false, false, false };
+		 alarm.setEnabledDays(enabledDays2);
+		 assertFalse(alarm.canHappen());
+		 
+	}
 }
