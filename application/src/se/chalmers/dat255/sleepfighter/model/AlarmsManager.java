@@ -98,12 +98,12 @@ public class AlarmsManager {
 	 * @return info about the earliest alarm. 
 	 */
 	public EarliestInfo getEarliestInfo( Calendar now ) {
-		long millis = -1;
+		long millis = Alarm.NEXT_NON_REAL;
 		int earliestIndex = -1;
 
 		for ( int i = 0; i < this.list.size(); i++ ) {
 			long currMillis = this.list.get( i ).getNextMillis( now );
-			if ( currMillis > -1 && millis > currMillis ) {
+			if ( currMillis > -1 && (millis == Alarm.NEXT_NON_REAL || millis > currMillis) ) {
 				earliestIndex = i;
 			}
 		}
