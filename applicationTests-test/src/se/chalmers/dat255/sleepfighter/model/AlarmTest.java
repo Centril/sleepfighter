@@ -38,4 +38,21 @@ public class AlarmTest extends TestCase {
 			// success
 		}
 	}
+	
+	public void testEquals() {
+		Alarm alarm1 = new Alarm(3,2);
+		Alarm alarm2 = new Alarm(3,2);
+		
+		assertEquals(alarm1, alarm2);
+		
+		alarm2.setTime(3, 1);
+		assertFalse(alarm1.equals(alarm2));
+		
+		// same reference test
+		Alarm alarmCopy = alarm1;
+		assertEquals(alarmCopy, alarm1);
+		
+		// compare with null
+		assertFalse(alarm1.equals(null));
+	}
 }
