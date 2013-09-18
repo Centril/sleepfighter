@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import se.chalmers.dat255.sleepfighter.utils.DateTimeUtils;
+
 /**
  * Manages all the existing alarms.
  *
@@ -42,6 +44,16 @@ public class AlarmsManager {
 		 */
 		public boolean isReal() {
 			return this.millis != Alarm.NEXT_NON_REAL;
+		}
+
+		/**
+		 * Returns the difference of the time of earliest alarm and now as a calendar.
+		 *
+		 * @param now the current time.
+		 * @return the difference.
+		 */
+		public Calendar getDiff( Calendar now ) {
+			return DateTimeUtils.getDateDiff( now, this.getMillis() );
 		}
 
 		/**
@@ -118,6 +130,6 @@ public class AlarmsManager {
 	 * @return info about the earliest alarm. 
 	 */
 	public EarliestInfo getEarliestInfo() {
-		return this.getEarliestInfo( new GregorianCalendar() );
+		return this.getEarliestInfo( GregorianCalendar.getInstance() );
 	}
 }
