@@ -95,7 +95,7 @@ public class AlarmsManager {
 	 *
 	 * @return info about the earliest alarm. 
 	 */
-	public EarliestInfo getEariliestInfo() {
+	public EarliestInfo getEarliestInfo() {
 		long millis = -1;
 		int earliestIndex = -1;
 
