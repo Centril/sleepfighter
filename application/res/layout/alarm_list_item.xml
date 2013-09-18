@@ -34,7 +34,8 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/darker_gray"
             android:textSize="25sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textIsSelectable="false" />
     </LinearLayout>
 
 </LinearLayout>
