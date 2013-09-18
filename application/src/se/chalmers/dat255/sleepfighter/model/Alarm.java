@@ -66,7 +66,7 @@ public class Alarm {
 	public void setEnabledDays( boolean[] enabledDays ) {
 		this.enabledDays = enabledDays;
 	}
-
+	
 	/**
 	 * Returns when this alarm will ring.<br/>
 	 * If {@link #canHappen()} returns false, -1 will be returned.
@@ -74,11 +74,22 @@ public class Alarm {
 	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
 	public long getNextMillis() {
+		return getNextMillis(new GregorianCalendar());
+	}
+
+	/**
+	 * Returns when this alarm will ring.<br/>
+	 * If {@link #canHappen()} returns false, -1 will be returned.
+	 *
+	 * @param now the current time.
+	 *
+	 * @return the time in unix epoch timestamp when alarm will next ring.
+	 */
+	public long getNextMillis(Calendar now) {
 		if ( !this.canHappen() ) {
 			return NEXT_NON_REAL;
 		}
 
-		Calendar now = new GregorianCalendar();
 		Calendar next = (Calendar) now.clone();
 		next.set( Calendar.HOUR, this.hour );
 		next.set( Calendar.MINUTE, this.minute );
