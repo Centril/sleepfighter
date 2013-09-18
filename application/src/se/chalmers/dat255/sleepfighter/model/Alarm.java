@@ -12,6 +12,7 @@ import java.util.GregorianCalendar;
 public class Alarm {
 	private int id;
 	private boolean isActivated;
+	private String name;
 
 	private int hour;
 	private int minute;
@@ -154,22 +155,42 @@ public class Alarm {
 		return false;
 	}
 
+	/**
+	 * Returns the hour the alarm occurs.
+	 *
+	 * @return the hour the alarm occurs.
+	 */
 	public int getHour() {
 		return this.hour;
 	}
-	
+
+	/**
+	 * Returns the minute the alarm occurs.
+	 *
+	 * @return the minute the alarm occurs.
+	 */
 	public int getMinute() {
 		return this.minute;
 	}
-	
+
+	/**
+	 * Sets whether or not the alarm should be active.
+	 *
+	 * @param isActivated whether or not the alarm should be active.
+	 */
 	public void setActivated(boolean isActivated) {
 		this.isActivated = isActivated;
 	}
-	
+
+	/**
+	 * Returns true if the alarm is active.
+	 *
+	 * @return true if the alarm is active.
+	 */
 	public boolean isActivated() {
 		return this.isActivated;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.hour + ":" + this.minute + " is" + (this.isActivated ? " " : " NOT ") + "activated.";
@@ -197,5 +218,25 @@ public class Alarm {
 
 		Alarm other = (Alarm) obj;
 		return this.hour == other.hour && this.isActivated == other.isActivated && minute == other.minute;
+	}
+
+
+	/**
+	 * Returns the name of the Alarm.
+	 *
+	 * @return the name of the Alarm.
+	 */
+	public String getName() {
+		return name;
+	}
+
+
+	/**
+	 * Sets the name of the Alarm.
+	 *
+	 * @param name the name of the Alarm to set.
+	 */
+	public void setName( String name ) {
+		this.name = name;
 	}
 }
