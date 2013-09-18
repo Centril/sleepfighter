@@ -10,6 +10,7 @@ import java.util.GregorianCalendar;
  * @since Sep 16, 2013
  */
 public class Alarm {
+	private int id;
 	private boolean isActivated;
 
 	private int hour;
@@ -31,6 +32,24 @@ public class Alarm {
 	public Alarm(int hour, int minute) {
 		this.hour = hour;
 		this.minute = minute;
+	}
+
+	/**
+	 * Returns the ID of the alarm.
+	 *
+	 * @return the ID of the alarm.
+	 */
+	public int getId() {
+		return this.id;
+	}
+
+	/**
+	 * Sets the ID of the alarm.
+	 *
+	 * @param id the ID of the alarm.
+	 */
+	public void setId( int id ) {
+		this.id = id;
 	}
 
 	/**
@@ -82,7 +101,6 @@ public class Alarm {
 	 * If {@link #canHappen()} returns false, -1 will be returned.
 	 *
 	 * @param now the current time.
-	 *
 	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
 	public long getNextMillis(Calendar now) {

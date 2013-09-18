@@ -1,6 +1,8 @@
 package se.chalmers.dat255.sleepfighter.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -95,17 +97,27 @@ public class AlarmsManager {
 	 *
 	 * @return info about the earliest alarm. 
 	 */
-	public EarliestInfo getEarliestInfo() {
+	public EarliestInfo getEarliestInfo( Calendar now ) {
 		long millis = -1;
 		int earliestIndex = -1;
 
 		for ( int i = 0; i < this.list.size(); i++ ) {
-			long currMillis = this.list.get( i ).getNextMillis();
+			long currMillis = this.list.get( i ).getNextMillis( now );
 			if ( currMillis > -1 && millis > currMillis ) {
 				earliestIndex = i;
 			}
 		}
 
 		return new EarliestInfo( millis, earliestIndex );
+	}
+
+	/**
+	 * Returns info about the earliest alarm.<br/>
+	 * The info contains info about milliseconds and index of alarm.
+	 *
+	 * @return info about the earliest alarm. 
+	 */
+	public EarliestInfo getEarliestInfo() {
+		return this.getEarliestInfo( new GregorianCalendar() );
 	}
 }
