@@ -101,7 +101,7 @@ public class Alarm {
 
 		// Offset for weekdays. Checking canHappen() is important for this part.
 		int offset = 0;
-		for ( int currDay = now.get( Calendar.DAY_OF_WEEK - 1 ); !this.enabledDays[currDay]; currDay++ ) {
+		for ( int currDay = now.get( Calendar.DAY_OF_WEEK); !this.enabledDays[currDay]; currDay++ ) {
 			if ( currDay > MAX_WEEKDAY_INDEX ) {
 				currDay = 0;
 			}

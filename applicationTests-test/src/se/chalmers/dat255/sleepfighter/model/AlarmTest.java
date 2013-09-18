@@ -1,5 +1,8 @@
 package se.chalmers.dat255.sleepfighter.model;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -72,6 +75,23 @@ public class AlarmTest extends TestCase {
 		 boolean[] enabledDays2 =  { false, false, false, false, false, false, false };
 		 alarm.setEnabledDays(enabledDays2);
 		 assertFalse(alarm.canHappen());
-		 
+	}
+	
+	public void testGetNextMillis() {
+		Alarm alarm = new Alarm(1, 1);
+		
+		// does it respect canHappen?
+		alarm.setActivated(false);
+		assertEquals(Alarm.NEXT_NON_REAL, alarm.getNextMillis());
+		
+		alarm.setActivated(true);
+		// day is Wednesday. 
+		// alarm is one minute after this time
+		Calendar cal = new GregorianCalendar(2013, 8, 18, 1, 0);
+		
+		Calendar cal2 = (Calendar) cal.clone();
+		cal2.add(Calendar.MINUTE, 1);
+		
+		assertEquals(cal2.getTimeInMillis(), alarm.getNextMillis(cal));
 	}
 }
