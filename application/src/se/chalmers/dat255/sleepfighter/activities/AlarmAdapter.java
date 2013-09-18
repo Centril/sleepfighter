@@ -36,8 +36,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		// Set properties of view elements to reflect model state
 		checkBox.setChecked(alarm.isActivated());
 
-		String timeText = String.format("%02d", alarm.getHour()) + ":"
-				+ String.format("%02d", alarm.getMinute());
+		String timeText = alarm.getTimeString();
 		timeTextView.setText(timeText);
 
 		// TODO show more properties of Alarm

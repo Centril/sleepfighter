@@ -196,6 +196,10 @@ public class Alarm {
 		return this.hour + ":" + this.minute + " is" + (this.isActivated ? " " : " NOT ") + "activated.";
 	}
 
+	public String getTimeString() {
+		return String.format("%02d", this.getHour()) + ":" + String.format("%02d", this.getMinute());
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

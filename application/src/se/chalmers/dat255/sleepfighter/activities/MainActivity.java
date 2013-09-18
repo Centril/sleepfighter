@@ -5,8 +5,9 @@ import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import android.os.Bundle;
+import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ListView;
 
@@ -24,7 +25,10 @@ public class MainActivity extends Activity {
 		List<Alarm> alarms = new ArrayList<Alarm>();
 		alarms.add(new Alarm(8, 30));
 		alarms.add(new Alarm(7, 0));
-		
+
+		AlarmsManager manager = new AlarmsManager();
+		manager.set( alarms );
+
 		AlarmAdapter alarmAdapter = new AlarmAdapter(this, alarms);
 		listView.setAdapter(alarmAdapter);
 	}
