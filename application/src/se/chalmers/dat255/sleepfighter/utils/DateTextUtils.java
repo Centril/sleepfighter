@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
 import android.content.res.Resources;
 import android.util.Log;
@@ -42,6 +43,7 @@ public class DateTextUtils {
 			Calendar diff = earliestInfo.getDiff( now );
 			int[] diffVal = { diff.get( Calendar.DAY_OF_MONTH ), diff.get( Calendar.HOUR_OF_DAY ), diff.get( Calendar.MINUTE ) };
 
+			
 			// What fields are set?
 			BitSet setFields = new BitSet(3);
 			setFields.set( 0, diffVal[0] != 0 );
@@ -62,7 +64,8 @@ public class DateTextUtils {
 
 				// Finally format everything.
 				earliestText = String.format( earliestText, args.toArray() );
-				Log.d( "formatting", earliestText );
+				
+				Debug.d("formatting: " +  earliestText);
 				earliestText = String.format( earliestText, diffVal[0], diffVal[1], diffVal[2] );
 			}
 		} else {
