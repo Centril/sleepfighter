@@ -62,4 +62,20 @@ public class AlarmsManagerTest extends TestCase {
 		assertEquals(bus, first.getMessageBus());
 		assertEquals(bus, second.getMessageBus());
 	}
+	
+	public void testFireEvent() {
+		List<Alarm> list = new ArrayList<Alarm>();
+		AlarmsManager manager = new AlarmsManager( list );
+		MessageBus<Message> bus = new MessageBus<Message>();
+		manager.setMessageBus(bus);
+		
+		Alarm first = new Alarm(12, 2);
+		manager.add(first);
+		assertEquals(bus, first.getMessageBus());
+		
+		Alarm second = new Alarm(12,3);
+		manager.set(0, second);
+		assertEquals(bus, second.getMessageBus());
+	
+	}
 }
