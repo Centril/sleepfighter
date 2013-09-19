@@ -202,7 +202,54 @@ public class AlarmTest extends TestCase {
 		sub.alarm.setName("hell world");
 		assertTrue(sub.passed);
 	}	
+	
+	public class Subscriber4 {
+		
+		public boolean passed = false;
+		public Alarm alarm = new Alarm(1,2);
+		
+		@Handler
+		public void handleMetaChange( DateChangeEvent evt ) {
+			passed = (evt.getModifiedField() == Alarm.Field.ACTIVATED) && (alarm == evt.getAlarm());
+		}
+		
+	}
+	
+	public void testSetActivated() {
+		Subscriber4 sub = new Subscriber4();
 
+		MessageBus<Message> bus = new MessageBus<Message>();
+		bus.subscribe( sub );
 
+		sub.alarm.setMessageBus(bus);
+		sub.alarm.setActivated(true);
+		assertTrue(sub.passed);
+	}	
+
+	public class Subscriber5 {
+		
+		public boolean passed = false;
+		public Alarm alarm = new Alarm(1,2);
+		
+		@Handler
+		public void handleMetaChange( DateChangeEvent evt ) {
+			passed = (evt.getModifiedField() == Alarm.Field.ENABLED_DAYS) && (alarm == evt.getAlarm());
+		}
+		
+	}
+	
+	public void testSetEnabledDays() {
+		Subscriber5 sub = new Subscriber5();
+
+		MessageBus<Message> bus = new MessageBus<Message>();
+		bus.subscribe( sub );
+
+		sub.alarm.setMessageBus(bus);
+		boolean[] enabledDays = { true, true, true, true, true, true, true };
+		
+		sub.alarm.setEnabledDays(enabledDays);
+		assertTrue(sub.passed);
+	}		
 	
 }
+	
