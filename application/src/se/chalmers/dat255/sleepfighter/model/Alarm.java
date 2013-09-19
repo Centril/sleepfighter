@@ -31,8 +31,7 @@ public class Alarm {
 	 * @param minute the minute the alarm should ring.
 	 */
 	public Alarm(int hour, int minute) {
-		this.hour = hour;
-		this.minute = minute;
+		setTime(hour, minute);
 	}
 
 	/**

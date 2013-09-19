@@ -16,6 +16,37 @@ public class AlarmTest extends TestCase {
 		assertEquals(3, alarm.getMinute());
 	}
 	
+	@SuppressWarnings("unused")
+	public void testConstructorExceptions() {
+		// invalid hour
+		try {
+			new Alarm(-1, 3);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+		try {
+			new Alarm(24, 4);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+
+		// invalid minute
+		try {
+			new Alarm(4, -1);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+		try {
+			new Alarm(4, 60);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+	}
+	
 	public void testSetTime() {
 		Alarm alarm = new Alarm(4, 3);
 		alarm.setTime(3, 4);
