@@ -11,9 +11,11 @@ import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -50,6 +52,8 @@ public class MainActivity extends Activity {
 		EarliestInfo earliestInfo = manager.getEarliestInfo( now );
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		earliestTimeText.setText( DateTextUtils.getEarliestText( res, now, earliestInfo ) );
+		
+		
 	}
 
 	@Override
@@ -57,6 +61,19 @@ public class MainActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.action_add:
+	        	Intent intent = new Intent(this, AlarmSettingsActivity.class);
+	    		startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 
 }
