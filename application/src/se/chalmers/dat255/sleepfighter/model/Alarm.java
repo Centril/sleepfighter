@@ -3,6 +3,8 @@ package se.chalmers.dat255.sleepfighter.model;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import se.chalmers.dat255.sleepfighter.utils.message.Message;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.util.Log;
 
 /**
@@ -25,6 +27,17 @@ public class Alarm {
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static long NEXT_NON_REAL = -1;
+
+	private MessageBus<Message> bus;
+
+	/**
+	 * Sets the message bus, if not set, no events will be received.
+	 *
+	 * @param bus the buss that receives events.
+	 */
+	public void setMessageBus( MessageBus<Message> bus ) {
+		this.bus = bus;
+	}
 
 	/**
 	 * Constructs an alarm given an hour and minute.

@@ -7,6 +7,8 @@ import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.utils.DateTimeUtils;
 import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
+import se.chalmers.dat255.sleepfighter.utils.message.Message;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
 /**
  * Manages all the existing alarms.
@@ -115,6 +117,31 @@ public class AlarmsManager extends ObservableList<Alarm> {
 	@Override
 	public void setDelegate( List<Alarm> delegate ) {
 		super.setDelegate( delegate );
+	}
+
+	@Override
+	protected void fireEvent( Event e ) {
+		// Intercept add/update events and inject message bus.
+		if ( e.operation() == Operation.ADD || e.operation() == Operation.UPDATE ) {
+			for ( Object obj : e.elements() ) {
+				((Alarm) obj).setMessageBus( this.getMessageBus() );
+			}
+		}
+
+		super.fireEvent( e );
+	}
+
+	/**
+	 * Sets the message bus, if not set, no events will be received.
+	 *
+	 * @param bus the buss that receives events.
+	 */
+	public void setMessageBus( MessageBus<Message> bus ) {
+		super.setMessageBus( bus );
+
+		for ( Alarm alarm : this ) {
+			alarm.setMessageBus( bus );
+		}
 	}
 
 	/**

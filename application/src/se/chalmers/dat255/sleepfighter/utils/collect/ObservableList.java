@@ -117,6 +117,15 @@ public class ObservableList<E> extends ForwardingList<E> {
 	}
 
 	/**
+	 * Returns the message bus, or null if not set.
+	 *
+	 * @return the message bus.
+	 */
+	protected MessageBus<Message> getMessageBus() {
+		return this.bus;
+	}
+
+	/**
 	 * Constructs the observable list, the delegate and bus must be set after.
 	 */
 	public ObservableList() {
@@ -196,7 +205,7 @@ public class ObservableList<E> extends ForwardingList<E> {
 		}
 	}
 
-	private void fireEvent( Event e ) {
+	protected void fireEvent( Event e ) {
 		if ( this.bus == null ) {
 			return;
 		}
