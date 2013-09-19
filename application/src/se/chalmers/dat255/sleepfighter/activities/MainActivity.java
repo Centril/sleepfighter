@@ -39,8 +39,7 @@ public class MainActivity extends Activity {
 		namedAlarm.setName("Named alarm");
 		alarms.add(namedAlarm);
 
-		AlarmsManager manager = new AlarmsManager();
-		manager.set( alarms );
+		AlarmsManager manager = new AlarmsManager( alarms );
 
 		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
 
@@ -52,8 +51,6 @@ public class MainActivity extends Activity {
 		EarliestInfo earliestInfo = manager.getEarliestInfo( now );
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		earliestTimeText.setText( DateTextUtils.getEarliestText( res, now, earliestInfo ) );
-		
-		
 	}
 
 	@Override

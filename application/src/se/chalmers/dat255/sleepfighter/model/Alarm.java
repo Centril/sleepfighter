@@ -3,6 +3,8 @@ package se.chalmers.dat255.sleepfighter.model;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import android.util.Log;
+
 /**
  * Alarm models the alarm settings and business logic for an alarm.
  *
@@ -73,7 +75,7 @@ public class Alarm {
 	 * @return the weekdays alarm is enabled for.
 	 */
 	public boolean[] getEnabledDays() {
-		return this.enabledDays;
+		return this.enabledDays.clone();
 	}
 
 	/**
@@ -83,7 +85,7 @@ public class Alarm {
 	 * @param enabledDays the weekdays alarm should be enabled for.
 	 */
 	public void setEnabledDays( boolean[] enabledDays ) {
-		this.enabledDays = enabledDays;
+		this.enabledDays = enabledDays.clone();
 	}
 	
 	/**
@@ -103,7 +105,7 @@ public class Alarm {
 	 * @param now the current time.
 	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
-	public long getNextMillis(Calendar now) {
+	public synchronized long getNextMillis(Calendar now) {
 		if ( !this.canHappen() ) {
 			return NEXT_NON_REAL;
 		}
@@ -112,14 +114,15 @@ public class Alarm {
 		next.set( Calendar.HOUR, this.hour );
 		next.set( Calendar.MINUTE, this.minute );
 
-		// Huston, we've a problem, alarm is before now, adjust 1 day.
+		// Houston, we've a problem, alarm is before now, adjust 1 day.
 		if ( next.before( now ) ) {
 			next.add( Calendar.DAY_OF_MONTH, 1 );
 		}
 
-		// Offset for weekdays. Checking canHappen() is important for this part.
+		// Offset for weekdays. Checking canHappen() is important for this part, unless you want infinite loops.
 		int offset = 0;
-		for ( int currDay = now.get( Calendar.DAY_OF_WEEK); !this.enabledDays[currDay]; currDay++ ) {
+		for ( int currDay = now.get( Calendar.DAY_OF_WEEK ) - 1; !this.enabledDays[currDay]; currDay++ ) {
+			Log.d( "Alarm", Integer.toString( currDay ) );
 			if ( currDay > MAX_WEEKDAY_INDEX ) {
 				currDay = 0;
 			}

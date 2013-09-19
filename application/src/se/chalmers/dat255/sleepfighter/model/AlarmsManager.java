@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.utils.DateTimeUtils;
+import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
 
 /**
  * Manages all the existing alarms.
@@ -14,7 +15,7 @@ import se.chalmers.dat255.sleepfighter.utils.DateTimeUtils;
  * @version 1.0
  * @since Sep 18, 2013
  */
-public class AlarmsManager {
+public class AlarmsManager extends ObservableList<Alarm> {
 	/**
 	 * Provides information about the earliest alarm.<br/>
 	 * This information contains:
@@ -29,11 +30,17 @@ public class AlarmsManager {
 	 */
 	public static class EarliestInfo {
 		private long millis;
-		private int index;
+		private Alarm alarm;
 
-		private EarliestInfo( long millis, int index ) {
+		/**
+		 * Constructs an EarliestInfo.
+		 *
+		 * @param millis milliseconds to earliest alarm.
+		 * @param alarm the alarm object that is earliest.
+		 */
+		private EarliestInfo( long millis, Alarm alarm ) {
 			this.millis = millis;
-			this.index = index;
+			this.alarm = alarm;
 		}
 
 		/**
@@ -66,46 +73,44 @@ public class AlarmsManager {
 		}
 
 		/**
-		 * The earliest alarm in index.
+		 * The earliest alarm.
 		 *
-		 * @return the earliest alarm in index.
+		 * @return the earliest alarm.
 		 */
-		public int getIndex() {
-			return this.index;
+		public Alarm getIndex() {
+			return this.alarm;
 		}
 	}
-
-	/** Holds the list of alarms. */
-	private List<Alarm> list;
 
 	/**
 	 * Constructs the manager with no initial alarms.
 	 */
 	public AlarmsManager() {
-		this.list = new ArrayList<Alarm>();
+		this( new ArrayList<Alarm>() );
+	}
+
+	/**
+	 * Constructs the manager starting with given alarms.
+	 *
+	 * @param alarms list of given alarms. Don't modify this list directly.
+	 */
+	public AlarmsManager( List<Alarm> alarms ) {
+		this.setDelegate( alarms );
 	}
 
 	/**
 	 * Sets the list of alarms.
 	 *
-	 * @param list the list of alarms to set.
+	 * @param delegate list of given alarms. Don't modify this list directly.
 	 */
-	public void set( List<Alarm> list ) {
-		this.list = list;
-	}
-
-	/**
-	 * Returns the list of alarms.
-	 *
-	 * @return the list of alarms.
-	 */
-	public List<Alarm> get() {
-		return this.list;
+	@Override
+	public void setDelegate( List<Alarm> delegate ) {
+		super.setDelegate( delegate );
 	}
 
 	/**
 	 * Returns info about the earliest alarm.<br/>
-	 * The info contains info about milliseconds and index of alarm.
+	 * The info contains info about milliseconds and the alarm.
 	 *
 	 * @return info about the earliest alarm. 
 	 */
@@ -113,8 +118,8 @@ public class AlarmsManager {
 		long millis = Alarm.NEXT_NON_REAL;
 		int earliestIndex = -1;
 
-		for ( int i = 0; i < this.list.size(); i++ ) {
-			long currMillis = this.list.get( i ).getNextMillis( now );
+		for ( int i = 0; i < this.size(); i++ ) {
+			long currMillis = this.get( i ).getNextMillis( now );
 			if ( currMillis > Alarm.NEXT_NON_REAL && (millis == Alarm.NEXT_NON_REAL || millis > currMillis) ) {
 				earliestIndex = i;
 				millis = currMillis;
@@ -125,12 +130,12 @@ public class AlarmsManager {
 			earliestIndex = -1;
 		}
 
-		return new EarliestInfo( millis, earliestIndex );
+		return new EarliestInfo( millis, this.get( earliestIndex ) );
 	}
 
 	/**
 	 * Returns info about the earliest alarm.<br/>
-	 * The info contains info about milliseconds and index of alarm.
+	 * The info contains info about milliseconds and the alarm.
 	 *
 	 * @return info about the earliest alarm. 
 	 */

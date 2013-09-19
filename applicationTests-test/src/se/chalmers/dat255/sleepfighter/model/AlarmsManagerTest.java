@@ -20,8 +20,7 @@ public class AlarmsManagerTest extends TestCase {
 		list.add(first);
 		list.add( second );
 
-		AlarmsManager manager = new AlarmsManager();
-		manager.set( list );
+		AlarmsManager manager = new AlarmsManager( list );
 
 		Calendar now = new GregorianCalendar();
 		now.set( Calendar.HOUR, 12 );
