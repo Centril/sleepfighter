@@ -33,7 +33,9 @@ public class MainActivity extends Activity {
 		alarms.add(new Alarm(8, 30));
 		alarms.add(new Alarm(7, 0));
 		alarms.add(new Alarm(3, 0));
-		alarms.add(new Alarm(13, 37));
+		Alarm namedAlarm = new Alarm(13, 37);
+		namedAlarm.setName("Named alarm");
+		alarms.add(namedAlarm);
 
 		AlarmsManager manager = new AlarmsManager();
 		manager.set( alarms );
