@@ -3,6 +3,15 @@ package se.chalmers.dat255.sleepfighter.model;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import net.engio.mbassy.listener.Handler;
+
+import se.chalmers.dat255.sleepfighter.activities.MainActivity;
+import se.chalmers.dat255.sleepfighter.debug.Debug;
+import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
+import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
+import se.chalmers.dat255.sleepfighter.utils.message.Message;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -124,4 +133,27 @@ public class AlarmTest extends TestCase {
 		
 		assertEquals(cal2.getTimeInMillis(), alarm.getNextMillis(cal));
 	}
+	
+	public class Subscriber1 {
+		
+		public boolean passed = false;
+		public Alarm alarm = new Alarm(1,2);
+		
+		@Handler
+		public void handleMetaChange( MetaChangeEvent evt ) {
+			passed = (evt.getModifiedField() == Alarm.Field.ID) && (alarm == evt.getAlarm());
+		}
+		
+	}
+	
+	public void testSetId() {
+		Subscriber1 sub = new Subscriber1();
+
+		MessageBus<Message> bus = new MessageBus<Message>();
+		bus.subscribe( sub );
+
+		sub.alarm.setMessageBus(bus);
+		sub.alarm.setId(2);
+		assertTrue(sub.passed);
+	}	
 }
