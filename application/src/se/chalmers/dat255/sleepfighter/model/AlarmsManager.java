@@ -115,9 +115,14 @@ public class AlarmsManager {
 
 		for ( int i = 0; i < this.list.size(); i++ ) {
 			long currMillis = this.list.get( i ).getNextMillis( now );
-			if ( currMillis > -1 && (millis == Alarm.NEXT_NON_REAL || millis > currMillis) ) {
+			if ( currMillis > Alarm.NEXT_NON_REAL && (millis == Alarm.NEXT_NON_REAL || millis > currMillis) ) {
 				earliestIndex = i;
+				millis = currMillis;
 			}
+		}
+
+		if ( millis == Alarm.NEXT_NON_REAL ) {
+			earliestIndex = -1;
 		}
 
 		return new EarliestInfo( millis, earliestIndex );

@@ -11,7 +11,7 @@ import java.util.GregorianCalendar;
  */
 public class Alarm {
 	private int id;
-	private boolean isActivated;
+	private boolean isActivated = true;
 	private String name;
 
 	private int hour;
