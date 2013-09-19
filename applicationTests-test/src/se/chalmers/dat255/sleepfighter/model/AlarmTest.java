@@ -16,7 +16,6 @@ public class AlarmTest extends TestCase {
 		assertEquals(3, alarm.getMinute());
 	}
 	
-	@SuppressWarnings("unused")
 	public void testConstructorExceptions() {
 		// invalid hour
 		try {
