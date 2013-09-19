@@ -63,6 +63,29 @@ public class AlarmTest extends TestCase {
 		assertEquals(4, alarm.getMinute());
 	}
 	
+	public class Subscriber3 {
+		
+		public boolean passed = false;
+		public Alarm alarm = new Alarm(1,2);
+		
+		@Handler
+		public void handleMetaChange( DateChangeEvent evt ) {
+			passed = (evt.getModifiedField() == Alarm.Field.TIME) && (alarm == evt.getAlarm());
+		}
+		
+	}
+	
+	public void testSetTimeMessage() {
+		Subscriber3 sub = new Subscriber3();
+
+		MessageBus<Message> bus = new MessageBus<Message>();
+		bus.subscribe( sub );
+
+		sub.alarm.setMessageBus(bus);
+		sub.alarm.setTime(8, 2);
+		assertTrue(sub.passed);
+	}
+	
 	public void testSetTimeExceptions() {
 		Alarm alarm = new Alarm(4, 3);
 		
@@ -179,6 +202,7 @@ public class AlarmTest extends TestCase {
 		sub.alarm.setName("hell world");
 		assertTrue(sub.passed);
 	}	
+
 
 	
 }
