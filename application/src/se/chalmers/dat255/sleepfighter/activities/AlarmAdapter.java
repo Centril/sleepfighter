@@ -29,6 +29,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
 		TextView timeTextView = (TextView) convertView
 				.findViewById(R.id.time_view);
+		TextView nameTextView = (TextView) convertView
+				.findViewById(R.id.name_view);
 
 		// The alarm associated with the row
 		Alarm alarm = getItem(position);
@@ -38,6 +40,9 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
 		String timeText = alarm.getTimeString();
 		timeTextView.setText(timeText);
+
+		String name = alarm.getName();
+		nameTextView.setText(name);
 
 		// TODO show more properties of Alarm
 
