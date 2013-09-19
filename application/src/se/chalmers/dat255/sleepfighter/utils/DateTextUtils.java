@@ -9,7 +9,6 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
 import android.content.res.Resources;
-import android.util.Log;
 
 /**
  * String/text specific date utility methods.
