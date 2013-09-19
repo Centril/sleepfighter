@@ -31,16 +31,20 @@ public class AlarmsManager extends ObservableList<Alarm> {
 	public static class EarliestInfo {
 		private long millis;
 		private Alarm alarm;
+		private int index;
 
 		/**
 		 * Constructs an EarliestInfo.
 		 *
 		 * @param millis milliseconds to earliest alarm.
 		 * @param alarm the alarm object that is earliest.
+		 * @param index the index of the alarm in the alarm list.
+		 * 
 		 */
-		private EarliestInfo( long millis, Alarm alarm ) {
+		private EarliestInfo( long millis, Alarm alarm, int index) {
 			this.millis = millis;
 			this.alarm = alarm;
+			this.index = index;
 		}
 
 		/**
@@ -77,9 +81,14 @@ public class AlarmsManager extends ObservableList<Alarm> {
 		 *
 		 * @return the earliest alarm.
 		 */
-		public Alarm getIndex() {
+		public Alarm getAlarm() {
 			return this.alarm;
 		}
+		
+		public int getIndex() {
+			return this.index;
+		}
+
 	}
 
 	/**
@@ -130,7 +139,15 @@ public class AlarmsManager extends ObservableList<Alarm> {
 			earliestIndex = -1;
 		}
 
-		return new EarliestInfo( millis, this.get( earliestIndex ) );
+		Alarm alarm;
+		if(millis != Alarm.NEXT_NON_REAL)
+			alarm =  this.get( earliestIndex );
+		else
+			// there was no earliest alarm to begin with. 
+			alarm = null;
+	
+		
+		return new EarliestInfo( millis,alarm, earliestIndex );
 	}
 
 	/**

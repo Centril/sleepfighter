@@ -17,6 +17,7 @@ public final class Debug{
 		return Debug.sDebugTag;
 	}
 	
+	
 	public static void setDebugTag(final String pDebugTag) {
 		Debug.sDebugTag = pDebugTag;
 	}
