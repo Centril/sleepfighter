@@ -121,7 +121,7 @@ public class ObservableList<E> extends ForwardingList<E> {
 	 *
 	 * @return the message bus.
 	 */
-	protected MessageBus<Message> getMessageBus() {
+	public MessageBus<Message> getMessageBus() {
 		return this.bus;
 	}
 
