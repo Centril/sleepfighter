@@ -156,4 +156,29 @@ public class AlarmTest extends TestCase {
 		sub.alarm.setId(2);
 		assertTrue(sub.passed);
 	}	
+
+	public class Subscriber2 {
+		
+		public boolean passed = false;
+		public Alarm alarm = new Alarm(1,2);
+		
+		@Handler
+		public void handleMetaChange( MetaChangeEvent evt ) {
+			passed = (evt.getModifiedField() == Alarm.Field.NAME) && (alarm == evt.getAlarm());
+		}
+		
+	}
+	
+	public void testSetName() {
+		Subscriber2 sub = new Subscriber2();
+
+		MessageBus<Message> bus = new MessageBus<Message>();
+		bus.subscribe( sub );
+
+		sub.alarm.setMessageBus(bus);
+		sub.alarm.setName("hell world");
+		assertTrue(sub.passed);
+	}	
+
+	
 }
