@@ -4,15 +4,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.message.Message;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,13 +26,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+	private AlarmsManager manager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		Resources res = getResources();
 
 		// Hard code in some sample alarms
 		// TODO fetch from where actual alarms will be stored
@@ -39,18 +44,50 @@ public class MainActivity extends Activity {
 		namedAlarm.setName("Named alarm");
 		alarms.add(namedAlarm);
 
-		AlarmsManager manager = new AlarmsManager( alarms );
+		MessageBus<Message> bus = new MessageBus<Message>();
+		bus.subscribe( this );
+
+		this.manager = new AlarmsManager( alarms );
+		this.manager.setMessageBus( bus );
 
 		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
-
 
 		AlarmAdapter alarmAdapter = new AlarmAdapter(this, alarms);
 		listView.setAdapter(alarmAdapter);
 
-		// Set earliest time text.
-		EarliestInfo earliestInfo = manager.getEarliestInfo( now );
+		this.updateEarliestText( now );
+
+		// TEST, TODO: REMOVE
+		Timer t = new Timer();
+		t.schedule( new TimerTask() {
+			@Override
+			public void run() {
+				MainActivity.this.manager.get( 0 ).setTime( 0, 10 );
+			}
+		}, 1000 );
+	}
+
+	@Handler
+	public void handleDateChange( DateChangeEvent evt ) {
+		this.runOnUiThread( new Runnable() {
+			@Override
+			public void run() {
+				MainActivity.this.updateEarliestText( new GregorianCalendar() );
+			}
+		});
+	}
+
+	/**
+	 * Sets the earliest time text.
+	 *
+	 * @param now the current time.
+	 */
+	private void updateEarliestText( Calendar now ) {
+		Debug.d( "updateEarliestText" );
+
+		EarliestInfo earliestInfo = this.manager.getEarliestInfo( now );
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
-		earliestTimeText.setText( DateTextUtils.getEarliestText( res, now, earliestInfo ) );
+		earliestTimeText.setText( DateTextUtils.getEarliestText( getResources(), now, earliestInfo ) );
 	}
 
 	@Override

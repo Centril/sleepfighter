@@ -237,7 +237,7 @@ public class ObservableList<E> extends ForwardingList<E> {
 		return new ForwardingIterator<E>() {
 			private E curr;
 
-			private final Iterator<E> delegate = ObservableList.this.iterator();
+			private final Iterator<E> delegate = ObservableList.this.delegate().iterator();
 
 			@Override
 			protected Iterator<E> delegate() {

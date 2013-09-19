@@ -134,13 +134,13 @@ public class AlarmsManager extends ObservableList<Alarm> {
 	/**
 	 * Sets the message bus, if not set, no events will be received.
 	 *
-	 * @param bus the buss that receives events.
+	 * @param messageBus the buss that receives events.
 	 */
-	public void setMessageBus( MessageBus<Message> bus ) {
-		super.setMessageBus( bus );
+	public void setMessageBus( MessageBus<Message> messageBus ) {
+		super.setMessageBus( messageBus );
 
 		for ( Alarm alarm : this ) {
-			alarm.setMessageBus( bus );
+			alarm.setMessageBus( messageBus );
 		}
 	}
 
