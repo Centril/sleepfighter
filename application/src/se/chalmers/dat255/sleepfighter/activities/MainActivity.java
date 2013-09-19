@@ -56,15 +56,6 @@ public class MainActivity extends Activity {
 		listView.setAdapter(alarmAdapter);
 
 		this.updateEarliestText( now );
-
-		// TEST, TODO: REMOVE
-		Timer t = new Timer();
-		t.schedule( new TimerTask() {
-			@Override
-			public void run() {
-				MainActivity.this.manager.get( 0 ).setTime( 0, 10 );
-			}
-		}, 1000 );
 	}
 
 	@Handler
