@@ -166,14 +166,8 @@ public class AlarmsManager extends ObservableList<Alarm> {
 			earliestIndex = -1;
 		}
 
-		Alarm alarm;
-		if(millis != Alarm.NEXT_NON_REAL)
-			alarm =  this.get( earliestIndex );
-		else
-			// there was no earliest alarm to begin with. 
-			alarm = null;
-	
-		
+		Alarm alarm = millis == Alarm.NEXT_NON_REAL ? null : this.get( earliestIndex );
+
 		return new EarliestInfo( millis,alarm, earliestIndex );
 	}
 
