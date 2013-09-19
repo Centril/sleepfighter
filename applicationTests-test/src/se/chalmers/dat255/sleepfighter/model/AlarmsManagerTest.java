@@ -6,6 +6,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
+import se.chalmers.dat255.sleepfighter.utils.message.Message;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
 import junit.framework.TestCase;
 
@@ -41,5 +43,23 @@ public class AlarmsManagerTest extends TestCase {
 		second.setActivated( false );
 		info = manager.getEarliestInfo( now );
 		assertTrue( !info.isReal() );
+	}
+	
+	
+	public void testSetMessageBus(  ) {
+		Alarm first = new Alarm(12, 2);
+		Alarm second = new Alarm(12, 3);
+
+		List<Alarm> list = new ArrayList<Alarm>();
+		list.add(first);
+		list.add( second );
+
+		AlarmsManager manager = new AlarmsManager( list );
+
+		MessageBus<Message> bus = new MessageBus<Message>();
+		manager.setMessageBus(bus);
+		
+		assertEquals(bus, first.getMessageBus());
+		assertEquals(bus, second.getMessageBus());
 	}
 }
