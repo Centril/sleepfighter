@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,25 +8,21 @@
     <ListView
         android:id="@+id/mainAlarmsList"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_alignParentTop="true" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:id="@+id/mainLayoutBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/earliestTimeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="25sp"
-            android:textStyle="normal"
-            android:textIsSelectable="false" />
-
+            android:textIsSelectable="false"
+            android:textSize="25sp" />
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
