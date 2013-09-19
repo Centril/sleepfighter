@@ -14,6 +14,98 @@ import android.util.Log;
  * @since Sep 16, 2013
  */
 public class Alarm {
+	/**
+	 * Enumeration of fields in an Alarm.
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Sep 19, 2013
+	 */
+	public static enum Field {
+		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID
+	}
+
+	/**
+	 * All events fired by {@link Alarm} extends this interface.
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Sep 19, 2013
+	 */
+	public static interface AlarmEvent extends Message {
+		/**
+		 * Returns the alarm that triggered the event.
+		 *
+		 * @return the alarm.
+		 */
+		public Alarm getAlarm();
+	}
+
+	/**
+	 * Base implementation of AlarmEvent
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Sep 19, 2013
+	 */
+	public static abstract class BaseAlarmEvent implements AlarmEvent {
+		private Field field;
+		private Alarm alarm;
+
+		private BaseAlarmEvent(Alarm alarm, Field field) {
+			this.alarm = alarm;
+			this.field = field;
+		}
+
+		public Alarm getAlarm() {
+			return this.alarm;
+		}
+
+		/**
+		 * Returns the modified field in Alarm.
+		 *
+		 * @return the modified field.
+		 */
+		public Field getModifiedField() {
+			return this.field;
+		}
+	}
+
+	/**
+	 * DateChangeEvent occurs when a date-time related constraint is modified, these are:<br/>
+	 * <ul>
+	 * 	<li>{@link Field#TIME}</li>
+	 * 	<li>{@link Field#ACTIVATED}</li>
+	 * 	<li>{@link Field#ENABLED_DAYS}</li>
+	 * </ul>
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Sep 19, 2013
+	 */
+	public static class DateChangeEvent extends BaseAlarmEvent {
+		private DateChangeEvent(Alarm alarm, Field field) {
+			super(alarm, field);
+		}
+	}
+
+	/**
+	 * DateChangeEvent occurs when a date-time related constraint is modified, these are:<br/>
+	 * <ul>
+	 * 	<li>{@link Field#NAME}</li>
+	 * 	<li>{@link Field#ID}</li>
+	 * </ul>
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Sep 19, 2013
+	 */
+	public static class MetaChangeEvent extends BaseAlarmEvent {
+		private MetaChangeEvent(Alarm alarm, Field field) {
+			super(alarm, field);
+		}
+	}
+
 	private int id;
 	private boolean isActivated = true;
 	private String name;
@@ -26,7 +118,7 @@ public class Alarm {
 	private static final int MAX_WEEKDAY_INDEX = 6;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
-	public static long NEXT_NON_REAL = -1;
+	public static final long NEXT_NON_REAL = -1;
 
 	private MessageBus<Message> bus;
 
@@ -37,6 +129,15 @@ public class Alarm {
 	 */
 	public void setMessageBus( MessageBus<Message> bus ) {
 		this.bus = bus;
+	}
+
+	/**
+	 * Returns the message bus, or null if not set.
+	 *
+	 * @return the message bus.
+	 */
+	public MessageBus<Message> getMessageBus() {
+		return this.bus;
 	}
 
 	/**
@@ -65,6 +166,26 @@ public class Alarm {
 	 */
 	public void setId( int id ) {
 		this.id = id;
+		this.publish( new MetaChangeEvent( this, Field.ID ) );
+	}
+
+	/**
+	 * Returns the name of the Alarm.
+	 *
+	 * @return the name of the Alarm.
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name of the Alarm.
+	 *
+	 * @param name the name of the Alarm to set.
+	 */
+	public void setName( String name ) {
+		this.name = name;
+		this.publish( new MetaChangeEvent( this, Field.NAME ) );
 	}
 
 	/**
@@ -73,13 +194,16 @@ public class Alarm {
 	 * @param hour the hour this alarm rings.
 	 * @param minute the minute this alarm rings.
 	 */
-	public void setTime(int hour, int minute) {
+	public synchronized void setTime(int hour, int minute) {
 		if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
 			throw new IllegalArgumentException();
 		}
 		this.hour = hour;
 		this.minute = minute;
+
+		this.publish( new DateChangeEvent( this, Field.TIME ) );
 	}
+
 
 	/**
 	 * Returns the weekdays days this alarm is enabled for.<br/>
@@ -97,8 +221,9 @@ public class Alarm {
 	 *
 	 * @param enabledDays the weekdays alarm should be enabled for.
 	 */
-	public void setEnabledDays( boolean[] enabledDays ) {
+	public synchronized void setEnabledDays( boolean[] enabledDays ) {
 		this.enabledDays = enabledDays.clone();
+		this.publish( new DateChangeEvent( this, Field.ENABLED_DAYS ) );
 	}
 	
 	/**
@@ -195,6 +320,7 @@ public class Alarm {
 	 */
 	public void setActivated(boolean isActivated) {
 		this.isActivated = isActivated;
+		this.publish( new DateChangeEvent( this, Field.ACTIVATED ) );
 	}
 
 	/**
@@ -211,6 +337,11 @@ public class Alarm {
 		return this.hour + ":" + this.minute + " is" + (this.isActivated ? " " : " NOT ") + "activated.";
 	}
 
+	/**
+	 * Returns the Alarm:s time in the format: hh:mm.
+	 *
+	 * @return the formatted time.
+	 */
 	public String getTimeString() {
 		return String.format("%02d", this.getHour()) + ":" + String.format("%02d", this.getMinute());
 	}
@@ -239,23 +370,11 @@ public class Alarm {
 		return this.hour == other.hour && this.isActivated == other.isActivated && minute == other.minute;
 	}
 
+	private void publish( AlarmEvent event ) {
+		if ( this.bus == null ) {
+			return;
+		}
 
-	/**
-	 * Returns the name of the Alarm.
-	 *
-	 * @return the name of the Alarm.
-	 */
-	public String getName() {
-		return name;
-	}
-
-
-	/**
-	 * Sets the name of the Alarm.
-	 *
-	 * @param name the name of the Alarm to set.
-	 */
-	public void setName( String name ) {
-		this.name = name;
+		this.bus.publish( event );
 	}
 }
