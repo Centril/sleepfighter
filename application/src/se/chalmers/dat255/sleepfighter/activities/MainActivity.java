@@ -18,13 +18,20 @@ import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private AlarmsManager manager;
+	private AlarmAdapter alarmAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +57,68 @@ public class MainActivity extends Activity {
 
 		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
 
-		AlarmAdapter alarmAdapter = new AlarmAdapter(this, alarms);
-		listView.setAdapter(alarmAdapter);
+		this.alarmAdapter = new AlarmAdapter(this, alarms);
+		listView.setAdapter(this.alarmAdapter);
+
+		listView.setOnItemClickListener(listClickListener);
+
+		// Register to get context menu events associated with listView
+		registerForContextMenu(listView);
 
 		this.updateEarliestText( now );
 	}
+	
+	private OnItemClickListener listClickListener = new OnItemClickListener() {
 
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Alarm clickedAlarm = MainActivity.this.alarmAdapter.getItem(position);
+			startAlarmEdit(clickedAlarm);
+		}
+	};
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		if (v.getId() == R.id.mainAlarmsList) {
+			String[] menuItems = getResources().getStringArray(
+					R.array.main_list_context_menu);
+			for (int i = 0; i < menuItems.length; i++) {
+				menu.add(0, i, i, menuItems[i]);
+			}
+		}
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
+				.getMenuInfo();
+		Alarm selectedAlarm = (alarmAdapter.getItem(info.position));
+
+		// TODO perhaps use something other than order
+		switch (item.getOrder()) {
+			case 0:
+				startAlarmEdit(selectedAlarm);
+				return true;
+			case 1:
+				deleteAlarm(selectedAlarm);
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	private void startAlarmEdit(Alarm alarm) {
+		Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
+		// TODO Launch alarm edit intent
+	}
+
+	private void deleteAlarm(Alarm alarm) {
+		Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
+		// TODO Delete alarm
+	}
+	
 	@Handler
 	public void handleDateChange( DateChangeEvent evt ) {
 		this.runOnUiThread( new Runnable() {
