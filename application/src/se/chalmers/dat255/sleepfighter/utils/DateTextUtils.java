@@ -34,17 +34,16 @@ public class DateTextUtils {
 	public static final String getEarliestText( Resources res, Calendar now, EarliestInfo earliestInfo ) {
 		return getEarliestText(res.getStringArray( R.array.earliest_time_formats), 
 				 res.getStringArray( R.array.earliest_time_formats_parts ),
-				now, earliestInfo );
+				 earliestInfo.getDiff( now ), earliestInfo );
 	}
-		
 	
-	public static final String getEarliestText( String[] formats , String[] partFormats, Calendar now, EarliestInfo earliestInfo ) {
+	// diff is how long it is until the alarm goes off the next time.
+	public static final String getEarliestText( String[] formats , String[] partFormats, Calendar diff, EarliestInfo earliestInfo ) {
 		String earliestText;
 
 		// Not real? = we don't have any alarms active.
 		if ( earliestInfo.isReal() ) {
 			// Compute diff.
-			Calendar diff = earliestInfo.getDiff( now );
 			int[] diffVal = { diff.get( Calendar.DAY_OF_MONTH ), diff.get( Calendar.HOUR_OF_DAY ), diff.get( Calendar.MINUTE ) };
 
 			
