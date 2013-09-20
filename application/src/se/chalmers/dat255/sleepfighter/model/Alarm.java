@@ -140,6 +140,14 @@ public class Alarm {
 	}
 
 	/**
+	 * Constructs an alarm to 00:00.<br/>
+	 * This is the equivalent of calling {@link #Alarm(int, int)} with (0, 0).
+	 */
+	public Alarm() {
+		setTime(0, 0);
+	}
+
+	/**
 	 * Constructs an alarm given an hour and minute.
 	 *
 	 * @param hour the hour the alarm should ring.
