@@ -27,7 +27,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		}
 
 		
-		CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
+		CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.activated);
 		TextView timeTextView = (TextView) convertView
 				.findViewById(R.id.time_view);
 		TextView nameTextView = (TextView) convertView
