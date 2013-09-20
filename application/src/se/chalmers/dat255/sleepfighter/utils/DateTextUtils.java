@@ -68,6 +68,10 @@ public class DateTextUtils {
 				
 				Debug.d("formatting: " +  earliestText);
 				earliestText = String.format( earliestText, diffVal[0], diffVal[1], diffVal[2] );
+			} else {
+				// only seconds remains until it goes off.
+				earliestText = formats[1];
+
 			}
 		} else {
 			earliestText = formats[0];

@@ -7,7 +7,7 @@
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>
-        <item>Inom &lt; minuter</item>
+        <item>Inom &lt; 1 minut</item>
         <item>Inom %1$s</item>
         <item>Inom %1$s och %2$s</item>
         <item>Inom %1$s, %2$s och %3$s</item>

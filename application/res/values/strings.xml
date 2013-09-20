@@ -7,7 +7,7 @@
 
     <string-array name="earliest_time_formats">
         <item>No alarm active</item>
-        <item>In &lt; minute</item>
+        <item>In &lt; 1 minute</item>
         <item>In %1$s</item>
         <item>In %1$s and %2$s</item>
         <item>In %1$s, %2$s and %3$s</item>
