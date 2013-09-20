@@ -2,6 +2,7 @@ package se.chalmers.dat255.sleepfighter.model;
 
 import org.joda.time.MutableDateTime;
 
+import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.util.Log;
@@ -111,10 +112,12 @@ public class Alarm {
 
 	private int hour;
 	private int minute;
+	private int second;
 
 	/** The weekdays that this alarm can ring. */
 	private boolean[] enabledDays = { true, true, true, true, true, true, true };
-	private static final int MAX_WEEKDAY_INDEX = 6;
+	private static final int MAX_WEEKDAY_LENGTH = 7;
+	private static final int MAX_WEEKDAY_INDEX = MAX_WEEKDAY_LENGTH - 1;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
@@ -144,18 +147,30 @@ public class Alarm {
 	 * This is the equivalent of calling {@link #Alarm(int, int)} with (0, 0).
 	 */
 	public Alarm() {
-		setTime(0, 0);
+		setTime(0, 0, 0);
 	}
 
 	/**
 	 * Constructs an alarm given an hour and minute.
 	 *
-	 * @param hour the hour the alarm should ring.
-	 * @param minute the minute the alarm should ring.
+	 * @param hour the hour the alarm should occur.
+	 * @param minute the minute the alarm should occur.
 	 */
 	public Alarm(int hour, int minute) {
-		setTime(hour, minute);
+		this.setTime(hour, minute);
 	}
+
+	/**
+	 * Constructs an alarm given an hour, minute and second.
+	 *
+	 * @param hour the hour the alarm should occur.
+	 * @param minute the minute the alarm should occur.
+	 * @param second the second the alarm should occur.
+	 */
+	public Alarm(int hour, int minute, int second) {
+		this.setTime(hour, minute, second);
+	}
+
 
 	/**
 	 * Returns the ID of the alarm.
@@ -196,17 +211,30 @@ public class Alarm {
 	}
 
 	/**
-	 * Sets the hour and minute of this alarm.
+	 * Sets the hour and minute of this alarm.<br/>
+	 * This is the equivalent of {@link #setTime(int, int, int)} with <code>(hour, minute, 0)</code>.
 	 *
-	 * @param hour the hour this alarm rings.
-	 * @param minute the minute this alarm rings.
+	 * @param hour the hour the alarm should occur.
+	 * @param minute the minute the alarm should occur.
 	 */
 	public synchronized void setTime(int hour, int minute) {
-		if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+		this.setTime( hour, minute, 0 );
+	}
+
+	/**
+	 * Sets the hour, minute and second of this alarm.
+	 *
+	 * @param hour the hour the alarm should occur.
+	 * @param minute the minute the alarm should occur.
+	 * @param second the second the alarm should occur.
+	 */
+	public synchronized void setTime( int hour, int minute, int second ) {
+		if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59 ) {
 			throw new IllegalArgumentException();
 		}
 		this.hour = hour;
 		this.minute = minute;
+		this.second = second;
 
 		this.publish( new DateChangeEvent( this, Field.TIME ) );
 	}
@@ -228,7 +256,7 @@ public class Alarm {
 	 * @param enabledDays the weekdays alarm should be enabled for.
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
-		if ( enabledDays.length != 7 ) {
+		if ( enabledDays.length != MAX_WEEKDAY_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
 
@@ -251,6 +279,7 @@ public class Alarm {
 		MutableDateTime next = new MutableDateTime(now);
 		next.setHourOfDay( this.hour );
 		next.setMinuteOfHour( this.minute );
+		next.setSecondOfMinute( this.second );
 
 		// Houston, we've a problem, alarm is before now, adjust 1 day.
 		if ( next.isBefore( now ) ) {
@@ -314,6 +343,15 @@ public class Alarm {
 	}
 
 	/**
+	 * Returns the second the alarm occurs.
+	 *
+	 * @return the second the alarm occurs.
+	 */
+	public int getSecond() {
+		return this.second;
+	}
+
+	/**
 	 * Sets whether or not the alarm should be active.
 	 *
 	 * @param isActivated whether or not the alarm should be active.
@@ -334,7 +372,7 @@ public class Alarm {
 
 	@Override
 	public String toString() {
-		return this.hour + ":" + this.minute + " is" + (this.isActivated ? " " : " NOT ") + "activated.";
+		return DateTextUtils.joinTime( this.hour, this.minute, this.second ) + " is" + (this.isActivated ? " " : " NOT ") + "activated.";
 	}
 
 	/**
@@ -370,6 +408,11 @@ public class Alarm {
 		return this.hour == other.hour && this.isActivated == other.isActivated && minute == other.minute;
 	}
 
+	/**
+	 * Publishes an event to event bus.
+	 *
+	 * @param event the event to publish.
+	 */
 	private void publish( AlarmEvent event ) {
 		if ( this.bus == null ) {
 			return;

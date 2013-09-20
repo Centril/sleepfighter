@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.joda.time.Period;
 
+import com.google.common.base.Joiner;
+
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
@@ -19,10 +21,17 @@ import android.content.res.Resources;
  * @since Sep 19, 2013
  */
 public class DateTextUtils {
+	/** Joiner for time, the separator is ":". */
+	public static final Joiner TIME_JOINER = Joiner.on( ':' ).skipNulls();
+
 	/**
-	 * Construction forbidden.
+	 * Joins time parts together according to {@link #TIME_JOINER}.
+	 *
+	 * @param parts the time parts to join together.
+	 * @return the time parts joined together.
 	 */
-	private DateTextUtils() {
+	public static final String joinTime( Integer... parts ) {
+		return TIME_JOINER.join( parts );
 	}
 
 	/**
@@ -87,5 +96,11 @@ public class DateTextUtils {
 		}
 
 		return earliestText;
+	}
+
+	/**
+	 * Construction forbidden.
+	 */
+	private DateTextUtils() {
 	}
 }
