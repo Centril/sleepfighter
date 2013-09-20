@@ -1,6 +1,8 @@
 package se.chalmers.dat255.sleepfighter.model;
 
+import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
+import org.joda.time.ReadableDateTime;
 
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
@@ -171,6 +173,23 @@ public class Alarm {
 		this.setTime(hour, minute, second);
 	}
 
+	/**
+	 * Constructs an alarm with values derived from a unix epoch timestamp.
+	 *
+	 * @param time time in unix epoch timestamp.
+	 */
+	public Alarm(long time) {
+		this.setTime( time );
+	}
+
+	/**
+	 * Sets the hour, minute and second of this alarm derived from a {@link ReadableDateTime} object.
+	 * 
+	 * @param time a {@link ReadableDateTime} object. 
+	 */
+	public Alarm(ReadableDateTime time) {
+		this.setTime( time );
+	}
 
 	/**
 	 * Returns the ID of the alarm.
@@ -237,6 +256,24 @@ public class Alarm {
 		this.second = second;
 
 		this.publish( new DateChangeEvent( this, Field.TIME ) );
+	}
+
+	/**
+	 * Sets the hour, minute and second of this alarm derived from a unix epoch timestamp.
+	 *
+	 * @param time time in unix epoch timestamp.
+	 */
+	public synchronized void setTime( long time ) {
+		this.setTime( new DateTime(time) );
+	}
+
+	/**
+	 * Sets the hour, minute and second of this alarm derived from a {@link ReadableDateTime} object.
+	 *
+	 * @param time a {@link ReadableDateTime} object.
+	 */
+	public synchronized void setTime( ReadableDateTime time ) {
+		this.setTime( time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute() );
 	}
 
 	/**
