@@ -43,7 +43,7 @@ public class AlarmsManager extends ObservableList<Alarm> {
 		 * @param index the index of the alarm in the alarm list.
 		 * 
 		 */
-		private EarliestInfo( long millis, Alarm alarm, int index) {
+		public EarliestInfo( long millis, Alarm alarm, int index) {
 			this.millis = millis;
 			this.alarm = alarm;
 			this.index = index;
