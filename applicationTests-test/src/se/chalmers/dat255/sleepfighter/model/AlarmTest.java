@@ -1,19 +1,16 @@
 package se.chalmers.dat255.sleepfighter.model;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
+import junit.framework.Assert;
+import junit.framework.TestCase;
 import net.engio.mbassy.listener.Handler;
 
-import se.chalmers.dat255.sleepfighter.activities.MainActivity;
-import se.chalmers.dat255.sleepfighter.debug.Debug;
+import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
+
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class AlarmTest extends TestCase {
 
@@ -158,17 +155,32 @@ public class AlarmTest extends TestCase {
 		
 		// does it respect canHappen?
 		alarm.setActivated(false);
-		assertEquals(Alarm.NEXT_NON_REAL, alarm.getNextMillis());
-		
+		long now = new DateTime(0, 1, 1, 0, 0).getMillis();
+		assertEquals(Alarm.NEXT_NON_REAL, alarm.getNextMillis(now));
 		alarm.setActivated(true);
-		// day is Wednesday. 
-		// alarm is one minute after this time
-		Calendar cal = new GregorianCalendar(2013, 8, 18, 1, 0);
-		
-		Calendar cal2 = (Calendar) cal.clone();
-		cal2.add(Calendar.MINUTE, 1);
-		
-		assertEquals(cal2.getTimeInMillis(), alarm.getNextMillis(cal));
+
+		// alarm is one minute after now.
+		Long test = new DateTime(0, 1, 1, 1, 1).getMillis();
+		assertEquals( test, alarm.getNextMillis(now) );
+
+		// test that it handles cases when alarm < now.
+		now = new DateTime(0, 1, 1, 10, 10).getMillis();
+		test = new DateTime(0, 1, 2, 1, 1).getMillis();
+		assertEquals( test, alarm.getNextMillis(now) );
+
+		// test that it handles cases when a weekday is disabled.
+		// monday (first) is disabled, alarm should ring on tuesday.
+		alarm.setEnabledDays( new boolean[] { false, true, true, true, true, true, true } );
+
+		MutableDateTime time = new MutableDateTime(0, 1, 1, 0, 0, 0, 0);
+		time.setDayOfWeek( 1 );
+		now = time.getMillis();
+
+		time.addDays( 1 );
+		time.addHours( 1 );
+		time.addMinutes( 1 );
+		test = time.getMillis();
+		assertEquals( test, alarm.getNextMillis(now) );
 	}
 	
 	public class Subscriber1 {

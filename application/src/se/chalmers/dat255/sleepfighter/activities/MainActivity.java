@@ -1,17 +1,17 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import net.engio.mbassy.listener.Handler;
+
+import org.joda.time.DateTime;
+
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
-import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -40,11 +40,11 @@ public class MainActivity extends Activity {
 
 		// Hard code in some sample alarms
 		// TODO fetch from where actual alarms will be stored
-		Calendar now = new GregorianCalendar();
 		List<Alarm> alarms = new ArrayList<Alarm>();
 		alarms.add(new Alarm(8, 30));
 		alarms.add(new Alarm(7, 0));
 		alarms.add(new Alarm(3, 0));
+		alarms.add(new Alarm(20, 0));
 		Alarm namedAlarm = new Alarm(13, 37);
 		namedAlarm.setName("Named alarm");
 		alarms.add(namedAlarm);
@@ -65,7 +65,11 @@ public class MainActivity extends Activity {
 		// Register to get context menu events associated with listView
 		registerForContextMenu(listView);
 
-		this.updateEarliestText( now );
+		this.updateEarliestText();
+	}
+
+	private long getNow() {
+		return new DateTime().getMillis();
 	}
 	
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
@@ -124,7 +128,7 @@ public class MainActivity extends Activity {
 		this.runOnUiThread( new Runnable() {
 			@Override
 			public void run() {
-				MainActivity.this.updateEarliestText( new GregorianCalendar() );
+				MainActivity.this.updateEarliestText();
 			}
 		});
 	}
@@ -134,12 +138,13 @@ public class MainActivity extends Activity {
 	 *
 	 * @param now the current time.
 	 */
-	private void updateEarliestText( Calendar now ) {
+	private void updateEarliestText() {
 		Debug.d( "updateEarliestText" );
 
-		EarliestInfo earliestInfo = this.manager.getEarliestInfo( now );
+		long now = this.getNow();
+
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
-		earliestTimeText.setText( DateTextUtils.getEarliestText( getResources(), now, earliestInfo ) );
+		earliestTimeText.setText( DateTextUtils.getEarliestText( this.getResources(), now, this.manager.getEarliestInfo( now ) ) );
 	}
 
 	@Override
@@ -161,5 +166,4 @@ public class MainActivity extends Activity {
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
-
 }

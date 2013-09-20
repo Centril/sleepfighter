@@ -1,7 +1,6 @@
 package se.chalmers.dat255.sleepfighter.model;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -118,7 +117,7 @@ public class Alarm {
 	private static final int MAX_WEEKDAY_INDEX = 6;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
-	public static final long NEXT_NON_REAL = -1;
+	public static final Long NEXT_NON_REAL = null;
 
 	private MessageBus<Message> bus;
 
@@ -204,7 +203,6 @@ public class Alarm {
 		this.publish( new DateChangeEvent( this, Field.TIME ) );
 	}
 
-
 	/**
 	 * Returns the weekdays days this alarm is enabled for.<br/>
 	 * For performance, a direct reference is returned.
@@ -222,44 +220,38 @@ public class Alarm {
 	 * @param enabledDays the weekdays alarm should be enabled for.
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
+		if ( enabledDays.length != 7 ) {
+			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
+		}
+
 		this.enabledDays = enabledDays.clone();
 		this.publish( new DateChangeEvent( this, Field.ENABLED_DAYS ) );
-	}
-	
-	/**
-	 * Returns when this alarm will ring.<br/>
-	 * If {@link #canHappen()} returns false, -1 will be returned.
-	 *
-	 * @return the time in unix epoch timestamp when alarm will next ring.
-	 */
-	public long getNextMillis() {
-		return getNextMillis(new GregorianCalendar());
 	}
 
 	/**
 	 * Returns when this alarm will ring.<br/>
 	 * If {@link #canHappen()} returns false, -1 will be returned.
 	 *
-	 * @param now the current time.
+	 * @param now the current time in unix epoch timestamp.
 	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
-	public synchronized long getNextMillis(Calendar now) {
+	public synchronized Long getNextMillis(long now) {
 		if ( !this.canHappen() ) {
 			return NEXT_NON_REAL;
 		}
 
-		Calendar next = (Calendar) now.clone();
-		next.set( Calendar.HOUR, this.hour );
-		next.set( Calendar.MINUTE, this.minute );
+		MutableDateTime next = new MutableDateTime(now);
+		next.setHourOfDay( this.hour );
+		next.setMinuteOfHour( this.minute );
 
 		// Houston, we've a problem, alarm is before now, adjust 1 day.
-		if ( next.before( now ) ) {
-			next.add( Calendar.DAY_OF_MONTH, 1 );
+		if ( next.isBefore( now ) ) {
+			next.addDays( 1 );
 		}
 
 		// Offset for weekdays. Checking canHappen() is important for this part, unless you want infinite loops.
 		int offset = 0;
-		for ( int currDay = now.get( Calendar.DAY_OF_WEEK ) - 1; !this.enabledDays[currDay]; currDay++ ) {
+		for ( int currDay = next.getDayOfWeek() - 1; !this.enabledDays[currDay]; currDay++ ) {
 			Log.d( "Alarm", Integer.toString( currDay ) );
 			if ( currDay > MAX_WEEKDAY_INDEX ) {
 				currDay = 0;
@@ -269,10 +261,10 @@ public class Alarm {
 		}
 
 		if ( offset > 0 ) {
-			next.add( Calendar.DAY_OF_MONTH, offset );
+			next.addDays( offset );
 		}
 
-		return next.getTimeInMillis();
+		return next.getMillis();
 	}
 
 	/**

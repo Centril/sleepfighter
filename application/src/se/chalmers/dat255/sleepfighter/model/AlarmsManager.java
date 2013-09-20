@@ -1,11 +1,8 @@
 package se.chalmers.dat255.sleepfighter.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
-import se.chalmers.dat255.sleepfighter.utils.DateTimeUtils;
 import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -31,7 +28,7 @@ public class AlarmsManager extends ObservableList<Alarm> {
 	 * @since Sep 18, 2013
 	 */
 	public static class EarliestInfo {
-		private long millis;
+		private Long millis;
 		private Alarm alarm;
 		private int index;
 
@@ -43,7 +40,7 @@ public class AlarmsManager extends ObservableList<Alarm> {
 		 * @param index the index of the alarm in the alarm list.
 		 * 
 		 */
-		public EarliestInfo( long millis, Alarm alarm, int index) {
+		public EarliestInfo( Long millis, Alarm alarm, int index) {
 			this.millis = millis;
 			this.alarm = alarm;
 			this.index = index;
@@ -60,21 +57,11 @@ public class AlarmsManager extends ObservableList<Alarm> {
 		}
 
 		/**
-		 * Returns the difference of the time of earliest alarm and now as a calendar.
-		 *
-		 * @param now the current time.
-		 * @return the difference.
-		 */
-		public Calendar getDiff( Calendar now ) {
-			return DateTimeUtils.getDateDiff( now, this.getMillis() );
-		}
-
-		/**
 		 * The earliest alarm in milliseconds.
 		 *
 		 * @return the earliest alarm in milliseconds.
 		 */
-		public long getMillis() {
+		public Long getMillis() {
 			return this.millis;
 		}
 
@@ -90,7 +77,6 @@ public class AlarmsManager extends ObservableList<Alarm> {
 		public int getIndex() {
 			return this.index;
 		}
-
 	}
 
 	/**
@@ -148,15 +134,16 @@ public class AlarmsManager extends ObservableList<Alarm> {
 	 * Returns info about the earliest alarm.<br/>
 	 * The info contains info about milliseconds and the alarm.
 	 *
+	 * @param now current time in unix epoch timestamp.
 	 * @return info about the earliest alarm. 
 	 */
-	public EarliestInfo getEarliestInfo( Calendar now ) {
-		long millis = Alarm.NEXT_NON_REAL;
+	public EarliestInfo getEarliestInfo( long now ) {
+		Long millis = Alarm.NEXT_NON_REAL;
 		int earliestIndex = -1;
 
 		for ( int i = 0; i < this.size(); i++ ) {
-			long currMillis = this.get( i ).getNextMillis( now );
-			if ( currMillis > Alarm.NEXT_NON_REAL && (millis == Alarm.NEXT_NON_REAL || millis > currMillis) ) {
+			Long currMillis = this.get( i ).getNextMillis( now );
+			if ( currMillis != Alarm.NEXT_NON_REAL && (millis == Alarm.NEXT_NON_REAL || millis > currMillis) ) {
 				earliestIndex = i;
 				millis = currMillis;
 			}
@@ -168,16 +155,6 @@ public class AlarmsManager extends ObservableList<Alarm> {
 
 		Alarm alarm = millis == Alarm.NEXT_NON_REAL ? null : this.get( earliestIndex );
 
-		return new EarliestInfo( millis,alarm, earliestIndex );
-	}
-
-	/**
-	 * Returns info about the earliest alarm.<br/>
-	 * The info contains info about milliseconds and the alarm.
-	 *
-	 * @return info about the earliest alarm. 
-	 */
-	public EarliestInfo getEarliestInfo() {
-		return this.getEarliestInfo( GregorianCalendar.getInstance() );
+		return new EarliestInfo( millis, alarm, earliestIndex );
 	}
 }
