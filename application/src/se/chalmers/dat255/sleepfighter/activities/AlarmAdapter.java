@@ -9,7 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 public class AlarmAdapter extends ArrayAdapter<Alarm> {
@@ -26,18 +27,16 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					R.layout.alarm_list_item, null);
 		}
 
-		
-		CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.activated);
 		TextView timeTextView = (TextView) convertView
 				.findViewById(R.id.time_view);
 		TextView nameTextView = (TextView) convertView
 				.findViewById(R.id.name_view);
 
 		// The alarm associated with the row
-		Alarm alarm = getItem(position);
+		final Alarm alarm = getItem(position);
 
 		// Set properties of view elements to reflect model state
-		checkBox.setChecked(alarm.isActivated());
+		this.setupActivatedSwitch( alarm, convertView );
 
 		String timeText = alarm.getTimeString();
 		timeTextView.setText(timeText);
@@ -50,4 +49,15 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		return convertView;
 	}
 
+	private void setupActivatedSwitch( final Alarm alarm, View convertView ) {
+		CompoundButton activatedSwitch = (CompoundButton) convertView.findViewById(R.id.activated);
+
+		activatedSwitch.setChecked(alarm.isActivated());
+
+		activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
+			public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+				alarm.setActivated( isChecked );
+			}
+		} );
+	}
 }
