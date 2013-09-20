@@ -30,11 +30,16 @@ public class DateTextUtils {
 	 * @param res Android resources.
 	 * @return the built earliest text string.
 	 */
+	
 	public static final String getEarliestText( Resources res, Calendar now, EarliestInfo earliestInfo ) {
+		return getEarliestText(res.getStringArray( R.array.earliest_time_formats), 
+				 res.getStringArray( R.array.earliest_time_formats_parts ),
+				now, earliestInfo );
+	}
+		
+	
+	public static final String getEarliestText( String[] formats , String[] partFormats, Calendar now, EarliestInfo earliestInfo ) {
 		String earliestText;
-
-		// Fetch formats.
-		String[] formats = res.getStringArray( R.array.earliest_time_formats );
 
 		// Not real? = we don't have any alarms active.
 		if ( earliestInfo.isReal() ) {
@@ -53,8 +58,6 @@ public class DateTextUtils {
 			earliestText = formats[cardinality + 1];
 
 			if ( cardinality > 0 ) {
-				// We need some pre-formatting done, compile arguments.
-				String[] partFormats = res.getStringArray( R.array.earliest_time_formats_parts );
 				List<String> args = new ArrayList<String>(3);
 
 				for (int i = setFields.nextSetBit(0); i >= 0; i = setFields.nextSetBit(i + 1) ) {
