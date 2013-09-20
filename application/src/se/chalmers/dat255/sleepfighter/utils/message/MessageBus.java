@@ -27,6 +27,7 @@ public class MessageBus<T extends Message> extends MBassador<T> {
 		super( config );
 	}
 
+	
 	/**
 	 * Creates a new message bus.
 	 *
