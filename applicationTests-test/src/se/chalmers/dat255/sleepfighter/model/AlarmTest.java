@@ -102,6 +102,20 @@ public class AlarmTest extends TestCase {
 		} catch(IllegalArgumentException e) {
 			// success
 		}
+		
+		// invalid minute
+		try {
+			alarm.setTime(4, -1);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch(IllegalArgumentException e) {
+			// success
+		}
+		try {
+			alarm.setTime(4, 60);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch(IllegalArgumentException e) {
+			// success
+		}
 	}
 	
 	public void testEquals() {
