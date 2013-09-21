@@ -424,12 +424,7 @@ public class Alarm {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + hour;
-		result = prime * result + (isActivated ? 1231 : 1237);
-		result = prime * result + minute;
-		return result;
+		return this.id;
 	}
 
 	@Override
@@ -442,8 +437,8 @@ public class Alarm {
 			return false;
 		}
 
-		Alarm other = (Alarm) obj;
-		return this.hour == other.hour && this.isActivated == other.isActivated && minute == other.minute;
+		Alarm rhs = (Alarm) obj;
+		return this.id == rhs.id;
 	}
 
 	/**
