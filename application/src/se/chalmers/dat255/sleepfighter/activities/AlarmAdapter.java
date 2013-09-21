@@ -1,17 +1,29 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
 import java.util.List;
+import java.util.Locale;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.androidutils.TimePickerFragment;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.StringUtils;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.app.FragmentActivity;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
@@ -23,14 +35,9 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
 			// A view isn't being recycled, so make a new one from definition
-			convertView = LayoutInflater.from(getContext()).inflate(
-					R.layout.alarm_list_item, null);
+			convertView = LayoutInflater.from(getContext()).inflate( R.layout.alarm_list_item, null);
 		}
 
-		TextView timeTextView = (TextView) convertView
-				.findViewById(R.id.time_view);
-		TextView nameTextView = (TextView) convertView
-				.findViewById(R.id.name_view);
 
 		// The alarm associated with the row
 		final Alarm alarm = getItem(position);
@@ -38,15 +45,71 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		// Set properties of view elements to reflect model state
 		this.setupActivatedSwitch( alarm, convertView );
 
-		String timeText = alarm.getTimeString();
-		timeTextView.setText(timeText);
+		this.setupTimeText( alarm, convertView );
 
-		String name = alarm.getName();
-		nameTextView.setText(name);
+		this.setupName( alarm, convertView );
+
+		this.setupWeekdays( alarm, convertView );
 
 		// TODO show more properties of Alarm
 
 		return convertView;
+	}
+
+	private void setupTimeText( final Alarm alarm, View convertView ) {
+		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
+
+		timeTextView.setText( alarm.getTimeString() );
+
+		final FragmentActivity activity = (FragmentActivity) this.getContext();
+		timeTextView.setOnClickListener( new OnClickListener() {
+			public void onClick( View v ) {
+				TimePickerFragment.issue( alarm, activity, new OnTimeSetListener() {
+					@Override
+					public void onTimeSet( TimePicker view, int hourOfDay, int minute ) {
+						timeTextView.setText( alarm.getTimeString() );
+					}
+				} );
+			}
+		} );
+	}
+
+	private void setupName( final Alarm alarm, View convertView ) {
+		TextView nameTextView = (TextView) convertView.findViewById(R.id.name_view);
+		String name = alarm.getName();
+		nameTextView.setText(name);
+	}
+
+	private void setupWeekdays( final Alarm alarm, View convertView ) {
+		TextView view = (TextView) convertView.findViewById(R.id.weekdaysText);
+
+		// Compute weekday names & join.
+		final int indiceLength = 2;
+		String[] names = DateTextUtils.getWeekdayNames( indiceLength, Locale.getDefault() );
+
+		Log.d("AlarmAdapter", StringUtils.WS_JOINER.join( names ));
+		SpannableString text = new SpannableString( StringUtils.WS_JOINER.join( names ) );
+
+		// Create spans for enabled days.
+		boolean[] enabledDays = alarm.getEnabledDays();
+
+		if ( enabledDays.length != names.length || names.length != 7 ) {
+			throw new AssertionError("A week has 7 days, wrong array lengths!");
+		}
+
+		int start = 0;
+		for ( int i = 0; i < enabledDays.length; i++ ) {
+			boolean enabled = enabledDays[i];
+			int length = names[i].length();
+
+			if ( enabled ) {
+				text.setSpan( new ForegroundColorSpan( Color.WHITE ), start, start + length, 0 );
+			}
+
+			start += length + 1;
+		}
+
+		view.setText( text );
 	}
 
 	private void setupActivatedSwitch( final Alarm alarm, View convertView ) {

@@ -16,12 +16,12 @@ import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -33,7 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	private AlarmsManager manager;
 	private AlarmAdapter alarmAdapter;
 
@@ -44,14 +44,26 @@ public class MainActivity extends Activity {
 
 		// Hard code in some sample alarms
 		// TODO fetch from where actual alarms will be stored
-		List<Alarm> alarms = new ArrayList<Alarm>();
-		alarms.add(new Alarm(8, 30));
-		alarms.add(new Alarm(7, 0));
-		alarms.add(new Alarm(3, 0));
-		alarms.add(new Alarm(20, 0));
 		Alarm namedAlarm = new Alarm(13, 37);
 		namedAlarm.setName("Named alarm");
+		namedAlarm.setEnabledDays( new boolean[] { true, false, true, false, true, false, true } );
+
+		Alarm alarm2 = new Alarm(8, 30);
+		alarm2.setName("Untitled Alarm");
+		alarm2.setActivated( false );
+
+		Alarm alarm3 = new Alarm(7, 0);
+		alarm3.setName("Untitled Alarm");
+
+		Alarm alarm4 = new Alarm(7, 0);
+		alarm4.setName("Untitled Alarm");
+		alarm4.setEnabledDays( new boolean[7] );
+
+		List<Alarm> alarms = new ArrayList<Alarm>();
 		alarms.add(namedAlarm);
+		alarms.add(alarm2);
+		alarms.add(alarm3);
+		alarms.add(alarm4);
 
 		MessageBus<Message> bus = new MessageBus<Message>();
 		bus.subscribe( this );
@@ -59,11 +71,11 @@ public class MainActivity extends Activity {
 		this.manager = new AlarmsManager( alarms );
 		this.manager.setMessageBus( bus );
 
-		this.immedateTestAlarmSchedule();
+		//this.immedateTestAlarmSchedule();
 
 		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
 
-		this.alarmAdapter = new AlarmAdapter(this, alarms);
+		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 		listView.setAdapter(this.alarmAdapter);
 
 		listView.setOnItemClickListener(listClickListener);

@@ -1,6 +1,7 @@
 package se.chalmers.dat255.sleepfighter.model;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 
@@ -118,7 +119,7 @@ public class Alarm {
 
 	/** The weekdays that this alarm can ring. */
 	private boolean[] enabledDays = { true, true, true, true, true, true, true };
-	private static final int MAX_WEEKDAY_LENGTH = 7;
+	private static final int MAX_WEEKDAY_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEKDAY_INDEX = MAX_WEEKDAY_LENGTH - 1;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */

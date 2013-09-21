@@ -3,15 +3,21 @@ package se.chalmers.dat255.sleepfighter.utils;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Locale;
 
+import org.joda.time.DateTimeConstants;
+import org.joda.time.MutableDateTime;
 import org.joda.time.Period;
-
-import com.google.common.base.Joiner;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
 import android.content.res.Resources;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 
 /**
  * String/text specific date utility methods.
@@ -96,6 +102,36 @@ public class DateTextUtils {
 		}
 
 		return earliestText;
+	}
+
+	/**
+	 * Returns an array of strings with weekday names.
+	 *
+	 * @param indiceLength how long each string should be.
+	 * @param locale the desired locale.
+	 * @return the array of strings.
+	 */
+	public static final String[] getWeekdayNames( int indiceLength, Locale locale ) {
+		DateTimeFormatter fmt = DateTimeFormat.forPattern( Strings.repeat( "E", indiceLength ) ).withLocale( locale );
+
+		MutableDateTime time = new MutableDateTime();
+		time.setDayOfWeek( 1 );
+
+		String[] names = new String[DateTimeConstants.DAYS_PER_WEEK];
+
+		for ( int day = 0; day < DateTimeConstants.DAYS_PER_WEEK; day++ ) {
+			String name = fmt.print( time );
+
+			if ( name.length() > indiceLength ) {
+				name = name.substring( 0, indiceLength );
+			}
+
+			names[day] = name;
+
+			time.addDays( 1 );
+		}
+
+		return names;
 	}
 
 	/**
