@@ -30,13 +30,11 @@ public class DateTextUtilsTests extends TestCase {
 		assertEquals( text, text );
 	}
 
-	// public static final String getEarliestText( String[] formats , String[]
-	// partFormats, Calendar now, EarliestInfo earliestInfo ) {
-	public void testGetEarliestTextTest() {
+	public void testGetTimeToText() {
 		// not active
 		AlarmTimestamp info = new AlarmTimestamp( Alarm.NEXT_NON_REAL, null );
-		String earliest = DateTextUtils.getTimeToText( formats, partFormats, null, info );
-		assertEquals( formats[0], earliest );
+		String text = DateTextUtils.getTimeToText( formats, partFormats, null, info );
+		assertEquals( formats[0], text );
 
 		// days and hours
 		test( "In 2d and 3h", 2, 3, 0 );
