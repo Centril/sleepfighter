@@ -4,14 +4,13 @@ import java.util.List;
 import java.util.Locale;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.androidutils.TimePickerFragment;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
+import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.app.FragmentActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -60,18 +59,27 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
 
 		timeTextView.setText( alarm.getTimeString() );
-
-		final FragmentActivity activity = (FragmentActivity) this.getContext();
 		timeTextView.setOnClickListener( new OnClickListener() {
+
 			public void onClick( View v ) {
-				TimePickerFragment.issue( alarm, activity, new OnTimeSetListener() {
+				
+				OnTimeSetListener onTimePickerSet = new OnTimeSetListener() {
+					
 					@Override
-					public void onTimeSet( TimePicker view, int hourOfDay, int minute ) {
+					public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+						alarm.setTime(hourOfDay, minute);
 						timeTextView.setText( alarm.getTimeString() );
 					}
-				} );
+				};
+				// TODO take am/pm into account
+				// And possibly use some way that doesn't make the dialog close
+				// on rotate
+				TimePickerDialog tpd = new TimePickerDialog(getContext(),
+						onTimePickerSet, alarm.getHour(), alarm.getMinute(),
+						true);
+				tpd.show();
 			}
-		} );
+		});
 	}
 
 	private void setupName( final Alarm alarm, View convertView ) {
