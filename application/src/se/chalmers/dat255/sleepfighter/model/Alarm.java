@@ -119,8 +119,8 @@ public class Alarm {
 
 	/** The weekdays that this alarm can ring. */
 	private boolean[] enabledDays = { true, true, true, true, true, true, true };
-	private static final int MAX_WEEKDAY_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
-	private static final int MAX_WEEKDAY_INDEX = MAX_WEEKDAY_LENGTH - 1;
+	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
+	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
@@ -294,7 +294,7 @@ public class Alarm {
 	 * @param enabledDays the weekdays alarm should be enabled for.
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
-		if ( enabledDays.length != MAX_WEEKDAY_LENGTH ) {
+		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
 
@@ -328,7 +328,7 @@ public class Alarm {
 		int offset = 0;
 		for ( int currDay = next.getDayOfWeek() - 1; !this.enabledDays[currDay]; currDay++ ) {
 			Log.d( "Alarm", Integer.toString( currDay ) );
-			if ( currDay > MAX_WEEKDAY_INDEX ) {
+			if ( currDay > MAX_WEEK_INDEX ) {
 				currDay = 0;
 			}
 
