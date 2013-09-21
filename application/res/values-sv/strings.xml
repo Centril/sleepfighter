@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SleepFighter</string>
+    <string name="action_settings">Inställningar</string>
+    <string name="add">Lägg till</string>
+
+    <string-array name="earliest_time_formats">
+        <item>Inget alarm är aktivt</item>
+        <item>Inom &lt; 1 minut</item>
+        <item>Inom %1$s</item>
+        <item>Inom %1$s och %2$s</item>
+        <item>Inom %1$s, %2$s och %3$s</item>
+    </string-array>
+    <string-array name="earliest_time_formats_parts">
+        <item>%1$dd</item>
+        <item>%2$dt</item>
+        <item>%3$dm</item>
+    </string-array>
+    <string-array name="main_list_context_menu">
+        <item>Redigera alarm</item>
+        <item>Ta bort alarm</item>
+    </string-array>
+
+</resources>
