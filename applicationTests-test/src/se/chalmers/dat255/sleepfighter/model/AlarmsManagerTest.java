@@ -7,7 +7,6 @@ import junit.framework.TestCase;
 
 import org.joda.time.DateTime;
 
-import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
@@ -16,7 +15,9 @@ public class AlarmsManagerTest extends TestCase {
 	public void testGetEarliestInfo() {
 		// Bootstrap.
 		Alarm first = new Alarm(0, 2);
+		first.setId( 1 );
 		Alarm second = new Alarm(0, 3);
+		second.setId( 2 );
 
 		List<Alarm> list = new ArrayList<Alarm>();
 		list.add(first);
@@ -27,20 +28,20 @@ public class AlarmsManagerTest extends TestCase {
 		long now = new DateTime(0,1,1,0,0).getMillis();
 
 		// Test index correctness.
-		EarliestInfo info = manager.getEarliestInfo( now );
-		assertTrue( info.isReal() );
-		assertEquals(0, info.getIndex() );
+		AlarmTimestamp info = manager.getEarliestInfo( now );
+		assertTrue( info != AlarmTimestamp.INVALID );
+		assertEquals( info.getAlarm(), first );
 
 		second.setTime( 0, 1 );
 		info = manager.getEarliestInfo( now );
-		assertTrue( info.isReal() );
-		assertEquals(1, info.getIndex() );
+		assertTrue( info != AlarmTimestamp.INVALID );
+		assertEquals( info.getAlarm(), second );
 
 		// Test isReal() correctness.
 		first.setActivated( false );
 		second.setActivated( false );
 		info = manager.getEarliestInfo( now );
-		assertTrue( !info.isReal() );
+		assertTrue( info == AlarmTimestamp.INVALID );
 	}
 
 	public void testSetMessageBus(  ) {

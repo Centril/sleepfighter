@@ -16,70 +16,6 @@ import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
  */
 public class AlarmsManager extends ObservableList<Alarm> {
 	/**
-	 * Provides information about the earliest alarm.<br/>
-	 * This information contains:
-	 * <ul>
-	 * 	<li>occurrence in milliseconds since unix epoch</li>
-	 * 	<li>index of alarm in list.</li>
-	 * </ul>
-	 *
-	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
-	 * @version 1.0
-	 * @since Sep 18, 2013
-	 */
-	public static class EarliestInfo {
-		private Long millis;
-		private Alarm alarm;
-		private int index;
-
-		/**
-		 * Constructs an EarliestInfo.
-		 *
-		 * @param millis milliseconds to earliest alarm.
-		 * @param alarm the alarm object that is earliest.
-		 * @param index the index of the alarm in the alarm list.
-		 * 
-		 */
-		public EarliestInfo( Long millis, Alarm alarm, int index) {
-			this.millis = millis;
-			this.alarm = alarm;
-			this.index = index;
-		}
-
-		/**
-		 * Returns true if the earliest info is real.<br/>
-		 * This occurs when {@link Alarm#canHappen()} returns true for some alarm.
-		 *
-		 * @return true if earliest info is real.
-		 */
-		public boolean isReal() {
-			return this.millis != Alarm.NEXT_NON_REAL;
-		}
-
-		/**
-		 * The earliest alarm in milliseconds.
-		 *
-		 * @return the earliest alarm in milliseconds.
-		 */
-		public Long getMillis() {
-			return this.millis;
-		}
-
-		/**
-		 * The earliest alarm.
-		 *
-		 * @return the earliest alarm.
-		 */
-		public Alarm getAlarm() {
-			return this.alarm;
-		}
-		
-		public int getIndex() {
-			return this.index;
-		}
-	}
-
-	/**
 	 * Constructs the manager with no initial alarms.
 	 */
 	public AlarmsManager() {
@@ -137,8 +73,8 @@ public class AlarmsManager extends ObservableList<Alarm> {
 	 * @param now current time in unix epoch timestamp.
 	 * @return info about the earliest alarm. 
 	 */
-	public EarliestInfo getEarliestInfo( long now ) {
-		Long millis = Alarm.NEXT_NON_REAL;
+	public AlarmTimestamp getEarliestInfo( long now ) {
+		Long millis = null;
 		int earliestIndex = -1;
 
 		for ( int i = 0; i < this.size(); i++ ) {
@@ -149,12 +85,6 @@ public class AlarmsManager extends ObservableList<Alarm> {
 			}
 		}
 
-		if ( millis == Alarm.NEXT_NON_REAL ) {
-			earliestIndex = -1;
-		}
-
-		Alarm alarm = millis == Alarm.NEXT_NON_REAL ? null : this.get( earliestIndex );
-
-		return new EarliestInfo( millis, alarm, earliestIndex );
+		return earliestIndex == -1 ? AlarmTimestamp.INVALID : new AlarmTimestamp( millis, this.get( earliestIndex) );
 	}
 }

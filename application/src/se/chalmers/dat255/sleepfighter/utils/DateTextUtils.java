@@ -12,8 +12,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.debug.Debug;
-import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
+import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.content.res.Resources;
 
 import com.google.common.base.Joiner;
@@ -41,19 +40,19 @@ public class DateTextUtils {
 	}
 
 	/**
-	 * Builds and returns earliest text when given a resources bundle.
+	 * Builds and returns text for the time to an alarm given resources, current time, and AlarmTimestamp when given a resources bundle.
 	 *
 	 * @param res Android resources.
 	 * @param now current time in unix epoch timestamp.
-	 * @param earliestInfo the information about the earliest alarm.
-	 * @return the built earliest text string.
+	 * @param ats an AlarmTimestamp: the information about the alarm & its timestamp.
+	 * @return the built time-to string.
 	 */
-	public static final String getEarliestText( Resources res, long now, EarliestInfo earliestInfo ) {
-		Period diff = new Period( now, earliestInfo.getMillis() );
+	public static final String getTimeToText( Resources res, long now, AlarmTimestamp ats ) {
+		Period diff = new Period( now, ats.getMillis() );
 		String[] formats = res.getStringArray( R.array.earliest_time_formats);
 		String[] partFormats =  res.getStringArray( R.array.earliest_time_formats_parts );
 
-		return getEarliestText( formats, partFormats, diff, earliestInfo );
+		return getTimeToText( formats, partFormats, diff, ats );
 	}
 
 	/**
@@ -61,15 +60,18 @@ public class DateTextUtils {
 	 *
 	 * @param formats an array of strings containing formats for [no-alarm-active, < minute, xx-yy-zz, xx-yy, xx]
 	 * 		where xx, yy, zz can be either day, hours, minutes (non-respectively).
-	 * @param Calendar a Calendar containing the difference from earliest Alarm to now.
-	 * @param earliestInfo the information about the earliest alarm.
-	 * @return the built earliest text string.
+	 * @param partsFormat an array of strings containing part formats for [day, month, hour].
+	 * @param diff difference between now and ats.
+	 * @param ats an AlarmTimestamp: the information about the alarm & its timestamp.
+	 * @return the built time-to string.
 	 */
-	public static final String getEarliestText( String[] formats, String[] partFormats, Period diff, EarliestInfo earliestInfo ) {
+	public static final String getTimeToText( String[] formats, String[] partFormats, Period diff, AlarmTimestamp ats ) {
 		String earliestText;
 
 		// Not real? = we don't have any alarms active.
-		if ( earliestInfo.isReal() ) {
+		if ( ats == AlarmTimestamp.INVALID ) {
+			earliestText = formats[0];
+		} else {
 			int[] diffVal = { Math.abs( diff.getDays() ), Math.abs( diff.getHours() ), Math.abs( diff.getMinutes() ) };
 
 			// What fields are set?
@@ -90,15 +92,12 @@ public class DateTextUtils {
 
 				// Finally format everything.
 				earliestText = String.format( earliestText, args.toArray() );
-				
-				Debug.d("formatting: " +  earliestText);
+
 				earliestText = String.format( earliestText, diffVal[0], diffVal[1], diffVal[2] );
 			} else {
 				// only seconds remains until it goes off.
 				earliestText = formats[1];
 			}
-		} else {
-			earliestText = formats[0];
 		}
 
 		return earliestText;

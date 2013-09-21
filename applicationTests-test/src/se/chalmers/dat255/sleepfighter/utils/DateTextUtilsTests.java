@@ -6,7 +6,7 @@ import org.joda.time.MutablePeriod;
 import org.joda.time.Period;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.AlarmsManager.EarliestInfo;
+import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 
 public class DateTextUtilsTests extends TestCase {
 	private static final String[] formats = { "No alarm active",
@@ -24,9 +24,9 @@ public class DateTextUtilsTests extends TestCase {
 	}
 
 	private void test( String text, int d, int h, int m ) {
-		EarliestInfo info = new EarliestInfo( Long.valueOf( 1 ), null, 0 );
+		AlarmTimestamp info = new AlarmTimestamp( Long.valueOf( 1 ), null );
 		Period diff = diff( d, h, m );
-		text = DateTextUtils.getEarliestText( formats, partFormats, diff, info );
+		text = DateTextUtils.getTimeToText( formats, partFormats, diff, info );
 		assertEquals( text, text );
 	}
 
@@ -34,8 +34,8 @@ public class DateTextUtilsTests extends TestCase {
 	// partFormats, Calendar now, EarliestInfo earliestInfo ) {
 	public void testGetEarliestTextTest() {
 		// not active
-		EarliestInfo info = new EarliestInfo( Alarm.NEXT_NON_REAL, null, 0 );
-		String earliest = DateTextUtils.getEarliestText( formats, partFormats, null, info );
+		AlarmTimestamp info = new AlarmTimestamp( Alarm.NEXT_NON_REAL, null );
+		String earliest = DateTextUtils.getTimeToText( formats, partFormats, null, info );
 		assertEquals( formats[0], earliest );
 
 		// days and hours
