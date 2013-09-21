@@ -18,7 +18,7 @@ public class AlarmWakeLocker {
 
 	private static WakeLock wakeLock;
 
-	private static final int wakeLockLevel = PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE;
+	private static final int wakeLockLevel = PowerManager.PARTIAL_WAKE_LOCK;
 
 	/**
 	 * Acquires wake-lock if not already acquired.
