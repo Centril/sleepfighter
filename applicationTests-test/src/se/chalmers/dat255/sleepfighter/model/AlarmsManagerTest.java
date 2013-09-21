@@ -28,19 +28,19 @@ public class AlarmsManagerTest extends TestCase {
 		long now = new DateTime(0,1,1,0,0).getMillis();
 
 		// Test index correctness.
-		AlarmTimestamp info = manager.getEarliestInfo( now );
+		AlarmTimestamp info = manager.getEarliestAlarm( now );
 		assertTrue( info != AlarmTimestamp.INVALID );
 		assertEquals( info.getAlarm(), first );
 
 		second.setTime( 0, 1 );
-		info = manager.getEarliestInfo( now );
+		info = manager.getEarliestAlarm( now );
 		assertTrue( info != AlarmTimestamp.INVALID );
 		assertEquals( info.getAlarm(), second );
 
 		// Test isReal() correctness.
 		first.setActivated( false );
 		second.setActivated( false );
-		info = manager.getEarliestInfo( now );
+		info = manager.getEarliestAlarm( now );
 		assertTrue( info == AlarmTimestamp.INVALID );
 	}
 

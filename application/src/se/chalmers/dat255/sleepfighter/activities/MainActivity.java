@@ -188,7 +188,7 @@ public class MainActivity extends Activity {
 		long now = this.getNow();
 
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
-		earliestTimeText.setText( DateTextUtils.getTimeToText( this.getResources(), now, this.manager.getEarliestInfo( now ) ) );
+		earliestTimeText.setText( DateTextUtils.getTimeToText( this.getResources(), now, this.manager.getEarliestAlarm( now ) ) );
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class AlarmsManager extends ObservableList<Alarm> {
 	 * @param now current time in unix epoch timestamp.
 	 * @return info about the earliest alarm. 
 	 */
-	public AlarmTimestamp getEarliestInfo( long now ) {
+	public AlarmTimestamp getEarliestAlarm( long now ) {
 		Long millis = null;
 		int earliestIndex = -1;
 
