@@ -6,6 +6,7 @@ import java.util.List;
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
@@ -16,13 +17,16 @@ import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -36,7 +40,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		this.setContentView(R.layout.activity_main);
 
 		// Hard code in some sample alarms
 		// TODO fetch from where actual alarms will be stored
@@ -55,6 +59,8 @@ public class MainActivity extends Activity {
 		this.manager = new AlarmsManager( alarms );
 		this.manager.setMessageBus( bus );
 
+		this.immedateTestAlarmSchedule();
+
 		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
 
 		this.alarmAdapter = new AlarmAdapter(this, alarms);
@@ -66,6 +72,27 @@ public class MainActivity extends Activity {
 		registerForContextMenu(listView);
 
 		this.updateEarliestText();
+	}
+
+	private void immedateTestAlarmSchedule() {
+		// For testing purposes, we want an alarm 5 seconds in the future, calculate that time.
+		MutableDateTime time = new MutableDateTime();
+		time.addSeconds( 6 );
+
+		// Make an alarm with that time.
+		Alarm alarm = new Alarm( time );
+		alarm.setId( 1 );
+		this.manager.add( alarm );
+		long scheduleTime = alarm.getNextMillis( this.getNow() );
+
+		// Make pending intent.
+		Intent intent = new Intent(this, AlarmReceiver.class);
+		intent.putExtra( "alarm_id", alarm.getId() );
+		PendingIntent pi = PendingIntent.getBroadcast( this, -1, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+
+		// Schedule alarm.
+		AlarmManager androidAM = (AlarmManager) getSystemService( Context.ALARM_SERVICE );
+		androidAM.set( AlarmManager.RTC_WAKEUP, scheduleTime, pi );
 	}
 
 	private long getNow() {
@@ -122,7 +149,12 @@ public class MainActivity extends Activity {
 		Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
 		// TODO Delete alarm
 	}
-	
+
+	/**
+	 * Handles a change in time related data in any alarm.
+	 *
+	 * @param evt the event.
+	 */
 	@Handler
 	public void handleDateChange( DateChangeEvent evt ) {
 		this.runOnUiThread( new Runnable() {
