@@ -118,10 +118,19 @@ public class AlarmTest extends TestCase {
 	public void testEquals() {
 		Alarm alarm1 = new Alarm(3,2);
 		Alarm alarm2 = new Alarm(3,2);
+		alarm1.setId(0);
+		alarm2.setId(0);
+		
 		
 		assertEquals(alarm1, alarm2);
 		
+		
 		alarm2.setTime(3, 1);
+		
+		// equality is decided by ID.
+		assertTrue(alarm1.equals(alarm2));
+
+		alarm2.setId(1);
 		assertFalse(alarm1.equals(alarm2));
 		
 		// same reference test
