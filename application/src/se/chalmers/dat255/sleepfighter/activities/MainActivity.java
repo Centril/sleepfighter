@@ -12,6 +12,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
+import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
@@ -188,7 +189,10 @@ public class MainActivity extends Activity {
 		long now = this.getNow();
 
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
-		earliestTimeText.setText( DateTextUtils.getTimeToText( this.getResources(), now, this.manager.getEarliestAlarm( now ) ) );
+		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
+		String text =DateTextUtils.getTimeToText( this.getResources(), now,  stamp);
+		
+		earliestTimeText.setText(text);
 	}
 
 	@Override

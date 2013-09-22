@@ -48,7 +48,14 @@ public class DateTextUtils {
 	 * @return the built time-to string.
 	 */
 	public static final String getTimeToText( Resources res, long now, AlarmTimestamp ats ) {
-		Period diff = new Period( now, ats.getMillis() );
+		Period diff = null;
+		
+		// ats is invalid when all the alarms have been turned off. INVALID has the value null. 
+		// therefore, we must do a nullcheck, otherwise we get an exception. 
+		if(ats !=  AlarmTimestamp.INVALID) {
+			diff = new Period( now, ats.getMillis() );
+		}
+		
 		String[] formats = res.getStringArray( R.array.earliest_time_formats);
 		String[] partFormats =  res.getStringArray( R.array.earliest_time_formats_parts );
 
