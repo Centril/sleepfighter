@@ -32,7 +32,7 @@ public class DateTextUtilsTests extends TestCase {
 
 	public void testGetEarliestTextTest() {
 		// not active
-		AlarmTimestamp info = new AlarmTimestamp( Alarm.NEXT_NON_REAL, null );
+		AlarmTimestamp info = AlarmTimestamp.INVALID;
 		String earliest = DateTextUtils.getTimeToText( formats, partFormats, null, info );
 		assertEquals( formats[0], earliest );
 
