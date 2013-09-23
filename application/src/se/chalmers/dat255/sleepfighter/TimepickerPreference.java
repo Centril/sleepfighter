@@ -23,9 +23,13 @@ public class TimepickerPreference extends DialogPreference {
 	protected View onCreateDialogView() {
 		tp = new TimePicker(getContext());
 		tp.setIs24HourView(true);
+		
+		tp.setCurrentHour(0);
+		tp.setCurrentMinute(0);
+		
 		return(tp);
 	}
-
+	
 	@Override
 	protected void onDialogClosed(boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
