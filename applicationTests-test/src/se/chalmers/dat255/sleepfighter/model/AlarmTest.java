@@ -306,7 +306,19 @@ public class AlarmTest extends TestCase {
 		
 		sub.alarm.setEnabledDays(enabledDays);
 		assertTrue(sub.passed);
-	}		
+		
+		// test for a too long array.
+		Alarm alarm = new Alarm(1,2);
+		boolean[] enabledDays2 = { true, true, true, true, true, true, true, true };
+		
+		// invalid minute
+		try {
+			alarm.setEnabledDays(enabledDays2);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+	}
 	
 }
 	
