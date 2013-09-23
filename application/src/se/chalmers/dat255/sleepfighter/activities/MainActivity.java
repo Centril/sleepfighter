@@ -13,6 +13,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Activity;
@@ -133,8 +134,11 @@ public class MainActivity extends Activity {
 	}
 
 	private void deleteAlarm(Alarm alarm) {
-		Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
-		// TODO Delete alarm
+		this.manager.remove(alarm);
+
+		// TODO only do this when receiving a ObservableList.Event in a handler
+		// method (couln't get it to work)
+		this.alarmAdapter.notifyDataSetChanged();
 	}
 
 	/**
