@@ -8,6 +8,7 @@ import org.joda.time.MutableDateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
+import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
@@ -63,6 +64,7 @@ public class MainActivity extends Activity {
 		this.updateEarliestText();
 		
 		AlarmAudioManager.getInstance().setup(this);
+		VibrationManager.getInstance().setup(this);
 	}
 
 	private void immedateTestAlarmSchedule() {
@@ -132,9 +134,20 @@ public class MainActivity extends Activity {
 				return true;
 			case 3:
 				Debug.d("stop alarm");
-				AlarmAudioManager.getInstance().stop();
-				
+				AlarmAudioManager.getInstance().stop();	
 				return true;
+			
+				
+			case 4:
+				Debug.d("start vibration");
+				VibrationManager.getInstance().startVibrate();
+				return true;
+			case 5:
+				Debug.d("stop vibration");
+				VibrationManager.getInstance().stopVibrate();	
+				return true;
+				
+				
 			default:
 				return false;
 		}

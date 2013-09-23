@@ -22,9 +22,12 @@
         <item>Ta bort alarm</item>
         
         
+        
         <!--  for debugging purposes.  -->
          <item>start alarm sound</item>
         <item>stop alarm sound</item>
+            <item>start vibration</item>
+        <item>stop vibration</item>
     </string-array>
 
 </resources>
