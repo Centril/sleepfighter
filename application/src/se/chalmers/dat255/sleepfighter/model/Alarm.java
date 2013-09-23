@@ -17,6 +17,7 @@ import android.util.Log;
  * @since Sep 16, 2013
  */
 public class Alarm {
+
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -424,7 +425,9 @@ public class Alarm {
 
 	@Override
 	public int hashCode() {
-		return this.id;
+		// TODO uncomment when working unique ID
+		// return this.id;
+		return super.hashCode();
 	}
 
 	@Override
@@ -438,7 +441,10 @@ public class Alarm {
 		}
 
 		Alarm rhs = (Alarm) obj;
-		return this.id == rhs.id;
+		
+		// TODO uncomment when working unique ID
+		// return this.id == rhs.id;
+		return super.equals(obj);
 	}
 
 	/**
