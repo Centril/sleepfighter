@@ -1,8 +1,6 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.R.layout;
-import se.chalmers.dat255.sleepfighter.R.menu;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;

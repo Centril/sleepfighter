@@ -14,7 +14,6 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Activity;
