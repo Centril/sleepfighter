@@ -440,8 +440,6 @@ public class Alarm implements Cloneable{
 			return false;
 		}
 
-		Alarm rhs = (Alarm) obj;
-		
 		// TODO uncomment when working unique ID
 		// return this.id == rhs.id;
 		return super.equals(obj);
