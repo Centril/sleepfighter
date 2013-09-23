@@ -184,9 +184,9 @@ public class MainActivity extends Activity {
 	        	Intent intent = new Intent(this, AlarmSettingsActivity.class);
 	        	/*
 	        	// Preliminary code to add a new alarm and fetch its ID
-	        	((SFApplication)getApplication()).getAlarmsManager().add(new Alarm(0, 0));
+	        	manager.add(new Alarm(0, 0));
 	        	Bundle b = new Bundle();
-	        	b.putInt("id", ((SFApplication)getApplication()).getAlarmsManager().getLatestAlarmId());
+	        	b.putInt("id", manager.getLatestAlarmId());
 	        	intent.putExtras(b);
 	        	*/
 	    		startActivity(intent);
