@@ -1,14 +1,12 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
@@ -43,40 +41,16 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
 
-		// Hard code in some sample alarms
-		// TODO fetch from where actual alarms will be stored
-		Alarm namedAlarm = new Alarm(13, 37);
-		namedAlarm.setName("Named alarm");
-		namedAlarm.setEnabledDays( new boolean[] { true, false, true, false, true, false, true } );
+		this.manager = ((SFApplication) getApplication()).getAlarmsManager();
+		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
-		Alarm alarm2 = new Alarm(8, 30);
-		alarm2.setName("Untitled Alarm");
-		alarm2.setActivated( false );
+		// this.immedateTestAlarmSchedule();
 
-		Alarm alarm3 = new Alarm(7, 0);
-		alarm3.setName("Untitled Alarm");
-
-		Alarm alarm4 = new Alarm(7, 0);
-		alarm4.setName("Untitled Alarm");
-		alarm4.setEnabledDays( new boolean[7] );
-
-		List<Alarm> alarms = new ArrayList<Alarm>();
-		alarms.add(namedAlarm);
-		alarms.add(alarm2);
-		alarms.add(alarm3);
-		alarms.add(alarm4);
-
-		MessageBus<Message> bus = new MessageBus<Message>();
-		bus.subscribe( this );
-
-		this.manager = new AlarmsManager( alarms );
-		this.manager.setMessageBus( bus );
-
-		//this.immedateTestAlarmSchedule();
+		MessageBus<Message> bus = ((SFApplication) getApplication()).getBus();
+		bus.subscribe(this);
 
 		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
 
-		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 		listView.setAdapter(this.alarmAdapter);
 
 		listView.setOnItemClickListener(listClickListener);
