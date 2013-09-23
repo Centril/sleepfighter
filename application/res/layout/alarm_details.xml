@@ -1,3 +1,6 @@
+<!-- Whenever the user touches one of the available alarms, 
+the detailed view with specific options of the selected alarm will display -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
