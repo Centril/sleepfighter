@@ -4,6 +4,7 @@
     <string name="app_name">SleepFighter</string>
     <string name="action_settings">Inställningar</string>
     <string name="add">Lägg till</string>
+    <string name="start_challenge">Starta utmaningen!</string>
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>

@@ -24,5 +24,6 @@
 
     <string name="title_activity_alarm_settings">AlarmSettingsActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="start_challenge">Start challenge!</string>
 
 </resources>
