@@ -28,6 +28,9 @@ import se.chalmers.dat255.sleepfighter.TimepickerPreference;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
 
+	private static final String NAME = "pref_alarm_name";
+	private static final String TIME = "pref_alarm_time";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,8 +56,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private void setupSimplePreferencesScreen() {
 		addPreferencesFromResource(R.xml.pref_alarm_general);
 
-		bindPreferenceSummaryToValue(findPreference("pref_alarm_time"));
-		bindPreferenceSummaryToValue(findPreference("pref_alarm_name"));
+		bindPreferenceSummaryToValue(findPreference(TIME));
+		bindPreferenceSummaryToValue(findPreference(NAME));
 	}
 
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
@@ -73,7 +76,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				preference.setSummary(stringValue);
 			}
 			else {
-				if ("pref_alarm_name".equals(preference.getKey())) {
+				if (NAME.equals(preference.getKey())) {
 					// TODO: Assign the actual alarm the value
 				}
 				preference.setSummary(stringValue);
@@ -102,8 +105,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			super.onCreate(savedInstanceState);
 			addPreferencesFromResource(R.xml.pref_alarm_general);
 
-			bindPreferenceSummaryToValue(findPreference("pref_alarm_time"));
-			bindPreferenceSummaryToValue(findPreference("pref_alarm_name"));
+			bindPreferenceSummaryToValue(findPreference(TIME));
+			bindPreferenceSummaryToValue(findPreference(NAME));
 		}
 	}
 }
