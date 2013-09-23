@@ -31,8 +31,4 @@
         
         <item>Copy Alarm</item>
     </string-array>
-
-    <string name="title_activity_alarm_settings">AlarmSettingsActivity</string>
-    <string name="hello_world">Hello world!</string>
-
 </resources>
