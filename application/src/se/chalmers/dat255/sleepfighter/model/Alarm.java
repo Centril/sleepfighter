@@ -283,7 +283,7 @@ public class Alarm {
 	 *
 	 * @return the weekdays alarm is enabled for.
 	 */
-	public boolean[] getEnabledDays() {
+	public synchronized boolean[] getEnabledDays() {
 		return this.enabledDays.clone();
 	}
 
