@@ -6,6 +6,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 
+
+// TODO: Make the TimePicker start at the currently selected time
+
+
 public class TimepickerPreference extends DialogPreference {
 	
 	private int hour;
