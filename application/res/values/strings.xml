@@ -20,6 +20,10 @@
     <string-array name="main_list_context_menu">
         <item>Edit alarm</item>
         <item>Delete alarm</item>
+        
+        <!--  for debugging purposes.  -->
+         <item>start alarm sound</item>
+        <item>stop alarm sound</item>
     </string-array>
 
     <string name="title_activity_alarm_settings">AlarmSettingsActivity</string>

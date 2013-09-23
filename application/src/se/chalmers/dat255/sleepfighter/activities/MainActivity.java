@@ -7,6 +7,7 @@ import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
@@ -39,6 +40,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
 
@@ -60,6 +62,8 @@ public class MainActivity extends Activity {
 		registerForContextMenu(listView);
 
 		this.updateEarliestText();
+		
+		AlarmAudioManager.getInstance().setup(this);
 	}
 
 	private void immedateTestAlarmSchedule() {
@@ -123,6 +127,15 @@ public class MainActivity extends Activity {
 			case 1:
 				deleteAlarm(selectedAlarm);
 				return true;
+			case 2:
+				Debug.d("start alarm");
+				AlarmAudioManager.getInstance().play();
+				return true;
+			case 3:
+				Debug.d("stop alarm");
+				AlarmAudioManager.getInstance().stop();
+				
+				return true;
 			default:
 				return false;
 		}
@@ -135,10 +148,11 @@ public class MainActivity extends Activity {
 
 	private void deleteAlarm(Alarm alarm) {
 		this.manager.remove(alarm);
-
+		
 		// TODO only do this when receiving a ObservableList.Event in a handler
 		// method (couln't get it to work)
 		this.alarmAdapter.notifyDataSetChanged();
+		
 	}
 
 	/**
