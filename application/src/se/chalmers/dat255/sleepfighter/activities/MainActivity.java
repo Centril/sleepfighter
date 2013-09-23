@@ -146,7 +146,12 @@ public class MainActivity extends Activity {
 				Debug.d("stop vibration");
 				VibrationManager.getInstance().stopVibrate();	
 				return true;
-				
+
+			case 6:
+				Debug.d("copy alarm");
+				copyAlarm(selectedAlarm);
+				return true;
+
 				
 			default:
 				return false;
@@ -165,6 +170,20 @@ public class MainActivity extends Activity {
 		// method (couln't get it to work)
 		this.alarmAdapter.notifyDataSetChanged();
 		
+	}
+	
+	private void copyAlarm(Alarm alarm) {
+		Alarm copy = null;
+		try {
+			copy = (Alarm) alarm.clone();
+			// TODO: copy will have the same ID as alarm, so we have to somehow
+			// create and assign a new unique ID to copy here.
+		} catch (CloneNotSupportedException e) {
+			Debug.e(e);
+		}
+		this.manager.add(copy);
+		
+		this.alarmAdapter.notifyDataSetChanged();
 	}
 
 	/**

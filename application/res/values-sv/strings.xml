@@ -28,6 +28,9 @@
         <item>stop alarm sound</item>
             <item>start vibration</item>
         <item>stop vibration</item>
+        
+   
+        <item>Kopiera alarm</item>
     </string-array>
 
 </resources>

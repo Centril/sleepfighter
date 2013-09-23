@@ -16,7 +16,7 @@ import android.util.Log;
  * @version 1.0
  * @since Sep 16, 2013
  */
-public class Alarm {
+public class Alarm implements Cloneable{
 
 	/**
 	 * Enumeration of fields in an Alarm.
@@ -459,4 +459,8 @@ public class Alarm {
 
 		this.bus.publish( event );
 	}
+	
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

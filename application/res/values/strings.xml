@@ -26,6 +26,10 @@
         <item>stop alarm sound</item>
     <item>start vibration</item>
         <item>stop vibration</item>
+        
+        
+        
+        <item>Copy Alarm</item>
     </string-array>
 
     <string name="title_activity_alarm_settings">AlarmSettingsActivity</string>
