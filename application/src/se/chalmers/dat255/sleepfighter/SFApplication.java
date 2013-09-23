@@ -30,7 +30,7 @@ public class SFApplication extends Application {
 		namedAlarm.setName("Named alarm");
 		namedAlarm.setEnabledDays(new boolean[] { true, false, true, false,
 				true, false, true });
-
+		
 		Alarm alarm2 = new Alarm(8, 30);
 		alarm2.setName("Untitled Alarm");
 		alarm2.setActivated(false);

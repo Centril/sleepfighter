@@ -17,7 +17,7 @@ import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 public class AlarmsManager extends ObservableList<Alarm> {
 	/**
 	 * Constructs the manager with no initial alarms.
-	 */
+	 */	
 	public AlarmsManager() {
 		this( new ArrayList<Alarm>() );
 	}
