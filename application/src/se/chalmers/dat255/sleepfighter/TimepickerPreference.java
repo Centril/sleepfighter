@@ -9,7 +9,12 @@ import android.widget.TimePicker;
 
 // TODO: Make the TimePicker start at the currently selected time
 
-
+/**
+ * A DialogPreference with containing a TimePicker.
+ * 
+ * @author Hassel
+ *
+ */
 public class TimepickerPreference extends DialogPreference {
 	
 	private int hour;
@@ -52,10 +57,16 @@ public class TimepickerPreference extends DialogPreference {
         }
 	}
 	
+	/**
+	 * @return the picked hour.
+	 */
 	public int getHour() {
 		return hour;
 	}
 	
+	/**
+	 * @return the picked minute.
+	 */
 	public int getMinute() {
 		return minute;
 	}
