@@ -89,7 +89,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
 		// TODO: Check if !persistent it works
-		preference.setPersistent(false);			
+		preference.setPersistent(false);
 		
 		sBindPreferenceSummaryToValueListener.onPreferenceChange(
 				preference,
