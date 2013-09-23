@@ -50,6 +50,20 @@ public class AlarmTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			// success
 		}
+
+		// invalid second
+		try {
+			new Alarm(4, 1, -1);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+		try {
+			new Alarm(4, 60, 61);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
 	}
 	
 	public void testSetTime() {
@@ -58,6 +72,14 @@ public class AlarmTest extends TestCase {
 		
 		assertEquals(3, alarm.getHour());
 		assertEquals(4, alarm.getMinute());
+		assertEquals(0, alarm.getSecond());
+		
+		Alarm alarm2 = new Alarm(4, 3);
+		alarm2.setTime(3, 4, 2);
+		
+		assertEquals(3, alarm2.getHour());
+		assertEquals(4, alarm2.getMinute());
+		assertEquals(2, alarm2.getSecond());
 	}
 	
 	public class Subscriber3 {
