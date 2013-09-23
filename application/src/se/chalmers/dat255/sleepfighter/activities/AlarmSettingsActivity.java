@@ -73,6 +73,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				preference.setSummary(stringValue);
 			}
 			else {
+				if ("pref_alarm_name".equals(preference.getKey())) {
+					// TODO: Assign the actual alarm the value
+				}
 				preference.setSummary(stringValue);
 			}
 			return true;
