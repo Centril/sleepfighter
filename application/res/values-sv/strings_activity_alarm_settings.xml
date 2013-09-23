@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="title_activity_alarm_settings">Alarm</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_alarm_header_general">Allmänt</string>
+    <string name="pref_alarm_time">Tid</string>
+    <string name="pref_alarm_name">Namn</string>
+    <string name="pref_alarm_default_name">Namnlöst Alarm</string>
+
+</resources>
