@@ -1,39 +1,35 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
-import java.util.List;
-
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.R.string;
-import se.chalmers.dat255.sleepfighter.R.xml;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
+import se.chalmers.dat255.sleepfighter.SFApplication;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
 
-	private static final String NAME = "pref_alarm_name";
-	private static final String TIME = "pref_alarm_time";
+	private final String NAME = "pref_alarm_name";
+	private final String TIME = "pref_alarm_time";
+	
+	private Alarm alarm;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// TODO: Check if id is valid
+		int id = savedInstanceState.getInt("id");
+		AlarmsManager manager = ((SFApplication) getApplication()).getAlarmsManager();
+		
+		// TODO: Fix something to fetch an alarm by its unique id
+		//alarm = manager.getFromId(id);
 	}
 
 	@Override
@@ -60,7 +56,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(NAME));
 	}
 
-	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			String stringValue = value.toString();
@@ -71,13 +67,15 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				int hour = tpPref.getHour();
 				int minute = tpPref.getMinute();
 				
-				// TODO: Assign the actual alarm the values
+				// TODO: Implement when you can fetch alarm
+				// alarm.setTime(hour, minute);
 				
 				preference.setSummary(stringValue);
 			}
 			else {
 				if (NAME.equals(preference.getKey())) {
-					// TODO: Assign the actual alarm the value
+					// TODO: Implement when you can fetch alarm
+					// alarm.setName(stringValue);
 				}
 				preference.setSummary(stringValue);
 			}
@@ -85,7 +83,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 	};
 
-	private static void bindPreferenceSummaryToValue(Preference preference) {
+	private void bindPreferenceSummaryToValue(Preference preference) {
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
 		// TODO: Check if !persistent it works
@@ -96,17 +94,5 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				PreferenceManager.getDefaultSharedPreferences(
 						preference.getContext()).getString(preference.getKey(),
 						""));
-	}
-
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public static class GeneralPreferenceFragment extends PreferenceFragment {
-		@Override
-		public void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			addPreferencesFromResource(R.xml.pref_alarm_general);
-
-			bindPreferenceSummaryToValue(findPreference(TIME));
-			bindPreferenceSummaryToValue(findPreference(NAME));
-		}
 	}
 }
