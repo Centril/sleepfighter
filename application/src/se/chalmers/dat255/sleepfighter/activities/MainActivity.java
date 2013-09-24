@@ -207,7 +207,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void challenge(View view) {
-		Intent intent = new Intent(this, AbstractChallengeActivity.class);
+		Intent intent = new Intent(this, ChallengeActivity.class);
 		startActivity(intent);
 	}
 }

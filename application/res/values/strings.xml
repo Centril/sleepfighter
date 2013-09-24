@@ -28,6 +28,8 @@
     <string name="challengeBtn">Challenge</string>
     <string name="challengeButton">Challenge!</string>
     <string name="start_challenge">Stop the madness!</string>
+    <string name="answer_field">Provide answer</string>
+    
     
     
     <!-- Alarm name & time -->

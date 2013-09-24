@@ -61,7 +61,8 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:text="@string/start_challenge"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:onClick="button" />
 
     </LinearLayout>
 

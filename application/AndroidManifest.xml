@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.AbstractChallengeActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activities.ChallengeActivity"
             android:label="@string/abs_chal_act" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
