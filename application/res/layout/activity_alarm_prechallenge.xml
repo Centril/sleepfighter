@@ -1,0 +1,68 @@
+<!-- The view when the alarm occurs -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <!-- Layout in the top -->
+    <LinearLayout
+        android:id="@+id/layoutTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.52"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+
+    <!-- Layout in the middle -->
+    <LinearLayout
+        android:id="@+id/layoutMiddle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.15"
+        android:orientation="vertical" >
+
+         <!-- The name of the current alarm -->
+        <TextView
+            android:id="@+id/tvAlarmName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alarm_name"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" 
+            android:layout_gravity="center"/>
+        
+          <!-- The current time -->
+        <TextView
+            android:id="@+id/tvAlarmTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alarm_time"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#006FFF"
+            android:textSize="100sp"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+    <!-- Layout in the bottom -->
+    <LinearLayout
+        android:id="@+id/layoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.77"
+        android:orientation="vertical" >
+
+         <!-- Button to start the challenge -->
+        <Button
+            android:id="@+id/btnChallenge"
+            android:layout_width="248dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="@string/start_challenge"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
