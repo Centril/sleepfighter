@@ -60,8 +60,6 @@ public class AlarmList extends ObservableList<Alarm> {
 	/**
 	 * Finds the lowest unnamed placement number.
 	 *
-	 * FIXME test!
-	 *
 	 * @see Alarm#getUnnamedPlacement()
 	 * @return the lowest unnamed placement number.
 	 */
