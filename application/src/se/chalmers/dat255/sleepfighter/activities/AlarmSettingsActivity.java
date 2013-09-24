@@ -5,6 +5,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 
 import se.chalmers.dat255.sleepfighter.R;
@@ -26,9 +27,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// TODO: Check if id is valid
+		if (getIntent().getExtras() == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		int id = this.getIntent().getExtras().getInt("id");
-		//int id = savedInstanceState.getInt("id");
+		
 		AlarmList manager = ((SFApplication) getApplication()).getAlarms();
 		
 		// TODO: Fix something to fetch an alarm by its unique id, then remove the following for loop
@@ -36,6 +40,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			if (manager.get(i).getId() == id) {
 				alarm = manager.get(i);
 			}
+		}
+		
+		if (alarm == null) {
+			// TODO: Better handling for final product
+			Toast.makeText(this, "Alarm is null (ID: " + id + ")", Toast.LENGTH_SHORT).show();
+			finish();
 		}
 		
 		if (!"".equals(alarm.getName())) {
