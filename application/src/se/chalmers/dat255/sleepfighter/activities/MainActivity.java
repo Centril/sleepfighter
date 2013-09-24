@@ -21,6 +21,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -63,36 +65,39 @@ public class MainActivity extends Activity {
 	}
 
 	private void immedateTestAlarmSchedule() {
-		// For testing purposes, we want an alarm 5 seconds in the future, calculate that time.
+		// For testing purposes, we want an alarm 5 seconds in the future,
+		// calculate that time.
 		MutableDateTime time = new MutableDateTime();
-		time.addSeconds( 6 );
+		time.addSeconds(6);
 
 		// Make an alarm with that time.
-		Alarm alarm = new Alarm( time );
-		alarm.setId( 1 );
-		this.manager.add( alarm );
-		long scheduleTime = alarm.getNextMillis( this.getNow() );
+		Alarm alarm = new Alarm(time);
+		alarm.setId(1);
+		this.manager.add(alarm);
+		long scheduleTime = alarm.getNextMillis(this.getNow());
 
 		// Make pending intent.
 		Intent intent = new Intent(this, AlarmReceiver.class);
-		intent.putExtra( "alarm_id", alarm.getId() );
-		PendingIntent pi = PendingIntent.getBroadcast( this, -1, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+		intent.putExtra("alarm_id", alarm.getId());
+		PendingIntent pi = PendingIntent.getBroadcast(this, -1, intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// Schedule alarm.
-		AlarmManager androidAM = (AlarmManager) getSystemService( Context.ALARM_SERVICE );
-		androidAM.set( AlarmManager.RTC_WAKEUP, scheduleTime, pi );
+		AlarmManager androidAM = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		androidAM.set(AlarmManager.RTC_WAKEUP, scheduleTime, pi);
 	}
 
 	private long getNow() {
 		return new DateTime().getMillis();
 	}
-	
+
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
-			Alarm clickedAlarm = MainActivity.this.alarmAdapter.getItem(position);
+			Alarm clickedAlarm = MainActivity.this.alarmAdapter
+					.getItem(position);
 			startAlarmEdit(clickedAlarm);
 		}
 	};
@@ -117,14 +122,14 @@ public class MainActivity extends Activity {
 
 		// TODO perhaps use something other than order
 		switch (item.getOrder()) {
-			case 0:
-				startAlarmEdit(selectedAlarm);
-				return true;
-			case 1:
-				deleteAlarm(selectedAlarm);
-				return true;
-			default:
-				return false;
+		case 0:
+			startAlarmEdit(selectedAlarm);
+			return true;
+		case 1:
+			deleteAlarm(selectedAlarm);
+			return true;
+		default:
+			return false;
 		}
 	}
 
@@ -143,12 +148,13 @@ public class MainActivity extends Activity {
 
 	/**
 	 * Handles a change in time related data in any alarm.
-	 *
-	 * @param evt the event.
+	 * 
+	 * @param evt
+	 *            the event.
 	 */
 	@Handler
-	public void handleDateChange( DateChangeEvent evt ) {
-		this.runOnUiThread( new Runnable() {
+	public void handleDateChange(DateChangeEvent evt) {
+		this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				MainActivity.this.updateEarliestText();
@@ -158,18 +164,20 @@ public class MainActivity extends Activity {
 
 	/**
 	 * Sets the earliest time text.
-	 *
-	 * @param now the current time.
+	 * 
+	 * @param now
+	 *            the current time.
 	 */
 	private void updateEarliestText() {
-		Debug.d( "updateEarliestText" );
+		Debug.d("updateEarliestText");
 
 		long now = this.getNow();
 
-		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
-		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
-		String text =DateTextUtils.getTimeToText( this.getResources(), now,  stamp);
-		
+		TextView earliestTimeText = (TextView) findViewById(R.id.earliestTimeText);
+		AlarmTimestamp stamp = this.manager.getEarliestAlarm(now);
+		String text = DateTextUtils.getTimeToText(this.getResources(), now,
+				stamp);
+
 		earliestTimeText.setText(text);
 	}
 
@@ -179,24 +187,32 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.action_add:
-	        	Intent intent = new Intent(this, AlarmSettingsActivity.class);
-	        	/*
-	        	// Preliminary code to add a new alarm and fetch its ID
-	        	manager.add(new Alarm(0, 0));
-	        	Bundle b = new Bundle();
-	        	b.putInt("id", manager.getLatestAlarmId());
-	        	intent.putExtras(b);
-	        	*/
-	    		startActivity(intent);
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		switch (item.getItemId()) {
+		case R.id.action_add:
+			Intent intent = new Intent(this, AlarmSettingsActivity.class);
+			/*
+			 * // Preliminary code to add a new alarm and fetch its ID
+			 * manager.add(new Alarm(0, 0)); Bundle b = new Bundle();
+			 * b.putInt("id", manager.getLatestAlarmId()); intent.putExtras(b);
+			 */
+			startActivity(intent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void challenge(View view) {
+		// This is fun
+		 ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+		 tg.startTone(ToneGenerator.TONE_SUP_DIAL, 2000);
+
+		// Intent myIntent = new Intent(view.getContext(),
+		// AbstractChallengeActivity.class);
+		// startActivityForResult(myIntent, 0);
 	}
 }
