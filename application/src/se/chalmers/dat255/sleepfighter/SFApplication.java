@@ -71,7 +71,7 @@ public class SFApplication extends Application {
 	 * 
 	 * @return the AlarmsManager for the application
 	 */
-	public AlarmsManager getAlarmsManager() {
+	public AlarmsManager alarms() {
 		return alarmsManager;
 	}
 
@@ -80,7 +80,7 @@ public class SFApplication extends Application {
 	 * 
 	 * @return the default MessageBus for the application
 	 */
-	public MessageBus<Message> getBus() {
+	public MessageBus<Message> bus() {
 		return bus;
 	}
 
@@ -89,7 +89,7 @@ public class SFApplication extends Application {
 	 *
 	 * @return
 	 */
-	public PersistenceManager getPersistenceManager() {
+	public PersistenceManager persist() {
 		return this.persistenceManager;
 	}
 }

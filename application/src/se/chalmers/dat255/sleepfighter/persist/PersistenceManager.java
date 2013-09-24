@@ -34,6 +34,7 @@ public class PersistenceManager {
 	 * @param context android context.
 	 */
 	public void cleanStart( Context context ) {
+		
 		this.getHelper( context ).rebuild();
 	}
 

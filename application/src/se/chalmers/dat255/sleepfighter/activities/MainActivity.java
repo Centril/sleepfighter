@@ -55,12 +55,12 @@ public class MainActivity extends Activity {
 
 		this.setContentView(R.layout.activity_main);
 
-		this.manager = this.app().getAlarmsManager();
+		this.manager = this.app().alarms();
 		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
 		// this.immedateTestAlarmSchedule();
 
-		this.app().getBus().subscribe(this);
+		this.app().bus().subscribe(this);
 
 		this.setupListView();
 
@@ -185,7 +185,7 @@ public class MainActivity extends Activity {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					self.app().getPersistenceManager().addAlarm( self, copy );
+					self.app().persist().addAlarm( self, copy );
 				}
 			} ).run();
 

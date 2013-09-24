@@ -27,7 +27,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		// TODO: Check if id is valid
 		//int id = savedInstanceState.getInt("id");
-		AlarmsManager manager = ((SFApplication) getApplication()).getAlarmsManager();
+		AlarmsManager manager = ((SFApplication) getApplication()).alarms();
 		
 		// TODO: Fix something to fetch an alarm by its unique id
 		//alarm = manager.getFromId(id);
