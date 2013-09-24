@@ -1,4 +1,4 @@
-package se.chalmers.dat255.sleepfighter.model;
+package se.chalmers.dat255.sleepfighter.challenges;
 
 /**
  * AbstractChallenge is an abstract class representing the challenges.
@@ -9,6 +9,6 @@ package se.chalmers.dat255.sleepfighter.model;
 
 public abstract class AbstractChallenge {
 
-	
+	public abstract void runChallenge();
 	
 }

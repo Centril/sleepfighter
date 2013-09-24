@@ -50,15 +50,21 @@
         </activity>
         <activity
             android:name="se.chalmers.dat255.sleepfighter.activities.ChallengeActivity"
-            android:label="@string/abs_chal_act" >
+            android:label="@string/pre_chal_act" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="se.chalmers.dat255.sleepfighter.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name="se.chalmers.dat255.sleepfighter.activities.SimpleMathActivity"
+            android:label="@string/math_chal_act" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -1,7 +1,6 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.challenges.SimpleMathActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ public class ChallengeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_alarm_prechallenge);
-
 	}
 
 	public void button(View view) {
