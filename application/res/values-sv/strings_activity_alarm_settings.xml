@@ -12,6 +12,10 @@
 
     <string name="pref_alarm_enabled_days">Dagar</string>
     
+    <string name="time_category_title">Tid</string>
+    <string name="misc_category_title">Övrigt</string>
+ 
+    
     <string-array name="week_days">
         <item>Måndag</item>
         <item>Tisdag</item>

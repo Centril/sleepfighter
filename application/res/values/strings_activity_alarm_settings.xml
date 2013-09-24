@@ -13,6 +13,10 @@
     
     <string name="pref_alarm_enabled_days">Days</string>
     
+    <string name="time_category_title">Time</string>
+    <string name="misc_category_title">Miscellaneous</string>
+    
+    
     <string-array name="week_days">
         <item>Monday</item>
         <item>Tuesday</item>
