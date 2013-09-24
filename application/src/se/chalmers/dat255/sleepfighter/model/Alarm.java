@@ -201,6 +201,8 @@ public class Alarm implements Cloneable {
 		this.enabledDays = rhs.enabledDays;
 		this.name = rhs.name;
 
+		this.unnamedPlacement = 0;
+
 		// Copy dependencies.
 		this.bus = rhs.bus;
 	}

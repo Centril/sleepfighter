@@ -1,5 +1,6 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
+import se.chalmers.dat255.sleepfighter.IntentUtils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,10 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		// Fetch extras.
 		Bundle extras = intent.getExtras();
-		final int alarmId = extras.getInt( AlarmActivity.EXTRA_ALARM_ID );
-		if ( alarmId < 1 ) {
-			return;
-		}
+		final int alarmId = new IntentUtils( intent ).getAlarmId();
 
 		if ( !this.isRequirementsMet( alarmId ) ) {
 			return;

@@ -1,8 +1,8 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
+import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -16,8 +16,6 @@ import android.widget.Toast;
  * @since Sep 20, 2013
  */
 public class AlarmActivity extends Activity {
-	public static final String EXTRA_ALARM_ID = "alarm_id";
-
 	private static final int WINDOW_FLAGS_SCREEN_ON =
 			WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
 			WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
@@ -41,10 +39,7 @@ public class AlarmActivity extends Activity {
 		this.setContentView(R.layout.activity_main);
 
 		// Fetch alarm Id.
-		this.readAlarmId();
-		if ( this.getAlarmId() < 1 ) {
-			this.finish();
-		}
+		this.alarmId = new IntentUtils( this.getIntent() ).getAlarmId();
 
 		// Do stuff.
 		this.work();
@@ -91,27 +86,11 @@ public class AlarmActivity extends Activity {
 		return flags;
 	}
 
-	/**
-	 * Reads the alarmId and stores it.
-	 */
-	private void readAlarmId() {
-		Intent intent = this.getIntent();
-		Bundle extras = intent.getExtras();
-		this.alarmId = extras.getInt( EXTRA_ALARM_ID );
-	}
-
-	/**
-	 * Returns the alarmId, must be called after {@link #readAlarmId()}.
-	 *
-	 * @return the alarmId.
-	 */
-	private int getAlarmId() {
-		return this.alarmId;
-	}
-
 	private void work() {
+		Log.d( "AlarmActivity", "alarm #id: " + Integer.toString( this.alarmId ) );
+
 		Log.d( "AlarmActivity", "work#1" );
 		// TODO: do something useful.
-		Toast.makeText(this, "Alarm ringing, get up! Alarm #" + this.getAlarmId(), Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "Alarm ringing, get up! Alarm #" + this.alarmId, Toast.LENGTH_LONG).show();
 	}
 }

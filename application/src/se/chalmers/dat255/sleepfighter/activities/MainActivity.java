@@ -5,6 +5,7 @@ import net.engio.mbassy.listener.Handler;
 import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
 
+import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
@@ -56,7 +57,7 @@ public class MainActivity extends Activity {
 		this.manager = this.app().getAlarms();
 		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
-		// this.immedateTestAlarmSchedule();
+		 this.immedateTestAlarmSchedule();
 
 		this.app().getBus().subscribe(this);
 
@@ -84,13 +85,12 @@ public class MainActivity extends Activity {
 
 		// Make an alarm with that time.
 		Alarm alarm = new Alarm( time );
-		alarm.setId( 1 );
 		this.manager.add( alarm );
 		long scheduleTime = alarm.getNextMillis( this.getNow() );
 
 		// Make pending intent.
-		Intent intent = new Intent(this, AlarmReceiver.class);
-		intent.putExtra( "alarm_id", alarm.getId() );
+		Intent intent = new Intent( this, AlarmReceiver.class);
+		new IntentUtils( intent ).setAlarmId( alarm );
 		PendingIntent pi = PendingIntent.getBroadcast( this, -1, intent, PendingIntent.FLAG_UPDATE_CURRENT );
 
 		// Schedule alarm.
@@ -104,8 +104,7 @@ public class MainActivity extends Activity {
 	
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Alarm clickedAlarm = MainActivity.this.alarmAdapter.getItem(position);
 			startAlarmEdit(clickedAlarm);
 		}
@@ -163,22 +162,31 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void startAlarmEdit(Alarm alarm) {
-    	Bundle b = new Bundle();
-    	b.putInt("id", alarm.getId());
-    	
-    	Intent intent = new Intent(this, AlarmSettingsActivity.class);
-    	intent.putExtras(b);
-    	
-		startActivity(intent);
+	private void startAlarmEdit( Alarm alarm ) {
+		Intent intent = new Intent(this, AlarmSettingsActivity.class );
+		new IntentUtils( intent ).setAlarmId( alarm );
+		startActivity( intent );
 	}
 
-	private void deleteAlarm(Alarm alarm) {
-		this.manager.remove(alarm);
+	private void deleteAlarm( Alarm alarm ) {
+		this.manager.remove( alarm );
 	}
-	
-	private void copyAlarm(Alarm alarm) {
-		this.manager.add( new Alarm( alarm ) );
+
+	private void copyAlarm( Alarm alarm ) {
+		this.newAlarm( new Alarm( alarm ) );
+	}
+
+	private void addAlarm() {
+		this.newAlarm( new Alarm() );
+	}
+
+	private void newAlarm( Alarm alarm ) {
+		if ( alarm.isUnnamed() ) {
+			alarm.setUnnamedPlacement( this.manager.findLowestUnnamedPlacement() );
+		}
+
+		this.manager.add( alarm );
+		this.startAlarmEdit( alarm );
 	}
 
 	/**
@@ -237,17 +245,15 @@ public class MainActivity extends Activity {
 	}
 	
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected( MenuItem item ) {
 		// Handle item selection
-	    switch (item.getItemId()) {
-	        case R.id.action_add:
-	        	Alarm newAlarm = new Alarm(0, 0);
-	        	this.manager.add(newAlarm);
-	        	this.startAlarmEdit(newAlarm);
+		switch ( item.getItemId() ) {
+		case R.id.action_add:
+			this.addAlarm();
+			return true;
 
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		default:
+			return super.onOptionsItemSelected( item );
+		}
 	}
 }

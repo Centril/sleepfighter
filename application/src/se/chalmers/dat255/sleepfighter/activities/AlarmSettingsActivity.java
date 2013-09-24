@@ -3,20 +3,20 @@ package se.chalmers.dat255.sleepfighter.activities;
 import java.util.HashSet;
 import java.util.Locale;
 
-import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.view.MenuItem;
-import android.widget.Toast;
-import android.support.v4.app.NavUtils;
-
+import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
-import se.chalmers.dat255.sleepfighter.SFApplication;
+import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
 
@@ -32,32 +32,28 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		 weekdayStrings = AlarmSettingsActivity.this.getResources().getStringArray(R.array.week_days);
-			
-		if (getIntent().getExtras() == null) {
-			throw new IllegalArgumentException();
-		}
-		
-		int id = this.getIntent().getExtras().getInt("id");
-		
+
+		weekdayStrings = AlarmSettingsActivity.this.getResources().getStringArray(R.array.week_days);
+		 
+		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
+
 		AlarmList alarms = ((SFApplication) getApplication()).getAlarms();
-		
+
 		alarm = alarms.getById(id);
-		
+
 		if (alarm == null) {
 			// TODO: Better handling for final product
 			Toast.makeText(this, "Alarm is null (ID: " + id + ")", Toast.LENGTH_SHORT).show();
 			finish();
 		}
-		
+
 		if (!"".equals(alarm.getName())) {
 			this.setTitle(alarm.getName());
 		}
-		
+
 		// TODO: Remove this debug thing
 		this.setTitle(this.getTitle() + " (ID: " + alarm.getId() + ")");
-		
+
 		setupSimplePreferencesScreen();
 	}
 
@@ -70,7 +66,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 
 	// Using deprecated methods because we need to support Android API level 8
 	@SuppressWarnings("deprecation")
