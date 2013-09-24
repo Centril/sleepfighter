@@ -217,7 +217,7 @@ public class MainActivity extends Activity {
 	 * @param evt the event.
 	 */
 	@Handler
-	public void handleListChange( Message evt ) {
+	public void handleListChange( AlarmsManager.Event evt ) {
 		final MainActivity self = this;
 		this.runOnUiThread( new Runnable() {
 			@Override
