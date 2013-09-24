@@ -13,4 +13,34 @@
     
     <string name="pref_alarm_enabled_days">Days</string>
     
+    <string-array name="week_days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>       
+        <item>Thursday</item>      
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+    
+    <string-array name="week_days_values">
+        <item>Mondayv</item>
+        <item>Tuesdayv</item>
+        <item>Wednesdayv</item>       
+        <item>Thursdayv</item>      
+        <item>Fridayv</item>
+        <item>Saturdayv</item>
+        <item>Sundayv</item>
+    </string-array>
+    
+    <string-array name="default_week_days">
+        <item>false</item>
+        <item>false</item>
+        <item>false</item>       
+        <item>false</item>      
+        <item>false</item>
+        <item>false</item>
+        <item>false</item>
+    </string-array>
+    
 </resources>

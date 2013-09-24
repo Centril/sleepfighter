@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
+import java.util.Locale;
+
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -11,6 +13,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
@@ -71,13 +74,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(NAME));
 		bindPreferenceSummaryToValue(findPreference(DAYS));
 	}
-
+	
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
-			String stringValue = value.toString();
-
-			if (preference instanceof TimepickerPreference) {
+			
+			if (TIME.equals(preference.getKey())) {
 				TimepickerPreference tpPref = (TimepickerPreference) preference;
 				
 				int hour = tpPref.getHour();
@@ -87,15 +89,35 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				
 				preference.setSummary((hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
 			}
-			else {
-				if (NAME.equals(preference.getKey())) {
-					alarm.setName(stringValue);
-				}
+			else if (NAME.equals(preference.getKey())) {
+				String stringValue = value.toString();
+	
+				alarm.setName(stringValue);
 				preference.setSummary(stringValue);
+			} else if(DAYS.equals(preference.getKey())) {
+				
+				preference.setSummary(formatDays(alarm));	
 			}
 			return true;
 		}
 	};
+	
+	private static String formatDays(final Alarm alarm) {
+		String formatted = "";
+		
+		// Compute weekday names & join.
+		final int indiceLength = 2;
+		final String[] days = DateTextUtils.getWeekdayNames( indiceLength, Locale.getDefault() );
+		final boolean[] enabled = alarm.getEnabledDays();
+		
+		for(int i = 0; i < days.length; ++i) {
+			if(enabled[i] == true) {
+				formatted += days[i];
+			}
+		}
+		
+		return formatted;
+	}
 
 	private static void bindPreferenceSummaryToValue(Preference preference) {
 		
@@ -107,6 +129,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		else if (TIME.equals(preference.getKey())) {
 			preference.setSummary(alarm.getTimeString());
+		} else if(DAYS.equals(preference.getKey())) {
+			preference.setSummary(formatDays(alarm));	
 		}
 		
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);

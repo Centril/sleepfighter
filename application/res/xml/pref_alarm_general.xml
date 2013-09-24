@@ -17,15 +17,15 @@
         android:singleLine="true"
         android:title="@string/pref_alarm_name" />
 
-    <EditTextPreference
-        android:capitalize="words"
-        android:defaultValue="test"
-        android:inputType="textCapWords"
+    <MultiSelectListPreference
         android:key="pref_enabled_days"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_alarm_enabled_days" />
+        
+        android:title="@string/pref_alarm_enabled_days"
+        android:summary="summary summary..."
+        
+        android:entries="@array/week_days"
+        android:entryValues="@array/week_days"
     
+       android:defaultValue="@array/default_week_days" />
     
 </PreferenceScreen>
