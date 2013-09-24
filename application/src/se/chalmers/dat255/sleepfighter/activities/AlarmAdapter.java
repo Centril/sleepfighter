@@ -48,9 +48,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		this.setupName( alarm, convertView );
 
 		this.setupWeekdays( alarm, convertView );
-
-		// TODO show more properties of Alarm
-
+		
 		return convertView;
 	}
 

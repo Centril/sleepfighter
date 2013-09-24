@@ -28,5 +28,6 @@
         android:entryValues="@array/week_days"
     
        android:defaultValue="@array/default_week_days" />
+  
     
 </PreferenceScreen>
