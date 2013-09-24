@@ -9,6 +9,7 @@ import android.support.v4.app.NavUtils;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
+import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.SFApplication;
@@ -98,8 +99,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	};
 
 	private static void bindPreferenceSummaryToValue(Preference preference) {
-		
-		// TODO: Check if !persistent it works
 		preference.setPersistent(false);
 		
 		if (NAME.equals(preference.getKey())) {
