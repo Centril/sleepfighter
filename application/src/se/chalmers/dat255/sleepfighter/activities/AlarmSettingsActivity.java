@@ -35,7 +35,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		AlarmList alarms = ((SFApplication) getApplication()).getAlarms();
 		
-		alarms.getById(id);
+		alarm = alarms.getById(id);
 		
 		if (alarm == null) {
 			// TODO: Better handling for final product
@@ -48,7 +48,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		
 		// TODO: Remove this debug thing
-		this.setTitle(alarm.getName() + " (ID: " + alarm.getId() + ")");
+		this.setTitle(this.getTitle() + " (ID: " + alarm.getId() + ")");
 	}
 
 	@Override
