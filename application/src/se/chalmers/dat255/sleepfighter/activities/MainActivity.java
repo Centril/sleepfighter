@@ -207,12 +207,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void challenge(View view) {
-		// This is fun
-		 ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
-		 tg.startTone(ToneGenerator.TONE_SUP_DIAL, 2000);
-
-		// Intent myIntent = new Intent(view.getContext(),
-		// AbstractChallengeActivity.class);
-		// startActivityForResult(myIntent, 0);
+		Intent intent = new Intent(this, AbstractChallengeActivity.class);
+		startActivity(intent);
 	}
 }
