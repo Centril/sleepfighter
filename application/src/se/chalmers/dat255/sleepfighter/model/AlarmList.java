@@ -61,12 +61,9 @@ public class AlarmList extends ObservableList<Alarm> {
 	/**
 	 * <p>Finds the lowest unnamed placement number.</p>
 	 *
-<<<<<<< HEAD
-=======
 	 * <p>Time complexity: O(n),<br/>
 	 * Space complexity: O(n).</p>
 	 *
->>>>>>> Fixed findLowestUnnamedPlacement() and provided test.
 	 * @see Alarm#getUnnamedPlacement()
 	 * @return the lowest unnamed placement number.
 	 */
