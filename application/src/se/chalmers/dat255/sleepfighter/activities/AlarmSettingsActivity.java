@@ -107,6 +107,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				boolean[] enabledDays = { false, false, false, false, false, false, false };
 
 				// a set of all the selected weekdays. 
+				@SuppressWarnings("unchecked")
 				HashSet<String> set = (HashSet<String>)value;
 		
 				for(int i = 0; i < weekdayStrings.length; ++i) {
