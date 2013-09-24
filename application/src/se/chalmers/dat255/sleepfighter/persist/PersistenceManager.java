@@ -3,7 +3,7 @@ package se.chalmers.dat255.sleepfighter.persist;
 import java.sql.SQLException;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
+import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import android.content.Context;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -44,10 +44,10 @@ public class PersistenceManager {
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public AlarmsManager fetchAlarms( Context context ) throws PersistenceException {
+	public AlarmList fetchAlarms( Context context ) throws PersistenceException {
 		OrmHelper helper = this.getHelper( context );
 		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
-		return new AlarmsManager( dao.queryForAll() );
+		return new AlarmList( dao.queryForAll() );
 	}
 
 	/**
@@ -57,12 +57,12 @@ public class PersistenceManager {
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public AlarmsManager fetchAlarmsSortedNames( Context context ) throws PersistenceException {
+	public AlarmList fetchAlarmsSortedNames( Context context ) throws PersistenceException {
 		OrmHelper helper = this.getHelper( context );
 		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
 
 		try {
-			return new AlarmsManager( dao.queryBuilder().orderBy( "name", true ).query() );
+			return new AlarmList( dao.queryBuilder().orderBy( "name", true ).query() );
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );
 		}

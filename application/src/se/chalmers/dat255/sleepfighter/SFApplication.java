@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
+import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -14,7 +14,7 @@ import android.app.Application;
  * A custom implementation of Application for SleepFighter.
  */
 public class SFApplication extends Application {
-	private AlarmsManager alarmsManager;
+	private AlarmList alarmsManager;
 	private MessageBus<Message> bus;
 
 	private PersistenceManager persistenceManager;
@@ -27,7 +27,7 @@ public class SFApplication extends Application {
 		this.persistenceManager.cleanStart( this );
 
 		this.bus = new MessageBus<Message>();
-		this.alarmsManager = new AlarmsManager();
+		this.alarmsManager = new AlarmList();
 
 		// TODO: REMOVE.
 		this.addPlaceholders();
@@ -71,7 +71,7 @@ public class SFApplication extends Application {
 	 * 
 	 * @return the AlarmsManager for the application
 	 */
-	public AlarmsManager alarms() {
+	public AlarmList alarms() {
 		return alarmsManager;
 	}
 

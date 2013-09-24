@@ -14,11 +14,11 @@ import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
  * @version 1.0
  * @since Sep 18, 2013
  */
-public class AlarmsManager extends ObservableList<Alarm> {
+public class AlarmList extends ObservableList<Alarm> {
 	/**
 	 * Constructs the manager with no initial alarms.
 	 */	
-	public AlarmsManager() {
+	public AlarmList() {
 		this( new ArrayList<Alarm>() );
 	}
 
@@ -27,7 +27,7 @@ public class AlarmsManager extends ObservableList<Alarm> {
 	 *
 	 * @param alarms list of given alarms. Don't modify this list directly.
 	 */
-	public AlarmsManager( List<Alarm> alarms ) {
+	public AlarmList( List<Alarm> alarms ) {
 		this.setDelegate( alarms );
 	}
 

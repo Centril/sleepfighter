@@ -12,10 +12,9 @@ import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
+import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
-import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -34,7 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
-	private AlarmsManager manager;
+	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
 	/**
@@ -217,7 +216,7 @@ public class MainActivity extends Activity {
 	 * @param evt the event.
 	 */
 	@Handler
-	public void handleListChange( AlarmsManager.Event evt ) {
+	public void handleListChange( AlarmList.Event evt ) {
 		final MainActivity self = this;
 		this.runOnUiThread( new Runnable() {
 			@Override

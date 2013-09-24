@@ -10,7 +10,7 @@ import android.support.v4.app.NavUtils;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
+import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
@@ -27,7 +27,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		// TODO: Check if id is valid
 		//int id = savedInstanceState.getInt("id");
-		AlarmsManager manager = ((SFApplication) getApplication()).alarms();
+		AlarmList manager = ((SFApplication) getApplication()).alarms();
 		
 		// TODO: Fix something to fetch an alarm by its unique id
 		//alarm = manager.getFromId(id);

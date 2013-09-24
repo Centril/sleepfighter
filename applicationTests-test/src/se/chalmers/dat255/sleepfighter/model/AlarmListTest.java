@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
-public class AlarmsManagerTest extends TestCase {
+public class AlarmListTest extends TestCase {
 
 	public void testGetEarliestInfo() {
 		// Bootstrap.
@@ -23,7 +23,7 @@ public class AlarmsManagerTest extends TestCase {
 		list.add(first);
 		list.add( second );
 
-		AlarmsManager manager = new AlarmsManager( list );
+		AlarmList manager = new AlarmList( list );
 
 		long now = new DateTime(0,1,1,0,0).getMillis();
 
@@ -52,7 +52,7 @@ public class AlarmsManagerTest extends TestCase {
 		list.add(first);
 		list.add( second );
 
-		AlarmsManager manager = new AlarmsManager( list );
+		AlarmList manager = new AlarmList( list );
 
 		MessageBus<Message> bus = new MessageBus<Message>();
 		manager.setMessageBus(bus);
@@ -63,7 +63,7 @@ public class AlarmsManagerTest extends TestCase {
 	
 	public void testFireEvent() {
 		List<Alarm> list = new ArrayList<Alarm>();
-		AlarmsManager manager = new AlarmsManager( list );
+		AlarmList manager = new AlarmList( list );
 		MessageBus<Message> bus = new MessageBus<Message>();
 		manager.setMessageBus(bus);
 		
