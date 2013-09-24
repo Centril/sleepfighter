@@ -227,7 +227,7 @@ public class ObservableList<E> extends ForwardingList<E> {
 	@Override
 	public E set( int index, E element ) {
 		E old = super.set( index, element );
-		this.fireEvent( new Event( Operation.UPDATE, index, Collections.singleton( element ) ) );
+		this.fireEvent( new Event( Operation.UPDATE, index, Collections.singleton( old ) ) );
 		return old;
 	}
 
