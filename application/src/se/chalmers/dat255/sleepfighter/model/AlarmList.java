@@ -1,6 +1,7 @@
 package se.chalmers.dat255.sleepfighter.model;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
@@ -58,37 +59,53 @@ public class AlarmList extends ObservableList<Alarm> {
 	}
 
 	/**
-	 * Finds the lowest unnamed placement number.
+	 * <p>Finds the lowest unnamed placement number.</p>
 	 *
+<<<<<<< HEAD
+=======
+	 * <p>Time complexity: O(n),<br/>
+	 * Space complexity: O(n).</p>
+	 *
+>>>>>>> Fixed findLowestUnnamedPlacement() and provided test.
 	 * @see Alarm#getUnnamedPlacement()
 	 * @return the lowest unnamed placement number.
 	 */
 	public int findLowestUnnamedPlacement() {
+		// Bail early if we can.
 		if ( this.size() == 0 ) {
 			return 1;
 		}
 
 		// First extract the unnamed placements defined.
 		IntArray arr = new IntArray(); 
+		arr.ordered = false;
 		for ( Alarm alarm : this ) {
 			if ( alarm.isUnnamed() ) {
-				arr.add( alarm.getUnnamedPlacement() );
+				int place = alarm.getUnnamedPlacement();
+				if ( place > 0 ) {
+					arr.add( place );
+				}
 			}
 		}
+
+		// Another opportunity to bail.
+		if ( arr.size == 0 ) {
+			return 1;
+		}
+
 		arr.shrink();
 
-		// Now sort the array.
-		arr.sort();
-
-		int i;
-		// Finally find the lowest.
-		for (i = 0; i < arr.size; ++i ) {
-			if ( arr.get( i ) != i + 1 ) {
-				return i + 1;
+		// Set all bits < N
+		BitSet bits = new BitSet(arr.size);
+		for ( int i = 0; i < arr.size; ++i ) {
+			int v = arr.get( i ) - 1;
+			if ( v < arr.size ) {
+				bits.set( v );
 			}
 		}
-		
-		return i + 1;
+
+		// Find first false bit.
+		return bits.nextClearBit( 0 ) + 1;
 	}
 
 	/**

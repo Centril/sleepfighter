@@ -103,44 +103,35 @@ public class AlarmListTest extends TestCase {
 		// Test looking for ID that no alarm in list has
 		assertEquals(null, alarmList.getById(6));
 	}
-	
-	private Alarm createAlarm(final int i) {
-		
-		Alarm alarm = new Alarm(0,0, Alarm.UNNAMED);
-		alarm.setUnnamedPlacement(i);
-		//alarm.setName(Alarm.UNNAMED);
-		
-		return alarm;
-	}
-	
+
 	public void testFindLowestUnnamedPlacement() {
-		AlarmList alarmList = new AlarmList();
-		
-		// test when size is 0. 
-		assertEquals(1, alarmList.findLowestUnnamedPlacement());
-		
-		// test
-		alarmList.add(createAlarm(1));
-		alarmList.add(createAlarm(2));
-		alarmList.add(createAlarm(3));
-		alarmList.add(createAlarm(4));
-		
-		alarmList.get(2).setName("alarm");
-		
-		assertEquals(3, alarmList.findLowestUnnamedPlacement());
-		
-		// test
-		alarmList = new AlarmList();
-		alarmList.add(createAlarm(1));
-		alarmList.add(createAlarm(2));
-		alarmList.add(createAlarm(3));
-		alarmList.add(createAlarm(4));
-		
-		alarmList.get(3).setName("alarm");
-		
-		assertEquals(4, alarmList.findLowestUnnamedPlacement());
-		
-		
-		
+		AlarmList list = new AlarmList();
+
+		testUnnamedPart( list, 1 );
+
+		try {
+			Alarm first = new Alarm( 0, 0, null );
+			list.add( first );
+			list.add( first.clone() );
+			list.add( first.clone() );
+			list.add( first.clone() );
+		} catch ( CloneNotSupportedException e ) {
+			fail(e.getLocalizedMessage());
+		}
+
+		// tests for whole list.
+		for ( int i = 0; i < 4; i++ ) {
+			list.get( i ).setUnnamedPlacement( testUnnamedPart( list, i + 1 ) );
+		}
+
+		// name the second alarm and test, slot 2 should be empty and be returned now.
+		list.get( 1 ).setName( "test-name" );
+		testUnnamedPart( list, 2 );
+	}
+
+	private int testUnnamedPart( AlarmList list, int test ) {
+		int lowest = list.findLowestUnnamedPlacement();
+		assertTrue( lowest == test );
+		return lowest;
 	}
 }
