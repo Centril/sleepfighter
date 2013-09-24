@@ -103,4 +103,26 @@ public class AlarmListTest extends TestCase {
 		// Test looking for ID that no alarm in list has
 		assertEquals(null, alarmList.getById(6));
 	}
+	
+	private Alarm createAlarm(final int i) {
+		
+		Alarm alarm = new Alarm(0,0, Alarm.UNNAMED);
+		alarm.setUnnamedPlacement(i);
+		//alarm.setName(Alarm.UNNAMED);
+		
+		return alarm;
+	}
+	
+	public void testFindLowestUnnamedPlacement() {
+		AlarmList alarmList = new AlarmList();
+		
+		alarmList.add(createAlarm(1));
+		alarmList.add(createAlarm(2));
+		alarmList.add(createAlarm(3));
+		alarmList.add(createAlarm(4));
+		
+		alarmList.get(2).setName("alarm");
+		
+		assertEquals(3, alarmList.findLowestUnnamedPlacement());
+	}
 }

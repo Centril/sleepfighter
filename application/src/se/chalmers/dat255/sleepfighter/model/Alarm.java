@@ -572,6 +572,7 @@ public class Alarm implements Cloneable {
 		if ( !this.isUnnamed() ) {
 			throw new IllegalArgumentException("Can't set numeric placement when alarm is already named.");
 		}
+		this.unnamedPlacement = placement;
 	}
 
 	@Override
