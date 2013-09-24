@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.model;
 
+import java.util.Arrays;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import net.engio.mbassy.listener.Handler;
@@ -321,5 +323,32 @@ public class AlarmTest extends TestCase {
 		}
 	}
 	
-}
+	public void testCopyContructor() {
+		Alarm alarm = new Alarm(8, 30);
+		Alarm copy = new Alarm(alarm);
+		
+		// Check some properties of Alarm
+		// More fields could be checked as they are added
+		assertEquals(alarm.getHour(), copy.getHour());
+		assertEquals(alarm.getMinute(), copy.getMinute());
+		assertEquals(alarm.getName(), copy.getName());
+		assertTrue(Arrays.equals(alarm.getEnabledDays(), copy.getEnabledDays()));
+	}
 	
+	public void testClone() {
+		Alarm alarm = new Alarm(8, 30);
+		Alarm clone = new Alarm(alarm);
+		
+		// Check some properties of Alarm
+		// More fields could be checked as they are added
+		// alarm.equals(clone) would return true if ID has not been set
+		// (both have ID -1)
+		assertTrue(alarm != clone);
+		assertTrue(alarm.getClass() == clone.getClass());
+		assertEquals(alarm.getHour(), clone.getHour());
+		assertEquals(alarm.getMinute(), clone.getMinute());
+		assertEquals(alarm.getName(), clone.getName());
+		assertTrue(Arrays.equals(alarm.getEnabledDays(), clone.getEnabledDays()));
+	}
+
+}
