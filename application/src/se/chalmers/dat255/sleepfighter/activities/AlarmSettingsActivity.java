@@ -35,12 +35,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		AlarmList manager = ((SFApplication) getApplication()).getAlarms();
 		
-		// TODO: Fix something to fetch an alarm by its unique id, then remove the following for loop
-		for (int i = 0; i < manager.size(); i++) {
-			if (manager.get(i).getId() == id) {
-				alarm = manager.get(i);
-			}
-		}
+		manager.getById(id);
 		
 		if (alarm == null) {
 			// TODO: Better handling for final product

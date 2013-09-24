@@ -87,4 +87,19 @@ public class AlarmList extends ObservableList<Alarm> {
 
 		return earliestIndex == -1 ? AlarmTimestamp.INVALID : new AlarmTimestamp( millis, this.get( earliestIndex) );
 	}
+	
+	/**
+	 * Returns an the alarm with the unique id provided.
+	 * 
+	 * @param id the unique id of the alarm.
+	 * @return the alarm, if not found it returns null.
+	 */
+	public Alarm getById(int id) {
+		for (int i = 0; i < size(); i++) {
+			if (get(i).getId() == id) {
+				return get(i);
+			}
+		}
+		return null;
+	}
 }
