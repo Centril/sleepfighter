@@ -7,6 +7,8 @@ import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
+import com.badlogic.gdx.utils.IntArray;
+
 /**
  * Manages all the existing alarms.
  *
@@ -53,6 +55,41 @@ public class AlarmList extends ObservableList<Alarm> {
 		}
 
 		super.fireEvent( e );
+	}
+
+	/**
+	 * Finds the lowest unnamed placement number.
+	 *
+	 * FIXME test!
+	 *
+	 * @see Alarm#getUnnamedPlacement()
+	 * @return the lowest unnamed placement number.
+	 */
+	public int findLowestUnnamedPlacement() {
+		if ( this.size() == 0 ) {
+			return 1;
+		}
+
+		// First extract the unnamed placements defined.
+		IntArray arr = new IntArray(); 
+		for ( Alarm alarm : this ) {
+			if ( alarm.isUnnamed() ) {
+				arr.add( alarm.getUnnamedPlacement() );
+			}
+		}
+		arr.shrink();
+
+		// Now sort the array.
+		arr.sort();
+
+		// Finally find the lowest.
+		for ( int i = 0; i < arr.size; ++i ) {
+			if ( arr.get( i ) != i + 1 ) {
+				return i + 1;
+			}
+		}
+
+		throw new AssertionError("Should not happen");
 	}
 
 	/**
