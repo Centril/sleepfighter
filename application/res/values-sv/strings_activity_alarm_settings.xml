@@ -12,4 +12,15 @@
 
     <string name="pref_alarm_enabled_days">Dagar</string>
     
+    <string-array name="week_days">
+        <item>Måndag</item>
+        <item>Tisdag</item>
+        <item>Onsdag</item>       
+        <item>Torsday</item>      
+        <item>Fredag</item>
+        <item>Lördag</item>
+        <item>Söndag</item>
+    </string-array>
+    
+    
 </resources>

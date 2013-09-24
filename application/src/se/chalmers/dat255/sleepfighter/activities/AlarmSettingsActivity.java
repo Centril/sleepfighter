@@ -1,5 +1,6 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
+import java.util.HashSet;
 import java.util.Locale;
 
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v4.app.NavUtils;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
+import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
@@ -22,12 +24,17 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private static final String TIME = "pref_alarm_time";
 	private static final String DAYS = "pref_enabled_days";
 	
+	// is used in sBindPreferenceSummaryToValueListener
+	private static String[] weekdayStrings;
+	
 	private static Alarm alarm;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		 weekdayStrings = AlarmSettingsActivity.this.getResources().getStringArray(R.array.week_days);
+			
 		if (getIntent().getExtras() == null) {
 			throw new IllegalArgumentException();
 		}
@@ -96,6 +103,20 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				preference.setSummary(stringValue);
 			} else if(DAYS.equals(preference.getKey())) {
 				
+
+				boolean[] enabledDays = { false, false, false, false, false, false, false };
+
+				// a set of all the selected weekdays. 
+				HashSet<String> set = (HashSet<String>)value;
+		
+				for(int i = 0; i < weekdayStrings.length; ++i) {
+					if(set.contains(weekdayStrings	[i])) {
+						Debug.d("day enabled: " + weekdayStrings[i]);
+						enabledDays[i] = true;
+					}
+				}
+				
+				alarm.setEnabledDays(enabledDays);
 				preference.setSummary(formatDays(alarm));	
 			}
 			return true;
@@ -112,7 +133,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		for(int i = 0; i < days.length; ++i) {
 			if(enabled[i] == true) {
-				formatted += days[i];
+				formatted += days[i] + " ";
 			}
 		}
 		
