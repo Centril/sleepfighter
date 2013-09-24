@@ -41,6 +41,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		if (!"".equals(alarm.getName())) {
 			this.setTitle(alarm.getName());
 		}
+		
+		// TODO: Remove this debug thing
+		this.setTitle(alarm.getName() + " (ID: " + alarm.getId() + ")");
 	}
 
 	@Override
