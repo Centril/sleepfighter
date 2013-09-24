@@ -1,6 +1,7 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.challenges.SimpleMathActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
