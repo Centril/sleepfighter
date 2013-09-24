@@ -76,4 +76,31 @@ public class AlarmListTest extends TestCase {
 		assertEquals(bus, second.getMessageBus());
 	
 	}
+	
+	public void testGetById() {
+		AlarmList alarmList = new AlarmList();
+		
+		// Test with no elements in list
+		assertEquals(null, alarmList.getById(0));
+		
+		// Add one element to list
+		Alarm alarm1 = new Alarm();
+		alarm1.setId(5);
+		alarmList.add(alarm1);
+		
+		// Test with 1 element in list
+		assertEquals(alarm1, alarmList.getById(5));
+		
+		// Add a second element
+		Alarm alarm2 = new Alarm();
+		alarm2.setId(7);
+		alarmList.add(alarm2);
+		
+		// Look for both IDs when both in list
+		assertEquals(alarm1, alarmList.getById(5));
+		assertEquals(alarm2, alarmList.getById(7));
+		
+		// Test looking for ID that no alarm in list has
+		assertEquals(null, alarmList.getById(6));
+	}
 }
