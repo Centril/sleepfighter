@@ -198,9 +198,20 @@ public class Alarm implements Cloneable {
 	 * @param minute the minute the alarm should occur.
 	 */
 	public Alarm(int hour, int minute) {
-		this.setTime(hour, minute);
+		this(hour, minute, 0, "");
 	}
 
+	/**
+	 *  Constructs an alarm given an hour, minute and name.
+	 * 
+	 * @param hour the hour the alarm should occur.
+	 * @param minute the minute the alarm should occur.
+	 * @param name the name the alarm should have.
+	 */
+	public Alarm(int hour, int minute, String name) {
+		this(hour, minute, 0, name);
+	}
+	
 	/**
 	 * Constructs an alarm given an hour, minute and second.
 	 *
@@ -209,16 +220,40 @@ public class Alarm implements Cloneable {
 	 * @param second the second the alarm should occur.
 	 */
 	public Alarm(int hour, int minute, int second) {
-		this.setTime(hour, minute, second);
+		this(hour, minute, second, "");
 	}
 
+	/**
+	 *  Constructs an alarm given an hour, minute, second and name.
+	 * 
+	 * @param hour the hour the alarm should occur.
+	 * @param minute the minute the alarm should occur.
+	 * @param second the second the alarm should occur.
+	 * @param name the name the alarm should have.
+	 */
+	public Alarm(int hour, int minute, int second, String name) {
+		this.setTime(hour, minute, second);
+		this.setName(name);
+	}
+	
 	/**
 	 * Constructs an alarm with values derived from a unix epoch timestamp.
 	 *
 	 * @param time time in unix epoch timestamp.
 	 */
 	public Alarm(long time) {
-		this.setTime( time );
+		this(time, "");
+	}
+	
+	/**
+	 * Constructs an alarm with values derived from a unix epoch timestamp and a name.
+	 *
+	 * @param time time in unix epoch timestamp.
+	 * @param name the name the alarm should have.
+	 */
+	public Alarm(long time, String name) {
+		this.setTime(time);
+		this.setName(name);
 	}
 
 	/**
@@ -227,7 +262,18 @@ public class Alarm implements Cloneable {
 	 * @param time a {@link ReadableDateTime} object. 
 	 */
 	public Alarm(ReadableDateTime time) {
-		this.setTime( time );
+		this(time, "");
+	}
+	
+	/**
+	 * Sets the hour, minute and second of this alarm derived from a {@link ReadableDateTime} object as well as a name.
+	 * 
+	 * @param time a {@link ReadableDateTime} object. 
+	 * @param name the name the alarm should have.
+	 */
+	public Alarm(ReadableDateTime time, String name) {
+		this.setTime(time);
+		this.setName(name);
 	}
 
 	/**
