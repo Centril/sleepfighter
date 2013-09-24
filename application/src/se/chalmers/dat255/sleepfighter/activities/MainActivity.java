@@ -30,7 +30,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	private AlarmList manager;
@@ -54,12 +53,12 @@ public class MainActivity extends Activity {
 
 		this.setContentView(R.layout.activity_main);
 
-		this.manager = this.app().alarms();
+		this.manager = this.app().getAlarms();
 		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
 		// this.immedateTestAlarmSchedule();
 
-		this.app().bus().subscribe(this);
+		this.app().getBus().subscribe(this);
 
 		this.setupListView();
 
@@ -189,7 +188,7 @@ public class MainActivity extends Activity {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					self.app().persist().addAlarm( self, copy );
+					self.app().getPersister().addAlarm( self, copy );
 				}
 			} ).run();
 
@@ -261,8 +260,8 @@ public class MainActivity extends Activity {
 	        case R.id.action_add:
 	        	Alarm newAlarm = new Alarm(0, 0);
 	        	manager.add(newAlarm);
-	        	this.app().persist().addAlarm(this, newAlarm);
-	        	
+	        	this.app().getPersister().addAlarm(this, newAlarm);
+
 	        	startAlarmEdit(newAlarm);
 
 	            return true;

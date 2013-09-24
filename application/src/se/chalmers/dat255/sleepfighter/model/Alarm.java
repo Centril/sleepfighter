@@ -175,6 +175,11 @@ public class Alarm implements Cloneable {
 		this.setId(NOT_COMMITTED_ID);
 	}
 
+	/**
+	 * Copy constructor
+	 *
+	 * @param rhs the alarm to copy from.
+	 */
 	public Alarm( Alarm rhs ) {
 		// Reset id.
 		this.setId( NOT_COMMITTED_ID );
