@@ -120,7 +120,7 @@ public class Alarm implements Cloneable {
 	}
 
 	@DatabaseField(generatedId = true)
-	private int id;
+	private int id = NOT_COMMITTED_ID;
 
 	/** IDs for non-committed Alarms. */
 	public static final int NOT_COMMITTED_ID = -1;
@@ -572,6 +572,7 @@ public class Alarm implements Cloneable {
 		if ( !this.isUnnamed() ) {
 			throw new IllegalArgumentException("Can't set numeric placement when alarm is already named.");
 		}
+
 		this.unnamedPlacement = placement;
 	}
 
