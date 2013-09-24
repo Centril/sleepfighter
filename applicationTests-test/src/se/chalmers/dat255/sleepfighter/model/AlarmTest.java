@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
@@ -204,7 +205,7 @@ public class AlarmTest extends TestCase {
 		alarm.setEnabledDays( new boolean[] { false, true, true, true, true, true, true } );
 
 		MutableDateTime time = new MutableDateTime(0, 1, 1, 0, 0, 0, 0);
-		time.setDayOfWeek( 1 );
+		time.setDayOfWeek( DateTimeConstants.MONDAY );
 		now = time.getMillis();
 
 		time.addDays( 1 );
