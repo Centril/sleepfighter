@@ -208,7 +208,7 @@ public class Alarm implements Cloneable {
 	/**
 	 * Constructs an alarm given an hour and minute.
 	 *
-	 * @param hour the hour the alarm should occur.
+	 * @param 	hour the hour the alarm should occur.
 	 * @param minute the minute the alarm should occur.
 	 */
 	public Alarm(int hour, int minute) {
