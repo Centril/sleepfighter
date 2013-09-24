@@ -38,7 +38,7 @@ public class AlarmActivity extends Activity {
 		// Turn and/or Keep screen on.
 		this.setScreenFlags();
 
-		this.setContentView(R.layout.activity_main);
+		this.setContentView(R.layout.activity_alarm_challenge);
 
 		// Fetch alarm Id.
 		this.readAlarmId();
