@@ -64,6 +64,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	}
 
 
+	// Using deprecated methods because we need to support Android API level 8
+	@SuppressWarnings("deprecation")
 	private void setupSimplePreferencesScreen() {
 		addPreferencesFromResource(R.xml.pref_alarm_general);
 
