@@ -17,8 +17,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	private final String NAME = "pref_alarm_name";
 	private final String TIME = "pref_alarm_time";
+	private final String DAYS = "pref_enabled_days";
 	
-	private Alarm alarm;
+	private Alarm alarm;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		bindPreferenceSummaryToValue(findPreference(TIME));
 		bindPreferenceSummaryToValue(findPreference(NAME));
+		bindPreferenceSummaryToValue(findPreference(DAYS));
 	}
 
 	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {

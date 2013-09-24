@@ -17,4 +17,15 @@
         android:singleLine="true"
         android:title="@string/pref_alarm_name" />
 
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="test"
+        android:inputType="textCapWords"
+        android:key="pref_enabled_days"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_alarm_enabled_days" />
+    
+    
 </PreferenceScreen>

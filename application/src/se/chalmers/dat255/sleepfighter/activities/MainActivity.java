@@ -137,7 +137,6 @@ public class MainActivity extends Activity {
 				AlarmAudioManager.getInstance().stop();	
 				return true;
 			
-				
 			case 4:
 				Debug.d("start vibration");
 				VibrationManager.getInstance().startVibrate();

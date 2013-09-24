@@ -10,4 +10,6 @@
     <string name="pref_alarm_name">Namn</string>
     <string name="pref_alarm_default_name">Namnlöst Alarm</string>
 
+    <string name="pref_alarm_enabled_days">Dagar</string>
+    
 </resources>
