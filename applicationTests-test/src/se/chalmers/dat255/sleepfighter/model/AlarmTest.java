@@ -334,4 +334,18 @@ public class AlarmTest extends TestCase {
 		assertEquals(alarm.getName(), copy.getName());
 		assertTrue(Arrays.equals(alarm.getEnabledDays(), copy.getEnabledDays()));
 	}
+	
+	public void testGetTimeString() {
+		Alarm alarm = new Alarm(5, 5);
+		assertEquals("05:05", alarm.getTimeString());
+		
+		alarm = new Alarm(10, 5);
+		assertEquals("10:05", alarm.getTimeString());
+		
+		alarm = new Alarm(5, 10);
+		assertEquals("05:10", alarm.getTimeString());
+		
+		alarm = new Alarm(13, 13);
+		assertEquals("13:13", alarm.getTimeString());
+	}
 }
