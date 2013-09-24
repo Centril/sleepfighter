@@ -87,14 +87,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				int hour = tpPref.getHour();
 				int minute = tpPref.getMinute();
 				
-				// TODO: Check for null?
 				alarm.setTime(hour, minute);
 				
 				preference.setSummary(stringValue);
 			}
 			else {
 				if (NAME.equals(preference.getKey())) {
-					// TODO: Check for null?
 					alarm.setName(stringValue);
 				}
 				preference.setSummary(stringValue);
