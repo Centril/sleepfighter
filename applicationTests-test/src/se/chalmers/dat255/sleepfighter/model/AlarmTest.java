@@ -334,21 +334,4 @@ public class AlarmTest extends TestCase {
 		assertEquals(alarm.getName(), copy.getName());
 		assertTrue(Arrays.equals(alarm.getEnabledDays(), copy.getEnabledDays()));
 	}
-	
-	public void testClone() {
-		Alarm alarm = new Alarm(8, 30);
-		Alarm clone = new Alarm(alarm);
-		
-		// Check some properties of Alarm
-		// More fields could be checked as they are added
-		// alarm.equals(clone) would return true if ID has not been set
-		// (both have ID -1)
-		assertTrue(alarm != clone);
-		assertTrue(alarm.getClass() == clone.getClass());
-		assertEquals(alarm.getHour(), clone.getHour());
-		assertEquals(alarm.getMinute(), clone.getMinute());
-		assertEquals(alarm.getName(), clone.getName());
-		assertTrue(Arrays.equals(alarm.getEnabledDays(), clone.getEnabledDays()));
-	}
-
 }
