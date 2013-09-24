@@ -116,6 +116,10 @@ public class AlarmListTest extends TestCase {
 	public void testFindLowestUnnamedPlacement() {
 		AlarmList alarmList = new AlarmList();
 		
+		// test when size is 0. 
+		assertEquals(1, alarmList.findLowestUnnamedPlacement());
+		
+		// test
 		alarmList.add(createAlarm(1));
 		alarmList.add(createAlarm(2));
 		alarmList.add(createAlarm(3));
@@ -124,5 +128,19 @@ public class AlarmListTest extends TestCase {
 		alarmList.get(2).setName("alarm");
 		
 		assertEquals(3, alarmList.findLowestUnnamedPlacement());
+		
+		// test
+		alarmList = new AlarmList();
+		alarmList.add(createAlarm(1));
+		alarmList.add(createAlarm(2));
+		alarmList.add(createAlarm(3));
+		alarmList.add(createAlarm(4));
+		
+		alarmList.get(3).setName("alarm");
+		
+		assertEquals(4, alarmList.findLowestUnnamedPlacement());
+		
+		
+		
 	}
 }

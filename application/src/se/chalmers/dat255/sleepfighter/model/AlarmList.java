@@ -82,14 +82,15 @@ public class AlarmList extends ObservableList<Alarm> {
 		// Now sort the array.
 		arr.sort();
 
+		int i;
 		// Finally find the lowest.
-		for ( int i = 0; i < arr.size; ++i ) {
+		for (i = 0; i < arr.size; ++i ) {
 			if ( arr.get( i ) != i + 1 ) {
 				return i + 1;
 			}
 		}
-
-		throw new AssertionError("Should not happen");
+		
+		return i + 1;
 	}
 
 	/**

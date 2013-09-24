@@ -348,4 +348,22 @@ public class AlarmTest extends TestCase {
 		alarm = new Alarm(13, 13);
 		assertEquals("13:13", alarm.getTimeString());
 	}
+	
+	public void testSetUnnamedPlacement() {
+		Alarm alarm = new Alarm(1,1, "eric");
+		try {
+		
+			// alarm is actually named, so we want an exception.
+			alarm.setUnnamedPlacement(3);
+			Assert.fail("Should have thrown IllegalArgumentException");
+			
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+		
+		alarm = new Alarm(1,1, Alarm.UNNAMED);
+		
+		alarm.setUnnamedPlacement(3);
+		assertEquals(3, alarm.getUnnamedPlacement());
+	}
 }
