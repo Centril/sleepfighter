@@ -44,10 +44,12 @@ public class AlarmList extends ObservableList<Alarm> {
 	@Override
 	protected void fireEvent( Event e ) {
 		// Intercept add/update events and inject message bus.
-		if ( e.operation() == Operation.ADD || e.operation() == Operation.UPDATE ) {
+		if ( e.operation() == Operation.ADD ) {
 			for ( Object obj : e.elements() ) {
 				((Alarm) obj).setMessageBus( this.getMessageBus() );
 			}
+		} else if ( e.operation() == Operation.UPDATE ) {
+			this.get( e.index() ).setMessageBus( this.getMessageBus() );
 		}
 
 		super.fireEvent( e );
