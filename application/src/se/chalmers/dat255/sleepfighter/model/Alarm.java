@@ -10,6 +10,7 @@ import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.util.Log;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -127,8 +128,11 @@ public class Alarm implements Cloneable {
 	@DatabaseField
 	private boolean isActivated = true;
 
-	@DatabaseField(canBeNull = false)
+	@DatabaseField
 	private String name;
+
+	/** The value for unnamed strings is {@value #UNNAMED} */
+	public static final String UNNAMED = null;
 
 	@DatabaseField
 	private int hour;
@@ -144,6 +148,9 @@ public class Alarm implements Cloneable {
 	private boolean[] enabledDays = { true, true, true, true, true, true, true };
 	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
+
+	@DatabaseField
+	private int unnamedPlacement;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
@@ -293,11 +300,16 @@ public class Alarm implements Cloneable {
 	}
 
 	/**
-	 * Sets the ID of the alarm.
+	 * Sets the ID of the alarm.<br/>
+	 * Should only be used for testing.
 	 *
 	 * @param id the ID of the alarm.
 	 */
 	public void setId( int id ) {
+		if ( this.id == id ) {
+			return;
+		}
+
 		this.id = id;
 		this.publish( new MetaChangeEvent( this, Field.ID ) );
 	}
@@ -317,7 +329,16 @@ public class Alarm implements Cloneable {
 	 * @param name the name of the Alarm to set.
 	 */
 	public void setName( String name ) {
+		if ( this.name == name ) {
+			return;
+		}
+
+		if ( name == null ) {
+			throw new IllegalArgumentException( "A named Alarm can not be unnamed." );
+		}
+
 		this.name = name;
+		this.unnamedPlacement = 0;
 		this.publish( new MetaChangeEvent( this, Field.NAME ) );
 	}
 
@@ -340,6 +361,10 @@ public class Alarm implements Cloneable {
 	 * @param second the second the alarm should occur.
 	 */
 	public synchronized void setTime( int hour, int minute, int second ) {
+		if ( this.hour == hour && this.minute == minute && this.second == second ) {
+			return;
+		}
+
 		if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59 ) {
 			throw new IllegalArgumentException();
 		}
@@ -386,6 +411,10 @@ public class Alarm implements Cloneable {
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
 		Preconditions.checkNotNull( enabledDays );
+
+		if ( Objects.equal( this.enabledDays, enabledDays ) ) {
+			return;
+		}
 
 		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
@@ -488,6 +517,10 @@ public class Alarm implements Cloneable {
 	 * @param isActivated whether or not the alarm should be active.
 	 */
 	public void setActivated(boolean isActivated) {
+		if ( this.isActivated == isActivated ) {
+			return;
+		}
+
 		this.isActivated = isActivated;
 		this.publish( new DateChangeEvent( this, Field.ACTIVATED ) );
 	}
@@ -499,6 +532,46 @@ public class Alarm implements Cloneable {
 	 */
 	public boolean isActivated() {
 		return this.isActivated;
+	}
+
+	/**
+	 * Returns true if the alarm is unnamed = ({@link #getName()} == {@link #UNNAMED}.
+	 *
+	 * @return true if the alarm is unnamed.
+	 */
+	public boolean isUnnamed() {
+		return this.name == UNNAMED;
+	}
+
+	/**
+	 * Returns the unnamed placement.<br/>
+	 * The unnamed placement is a number that is set for Alarms that honor {@link #isUnnamed()}.<br/>
+	 * It is a leaping number that is set upon addition to {@link AlarmList#add(int, Alarm)}.
+	 *
+	 * Let us assume that we have 3 alarms which all start out as unnamed.
+	 * Their placements will be 1,2,3,4.
+	 *
+	 * When the second alarm is removed, or renamed to "Holidays",
+	 * the 3rd alarm will not change its placement to 2.
+	 *
+	 * If then a 4th alarm is added, it will usurp the place that the 2nd alarm had,
+	 * and its unnamed placement will be 2.
+	 */
+	public int getUnnamedPlacement() {
+		return this.unnamedPlacement;
+	}
+
+	/**
+	 * Sets the unnamed placement of alarm, see {@link #getUnnamedPlacement()}.<br/>
+	 * This should be set directly after constructor, otherwise provided for testing.
+	 *
+	 * @param placement the unnamed placement of alarm.
+	 * @throws IllegalArgumentException if {@link #isUnnamed()} returns false.
+	 */
+	public void setUnnamedPlacement( int placement ) {
+		if ( !this.isUnnamed() ) {
+			throw new IllegalArgumentException("Can't set numeric placement when alarm is already named.");
+		}
 	}
 
 	@Override
@@ -535,6 +608,10 @@ public class Alarm implements Cloneable {
 		return this.id == rhs.id;
 	}
 
+	public Object clone() throws CloneNotSupportedException {
+		return new Alarm( this );
+	}
+
 	/**
 	 * Publishes an event to event bus.
 	 *
@@ -547,8 +624,4 @@ public class Alarm implements Cloneable {
 
 		this.bus.publish( event );
 	}
-	
-    public Object clone() throws CloneNotSupportedException {
-        return new Alarm( this );
-    }
 }
