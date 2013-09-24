@@ -10,14 +10,20 @@ import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.util.Log;
 
+import com.google.common.base.Preconditions;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 /**
  * Alarm models the alarm settings and business logic for an alarm.
+ *
+ * Actual model fields are described in {@link Field}
  *
  * @version 1.0
  * @since Sep 16, 2013
  */
-public class Alarm implements Cloneable{
-
+@DatabaseTable(tableName = "alarm")
+public class Alarm implements Cloneable {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -110,15 +116,26 @@ public class Alarm implements Cloneable{
 		}
 	}
 
+	@DatabaseField(id = true)
 	private int id;
+
+	@DatabaseField
 	private boolean isActivated = true;
+
+	@DatabaseField(canBeNull = false)
 	private String name;
 
+	@DatabaseField
 	private int hour;
+
+	@DatabaseField
 	private int minute;
+
+	@DatabaseField
 	private int second;
 
 	/** The weekdays that this alarm can ring. */
+	@DatabaseField(width = 7)
 	private boolean[] enabledDays = { true, true, true, true, true, true, true };
 	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
@@ -295,6 +312,8 @@ public class Alarm implements Cloneable{
 	 * @param enabledDays the weekdays alarm should be enabled for.
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
+		Preconditions.checkNotNull( enabledDays );
+
 		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
