@@ -116,7 +116,7 @@ public class Alarm implements Cloneable {
 		}
 	}
 
-	@DatabaseField(id = true, generatedId = true)
+	@DatabaseField(generatedId = true)
 	private int id;
 
 	/** IDs for non-committed Alarms. */
