@@ -165,8 +165,13 @@ public class MainActivity extends Activity {
 	}
 
 	private void startAlarmEdit(Alarm alarm) {
-		Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
-		// TODO Launch alarm edit intent
+    	Bundle b = new Bundle();
+    	b.putInt("id", alarm.getId());
+    	
+    	Intent intent = new Intent(this, AlarmSettingsActivity.class);
+    	intent.putExtras(b);
+    	
+		startActivity(intent);
 	}
 
 	private void deleteAlarm(Alarm alarm) {
@@ -258,13 +263,8 @@ public class MainActivity extends Activity {
 	        	manager.add(newAlarm);
 	        	this.app().persist().addAlarm(this, newAlarm);
 	        	
-	        	Bundle b = new Bundle();
-	        	b.putInt("id", newAlarm.getId());
-	        	
-	        	Intent intent = new Intent(this, AlarmSettingsActivity.class);
-	        	intent.putExtras(b);
-	        	
-	    		startActivity(intent);
+	        	startAlarmEdit(newAlarm);
+
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
