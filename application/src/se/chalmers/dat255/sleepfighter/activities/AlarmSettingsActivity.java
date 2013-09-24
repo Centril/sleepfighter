@@ -33,9 +33,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		int id = this.getIntent().getExtras().getInt("id");
 		
-		AlarmList manager = ((SFApplication) getApplication()).getAlarms();
+		AlarmList alarms = ((SFApplication) getApplication()).getAlarms();
 		
-		manager.getById(id);
+		alarms.getById(id);
 		
 		if (alarm == null) {
 			// TODO: Better handling for final product
