@@ -3,13 +3,11 @@ package se.chalmers.dat255.sleepfighter.utils;
 import java.util.Arrays;
 import java.util.Locale;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.joda.time.MutablePeriod;
 import org.joda.time.Period;
 
-import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 
 public class DateTextUtilsTests extends TestCase {
