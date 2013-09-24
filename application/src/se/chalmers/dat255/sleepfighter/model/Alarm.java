@@ -171,7 +171,7 @@ public class Alarm implements Cloneable {
 	 * This is the equivalent of calling {@link #Alarm(int, int)} with (0, 0).
 	 */
 	public Alarm() {
-		this.setTime(0, 0, 0);
+		this(0, 0, 0, "");
 		this.setId(NOT_COMMITTED_ID);
 	}
 
