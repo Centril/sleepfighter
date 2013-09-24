@@ -121,7 +121,7 @@ public class DateTextUtils {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern( Strings.repeat( "E", indiceLength ) ).withLocale( locale );
 
 		MutableDateTime time = new MutableDateTime();
-		time.setDayOfWeek( 1 );
+		time.setDayOfWeek( DateTimeConstants.MONDAY );
 
 		String[] names = new String[DateTimeConstants.DAYS_PER_WEEK];
 
