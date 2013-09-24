@@ -1,11 +1,11 @@
 <!-- The main view for the challenges -->
-<!-- We should change the name (?) --> 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <!-- Layout in the top -->
     <LinearLayout
         android:id="@+id/fillTop"
         android:layout_width="match_parent"
@@ -14,6 +14,7 @@
         android:orientation="vertical" >
     </LinearLayout>
 
+    <!-- The name of the current alarm -->
     <TextView
         android:id="@+id/tvAlarmName"
         android:layout_width="wrap_content"
@@ -23,43 +24,44 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="20sp" />
 
+    <!-- The current time -->
     <TextView
         android:id="@+id/tvAlarmTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-           android:layout_gravity="center"
+        android:layout_gravity="center"
         android:text="@string/alarm_time"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="60sp"
-        android:textColor="#ff0000" />
+        android:textColor="#ff0000"
+        android:textSize="60sp" />
 
-    
-    <!--  should not be textview, change it to layoutlinear! -->
-    <TextView
-        android:id="@+id/TextView01"
+    <!-- Layout in the middle -->
+    <LinearLayout
+        android:id="@+id/fillMiddle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2.15"
-        android:gravity="center" />
-    
-<!-- just experimenting -->  
+        android:orientation="vertical" >
+    </LinearLayout>
 
-<Button
-    android:id="@+id/btnChallenge"
-    android:layout_width="250dp"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_weight="0.10"
-    android:text="@string/start_challenge"
-    android:textSize="20sp" >
-</Button>
+    <!-- Button to start the challenge -->
+    <Button
+        android:id="@+id/btnChallenge"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.10"
+        android:text="@string/start_challenge"
+        android:textSize="20sp" >
+    </Button>
 
- <!--  should not be textview, change it to layoutlinear! -->
-<TextView
-    android:id="@+id/tvChallenge"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_weight="0.10"
-    android:gravity="center" />
-    
+    <!-- Layout in the bottom -->
+    <LinearLayout
+        android:id="@+id/fillBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.32"
+        android:orientation="vertical" >
+    </LinearLayout>
+
 </LinearLayout>
