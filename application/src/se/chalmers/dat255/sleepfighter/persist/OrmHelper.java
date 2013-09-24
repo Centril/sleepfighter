@@ -1,9 +1,12 @@
 package se.chalmers.dat255.sleepfighter.persist;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -25,7 +28,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	// the DAO object we use to access the SimpleData table
 	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;
@@ -76,6 +79,33 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			Log.e(OrmHelper.class.getName(), "Can't drop databases", e);
 			throw new PersistenceException(e);
 		}
+	}
+
+	/**
+	 * Rebuilds all data-structures. Any data is lost.
+	 */
+	public void rebuild() {
+		Log.d(OrmHelper.class.getName(), "onRestart");
+
+		// Drop all tables.
+		List<String> tables = new ArrayList<String>();
+		Cursor cursor = this.getReadableDatabase().rawQuery("SELECT * FROM sqlite_master WHERE type='table';", null );
+		cursor.moveToFirst();
+		while ( !cursor.isAfterLast() ) {
+			String tableName = cursor.getString( 1 );
+			if ( !tableName.equals( "android_metadata" ) && !tableName.equals( "sqlite_sequence" ) ) {
+				tables.add( tableName );
+			}
+			cursor.moveToNext();
+		}
+		cursor.close();
+
+		SQLiteDatabase db = this.getWritableDatabase();
+		for(String tableName : tables) {
+		    db.execSQL("DROP TABLE IF EXISTS " + tableName);
+		}
+
+		onCreate(db, connectionSource);
 	}
 
 	/**

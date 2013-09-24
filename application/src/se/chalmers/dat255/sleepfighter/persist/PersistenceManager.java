@@ -29,6 +29,15 @@ public class PersistenceManager {
 	private static boolean init = false;
 
 	/**
+	 * Rebuilds all data-structures. Any data is lost.
+	 *
+	 * @param context android context.
+	 */
+	public void cleanStart( Context context ) {
+		this.getHelper( context ).rebuild();
+	}
+
+	/**
 	 * Fetches an AlarmsManager from database, it is sorted on ID.
 	 *
 	 * @param context android context.
