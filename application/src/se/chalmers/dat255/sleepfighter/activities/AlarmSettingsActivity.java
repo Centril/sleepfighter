@@ -17,11 +17,11 @@ import se.chalmers.dat255.sleepfighter.SFApplication;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
 
-	private final String NAME = "pref_alarm_name";
-	private final String TIME = "pref_alarm_time";
-	private final String DAYS = "pref_enabled_days";
+	private static final String NAME = "pref_alarm_name";
+	private static final String TIME = "pref_alarm_time";
+	private static final String DAYS = "pref_enabled_days";
 	
-	private Alarm alarm;	
+	private static Alarm alarm;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +49,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		// TODO: Remove this debug thing
 		this.setTitle(this.getTitle() + " (ID: " + alarm.getId() + ")");
+		
+		setupSimplePreferencesScreen();
 	}
 
 	@Override
@@ -61,12 +63,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-
-		setupSimplePreferencesScreen();
-	}
 
 	private void setupSimplePreferencesScreen() {
 		addPreferencesFromResource(R.xml.pref_alarm_general);
@@ -76,7 +72,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(DAYS));
 	}
 
-	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			String stringValue = value.toString();
@@ -89,7 +85,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				
 				alarm.setTime(hour, minute);
 				
-				preference.setSummary(stringValue);
+				preference.setSummary((hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
 			}
 			else {
 				if (NAME.equals(preference.getKey())) {
@@ -101,9 +97,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 	};
 
-	private void bindPreferenceSummaryToValue(Preference preference) {
-		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
+	private static void bindPreferenceSummaryToValue(Preference preference) {
+		
 		// TODO: Check if !persistent it works
 		preference.setPersistent(false);
 		
@@ -114,10 +109,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			preference.setSummary(alarm.getTimeString());
 		}
 		
-		sBindPreferenceSummaryToValueListener.onPreferenceChange(
-				preference,
-				PreferenceManager.getDefaultSharedPreferences(
-						preference.getContext()).getString(preference.getKey(),
-						""));
+		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 	}
 }

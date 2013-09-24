@@ -49,7 +49,7 @@ public class TimepickerPreference extends DialogPreference {
 				+ (minute < 10 ? "0" : "") + minute;
 		
 		
-		if (callChangeListener(time)) {
+		if (positiveResult && callChangeListener(time)) {
             persistString(time);
         }
 	}
