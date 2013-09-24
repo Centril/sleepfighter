@@ -40,8 +40,8 @@
             android:layout_height="wrap_content"
             android:text="@string/alarm_time"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#ff0000"
-            android:textSize="60sp"
+            android:textColor="#0000ff"
+            android:textSize="100sp"
             android:layout_gravity="center" />
 
     </LinearLayout>
