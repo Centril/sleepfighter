@@ -515,9 +515,7 @@ public class Alarm implements Cloneable {
 
 	@Override
 	public int hashCode() {
-		// TODO uncomment when working unique ID
-		// return this.id;
-		return super.hashCode();
+		return this.id;
 	}
 
 	@Override
@@ -531,8 +529,8 @@ public class Alarm implements Cloneable {
 		}
 
 		// TODO uncomment when working unique ID
-		// return this.id == rhs.id;
-		return super.equals(obj);
+		Alarm rhs = (Alarm) obj;
+		return this.id == rhs.id;
 	}
 
 	/**
