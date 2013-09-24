@@ -36,6 +36,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				alarm = manager.get(i);
 			}
 		}
+		
+		if (!"".equals(alarm.getName())) {
+			this.setTitle(alarm.getName());
+		}
 	}
 
 	@Override
