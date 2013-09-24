@@ -116,8 +116,11 @@ public class Alarm implements Cloneable {
 		}
 	}
 
-	@DatabaseField(id = true)
+	@DatabaseField(id = true, generatedId = true)
 	private int id;
+
+	/** IDs for non-committed Alarms. */
+	public static final int NOT_COMMITTED_ID = -1;
 
 	@DatabaseField
 	private boolean isActivated = true;
@@ -168,7 +171,24 @@ public class Alarm implements Cloneable {
 	 * This is the equivalent of calling {@link #Alarm(int, int)} with (0, 0).
 	 */
 	public Alarm() {
-		setTime(0, 0, 0);
+		this.setTime(0, 0, 0);
+		this.setId(NOT_COMMITTED_ID);
+	}
+
+	public Alarm( Alarm rhs ) {
+		// Reset id.
+		this.setId( NOT_COMMITTED_ID );
+
+		// Copy data.
+		this.hour = rhs.hour;
+		this.minute = rhs.minute;
+		this.second = rhs.second;
+		this.isActivated = rhs.isActivated;
+		this.enabledDays = rhs.enabledDays;
+		this.name = rhs.name;
+
+		// Copy dependencies.
+		this.bus = rhs.bus;
 	}
 
 	/**
@@ -478,6 +498,6 @@ public class Alarm implements Cloneable {
 	}
 	
     public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        return new Alarm( this );
     }
 }
