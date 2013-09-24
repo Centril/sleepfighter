@@ -609,7 +609,7 @@ public class Alarm implements Cloneable {
 		return this.id == rhs.id;
 	}
 
-	public Object clone() throws CloneNotSupportedException {
+	public Alarm clone() throws CloneNotSupportedException {
 		return new Alarm( this );
 	}
 
