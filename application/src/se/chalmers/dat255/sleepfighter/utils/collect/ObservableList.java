@@ -92,6 +92,10 @@ public class ObservableList<E> extends ForwardingList<E> {
 		public ObservableList<E> source() {
 			return ObservableList.this;
 		}
+
+		public String toString() {
+			return "ObservableList.Event[operation: " + this.operation() + ", index: " + this.index() + ", element(s): " + this.elements() + "]";
+		}
 	}
 
 	private List<E> delegate;
@@ -210,7 +214,7 @@ public class ObservableList<E> extends ForwardingList<E> {
 			return;
 		}
 
-		this.bus.post( e );
+		this.bus.publish( e );
 	}
 
 	@Override
