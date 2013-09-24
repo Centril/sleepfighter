@@ -13,7 +13,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -95,7 +94,6 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		final int indiceLength = 2;
 		String[] names = DateTextUtils.getWeekdayNames( indiceLength, Locale.getDefault() );
 
-		Log.d("AlarmAdapter", StringUtils.WS_JOINER.join( names ));
 		SpannableString text = new SpannableString( StringUtils.WS_JOINER.join( names ) );
 
 		// Create spans for enabled days.

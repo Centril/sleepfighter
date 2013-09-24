@@ -5,6 +5,7 @@ import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
+import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
@@ -16,14 +17,29 @@ public class SFApplication extends Application {
 	private AlarmsManager alarmsManager;
 	private MessageBus<Message> bus;
 
+	private PersistenceManager persistenceManager;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
+		this.persistenceManager = new PersistenceManager();
+		this.persistenceManager.cleanStart( this );
+
 		this.bus = new MessageBus<Message>();
 		this.alarmsManager = new AlarmsManager();
-		this.alarmsManager.setMessageBus(this.bus);
 
+		// TODO: REMOVE.
+		this.addPlaceholders();
+
+		this.alarmsManager.setMessageBus(this.bus);
+	}
+
+	/**
+	 * Temporary: add some test/placeholder alarms.
+	 * TODO: REMOVE.
+	 */
+	private void addPlaceholders() {
 		// Hard code in some sample alarms
 		// TODO load from database/wherever they are stored
 		Alarm namedAlarm = new Alarm(13, 37);
@@ -47,7 +63,6 @@ public class SFApplication extends Application {
 		alarms.add(alarm2);
 		alarms.add(alarm3);
 		alarms.add(alarm4);
-
 		this.alarmsManager.addAll(alarms);
 	}
 
@@ -67,5 +82,14 @@ public class SFApplication extends Application {
 	 */
 	public MessageBus<Message> getBus() {
 		return bus;
+	}
+
+	/**
+	 * Returns the PersistenceManager for the application.
+	 *
+	 * @return
+	 */
+	public PersistenceManager getPersistenceManager() {
+		return this.persistenceManager;
 	}
 }

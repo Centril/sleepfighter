@@ -16,7 +16,6 @@ import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.model.AlarmsManager;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
-import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -38,33 +37,46 @@ public class MainActivity extends Activity {
 	private AlarmsManager manager;
 	private AlarmAdapter alarmAdapter;
 
+	/**
+	 * <p>Returns the SFApplication.</p>
+	 *
+	 * <p>Thank the genius programmers @ google for making<br/>
+	 * {@link #getApplication()} final removing the option of covariant return type.</p>
+	 *
+	 * @return the SFApplication.
+	 */
+	public SFApplication app() {
+		return (SFApplication) this.getApplication();
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState);
+
 		this.setContentView(R.layout.activity_main);
 
-		this.manager = ((SFApplication) getApplication()).getAlarmsManager();
+		this.manager = this.app().getAlarmsManager();
 		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
 		// this.immedateTestAlarmSchedule();
 
-		MessageBus<Message> bus = ((SFApplication) getApplication()).getBus();
-		bus.subscribe(this);
+		this.app().getBus().subscribe(this);
 
-		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
-
-		listView.setAdapter(this.alarmAdapter);
-
-		listView.setOnItemClickListener(listClickListener);
-
-		// Register to get context menu events associated with listView
-		registerForContextMenu(listView);
+		this.setupListView();
 
 		this.updateEarliestText();
 		
 		AlarmAudioManager.getInstance().setup(this);
 		VibrationManager.getInstance().setup(this);
+	}
+
+	private void setupListView() {
+		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
+		listView.setAdapter(this.alarmAdapter);
+		listView.setOnItemClickListener(listClickListener);
+
+		// Register to get context menu events associated with listView
+		this.registerForContextMenu(listView);
 	}
 
 	private void immedateTestAlarmSchedule() {
@@ -93,7 +105,6 @@ public class MainActivity extends Activity {
 	}
 	
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
-
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
@@ -103,11 +114,9 @@ public class MainActivity extends Activity {
 	};
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.mainAlarmsList) {
-			String[] menuItems = getResources().getStringArray(
-					R.array.main_list_context_menu);
+			String[] menuItems = getResources().getStringArray(R.array.main_list_context_menu);
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
@@ -116,8 +125,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		Alarm selectedAlarm = (alarmAdapter.getItem(info.position));
 
 		// TODO perhaps use something other than order
@@ -164,25 +172,27 @@ public class MainActivity extends Activity {
 
 	private void deleteAlarm(Alarm alarm) {
 		this.manager.remove(alarm);
-		
-		// TODO only do this when receiving a ObservableList.Event in a handler
-		// method (couln't get it to work)
-		this.alarmAdapter.notifyDataSetChanged();
-		
 	}
 	
 	private void copyAlarm(Alarm alarm) {
-		Alarm copy = null;
+
+		final MainActivity self = this;
+
 		try {
-			copy = (Alarm) alarm.clone();
-			// TODO: copy will have the same ID as alarm, so we have to somehow
-			// create and assign a new unique ID to copy here.
+			final Alarm copy = (Alarm) alarm.clone();
+
+			// Store to persistence.
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					self.app().getPersistenceManager().addAlarm( self, copy );
+				}
+			} ).run();
+
+			this.manager.add(copy);
 		} catch (CloneNotSupportedException e) {
 			Debug.e(e);
 		}
-		this.manager.add(copy);
-		
-		this.alarmAdapter.notifyDataSetChanged();
 	}
 
 	/**
@@ -192,10 +202,28 @@ public class MainActivity extends Activity {
 	 */
 	@Handler
 	public void handleDateChange( DateChangeEvent evt ) {
+		final MainActivity self = this;
 		this.runOnUiThread( new Runnable() {
 			@Override
 			public void run() {
-				MainActivity.this.updateEarliestText();
+				self.updateEarliestText();
+			}
+		});
+	}
+
+	/**
+	 * Handles a change in the list of alarms (the list itself, deletion, insertion, etc, not edits in an alarm).
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleListChange( Message evt ) {
+		final MainActivity self = this;
+		this.runOnUiThread( new Runnable() {
+			@Override
+			public void run() {
+				self.updateEarliestText();
+				self.alarmAdapter.notifyDataSetChanged();
 			}
 		});
 	}
@@ -206,13 +234,11 @@ public class MainActivity extends Activity {
 	 * @param now the current time.
 	 */
 	private void updateEarliestText() {
-		Debug.d( "updateEarliestText" );
-
 		long now = this.getNow();
 
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
-		String text =DateTextUtils.getTimeToText( this.getResources(), now,  stamp);
+		String text = DateTextUtils.getTimeToText( this.getResources(), now,  stamp);
 		
 		earliestTimeText.setText(text);
 	}
