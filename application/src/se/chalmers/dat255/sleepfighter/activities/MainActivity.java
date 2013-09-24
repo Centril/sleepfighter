@@ -255,15 +255,16 @@ public class MainActivity extends Activity {
 		// Handle item selection
 	    switch (item.getItemId()) {
 	        case R.id.action_add:
-	        	Intent intent = new Intent(this, AlarmSettingsActivity.class);
-	        	/*
-	        	// Preliminary code to add a new alarm and fetch its ID
 	        	Alarm newAlarm = new Alarm(0, 0);
 	        	manager.add(newAlarm);
+	        	this.app().persist().addAlarm(this, newAlarm);
+	        	
 	        	Bundle b = new Bundle();
 	        	b.putInt("id", newAlarm.getId());
+	        	
+	        	Intent intent = new Intent(this, AlarmSettingsActivity.class);
 	        	intent.putExtras(b);
-	        	*/
+	        	
 	    		startActivity(intent);
 	            return true;
 	        default:
