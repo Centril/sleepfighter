@@ -2,12 +2,15 @@ package se.chalmers.dat255.sleepfighter.persist;
 
 import java.sql.SQLException;
 
+import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.Alarm.AlarmEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import android.content.Context;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.field.DataPersisterManager;
+import com.j256.ormlite.table.TableUtils;
 
 /**
  * Handles all reads and writes to persistence.<br/>
@@ -18,23 +21,93 @@ import com.j256.ormlite.field.DataPersisterManager;
  * @since Sep 21, 2013
  */
 public class PersistenceManager {
-	/**
-	 * Constructs the PersistenceManager.
-	 */
-	public PersistenceManager() {
-	}
 
 	private volatile OrmHelper ormHelper = null;
 
+	private Context context;
+
 	private static boolean init = false;
+
+	/**
+	 * Handles changes in alarm-list (the list itself, additions, deletions, etc).
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleListChange( AlarmList.Event evt ) {
+		switch ( evt.operation() ) {
+		case CLEAR:
+			this.clearAlarms();
+			break;
+
+		case ADD:
+			for ( Object elem : evt.elements() ) {
+				this.addAlarm( (Alarm) elem );
+			}
+			break;
+
+		case REMOVE:
+			for ( Object elem : evt.elements() ) {
+				this.removeAlarm( (Alarm) elem );
+			}
+			break;
+
+		case UPDATE:
+			Alarm old = (Alarm) evt.elements().iterator().next();
+			this.removeAlarm( old );
+			this.addAlarm( evt.source().get( evt.index() ) );
+			break;
+		}
+	}
+
+	/**
+	 * Handles a change in an alarm.
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleAlarmChange( AlarmEvent evt ) {
+		this.updateAlarm( evt.getAlarm() );
+	}
+
+	/**
+	 * Constructs the PersistenceManager.
+	 *
+	 * @param context android context.
+	 */
+	public PersistenceManager( Context context ) {
+		this.setContext( context );
+	}
+
+	/**
+	 * Sets the context to use.
+	 *
+	 * @param context android context.
+	 */
+	public void setContext( Context context ) {
+		this.context = context;
+	}
 
 	/**
 	 * Rebuilds all data-structures. Any data is lost.
 	 *
 	 * @param context android context.
 	 */
-	public void cleanStart( Context context ) {
-		this.getHelper( context ).rebuild();
+	public void cleanStart() {
+		this.getHelper().rebuild();
+	}
+
+	/**
+	 * Clears the list of all alarms.
+	 *
+	 * @throws PersistenceException if some SQL error happens.
+	 */
+	public void clearAlarms() throws PersistenceException {
+		try {
+			TableUtils.clearTable( this.getHelper().getConnectionSource(), Alarm.class );
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
 	}
 
 	/**
@@ -44,8 +117,8 @@ public class PersistenceManager {
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public AlarmList fetchAlarms( Context context ) throws PersistenceException {
-		OrmHelper helper = this.getHelper( context );
+	public AlarmList fetchAlarms() throws PersistenceException {
+		OrmHelper helper = this.getHelper();
 		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
 		return new AlarmList( dao.queryForAll() );
 	}
@@ -57,8 +130,8 @@ public class PersistenceManager {
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public AlarmList fetchAlarmsSortedNames( Context context ) throws PersistenceException {
-		OrmHelper helper = this.getHelper( context );
+	public AlarmList fetchAlarmsSortedNames() throws PersistenceException {
+		OrmHelper helper = this.getHelper();
 		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
 
 		try {
@@ -76,8 +149,8 @@ public class PersistenceManager {
 	 * @return the fetched Alarm.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public Alarm fetchAlarmById( Context context, int id ) throws PersistenceException {
-		OrmHelper helper = this.getHelper( context );
+	public Alarm fetchAlarmById( int id ) throws PersistenceException {
+		OrmHelper helper = this.getHelper();
 		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
 		return dao.queryForId( id );
 	}
@@ -87,9 +160,10 @@ public class PersistenceManager {
 	 *
 	 * @param context android context
 	 * @param alarm the alarm to update.
+	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void updateAlarm( Context context, Alarm alarm ) {
-		OrmHelper helper = this.getHelper( context );
+	public void updateAlarm( Alarm alarm ) throws PersistenceException {
+		OrmHelper helper = this.getHelper();
 		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
 		dao.update( alarm );
 	}
@@ -99,9 +173,10 @@ public class PersistenceManager {
 	 *
 	 * @param context android context.
 	 * @param alarm the alarm to store.
+	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void addAlarm( Context context, Alarm alarm ) {
-		OrmHelper helper = this.getHelper( context );
+	public void addAlarm( Alarm alarm ) throws PersistenceException {
+		OrmHelper helper = this.getHelper();
 		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
 		dao.create( alarm );
 	}
@@ -111,9 +186,10 @@ public class PersistenceManager {
 	 *
 	 * @param context android context.
 	 * @param alarm the alarm to remove.
+	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void removeAlarm( Context context, Alarm alarm ) {
-		OrmHelper helper = this.getHelper( context );
+	public void removeAlarm( Alarm alarm ) throws PersistenceException {
+		OrmHelper helper = this.getHelper();
 		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
 		dao.delete( alarm );
 	}
@@ -134,13 +210,13 @@ public class PersistenceManager {
 	 * @param context the context to use to get helper.
 	 * @return the helper.
 	 */
-	public OrmHelper getHelper( Context context ) {
+	public OrmHelper getHelper() {
 		if ( this.ormHelper == null ) {
-			if ( context == null ) {
+			if ( this.context == null ) {
 				throw new PersistenceException( "There is no helper set and context == null" );
 			}
 
-			this.loadHelper( context );
+			this.loadHelper();
 		}
 
 		return this.ormHelper;
@@ -149,8 +225,8 @@ public class PersistenceManager {
 	/**
 	 * Loads the OrmHelper.
 	 */
-	private void loadHelper( Context context ) {
-		this.ormHelper = OpenHelperManager.getHelper( context, OrmHelper.class );
+	private void loadHelper() {
+		this.ormHelper = OpenHelperManager.getHelper( this.context, OrmHelper.class );
 
 		this.init();
 	}

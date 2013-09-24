@@ -14,7 +14,7 @@ import android.app.Application;
  * A custom implementation of Application for SleepFighter.
  */
 public class SFApplication extends Application {
-	private AlarmList alarmsManager;
+	private AlarmList alarmList;
 	private MessageBus<Message> bus;
 
 	private PersistenceManager persistenceManager;
@@ -23,16 +23,7 @@ public class SFApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 
-		this.persistenceManager = new PersistenceManager();
-		this.persistenceManager.cleanStart( this );
-
-		this.bus = new MessageBus<Message>();
-		this.alarmsManager = new AlarmList();
-
-		// TODO: REMOVE.
-		this.addPlaceholders();
-
-		this.alarmsManager.setMessageBus(this.bus);
+		this.persistenceManager = new PersistenceManager( this );
 	}
 
 	/**
@@ -63,16 +54,29 @@ public class SFApplication extends Application {
 		alarms.add(alarm2);
 		alarms.add(alarm3);
 		alarms.add(alarm4);
-		this.alarmsManager.addAll(alarms);
+		this.alarmList.addAll(alarms);
 	}
 
 	/**
-	 * Returns the AlarmsManager for the application.
+	 * Returns the AlarmList for the application.<br/>
+	 * It is lazy loaded.
 	 * 
-	 * @return the AlarmsManager for the application
+	 * @return the AlarmList for the application
 	 */
 	public AlarmList getAlarms() {
-		return alarmsManager;
+		if ( this.alarmList == null ) {
+			this.alarmList = new AlarmList();
+
+			// TODO: REMOVE.
+			this.addPlaceholders();
+
+			this.alarmList.setMessageBus(this.getBus());
+
+			this.persistenceManager.cleanStart();
+			this.bus.subscribe( this.persistenceManager );
+		}
+
+		return alarmList;
 	}
 
 	/**
@@ -81,6 +85,9 @@ public class SFApplication extends Application {
 	 * @return the default MessageBus for the application
 	 */
 	public MessageBus<Message> getBus() {
+		if ( this.bus == null ) {
+			this.bus = new MessageBus<Message>();
+		}
 		return bus;
 	}
 

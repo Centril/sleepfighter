@@ -49,6 +49,8 @@ public class Alarm implements Cloneable {
 		 * @return the alarm.
 		 */
 		public Alarm getAlarm();
+
+		public Field getModifiedField();
 	}
 
 	/**

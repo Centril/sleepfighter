@@ -178,24 +178,7 @@ public class MainActivity extends Activity {
 	}
 	
 	private void copyAlarm(Alarm alarm) {
-
-		final MainActivity self = this;
-
-		try {
-			final Alarm copy = (Alarm) alarm.clone();
-
-			// Store to persistence.
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					self.app().getPersister().addAlarm( self, copy );
-				}
-			} ).run();
-
-			this.manager.add(copy);
-		} catch (CloneNotSupportedException e) {
-			Debug.e(e);
-		}
+		this.manager.add( new Alarm( alarm ) );
 	}
 
 	/**
@@ -259,10 +242,8 @@ public class MainActivity extends Activity {
 	    switch (item.getItemId()) {
 	        case R.id.action_add:
 	        	Alarm newAlarm = new Alarm(0, 0);
-	        	manager.add(newAlarm);
-	        	this.app().getPersister().addAlarm(this, newAlarm);
-
-	        	startAlarmEdit(newAlarm);
+	        	this.manager.add(newAlarm);
+	        	this.startAlarmEdit(newAlarm);
 
 	            return true;
 	        default:
