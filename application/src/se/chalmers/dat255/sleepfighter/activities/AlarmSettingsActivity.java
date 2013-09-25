@@ -119,13 +119,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 				for(int i = 0; i < weekdayStrings.length; ++i) {
 					if(set.contains(weekdayStrings	[i])) {
-						Debug.d("day enabled: " + weekdayStrings[i]);
 						enabledDays[i] = true;
 					}
 				}
 				
 				alarm.setEnabledDays(enabledDays);
-				preference.setSummary(formatDays(alarm));	
+				preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 			}
 			else if (REPEAT.equals(preference.getKey())) {
 				alarm.setRepeat(("true".equals(stringValue)) ? true : false);
@@ -161,7 +160,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			preference.setSummary(alarm.getTimeString());
 		}
 		else if(DAYS.equals(preference.getKey())) {
-			preference.setSummary(formatDays(alarm));	
+			preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 		}
 		else if (REPEAT.equals(preference.getKey())) {
 			((CheckBoxPreference) preference).setChecked(alarm.isRepeating());
