@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
+	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
 	private final String NAME = "pref_alarm_name";
 	private final String TIME = "pref_alarm_time";

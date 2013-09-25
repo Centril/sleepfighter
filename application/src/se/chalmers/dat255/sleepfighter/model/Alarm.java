@@ -126,7 +126,7 @@ public class Alarm implements Cloneable {
 	public static final int NOT_COMMITTED_ID = -1;
 
 	@DatabaseField
-	private boolean isActivated = true;
+	private boolean isActivated = false;
 
 	@DatabaseField
 	private String name;

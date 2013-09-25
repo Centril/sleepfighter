@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Alarm clickedAlarm = MainActivity.this.alarmAdapter.getItem(position);
-			startAlarmEdit(clickedAlarm);
+			startAlarmEdit(clickedAlarm, false);
 		}
 	};
 
@@ -129,7 +129,7 @@ public class MainActivity extends Activity {
 		// TODO perhaps use something other than order
 		switch (item.getOrder()) {
 			case 0:
-				startAlarmEdit(selectedAlarm);
+				startAlarmEdit(selectedAlarm, false);
 				return true;
 			case 1:
 				deleteAlarm(selectedAlarm);
@@ -163,9 +163,12 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void startAlarmEdit( Alarm alarm ) {
+	private void startAlarmEdit( Alarm alarm, boolean isNew ) {
 		Intent intent = new Intent(this, AlarmSettingsActivity.class );
 		new IntentUtils( intent ).setAlarmId( alarm );
+
+		intent.putExtra( AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew );
+
 		startActivity( intent );
 	}
 
@@ -192,7 +195,7 @@ public class MainActivity extends Activity {
 		}
 
 		this.manager.add( alarm );
-		this.startAlarmEdit( alarm );
+		this.startAlarmEdit( alarm, true );
 	}
 
 	/**
