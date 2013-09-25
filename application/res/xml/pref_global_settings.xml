@@ -1,9 +1,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-   
-    <PreferenceCategory 
-        android:title="hello world!">
-   
-   </PreferenceCategory>
+    
+    <CheckBoxPreference
+        android:key="pref_alarm_turn_screen_on"
+        android:title="@string/pref_alarm_turn_screen_on"
+        android:summary="@string/pref_alarm_turn_screen_on_summary"
+        android:defaultValue="true" />
+
+    <CheckBoxPreference
+        android:key="pref_alarm_bypass_lock_screen"
+        android:title="@string/pref_alarm_bypass_lock_screen"
+        android:summary="@string/pref_alarm_bypass_lock_screen_summary"
+        android:defaultValue="true" />
     
     
 </PreferenceScreen>
