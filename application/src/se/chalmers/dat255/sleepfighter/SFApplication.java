@@ -60,7 +60,7 @@ public class SFApplication extends Application {
 	/**
 	 * Returns the PersistenceManager for the application.
 	 *
-	 * @return the periste
+	 * @return the perister
 	 */
 	public PersistenceManager getPersister() {
 		return this.persistenceManager;
