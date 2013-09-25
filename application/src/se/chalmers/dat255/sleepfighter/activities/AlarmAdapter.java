@@ -1,18 +1,13 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
 import java.util.List;
-import java.util.Locale;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
-import android.graphics.Color;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -87,33 +82,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
 	private void setupWeekdays( final Alarm alarm, View convertView ) {
 		TextView view = (TextView) convertView.findViewById(R.id.weekdaysText);
-
-		// Compute weekday names & join.
-		final int indiceLength = 2;
-		String[] names = DateTextUtils.getWeekdayNames( indiceLength, Locale.getDefault() );
-
-		SpannableString text = new SpannableString( StringUtils.WS_JOINER.join( names ) );
-
-		// Create spans for enabled days.
-		boolean[] enabledDays = alarm.getEnabledDays();
-
-		if ( enabledDays.length != names.length || names.length != 7 ) {
-			throw new AssertionError("A week has 7 days, wrong array lengths!");
-		}
-
-		int start = 0;
-		for ( int i = 0; i < enabledDays.length; i++ ) {
-			boolean enabled = enabledDays[i];
-			int length = names[i].length();
-
-			if ( enabled ) {
-				text.setSpan( new ForegroundColorSpan( Color.WHITE ), start, start + length, 0 );
-			}
-
-			start += length + 1;
-		}
-
-		view.setText( text );
+		view.setText( DateTextUtils.makeEnabledDaysText( alarm ) );
 	}
 
 	private void setupActivatedSwitch( final Alarm alarm, View convertView ) {

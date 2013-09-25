@@ -12,8 +12,12 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -26,6 +30,8 @@ import com.google.common.base.Strings;
  * @since Sep 19, 2013
  */
 public class DateTextUtils {
+	private static final int ENABLED_DAYS_INDICE_LENGTH = 2;
+
 	/** Joiner for time, the separator is ":". */
 	public static final Joiner TIME_JOINER = Joiner.on( ':' ).skipNulls();
 
@@ -138,6 +144,33 @@ public class DateTextUtils {
 		}
 
 		return names;
+	}
+
+	public static final SpannableString makeEnabledDaysText( final Alarm alarm ) {
+		// Compute weekday names & join.
+		String[] names = DateTextUtils.getWeekdayNames( ENABLED_DAYS_INDICE_LENGTH, Locale.getDefault() );
+
+		SpannableString text = new SpannableString( StringUtils.WS_JOINER.join( names ) );
+
+		// Create spans for enabled days.
+		boolean[] enabledDays = alarm.getEnabledDays();
+		if ( enabledDays.length != names.length || names.length != 7 ) {
+			throw new AssertionError("A week has 7 days, wrong array lengths!");
+		}
+
+		int start = 0;
+		for ( int i = 0; i < enabledDays.length; i++ ) {
+			boolean enabled = enabledDays[i];
+			int length = names[i].length();
+
+			if ( enabled ) {
+				text.setSpan( new ForegroundColorSpan( Color.WHITE ), start, start + length, 0 );
+			}
+
+			start += length + 1;
+		}
+
+		return text;
 	}
 
 	/**
