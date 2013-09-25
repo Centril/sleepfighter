@@ -37,5 +37,7 @@
         <item>true</item>
     </string-array>
   
+  
     
+    <string name="pref_alarm_repeat">Upprepa</string>
 </resources>
