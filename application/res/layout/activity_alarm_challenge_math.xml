@@ -35,7 +35,8 @@
             android:layout_width="261dp"
             android:layout_height="80dp"
             android:text="@string/btn_answer"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:onClick="buttonMath" />
 
     </LinearLayout>
 

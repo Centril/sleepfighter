@@ -3,11 +3,14 @@ package se.chalmers.dat255.sleepfighter.activities;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.challenges.SimpleMathChallenge;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 public class SimpleMathActivity extends Activity {
@@ -35,5 +38,10 @@ public class SimpleMathActivity extends Activity {
 //		    }
 //		});
 	}
-
+	
+	public void buttonMath(View view) {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
+	
 }
