@@ -6,7 +6,7 @@
             android:key="pref_alarm_time"
             android:title="@string/pref_alarm_time" />
 
-        <MultiSelectListPreference
+        <se.chalmers.dat255.sleepfighter.MultiSelectListPreference
             android:defaultValue="@array/default_week_days"
             android:entries="@array/week_days"
             android:entryValues="@array/week_days"
