@@ -3,18 +3,26 @@ package se.chalmers.dat255.sleepfighter.activities;
 import java.util.HashSet;
 import java.util.Locale;
 
+import net.engio.mbassy.listener.Handler;
+
 import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
+import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -22,7 +30,12 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
@@ -40,16 +53,54 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private Alarm alarm;
 	private AlarmList alarmList;
 	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= 11) {
+			ActionBar actionBar = getActionBar();
+		    // add the custom view to the action bar
+		    actionBar.setCustomView(R.layout.alarm_settings_actionbar);
+		    EditText edit_title_field = (EditText) actionBar.getCustomView().findViewById(R.id.alarm_edit_title_field);
+		    edit_title_field.setText(MetaTextUtils.printAlarmName(this, alarm));
+		    edit_title_field.setOnEditorActionListener(new OnEditorActionListener() {
+
+				@Override
+				public boolean onEditorAction(TextView v, int actionId,
+						KeyEvent event) {
+					alarm.setName(v.getText().toString());
+					InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+					return false;
+				}
+		    });
+			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM);
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	@Handler
+	public void handleNameChange(MetaChangeEvent e) {
+		if (e.getModifiedField() == Field.NAME) {
+			String name = MetaTextUtils.printAlarmName(this, e.getAlarm());
+			findPreference(NAME).setSummary(name);
+			
+			if (Build.VERSION.SDK_INT >= 11) {
+				((EditText)this.getActionBar().getCustomView().findViewById(R.id.alarm_edit_title_field)).setText(name);
+			}
+		}
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		weekdayStrings = AlarmSettingsActivity.this.getResources().getStringArray(R.array.week_days);
 		 
 		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
 
 		alarmList = ((SFApplication) getApplication()).getAlarms();
-
+		((SFApplication) getApplication()).getBus().subscribe(this);
+		
 		alarm = alarmList.getById(id);
 
 		if (alarm == null) {
@@ -69,6 +120,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		int minute = alarm.getMinute();
 		editor.putString(TIME, (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
 		editor.commit();
+		
+		setupActionBar();
 		
 		setupSimplePreferencesScreen();
 	}
@@ -163,6 +216,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		preference.setPersistent(false);
 		
 		if (NAME.equals(preference.getKey())) {
+			preference.setDefaultValue(MetaTextUtils.printAlarmName(this, alarm));
 			preference.setSummary(MetaTextUtils.printAlarmName(this, alarm));
 		}
 		else if (TIME.equals(preference.getKey())) {
