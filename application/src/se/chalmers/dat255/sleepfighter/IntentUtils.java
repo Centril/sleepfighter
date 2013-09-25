@@ -2,7 +2,7 @@ package se.chalmers.dat255.sleepfighter;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import android.content.Intent;
-import android.os.Bundle;
+import android.net.Uri;
 
 /**
  * IntentUtils provides some utilities for reading and writing data to intents.<br/>
@@ -13,7 +13,8 @@ import android.os.Bundle;
  * @since Sep 24, 2013
  */
 public class IntentUtils {
-	private static final String EXTRA_ALARM_ID = "alarm_id";
+	private static final String SCHEME = "sleepfighter";
+	private static final String ID_SSP = "alarm/id";
 
 	private final Intent intent;
 
@@ -46,7 +47,8 @@ public class IntentUtils {
 		if ( id == Alarm.NOT_COMMITTED_ID ) {
 			throw new IllegalArgumentException( "The provided id is not legal to bind to an intent." );
 		}
-		this.intent.putExtra( EXTRA_ALARM_ID, id );
+
+		this.intent.setData( Uri.fromParts( SCHEME, ID_SSP, Integer.toString( id ) ) );
 
 		return this;
 	}
@@ -57,18 +59,28 @@ public class IntentUtils {
 	 * @return the ID of the alarm.
 	 */
 	public int getAlarmId() {
-		Bundle extras = this.intent.getExtras();
-
-		if ( extras == null) {
-			throw new IllegalArgumentException( "No arguments provided, ID needed." );
+		Uri data = this.intent.getData();
+		if ( data == null) {
+			this.failNoId();
 		}
 
-		int id = extras.getInt( EXTRA_ALARM_ID );
-
-		if ( id < 1 ) {
-			throw new IllegalArgumentException( "ID is outside of valid range, only positive integers allowed." );
+		String fragment = data.getFragment();
+		if ( fragment == null ) {
+			this.failNoId();
 		}
 
-		return id;
+		try {
+			int id = Integer.parseInt( fragment );
+			if ( id < 1 ) {
+				throw new IllegalArgumentException( "ID is outside of valid range, only positive integers allowed." );
+			}
+			return id;
+		} catch ( NumberFormatException e ) {
+			throw new IllegalArgumentException( "ID providided is not a number" );
+		}
+	}
+
+	private void failNoId() {
+		throw new IllegalArgumentException( "No arguments provided, ID needed." );
 	}
 }
