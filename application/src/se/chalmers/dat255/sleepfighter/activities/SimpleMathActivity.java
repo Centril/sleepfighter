@@ -15,33 +15,47 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class SimpleMathActivity extends Activity {
 
+	private SimpleMathChallenge smc = new SimpleMathChallenge();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_alarm_challenge_math);
-		
-		SimpleMathChallenge smc = new SimpleMathChallenge();
-		
+
 		TextView userText = (TextView) findViewById(R.id.questionField);
 
 		userText.setText(smc.getCalculation());
-		
-//		EditText editText = (EditText) findViewById(R.id.answerField);
-//		editText.setOnEditorActionListener(new OnEditorActionListener() {
-//		    @Override
-//		    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-//		        boolean handled = false;
-//		        if (actionId == EditorInfo.IME_ACTION_DONE) {
-//		            handled = true;
-//		        }
-//		        return handled;
-//		    }
-//		});
+
+		final EditText editText = (EditText) findViewById(R.id.answerField);
+		editText.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+					KeyEvent event) {
+				boolean handled = false;
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+					if (Integer.parseInt(editText.getText().toString()) == smc
+							.getResult()) {
+						next();
+					} else {
+						Toast.makeText(getBaseContext(),
+								"Sorry, wrong answer!", Toast.LENGTH_SHORT)
+								.show();
+					}
+					handled = true;
+				}
+				return handled;
+			}
+		});
 	}
-	
+
 	public void buttonMath(View view) {
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
-	
+
+	private void next() {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
+
 }
