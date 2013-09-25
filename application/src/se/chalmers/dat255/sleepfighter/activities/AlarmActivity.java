@@ -2,8 +2,11 @@ package se.chalmers.dat255.sleepfighter.activities;
 
 import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.debug.Debug;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -28,6 +31,9 @@ public class AlarmActivity extends Activity {
 	private boolean bypassLockscreen = true;
 
 	private int alarmId;
+	
+	private static final String TURN_SCREEN_ON = "pref_alarm_turn_screen_on";
+	private static final String BYPASS_LOCK_SCREEN = "pref_alarm_bypass_lock_screen";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,18 @@ public class AlarmActivity extends Activity {
 
 		this.getWindow().addFlags( flags );
 	}
+	
+	
+	
+	private void readPreferences() {
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+	
+		this.turnScreenOn = sharedPref.getBoolean(TURN_SCREEN_ON, true);
+		this.bypassLockscreen = sharedPref.getBoolean(BYPASS_LOCK_SCREEN, true);
+	
+		Debug.d("turn screen on :" + this.turnScreenOn);
+		Debug.d("bypass lock screen :" + this.bypassLockscreen);
+	}
 
 	/**
 	 * Computes screen flags based on preferences.
@@ -71,6 +89,7 @@ public class AlarmActivity extends Activity {
 	 * @return screen flags.
 	 */
 	private int computeScreenFlags() {
+		readPreferences();
 		// TODO: actually read from preferences!
 
 		int flags = 0;
