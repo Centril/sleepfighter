@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 	 * @return the SFApplication.
 	 */
 	public SFApplication app() {
-		return (SFApplication) this.getApplication();
+		return SFApplication.get();
 	}
 
 	@Override

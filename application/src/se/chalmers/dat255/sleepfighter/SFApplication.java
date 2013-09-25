@@ -17,11 +17,23 @@ public class SFApplication extends Application {
 
 	private PersistenceManager persistenceManager;
 
+	private static SFApplication app;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		app = this;
 
 		this.persistenceManager = new PersistenceManager( this );
+	}
+
+	/**
+	 * Returns the one and only SFApplication in town.
+	 *
+	 * @return the application.
+	 */
+	public static final SFApplication get() {
+		return app;
 	}
 
 	/**
