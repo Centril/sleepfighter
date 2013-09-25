@@ -2,7 +2,7 @@ package se.chalmers.dat255.sleepfighter.challenges;
 
 import java.util.Random;
 
-public class SimpleMathChallenge extends AbstractChallenge {
+public class SimpleMathChallenge {
 
 	private Random random = new Random();
 	private int operand1 = 0;
@@ -14,7 +14,6 @@ public class SimpleMathChallenge extends AbstractChallenge {
 		runChallenge();
 	}
 	
-	@Override
 	public void runChallenge() {
 		nextInts();
 		nextOp();
