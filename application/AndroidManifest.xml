@@ -34,6 +34,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="se.chalmers.dat255.sleepfighter.activities.MainActivity" />
         </activity>
+        
+        <activity
+            android:name="se.chalmers.dat255.sleepfighter.activities.GlobalSettingsActivity"
+            android:label="@string/title_activity_global_settings"
+            android:parentActivityName="se.chalmers.dat255.sleepfighter.activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="se.chalmers.dat255.sleepfighter.activities.MainActivity" />
+        </activity>
 
         <receiver android:name="se.chalmers.dat255.sleepfighter.activities.AlarmReceiver" >
         </receiver>

@@ -167,6 +167,11 @@ public class MainActivity extends Activity {
 		new IntentUtils( intent ).setAlarmId( alarm );
 		startActivity( intent );
 	}
+	
+	private void startGlobalSettings( ) {
+		Intent intent = new Intent(this, GlobalSettingsActivity.class );
+		startActivity( intent );
+	}
 
 	private void deleteAlarm( Alarm alarm ) {
 		this.manager.remove( alarm );
@@ -251,7 +256,9 @@ public class MainActivity extends Activity {
 		case R.id.action_add:
 			this.addAlarm();
 			return true;
-
+		case R.id.action_settings:
+			this.startGlobalSettings();
+			return true;
 		default:
 			return super.onOptionsItemSelected( item );
 		}
