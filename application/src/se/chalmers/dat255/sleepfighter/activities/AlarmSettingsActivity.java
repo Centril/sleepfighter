@@ -12,6 +12,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.support.v4.app.NavUtils;
@@ -23,6 +24,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private static final String NAME = "pref_alarm_name";
 	private static final String TIME = "pref_alarm_time";
 	private static final String DAYS = "pref_enabled_days";
+	private static final String REPEAT = "pref_alarm_repeat";
 	
 	// is used in sBindPreferenceSummaryToValueListener
 	private static String[] weekdayStrings;
@@ -75,11 +77,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(TIME));
 		bindPreferenceSummaryToValue(findPreference(NAME));
 		bindPreferenceSummaryToValue(findPreference(DAYS));
+		bindPreferenceSummaryToValue(findPreference(REPEAT));
 	}
 	
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
+			String stringValue = value.toString();
 			
 			if (TIME.equals(preference.getKey())) {
 				TimepickerPreference tpPref = (TimepickerPreference) preference;
@@ -92,11 +96,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				preference.setSummary((hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
 			}
 			else if (NAME.equals(preference.getKey())) {
-				String stringValue = value.toString();
-	
 				alarm.setName(stringValue);
 				preference.setSummary(stringValue);
-			} else if(DAYS.equals(preference.getKey())) {
+			}
+			else if(DAYS.equals(preference.getKey())) {
 				
 
 				boolean[] enabledDays = { false, false, false, false, false, false, false };
@@ -114,6 +117,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				
 				alarm.setEnabledDays(enabledDays);
 				preference.setSummary(formatDays(alarm));	
+			}
+			else if (REPEAT.equals(preference.getKey())) {
+				alarm.setRepeat(("true".equals(stringValue)) ? true : false);
 			}
 			return true;
 		}
@@ -144,8 +150,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		else if (TIME.equals(preference.getKey())) {
 			preference.setSummary(alarm.getTimeString());
-		} else if(DAYS.equals(preference.getKey())) {
+		}
+		else if(DAYS.equals(preference.getKey())) {
 			preference.setSummary(formatDays(alarm));	
+		}
+		else if (REPEAT.equals(preference.getKey())) {
+			((CheckBoxPreference) preference).setChecked(alarm.isRepeating());
 		}
 		
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);

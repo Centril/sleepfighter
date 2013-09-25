@@ -151,6 +151,9 @@ public class Alarm implements Cloneable {
 
 	@DatabaseField
 	private int unnamedPlacement;
+	
+	@DatabaseField
+	private boolean isRepeating = false;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
@@ -614,6 +617,14 @@ public class Alarm implements Cloneable {
 
 	public Alarm clone() throws CloneNotSupportedException {
 		return new Alarm( this );
+	}
+	
+	public void setRepeat(boolean isRepeating) {
+		this.isRepeating = isRepeating;
+	}
+	
+	public boolean isRepeating() {
+		return this.isRepeating;
 	}
 
 	/**

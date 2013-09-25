@@ -1,46 +1,38 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-   
-    <PreferenceCategory 
-        android:title="@string/time_category_title">
-   
-    <se.chalmers.dat255.sleepfighter.TimepickerPreference
-        android:key="pref_alarm_time"
-        android:title="@string/pref_alarm_time"
-        android:defaultValue="00:00"/>
 
+    <PreferenceCategory android:title="@string/time_category_title" >
+        <se.chalmers.dat255.sleepfighter.TimepickerPreference
+            android:defaultValue="00:00"
+            android:key="pref_alarm_time"
+            android:title="@string/pref_alarm_time" />
 
-    <MultiSelectListPreference
-        android:key="pref_enabled_days"
-        
-        android:title="@string/pref_alarm_enabled_days"
-        android:summary="summary summary..."
-        
-        android:entries="@array/week_days"
-        android:entryValues="@array/week_days"
-    
-       android:defaultValue="@array/default_week_days" />
-    
+        <MultiSelectListPreference
+            android:defaultValue="@array/default_week_days"
+            android:entries="@array/week_days"
+            android:entryValues="@array/week_days"
+            android:key="pref_enabled_days"
+            android:summary="summary summary..."
+            android:title="@string/pref_alarm_enabled_days" />
     </PreferenceCategory>
-
-     <PreferenceCategory 
-        android:title="@string/misc_category_title">
-   
+    <PreferenceCategory android:title="@string/misc_category_title" >
 
         <!-- NOTE: EditTextPreference accepts EditText attributes. -->
-    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-    <EditTextPreference
-        android:capitalize="words"
-        android:defaultValue="@string/pref_alarm_default_name"
-        android:inputType="textCapWords"
-        android:key="pref_alarm_name"
-        android:maxLines="1"
-        android:maxLength="100"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_alarm_name" />
+        <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="@string/pref_alarm_default_name"
+            android:inputType="textCapWords"
+            android:key="pref_alarm_name"
+            android:maxLength="100"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_alarm_name" />
+        
+        <CheckBoxPreference
+            android:title="@string/pref_alarm_repeat"
+            android:key="pref_alarm_repeat"
+            android:defaultValue="false" />
+    </PreferenceCategory>
 
-   
-   </PreferenceCategory>
-    
-    
 </PreferenceScreen>

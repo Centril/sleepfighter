@@ -37,4 +37,5 @@
         <item>true</item>
     </string-array>
     
+    <string name="pref_alarm_repeat">Repeat</string>
 </resources>
