@@ -208,6 +208,7 @@ public class MainActivity extends Activity {
 
 	public void challenge(View view) {
 		Intent intent = new Intent(this, AlarmActivity.class);
+		intent.putExtra(AlarmActivity.EXTRA_ALARM_ID, 1);
 		startActivity(intent);
 	}
 }
