@@ -7,7 +7,6 @@ import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
-import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
@@ -158,23 +157,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			return true;
 		}
 	};
-	
-	private String formatDays(final Alarm alarm) {
-		String formatted = "";
-		
-		// Compute weekday names & join.
-		final int indiceLength = 2;
-		final String[] days = DateTextUtils.getWeekdayNames( indiceLength, Locale.getDefault() );
-		final boolean[] enabled = alarm.getEnabledDays();
-		
-		for(int i = 0; i < days.length; ++i) {
-			if(enabled[i] == true) {
-				formatted += days[i] + " ";
-			}
-		}
-		
-		return formatted;
-	}
 	
 	private void bindPreferenceSummaryToValue(Preference preference) {
 		preference.setPersistent(false);
