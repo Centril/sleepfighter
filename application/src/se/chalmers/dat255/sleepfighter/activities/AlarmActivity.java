@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -113,5 +114,10 @@ public class AlarmActivity extends Activity {
 		Log.d( "AlarmActivity", "work#1" );
 		// TODO: do something useful.
 		Toast.makeText(this, "Alarm ringing, get up! Alarm #" + this.getAlarmId(), Toast.LENGTH_LONG).show();
+	}
+	
+	public void button(View view) {
+		Intent intent = new Intent(this, SimpleMathActivity.class);
+		startActivity(intent);
 	}
 }
