@@ -22,7 +22,7 @@ import com.j256.ormlite.table.DatabaseTable;
  *
  * @version 1.0
  * @since Sep 16, 2013
- */
+ */	
 @DatabaseTable(tableName = "alarm")
 public class Alarm implements Cloneable {
 	/**

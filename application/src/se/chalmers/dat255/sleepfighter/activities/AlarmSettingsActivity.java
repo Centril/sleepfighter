@@ -11,10 +11,12 @@ import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -56,6 +58,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		// TODO: Remove this debug thing
 		this.setTitle(this.getTitle() + " (ID: " + alarm.getId() + ")");
 
+		
+		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		int hour = alarm.getHour();
+		int minute = alarm.getMinute();
+		editor.putString(TIME, (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
+		editor.commit();
+		
 		setupSimplePreferencesScreen();
 	}
 
