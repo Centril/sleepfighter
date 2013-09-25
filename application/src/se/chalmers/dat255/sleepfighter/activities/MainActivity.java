@@ -182,20 +182,20 @@ public class MainActivity extends Activity {
 	}
 
 	private void copyAlarm( Alarm alarm ) {
-		this.newAlarm( new Alarm( alarm ) );
+		this.newAlarm( new Alarm( alarm ), false );
 	}
 
 	private void addAlarm() {
-		this.newAlarm( new Alarm() );
+		this.newAlarm( new Alarm(), true );
 	}
 
-	private void newAlarm( Alarm alarm ) {
+	private void newAlarm( Alarm alarm, boolean isAdded ) {
 		if ( alarm.isUnnamed() ) {
 			alarm.setUnnamedPlacement( this.manager.findLowestUnnamedPlacement() );
 		}
 
 		this.manager.add( alarm );
-		this.startAlarmEdit( alarm, true );
+		this.startAlarmEdit( alarm, isAdded );
 	}
 
 	/**
