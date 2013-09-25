@@ -11,6 +11,7 @@ import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import android.content.SharedPreferences;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -57,9 +58,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			finish();
 		}
 
-		if (!"".equals(alarm.getName())) {
-			this.setTitle(alarm.getName());
-		}
+		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
 		// TODO: Remove this debug thing
 		this.setTitle(this.getTitle() + " (ID: " + alarm.getId() + ")");
@@ -182,7 +181,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		preference.setPersistent(false);
 		
 		if (NAME.equals(preference.getKey())) {
-			preference.setSummary(alarm.getName());
+			preference.setSummary(MetaTextUtils.printAlarmName(this, alarm));
 		}
 		else if (TIME.equals(preference.getKey())) {
 			preference.setSummary(alarm.getTimeString());
