@@ -110,7 +110,7 @@ public class AlarmListTest extends TestCase {
 		testUnnamedPart( list, 1 );
 
 		try {
-			Alarm first = new Alarm( 0, 0, null );
+			Alarm first = new Alarm(0, 0);
 			list.add( first );
 			list.add( first.clone() );
 			list.add( first.clone() );

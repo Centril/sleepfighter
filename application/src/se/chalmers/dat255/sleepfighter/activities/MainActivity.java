@@ -168,7 +168,7 @@ public class MainActivity extends Activity {
 		new IntentUtils( intent ).setAlarmId( alarm );
 		startActivity( intent );
 	}
-	
+
 	private void startGlobalSettings( ) {
 		Intent intent = new Intent(this, GlobalSettingsActivity.class );
 		startActivity( intent );

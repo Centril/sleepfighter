@@ -350,7 +350,8 @@ public class AlarmTest extends TestCase {
 	}
 	
 	public void testSetUnnamedPlacement() {
-		Alarm alarm = new Alarm(1,1, "eric");
+		Alarm alarm = new Alarm();
+		alarm.setName( "eric" );
 		try {
 		
 			// alarm is actually named, so we want an exception.
@@ -360,9 +361,7 @@ public class AlarmTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			// success
 		}
-		
-		alarm = new Alarm(1,1, Alarm.UNNAMED);
-		
+		alarm = new Alarm();
 		alarm.setUnnamedPlacement(3);
 		assertEquals(3, alarm.getUnnamedPlacement());
 	}

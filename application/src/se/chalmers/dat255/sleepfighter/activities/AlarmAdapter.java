@@ -5,6 +5,7 @@ import java.util.List;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
@@ -76,7 +77,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
 	private void setupName( final Alarm alarm, View convertView ) {
 		TextView nameTextView = (TextView) convertView.findViewById(R.id.name_view);
-		String name = alarm.getName();
+		String name = MetaTextUtils.printAlarmName( this.getContext(), alarm );
 		nameTextView.setText(name);
 	}
 

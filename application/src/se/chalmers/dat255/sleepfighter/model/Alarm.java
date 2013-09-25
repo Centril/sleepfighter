@@ -179,12 +179,10 @@ public class Alarm implements Cloneable {
 	}
 
 	/**
-	 * Constructs an alarm to 00:00.<br/>
-	 * This is the equivalent of calling {@link #Alarm(int, int)} with (0, 0).
+	 * Constructs an alarm to current time.
 	 */
 	public Alarm() {
-		this(0, 0, 0, "");
-		this.setId(NOT_COMMITTED_ID);
+		this( new DateTime() );
 	}
 
 	/**
@@ -211,68 +209,33 @@ public class Alarm implements Cloneable {
 	}
 
 	/**
-	 * Constructs an alarm given an hour and minute.
-	 *
-	 * @param 	hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 */
-	public Alarm(int hour, int minute) {
-		this(hour, minute, 0, "");
-	}
-
-	/**
-	 *  Constructs an alarm given an hour, minute and name.
+	 *  Constructs an alarm given an hour and minute.
 	 * 
 	 * @param hour the hour the alarm should occur.
 	 * @param minute the minute the alarm should occur.
-	 * @param name the name the alarm should have.
 	 */
-	public Alarm(int hour, int minute, String name) {
-		this(hour, minute, 0, name);
+	public Alarm(int hour, int minute) {
+		this(hour, minute, 0);
 	}
-	
+
 	/**
-	 * Constructs an alarm given an hour, minute and second.
-	 *
+	 *  Constructs an alarm given an hour, minute and, second.
+	 * 
 	 * @param hour the hour the alarm should occur.
 	 * @param minute the minute the alarm should occur.
 	 * @param second the second the alarm should occur.
 	 */
 	public Alarm(int hour, int minute, int second) {
-		this(hour, minute, second, "");
+		this.setTime(hour, minute, second);
 	}
 
-	/**
-	 *  Constructs an alarm given an hour, minute, second and name.
-	 * 
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 * @param second the second the alarm should occur.
-	 * @param name the name the alarm should have.
-	 */
-	public Alarm(int hour, int minute, int second, String name) {
-		this.setTime(hour, minute, second);
-		this.setName(name);
-	}
-	
 	/**
 	 * Constructs an alarm with values derived from a unix epoch timestamp.
 	 *
 	 * @param time time in unix epoch timestamp.
 	 */
 	public Alarm(long time) {
-		this(time, "");
-	}
-	
-	/**
-	 * Constructs an alarm with values derived from a unix epoch timestamp and a name.
-	 *
-	 * @param time time in unix epoch timestamp.
-	 * @param name the name the alarm should have.
-	 */
-	public Alarm(long time, String name) {
 		this.setTime(time);
-		this.setName(name);
 	}
 
 	/**
@@ -281,18 +244,7 @@ public class Alarm implements Cloneable {
 	 * @param time a {@link ReadableDateTime} object. 
 	 */
 	public Alarm(ReadableDateTime time) {
-		this(time, "");
-	}
-	
-	/**
-	 * Sets the hour, minute and second of this alarm derived from a {@link ReadableDateTime} object as well as a name.
-	 * 
-	 * @param time a {@link ReadableDateTime} object. 
-	 * @param name the name the alarm should have.
-	 */
-	public Alarm(ReadableDateTime time, String name) {
 		this.setTime(time);
-		this.setName(name);
 	}
 
 	/**
