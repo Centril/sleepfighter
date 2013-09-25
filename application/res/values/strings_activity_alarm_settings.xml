@@ -38,4 +38,5 @@
     </string-array>
     
     <string name="pref_alarm_repeat">Repeat</string>
+    <string name="pref_delete_alarm">Delete this alarm</string>
 </resources>

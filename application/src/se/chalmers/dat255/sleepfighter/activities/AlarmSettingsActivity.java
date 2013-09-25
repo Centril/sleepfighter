@@ -11,10 +11,15 @@ import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import android.content.SharedPreferences;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
@@ -23,15 +28,17 @@ import android.widget.Toast;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
 
-	private static final String NAME = "pref_alarm_name";
-	private static final String TIME = "pref_alarm_time";
-	private static final String DAYS = "pref_enabled_days";
-	private static final String REPEAT = "pref_alarm_repeat";
+	private final String NAME = "pref_alarm_name";
+	private final String TIME = "pref_alarm_time";
+	private final String DAYS = "pref_enabled_days";
+	private final String REPEAT = "pref_alarm_repeat";
+	private final String DELETE = "pref_delete_alarm";
 	
 	// is used in sBindPreferenceSummaryToValueListener
-	private static String[] weekdayStrings;
+	private String[] weekdayStrings;
 	
-	private static Alarm alarm;	
+	private Alarm alarm;
+	private AlarmList alarmList;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +48,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		 
 		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
 
-		AlarmList alarms = ((SFApplication) getApplication()).getAlarms();
+		alarmList = ((SFApplication) getApplication()).getAlarms();
 
-		alarm = alarms.getById(id);
+		alarm = alarmList.getById(id);
 
 		if (alarm == null) {
 			// TODO: Better handling for final product
@@ -51,9 +58,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			finish();
 		}
 
-		if (!"".equals(alarm.getName())) {
-			this.setTitle(alarm.getName());
-		}
+		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
 		// TODO: Remove this debug thing
 		this.setTitle(this.getTitle() + " (ID: " + alarm.getId() + ")");
@@ -87,9 +92,29 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(NAME));
 		bindPreferenceSummaryToValue(findPreference(DAYS));
 		bindPreferenceSummaryToValue(findPreference(REPEAT));
+		
+		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				
+				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        alarmList.remove(alarm);
+						finish();
+				    }
+				};
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(AlarmSettingsActivity.this);
+				builder.setMessage("Do you really want to delete this alarm?").setPositiveButton("Yes", dialogClickListener)
+				    .setNegativeButton("No", null).show();
+				
+				return false;
+			}
+		});
 	}
 	
-	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			String stringValue = value.toString();
@@ -129,11 +154,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			else if (REPEAT.equals(preference.getKey())) {
 				alarm.setRepeat(("true".equals(stringValue)) ? true : false);
 			}
+			
 			return true;
 		}
 	};
 	
-	private static String formatDays(final Alarm alarm) {
+	private String formatDays(final Alarm alarm) {
 		String formatted = "";
 		
 		// Compute weekday names & join.
@@ -150,11 +176,11 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		return formatted;
 	}
 	
-	private static void bindPreferenceSummaryToValue(Preference preference) {
+	private void bindPreferenceSummaryToValue(Preference preference) {
 		preference.setPersistent(false);
 		
 		if (NAME.equals(preference.getKey())) {
-			preference.setSummary(alarm.getName());
+			preference.setSummary(MetaTextUtils.printAlarmName(this, alarm));
 		}
 		else if (TIME.equals(preference.getKey())) {
 			preference.setSummary(alarm.getTimeString());

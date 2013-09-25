@@ -33,6 +33,10 @@
             android:title="@string/pref_alarm_repeat"
             android:key="pref_alarm_repeat"
             android:defaultValue="false" />
+        
+        <Preference
+            android:title="@string/pref_delete_alarm"
+            android:key="pref_delete_alarm" />
     </PreferenceCategory>
 
 </PreferenceScreen>
