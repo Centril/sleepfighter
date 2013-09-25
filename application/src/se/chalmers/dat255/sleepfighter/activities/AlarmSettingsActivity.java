@@ -25,6 +25,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -72,7 +73,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 					return false;
 				}
 		    });
-			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM);
+			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM);
 		}
 	}
 	
@@ -216,7 +217,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		preference.setPersistent(false);
 		
 		if (NAME.equals(preference.getKey())) {
-			preference.setDefaultValue(MetaTextUtils.printAlarmName(this, alarm));
+			((EditTextPreference) preference).setText(MetaTextUtils.printAlarmName(this, alarm));
 			preference.setSummary(MetaTextUtils.printAlarmName(this, alarm));
 		}
 		else if (TIME.equals(preference.getKey())) {
