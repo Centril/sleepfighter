@@ -1,0 +1,42 @@
+<!-- The math challenge view -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/questionField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.38"
+        android:textSize="100sp" >
+
+    </TextView>
+
+    <EditText
+        android:id="@+id/answerField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.32"
+        android:inputType="number"
+        android:textSize="50sp" >
+
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="304dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btnAnswer"
+            android:layout_width="261dp"
+            android:layout_height="80dp"
+            android:text="@string/btn_answer"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+</LinearLayout>

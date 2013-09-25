@@ -26,15 +26,21 @@
 
     <string name="title_activity_alarm_settings">AlarmSettingsActivity</string>
     <string name="hello_world">Hello world!</string>
+    
+    
+    <!-- Challenges -->
     <string name="challengeBtn">Challenge</string>
     <string name="challengeButton">Challenge!</string>
     <string name="start_challenge">Stop the madness!</string>
     <string name="answer_field">Provide answer</string>
+    <string name="btn_answer">Answer</string>
     
     
     
     <!-- Alarm name & time -->
     <string name="alarm_name">Alarm name</string>
     <string name="alarm_time">13:37</string>
+    
+    
 
 </resources>

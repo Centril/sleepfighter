@@ -15,7 +15,7 @@ public class SimpleMathActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_alarm_challenge);
+		setContentView(R.layout.activity_alarm_challenge_math);
 		
 		SimpleMathChallenge smc = new SimpleMathChallenge();
 		
