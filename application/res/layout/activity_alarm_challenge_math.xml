@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="0.32"
-        android:inputType="number"
+        android:inputType="numberSigned"
         android:textSize="50sp" >
 
     </EditText>
