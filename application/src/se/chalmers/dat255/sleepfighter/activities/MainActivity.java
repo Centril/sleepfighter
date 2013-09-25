@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
 		this.manager = this.app().getAlarms();
 		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
-		 this.immedateTestAlarmSchedule();
+		// this.immedateTestAlarmSchedule();
 
 		this.app().getBus().subscribe(this);
 
