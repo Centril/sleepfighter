@@ -1,9 +1,5 @@
 package se.chalmers.dat255.sleepfighter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
@@ -14,6 +10,8 @@ import android.app.Application;
  * A custom implementation of Application for SleepFighter.
  */
 public class SFApplication extends Application {
+	private static final boolean CLEAN_START = false;
+
 	private AlarmList alarmList;
 	private MessageBus<Message> bus;
 
@@ -27,37 +25,6 @@ public class SFApplication extends Application {
 	}
 
 	/**
-	 * Temporary: add some test/placeholder alarms.
-	 * TODO: REMOVE.
-	 */
-	private void addPlaceholders() {
-		// Hard code in some sample alarms
-		// TODO load from database/wherever they are stored
-		Alarm namedAlarm = new Alarm(13, 37);
-		namedAlarm.setName("Named alarm");
-		namedAlarm.setEnabledDays(new boolean[] { true, false, true, false,
-				true, false, true });
-		
-		Alarm alarm2 = new Alarm(8, 30);
-		alarm2.setName("Untitled Alarm");
-		alarm2.setActivated(false);
-
-		Alarm alarm3 = new Alarm(7, 0);
-		alarm3.setName("Untitled Alarm");
-
-		Alarm alarm4 = new Alarm(7, 0);
-		alarm4.setName("Untitled Alarm");
-		alarm4.setEnabledDays(new boolean[7]);
-
-		List<Alarm> alarms = new ArrayList<Alarm>();
-		alarms.add(namedAlarm);
-		alarms.add(alarm2);
-		alarms.add(alarm3);
-		alarms.add(alarm4);
-		this.alarmList.addAll(alarms);
-	}
-
-	/**
 	 * Returns the AlarmList for the application.<br/>
 	 * It is lazy loaded.
 	 * 
@@ -65,14 +32,13 @@ public class SFApplication extends Application {
 	 */
 	public AlarmList getAlarms() {
 		if ( this.alarmList == null ) {
-			this.alarmList = new AlarmList();
+			if ( CLEAN_START ) {
+				this.persistenceManager.cleanStart();
+			}
 
-			// TODO: REMOVE.
-			this.addPlaceholders();
+			this.alarmList = this.getPersister().fetchAlarms();
 
 			this.alarmList.setMessageBus(this.getBus());
-
-			this.persistenceManager.cleanStart();
 			this.bus.subscribe( this.persistenceManager );
 		}
 
