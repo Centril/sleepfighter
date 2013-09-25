@@ -2,7 +2,10 @@ package se.chalmers.dat255.sleepfighter.challenges;
 
 import java.util.Random;
 
-public class SimpleMathChallenge {
+import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.activities.ChallengeActivity;
+
+public class SimpleMathChallenge implements Challenge{
 
 	private Random random = new Random();
 	private int operand1 = 0;
@@ -55,6 +58,12 @@ public class SimpleMathChallenge {
 		} else {
 			return operand1 + " / " + operand2;
 		}
+	}
+
+	@Override
+	public void start(final ChallengeActivity activity) {
+		activity.setContentView(R.layout.alarm_challenge_test);
+		runChallenge();
 	}
 
 }

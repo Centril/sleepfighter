@@ -26,7 +26,7 @@ public class AlarmActivity extends Activity {
 
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
-	private static final int CHALLGENGE_REQUEST_CODE = 1;
+	private static final int CHALLENGE_REQUEST_CODE = 1;
 
 	// TODO move to settings!
 	private boolean turnScreenOn = true;
@@ -120,13 +120,13 @@ public class AlarmActivity extends Activity {
 	
 	public void button(View view) {
 		Intent intent = new Intent(this, ChallengeActivity.class);
-		startActivityForResult(intent, CHALLGENGE_REQUEST_CODE);
+		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Check if result is from a challenge
-		if(requestCode == CHALLGENGE_REQUEST_CODE) {
+		if(requestCode == CHALLENGE_REQUEST_CODE) {
 			if(resultCode == Activity.RESULT_OK) {
 				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
 						.show();
