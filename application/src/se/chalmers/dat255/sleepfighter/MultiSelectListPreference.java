@@ -57,8 +57,7 @@ public class MultiSelectListPreference extends ListPreference {
         };
         
     	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-        final List<CharSequence> enabledDays = new ArrayList<CharSequence>();
-		for(int i = 0; i < 7; ++i) {
+     	for(int i = 0; i < 7; ++i) {
 			entryChecked[i] = sharedPref.getBoolean("days_transfer_info" + i, true);	
 			Debug.d("multi select day " + i + " value:" + entryChecked[i]);
 		}     

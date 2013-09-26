@@ -1,8 +1,6 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.IntentUtils;
