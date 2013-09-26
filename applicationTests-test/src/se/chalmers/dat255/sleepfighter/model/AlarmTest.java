@@ -282,7 +282,7 @@ public class AlarmTest extends TestCase {
 		bus.subscribe( sub );
 
 		sub.alarm.setMessageBus(bus);
-		sub.alarm.setActivated(false);
+		sub.alarm.setActivated(true);
 		assertTrue(sub.passed);
 	}	
 
