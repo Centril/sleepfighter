@@ -120,6 +120,9 @@ public class AlarmActivity extends Activity {
 	
 	public void button(View view) {
 //		Intent intent = new Intent(this, ChallengeActivity.class);
+		
+		//Intent intent = new Intent(this, MemoryActivity.class);
+		
 		Intent intent = new Intent(this, SimpleMathActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
 	}
