@@ -36,17 +36,16 @@ public class IntentUtils {
 	}
 
 	/**
-	 * Sets the alarm id on intent.
+	 * Sets the alarm id on intent.<br/>
+	 * If provided id == {@link Alarm#NOT_COMMITTED_ID}, nothing happens.
 	 *
 	 * @param id the alarm id.
 	 * @return this.
 	 */
 	public IntentUtils setAlarmId( final int id ) {
-		if ( id == Alarm.NOT_COMMITTED_ID ) {
-			throw new IllegalArgumentException( "The provided id is not legal to bind to an intent." );
+		if ( id != Alarm.NOT_COMMITTED_ID ) {
+			this.intent.putExtra( ALARM_EXTRA_ID, id );
 		}
-
-		this.intent.putExtra( ALARM_EXTRA_ID, id );
 
 		return this;
 	}
