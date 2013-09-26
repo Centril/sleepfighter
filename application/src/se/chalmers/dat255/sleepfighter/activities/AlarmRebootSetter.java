@@ -1,8 +1,11 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
+import org.joda.time.DateTime;
+
 import se.chalmers.dat255.sleepfighter.SFApplication;
-import se.chalmers.dat255.sleepfighter.activities.AlarmService.Command;
-import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService.Command;
+import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +20,12 @@ import android.content.Intent;
 public class AlarmRebootSetter extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-    	for ( Alarm alarm : SFApplication.get().getAlarms() ) {
-    		AlarmService.call( context, Command.CREATE, alarm );
-    	}
+    	SFApplication app = SFApplication.get();
+    	AlarmList list = app.getAlarms();
+
+		AlarmTimestamp at = list.getEarliestAlarm( new DateTime().getMillis() );
+		if ( at != null ) {
+    		AlarmPlannerService.call( app, Command.CREATE, at.getAlarm().getId() );
+		}
     }
 }

@@ -54,7 +54,7 @@
             android:showOnLockScreen="true" >
         </activity>
 
-        <service android:name="se.chalmers.dat255.sleepfighter.activities.AlarmService"></service>
+        <service android:name="se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService"></service>
 
         <receiver android:name="se.chalmers.dat255.sleepfighter.activities.AlarmRebootSetter" >
             <intent-filter>

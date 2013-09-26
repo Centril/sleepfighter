@@ -1,5 +1,6 @@
 package se.chalmers.dat255.sleepfighter;
 
+import se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
@@ -42,7 +43,7 @@ public class SFApplication extends Application {
 	 * 
 	 * @return the AlarmList for the application
 	 */
-	public AlarmList getAlarms() {
+	public synchronized AlarmList getAlarms() {
 		if ( this.alarmList == null ) {
 			if ( CLEAN_START ) {
 				this.persistenceManager.cleanStart();
@@ -52,6 +53,7 @@ public class SFApplication extends Application {
 
 			this.alarmList.setMessageBus(this.getBus());
 			this.bus.subscribe( this.persistenceManager );
+			this.bus.subscribe( new AlarmPlannerService.ChangeHandler( this, this.alarmList ) );
 		}
 
 		return alarmList;
@@ -62,7 +64,7 @@ public class SFApplication extends Application {
 	 * 
 	 * @return the default MessageBus for the application
 	 */
-	public MessageBus<Message> getBus() {
+	public synchronized MessageBus<Message> getBus() {
 		if ( this.bus == null ) {
 			this.bus = new MessageBus<Message>();
 		}
@@ -74,7 +76,7 @@ public class SFApplication extends Application {
 	 *
 	 * @return the perister
 	 */
-	public PersistenceManager getPersister() {
+	public synchronized PersistenceManager getPersister() {
 		return this.persistenceManager;
 	}
 }
