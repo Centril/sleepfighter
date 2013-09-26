@@ -34,6 +34,9 @@
     <string name="start_challenge">Stop the madness!</string>
     <string name="answer_field">Provide answer</string>
     <string name="btn_answer">Answer</string>
+    <string name="btn_complete">Complete!</string>
+    <string name="btn_fail">Fail!</string>
+    
     
     
     

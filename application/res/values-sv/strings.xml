@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  
     <string name="app_name">SleepFighter</string>
     <string name="action_settings">Inställningar</string>
     <string name="add">Lägg till</string>
-    <string name="start_challenge">Starta utmaningen!</string>
+    
+    <!-- Challenges -->
+    
+    <string name="btn_complete">Lyckas!</string>
+    <string name="btn_fail">Misslyckas!</string>
+    <string name="start_challenge">Avsluta galenskapet!</string>
+    <string name="btn_answer">Svara</string>
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>
@@ -22,5 +29,8 @@
         <item>Redigera alarm</item>
         <item>Ta bort alarm</item>
     </string-array>
+    
+    
+    
 
 </resources>
