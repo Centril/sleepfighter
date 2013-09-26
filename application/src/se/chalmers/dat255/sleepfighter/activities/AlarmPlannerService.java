@@ -55,6 +55,7 @@ public class AlarmPlannerService extends IntentService {
 
 		private void handleChange() {
 			AlarmTimestamp at = this.list.getEarliestAlarm( new DateTime().getMillis() );
+			Log.d( this.getClass().getName(), "handleChange, " + at );
 
 			if ( at == AlarmTimestamp.INVALID ) {
 				call( this.context, Command.CANCEL, Alarm.NOT_COMMITTED_ID );

@@ -1,8 +1,14 @@
 package se.chalmers.dat255.sleepfighter.activities;
 
+import org.joda.time.DateTime;
+
 import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -26,12 +32,11 @@ public class AlarmActivity extends Activity {
 
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
-	// TODO move to settings!
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 
-	private int alarmId;
-	
+	private Alarm alarm;
+
 	private static final String TURN_SCREEN_ON = "pref_alarm_turn_screen_on";
 	private static final String BYPASS_LOCK_SCREEN = "pref_alarm_bypass_lock_screen";
 
@@ -45,10 +50,14 @@ public class AlarmActivity extends Activity {
 		this.setContentView(R.layout.activity_main);
 
 		// Fetch alarm Id.
-		this.alarmId = new IntentUtils( this.getIntent() ).getAlarmId();
+		int alarmId = new IntentUtils( this.getIntent() ).getAlarmId();
+		this.alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
 
 		// Do stuff.
 		this.work();
+
+		// TODO: move to more optimal location!
+		this.performRescheduling();
 	}
 
 	protected void onPause() {
@@ -57,6 +66,23 @@ public class AlarmActivity extends Activity {
 		// Release the wake-lock acquired in AlarmReceiver!
 		AlarmWakeLocker.release();
 	}
+
+	private void performRescheduling() {
+		SFApplication app = SFApplication.get();
+
+		// Disable alarm if not repeating.
+		if ( !this.alarm.isRepeating() ) {
+			this.alarm.setActivated( false );
+			app.getPersister().updateAlarm( this.alarm );
+		}
+
+		// Reschedule earliest alarm (if any).
+		AlarmTimestamp at = app.getAlarms().getEarliestAlarm( new DateTime().getMillis() );
+		if ( at != AlarmTimestamp.INVALID ) {
+			AlarmPlannerService.call( app, Command.CREATE, at.getAlarm().getId() );
+		}
+	}
+
 
 	/**
 	 * Sets screen related flags, reads from preferences.
@@ -70,9 +96,7 @@ public class AlarmActivity extends Activity {
 
 		this.getWindow().addFlags( flags );
 	}
-	
-	
-	
+
 	private void readPreferences() {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 	
@@ -105,10 +129,10 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void work() {
-		Log.d( "AlarmActivity", "alarm #id: " + Integer.toString( this.alarmId ) );
+		Log.d( "AlarmActivity", "alarm #id: " + Integer.toString( this.alarm.getId() ) );
 
 		Log.d( "AlarmActivity", "work#1" );
 		// TODO: do something useful.
-		Toast.makeText(this, "Alarm ringing, get up! Alarm #" + this.alarmId, Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "Alarm ringing, get up! Alarm #" + this.alarm.getId(), Toast.LENGTH_LONG).show();
 	}
 }

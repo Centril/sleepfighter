@@ -7,6 +7,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.AlarmEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import android.content.Context;
+import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.field.DataPersisterManager;
@@ -67,6 +68,7 @@ public class PersistenceManager {
 	 */
 	@Handler
 	public void handleAlarmChange( AlarmEvent evt ) {
+		Log.d( "handleAlarmChange", evt.toString() );
 		this.updateAlarm( evt.getAlarm() );
 	}
 

@@ -18,6 +18,8 @@ public class SFApplication extends Application {
 
 	private PersistenceManager persistenceManager;
 
+	private AlarmPlannerService.ChangeHandler alarmPlanner;
+
 	private static SFApplication app;
 
 	@Override
@@ -51,12 +53,19 @@ public class SFApplication extends Application {
 
 			this.alarmList = this.getPersister().fetchAlarms();
 
+
 			this.alarmList.setMessageBus(this.getBus());
 			this.bus.subscribe( this.persistenceManager );
-			this.bus.subscribe( new AlarmPlannerService.ChangeHandler( this, this.alarmList ) );
+
+			this.registerAlarmPlanner();
 		}
 
 		return alarmList;
+	}
+
+	private void registerAlarmPlanner() {
+		this.alarmPlanner = new AlarmPlannerService.ChangeHandler( this, this.alarmList );
+		this.bus.subscribe( this.alarmPlanner );
 	}
 
 	/**
