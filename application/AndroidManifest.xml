@@ -10,6 +10,7 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name="se.chalmers.dat255.sleepfighter.SFApplication"
@@ -52,6 +53,15 @@
             android:label="@string/app_name"
             android:showOnLockScreen="true" >
         </activity>
-    </application>
+
+        <service android:name="se.chalmers.dat255.sleepfighter.activities.AlarmService"></service>
+
+        <receiver android:name="se.chalmers.dat255.sleepfighter.activities.AlarmRebootSetter" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+</application>
 
 </manifest>
