@@ -20,7 +20,6 @@ public class SimpleMathActivity extends Activity {
 	private EditText editText;
 	private TextView userText;
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -28,7 +27,7 @@ public class SimpleMathActivity extends Activity {
 		smc = new SimpleMathChallenge();
 		editText = (EditText) findViewById(R.id.answerField);
 		userText = (TextView) findViewById(R.id.questionField);
-		
+
 		userText.setText(smc.getCalculation());
 
 		editText.setOnEditorActionListener(new OnEditorActionListener() {
@@ -37,20 +36,7 @@ public class SimpleMathActivity extends Activity {
 					KeyEvent event) {
 				boolean handled = false;
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					if (Integer.parseInt(editText.getText().toString()) == smc
-							.getResult()) {
-						next();
-						Toast.makeText(getBaseContext(),
-								"Alarm deactivated", Toast.LENGTH_SHORT)
-								.show();
-					} else {
-						Toast.makeText(getBaseContext(),
-								"Sorry, wrong answer!", Toast.LENGTH_SHORT)
-								.show();
-						smc.runChallenge();
-						userText.setText(smc.getCalculation());
-						editText.setText("");
-					}
+					submitAns();
 					handled = true;
 				}
 				return handled;
@@ -59,20 +45,7 @@ public class SimpleMathActivity extends Activity {
 	}
 
 	public void buttonMath(View view) {
-					if (Integer.parseInt(editText.getText().toString()) == smc
-							.getResult()) {
-						next();
-						Toast.makeText(getBaseContext(),
-								"Alarm deactivated", Toast.LENGTH_SHORT)
-								.show();
-					} else {
-						Toast.makeText(getBaseContext(),
-								"Sorry, wrong answer!", Toast.LENGTH_SHORT)
-								.show();
-						smc.runChallenge();
-						userText.setText(smc.getCalculation());
-						editText.setText("");
-					}
+		submitAns();
 	}
 
 	private void next() {
@@ -80,4 +53,26 @@ public class SimpleMathActivity extends Activity {
 		startActivity(intent);
 	}
 
+	public void submitAns() {
+		boolean correctAnswer = false;
+		try {
+			if (Integer.parseInt(editText.getText().toString()) == smc
+					.getResult()) {
+				correctAnswer = true;
+				next();
+				finish();
+				Toast.makeText(getBaseContext(), "Alarm deactivated",
+						Toast.LENGTH_SHORT).show();
+			}
+		} catch (NumberFormatException e) {
+			// Handled as wrong answer
+		}
+		if (!correctAnswer) {
+			Toast.makeText(getBaseContext(), "Sorry, wrong answer!",
+					Toast.LENGTH_SHORT).show();
+			smc.runChallenge();
+			userText.setText(smc.getCalculation());
+			editText.setText("");
+		}
+	}
 }
