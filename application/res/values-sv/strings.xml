@@ -5,6 +5,9 @@
     <string name="action_settings">Inställningar</string>
     <string name="add">Lägg till</string>
     <string name="alarm_unnamed_format">Alarm %1$d</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
+    <string name="confirm_delete">Är du säker på att du vill ta bort alarmet?"</string>
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>

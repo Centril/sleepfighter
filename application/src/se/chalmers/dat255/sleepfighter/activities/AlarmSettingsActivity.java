@@ -13,6 +13,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import android.annotation.TargetApi;
@@ -160,24 +161,23 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				
 				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-				    @Override
-				    public void onClick(DialogInterface dialog, int which) {
-				        alarmList.remove(alarm);
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						alarmList.remove(alarm);
 						finish();
-				    }
+					}
 				};
-				
-				AlertDialog.Builder builder = new AlertDialog.Builder(AlarmSettingsActivity.this);
-				builder.setMessage("Do you really want to delete this alarm?").setPositiveButton("Yes", dialogClickListener)
-				    .setNegativeButton("No", null).show();
-				
-				return false;
+				DialogUtils
+				.showConfirmationDialog(getResources()
+						.getString(R.string.confirm_delete),
+						AlarmSettingsActivity.this,
+						dialogClickListener);
+				return true;
 			}
 		});
 	}
-	
+
 	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
@@ -204,8 +204,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 				// a set of all the selected weekdays. 
 				CharSequence[] set = (CharSequence[])value;
-				
-		
+
 				for(int i = 0; i < weekdayStrings.length; ++i) {
 					if( Arrays.asList(set).contains(weekdayStrings[i])) {
 						Debug.d("true day : " + weekdayStrings[i]);
