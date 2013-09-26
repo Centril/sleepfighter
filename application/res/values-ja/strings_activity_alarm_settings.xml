@@ -1,0 +1,46 @@
+<resources>
+
+    <string name="title_activity_alarm_settings">アラーム</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_alarm_header_general">一般</string>
+    <string name="pref_alarm_time">時刻</string>
+    <string name="pref_alarm_name">名前</string>
+    <string name="pref_alarm_default_name">名前なしアラーム</string>
+
+    <!-- TODO: Is it really 曜日? -->
+    <string name="pref_alarm_enabled_days">曜日</string>
+    
+    <string name="time_category_title">時間</string>
+    
+    <!-- TOOD: or maybe 雑 is a better translation? See
+    http://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q124683587
+     -->
+    <string name="misc_category_title">その他</string>
+    
+    <string-array name="week_days">
+        <item>月曜日</item>
+        <item>火曜日</item>
+        <item>水曜日</item>       
+        <item>木曜日</item>      
+        <item>金曜日</item>
+        <item>土曜日</item>
+        <item>日曜日</item>
+    </string-array>
+   
+    <string-array name="default_week_days">
+        <item>true</item>
+        <item>true</item>
+        <item>true</item>       
+        <item>true</item>      
+        <item>true</item>
+        <item>true</item>
+        <item>true</item>
+    </string-array>
+  
+ 
+    <string name="pref_alarm_repeat">繰り返し</string>
+    <string name="pref_delete_alarm">削除</string>
+</resources>

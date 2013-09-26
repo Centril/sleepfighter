@@ -164,9 +164,7 @@ public class DateTextUtils {
 			int length = names[i].length();
 
 			if ( enabled ) {
-				text.setSpan( new ForegroundColorSpan( Color.YELLOW ), start, start + length, 0 );
-			} else {
-				text.setSpan( new ForegroundColorSpan( Color.BLACK ), start, start + length, 0 );
+				text.setSpan( new ForegroundColorSpan( Color.WHITE ), start, start + length, 0 );
 			}
 
 			start += length + 1;
