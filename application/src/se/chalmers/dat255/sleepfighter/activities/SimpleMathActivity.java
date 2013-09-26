@@ -16,18 +16,21 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class SimpleMathActivity extends Activity {
 
-	private SimpleMathChallenge smc = new SimpleMathChallenge();
+	private SimpleMathChallenge smc;
+	private EditText editText;
+	private TextView userText;
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_alarm_challenge_math);
-
-		final TextView userText = (TextView) findViewById(R.id.questionField);
-
+		smc = new SimpleMathChallenge();
+		editText = (EditText) findViewById(R.id.answerField);
+		userText = (TextView) findViewById(R.id.questionField);
+		
 		userText.setText(smc.getCalculation());
 
-		final EditText editText = (EditText) findViewById(R.id.answerField);
 		editText.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
@@ -56,11 +59,20 @@ public class SimpleMathActivity extends Activity {
 	}
 
 	public void buttonMath(View view) {
-		
-		
-		
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
+					if (Integer.parseInt(editText.getText().toString()) == smc
+							.getResult()) {
+						next();
+						Toast.makeText(getBaseContext(),
+								"Alarm deactivated", Toast.LENGTH_SHORT)
+								.show();
+					} else {
+						Toast.makeText(getBaseContext(),
+								"Sorry, wrong answer!", Toast.LENGTH_SHORT)
+								.show();
+						smc.runChallenge();
+						userText.setText(smc.getCalculation());
+						editText.setText("");
+					}
 	}
 
 	private void next() {

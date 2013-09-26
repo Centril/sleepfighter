@@ -25,13 +25,13 @@ public class SimpleMathChallenge implements Challenge{
 	private void nextInts() {
 		switch(operation) {
 		case 0:
-			operand1 = random.nextInt(100) + 1;
-			operand2 = random.nextInt(100) + 1;
+			operand1 = random.nextInt(99) + 1;
+			operand2 = random.nextInt(99) + 1;
 			result = operand1 + operand2;
 			break;
 		case 1:
-			operand1 = random.nextInt(100) + 1;
-			operand2 = random.nextInt(100) + 1;
+			operand1 = random.nextInt(99) + 1;
+			operand2 = random.nextInt(99) + 1;
 			result = operand1 - operand2;
 			break;
 		case 2:
