@@ -547,11 +547,19 @@ public class Alarm implements Cloneable {
 		return String.format("%02d", this.getHour()) + ":" + String.format("%02d", this.getMinute());
 	}
 
+	/**
+	 * <p><code>{@link Alarm#hashCode()} == {@link Alarm#getId()}</code></p>
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode() {
 		return this.id;
 	}
 
+	/**
+	 * <p>Two alarms are considered equal iff <code>{@link Alarm#hashCode()} == {@link Alarm#getId()}</code></p>
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -567,14 +575,27 @@ public class Alarm implements Cloneable {
 		return this.id == rhs.id;
 	}
 
+	/**
+	 * @see Alarm#Alarm(Alarm)
+	 */
 	public Alarm clone() throws CloneNotSupportedException {
 		return new Alarm( this );
 	}
-	
+
+	/**
+	 * Sets if the alarm is repeating or not.
+	 *
+	 * @param isRepeating true if it is repeating.
+	 */
 	public void setRepeat(boolean isRepeating) {
 		this.isRepeating = isRepeating;
 	}
-	
+
+	/**
+	 * Returns whether or not this alarm is repeating or not.
+	 *
+	 * @return true if it is repeating.
+	 */
 	public boolean isRepeating() {
 		return this.isRepeating;
 	}
