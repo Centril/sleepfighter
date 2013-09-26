@@ -2,15 +2,14 @@ package se.chalmers.dat255.sleepfighter.challenges;
 
 import java.util.Random;
 
+import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.activities.ChallengeActivity;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
-
-import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.activities.ChallengeActivity;
+import android.widget.Toast;
 
 public class SimpleMathChallenge implements Challenge {
 
@@ -21,32 +20,46 @@ public class SimpleMathChallenge implements Challenge {
 	private int result = 0;
 
 	public void runChallenge() {
-		nextInts();
 		nextOp();
-		result();
+		nextInts();
 	}
 
 	private void nextInts() {
-		operand1 = random.nextInt(10) + 1;
-		operand2 = random.nextInt(10) + 1;
+		switch (operation) {
+		case 0:
+			operand1 = random.nextInt(99) + 1;
+			operand2 = random.nextInt(99) + 1;
+			result = operand1 + operand2;
+			break;
+		case 1:
+			operand1 = random.nextInt(99) + 1;
+			operand2 = random.nextInt(99) + 1;
+			result = operand1 - operand2;
+			break;
+		case 2:
+			operand1 = random.nextInt(8) + 2;
+			operand2 = random.nextInt(8) + 2;
+			result = operand1 * operand2;
+			break;
+		case 3:
+			result = random.nextInt(8) + 2;
+			operand2 = random.nextInt(8) + 2;
+			operand1 = result * operand2;
+			break;
+		}
 	}
 
 	private void nextOp() {
 		operation = random.nextInt(4);
 	}
 
-	private void result() {
-		if (operation == 0) {
-			result = operand1 + operand2;
-		} else if (operation == 1) {
-			result = operand1 - operand2;
-		} else if (operation == 2) {
-			result = operand1 * operand2;
-		} else if (operation == 3) {
-			operand1 = operand1 * operand2;
-			result = operand1 / operand2;
-		}
-	}
+	/*
+	 * private void result() { if (operation == 0) { result = operand1 +
+	 * operand2; } else if (operation == 1) { result = operand1 - operand2; }
+	 * else if (operation == 2) { result = operand1 * operand2; } else if
+	 * (operation == 3) { operand1 = operand1 * operand2; result = operand1 /
+	 * operand2; } }
+	 */
 
 	public int getResult() {
 		return result;
@@ -82,12 +95,26 @@ public class SimpleMathChallenge implements Challenge {
 					KeyEvent event) {
 				boolean handled = false;
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					if (Integer.parseInt(editText.getText().toString()) == getResult()) {
-						activity.complete();
-					} else {
+					boolean correctAnswer = false;
+					try {
+						if (Integer.parseInt(editText.getText().toString()) == getResult()) {
+							activity.complete();
+							activity.finish();
+							correctAnswer = true;
+							Toast.makeText(activity.getBaseContext(),
+									"Sorry, wrong answer!", Toast.LENGTH_SHORT)
+									.show();
+						}
+					} catch (NumberFormatException e) {
+
+					}
+					if (!correctAnswer) {
 						Toast.makeText(activity.getBaseContext(),
 								"Sorry, wrong answer!", Toast.LENGTH_SHORT)
 								.show();
+						runChallenge();
+						userText.setText(getCalculation());
+						editText.setText("");
 					}
 					handled = true;
 				}
@@ -96,5 +123,4 @@ public class SimpleMathChallenge implements Challenge {
 		});
 
 	}
-
 }
