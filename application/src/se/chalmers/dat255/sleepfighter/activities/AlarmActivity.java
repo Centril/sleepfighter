@@ -90,8 +90,7 @@ public class AlarmActivity extends Activity {
 	 */
 	private int computeScreenFlags() {
 		readPreferences();
-		// TODO: actually read from preferences!
-
+		
 		int flags = 0;
 
 		if ( this.turnScreenOn ) {

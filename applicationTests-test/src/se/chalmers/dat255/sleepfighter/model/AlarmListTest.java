@@ -16,8 +16,10 @@ public class AlarmListTest extends TestCase {
 		// Bootstrap.
 		Alarm first = new Alarm(0, 2);
 		first.setId( 1 );
+		first.setActivated(true);
 		Alarm second = new Alarm(0, 3);
 		second.setId( 2 );
+		second.setActivated(true);
 
 		List<Alarm> list = new ArrayList<Alarm>();
 		list.add(first);
