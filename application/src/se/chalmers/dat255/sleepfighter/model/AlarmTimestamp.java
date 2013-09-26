@@ -43,4 +43,8 @@ public class AlarmTimestamp {
 	public Alarm getAlarm() {
 		return this.alarm;
 	}
+
+	public String toString() {
+		return "AlarmTimestamp[@: " + Long.toString( this.getMillis() ) + ", alarm: " + this.getAlarm() + "]";
+	}
 }
