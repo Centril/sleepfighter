@@ -86,15 +86,28 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		view.setText( DateTextUtils.makeEnabledDaysText( alarm ) );
 	}
 
-	private void setupActivatedSwitch( final Alarm alarm, View convertView ) {
-		CompoundButton activatedSwitch = (CompoundButton) convertView.findViewById(R.id.activated);
+	private void setupActivatedSwitch(final Alarm alarm, View convertView) {
+		
+		final CompoundButton activatedSwitch = (CompoundButton) convertView.findViewById(R.id.activated);
 
+		View activatedBackground =  convertView.findViewById(R.id.activated_background);
+		
 		activatedSwitch.setChecked(alarm.isActivated());
 
 		activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
+			@Override
 			public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-				alarm.setActivated( isChecked );
+				alarm.setActivated(isChecked);
 			}
 		} );
+		
+		// Allow pressing in area next to checkbox/switch to toggle
+		activatedBackground.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				activatedSwitch.toggle();
+			}
+		});
 	}
 }
