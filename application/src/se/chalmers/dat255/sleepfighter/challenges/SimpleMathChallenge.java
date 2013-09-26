@@ -18,21 +18,40 @@ public class SimpleMathChallenge implements Challenge{
 	}
 	
 	public void runChallenge() {
-		nextInts();
 		nextOp();
-		result();
+		nextInts();
 	}
 
 	private void nextInts() {
-		operand1 = random.nextInt(10) + 1;
-		operand2 = random.nextInt(10) + 1;
+		switch(operation) {
+		case 0:
+			operand1 = random.nextInt(100) + 1;
+			operand2 = random.nextInt(100) + 1;
+			result = operand1 + operand2;
+			break;
+		case 1:
+			operand1 = random.nextInt(100) + 1;
+			operand2 = random.nextInt(100) + 1;
+			result = operand1 - operand2;
+			break;
+		case 2:
+			operand1 = random.nextInt(8) + 2;
+			operand2 = random.nextInt(8) + 2;
+			result = operand1 * operand2;
+			break;
+		case 3: 
+			result = random.nextInt(8)+2;
+			operand2 = random.nextInt(8)+2;
+			operand1 = result * operand2;
+			break;
+		}
 	}
 
 	private void nextOp() {
 		operation = random.nextInt(4);
 	}
 
-	private void result() {
+/*	private void result() {
 		if (operation == 0) {
 			result = operand1 + operand2;
 		} else if (operation == 1) {
@@ -42,7 +61,7 @@ public class SimpleMathChallenge implements Challenge{
 		} else if (operation == 3) {
 			result = operand1 / operand2;
 		}
-	}
+	}*/
 
 	public int getResult() {
 		return result;
