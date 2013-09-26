@@ -2,14 +2,10 @@ package se.chalmers.dat255.sleepfighter.activities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 import net.engio.mbassy.listener.Handler;
-
 import se.chalmers.dat255.sleepfighter.IntentUtils;
-import se.chalmers.dat255.sleepfighter.MultiSelectListPreference;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
@@ -19,14 +15,12 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-
-import android.net.wifi.WifiManager.MulticastLock;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -127,24 +121,18 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		editor.putString(TIME, (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
 		editor.commit();
 		
-		
-		
-		final List<CharSequence> enabledDays = new ArrayList<CharSequence>();
 		for(int i = 0; i < alarm.getEnabledDays().length; ++i) {
 			boolean b;
 			if(alarm.getEnabledDays()[i]) {
-				//enabledDays.add(weekdayStrings[i]);
 				b = true;
 			} else {
-				// we transfer this info for the construction of MultiSelectListPreference.
 				b = false;
 				
 			}
-			
+			// we transfer this info for the construction of MultiSelectListPreference.		
 			editor.putBoolean("days_transfer_info" + i, b);	
 		}	
 		
-	//	editor.putString("days_transfer_info", MultiSelectListPreference.pack(enabledDays));
 		editor.commit();
 		
 		setupActionBar();
