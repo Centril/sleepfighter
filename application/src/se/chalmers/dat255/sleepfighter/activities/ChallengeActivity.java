@@ -22,6 +22,7 @@ public class ChallengeActivity extends Activity {
 		challenge.start(this);
 	}
 
+	
 	public void complete() {
 		setResult(Activity.RESULT_OK);
 		finish();
