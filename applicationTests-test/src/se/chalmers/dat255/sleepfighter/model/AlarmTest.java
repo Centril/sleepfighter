@@ -365,4 +365,10 @@ public class AlarmTest extends TestCase {
 		alarm.setUnnamedPlacement(3);
 		assertEquals(3, alarm.getUnnamedPlacement());
 	}
+	
+	public void testSetRepeat() {
+		Alarm alarm = new Alarm();
+		alarm.setRepeat(true);
+		assertTrue(alarm.isRepeating());
+	}
 }
