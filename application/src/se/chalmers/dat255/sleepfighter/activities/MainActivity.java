@@ -3,7 +3,6 @@ package se.chalmers.dat255.sleepfighter.activities;
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
-import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
@@ -17,9 +16,6 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -77,26 +73,6 @@ public class MainActivity extends Activity {
 
 		// Register to get context menu events associated with listView
 		this.registerForContextMenu(listView);
-	}
-
-	private void immedateTestAlarmSchedule() {
-		// For testing purposes, we want an alarm 5 seconds in the future, calculate that time.
-		MutableDateTime time = new MutableDateTime();
-		time.addSeconds( 6 );
-
-		// Make an alarm with that time.
-		Alarm alarm = new Alarm( time );
-		this.manager.add( alarm );
-		long scheduleTime = alarm.getNextMillis( this.getNow() );
-
-		// Make pending intent.
-		Intent intent = new Intent( this, AlarmReceiver.class);
-		new IntentUtils( intent ).setAlarmId( alarm );
-		PendingIntent pi = PendingIntent.getBroadcast( this, -1, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-
-		// Schedule alarm.
-		AlarmManager androidAM = (AlarmManager) getSystemService( Context.ALARM_SERVICE );
-		androidAM.set( AlarmManager.RTC_WAKEUP, scheduleTime, pi );
 	}
 
 	private long getNow() {
