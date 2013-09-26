@@ -117,10 +117,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		
 		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-		int hour = alarm.getHour();
-		int minute = alarm.getMinute();
-		editor.putString(TIME, (hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
-		editor.commit();
 		
 		for(int i = 0; i < alarm.getEnabledDays().length; ++i) {
 			boolean b;
@@ -239,6 +235,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			preference.setSummary(MetaTextUtils.printAlarmName(this, alarm));
 		}
 		else if (TIME.equals(preference.getKey())) {
+			initiateTimePicker((TimepickerPreference)preference);
 			preference.setSummary(alarm.getTimeString());
 		}
 		else if(DAYS.equals(preference.getKey())) {
@@ -249,5 +246,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+	}
+	
+	private void initiateTimePicker(TimepickerPreference tp) {
+		tp.setHour(alarm.getHour());
+		tp.setMinute(alarm.getMinute());
 	}
 }

@@ -31,18 +31,9 @@ public class TimepickerPreference extends DialogPreference {
 		Debug.d("created time picker preference view");
 		tp = new TimePicker(getContext());
 		tp.setIs24HourView(true);
-		
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-		
-		// a string with the format hh:mm
-		String timeString = sharedPref.getString("pref_alarm_time", "00:00");
-		
-		// parse
-		int hour = Integer.parseInt(timeString.substring(0, 2));
-		int min = Integer.parseInt(timeString.substring(3, 5));
-		
+	
 		tp.setCurrentHour(hour);
-		tp.setCurrentMinute(min);
+		tp.setCurrentMinute(minute);
 		
 		return(tp);
 	}
@@ -63,11 +54,11 @@ public class TimepickerPreference extends DialogPreference {
 		if (positiveResult && callChangeListener(time)) {
 			Debug.d("persist time");
             persistString(time);
-            
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this.getContext()).edit();
-    		editor.putString("pref_alarm_time",time);
-    		editor.commit();
         }
+	}
+	
+	public void setHour(int hour) {
+		this.hour = hour;
 	}
 	
 	/**
@@ -75,6 +66,10 @@ public class TimepickerPreference extends DialogPreference {
 	 */
 	public int getHour() {
 		return hour;
+	}
+	
+	public void setMinute(int minute) {
+		this.minute = minute;
 	}
 	
 	/**
