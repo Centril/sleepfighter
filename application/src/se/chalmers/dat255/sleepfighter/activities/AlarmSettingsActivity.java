@@ -7,12 +7,14 @@ import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.TimepickerPreference;
+import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -28,6 +30,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
+import android.text.SpannableString;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
@@ -204,15 +207,20 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				boolean[] enabledDays = { false, false, false, false, false, false, false };
 
 				// a set of all the selected weekdays. 
-				String[] set = (String[])value;
+				CharSequence[] set = (CharSequence[])value;
+				
 		
 				for(int i = 0; i < weekdayStrings.length; ++i) {
-					if( Arrays.asList(set).contains(weekdayStrings	[i])) {
+					if( Arrays.asList(set).contains(weekdayStrings[i])) {
+						Debug.d("true day : " + weekdayStrings[i]);
+						
 						enabledDays[i] = true;
 					}
 				}
-				
+	
 				alarm.setEnabledDays(enabledDays);
+	
+				preference.setSummary(new SpannableString(""));
 				preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 			}
 			else if (REPEAT.equals(preference.getKey())) {
