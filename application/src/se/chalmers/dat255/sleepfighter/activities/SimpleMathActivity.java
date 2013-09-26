@@ -24,9 +24,9 @@ public class SimpleMathActivity extends ChallengeActivity {
 		smc.start(this);
 	}
 
-	public void buttonMath(View view) {
-		// submitAns();
-	}
+	// public void buttonMath(View view) {
+	// submitAns();
+	// }
 
 	private void next() {
 		Intent intent = new Intent(this, MainActivity.class);

@@ -5,12 +5,20 @@ import java.util.Random;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activities.ChallengeActivity;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+/**
+ * A Class for randomly generating simple arithmetic challenges.
+ * 
+ * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist
+ */
 public class SimpleMathChallenge implements Challenge {
 
 	private Random random = new Random();
@@ -95,32 +103,41 @@ public class SimpleMathChallenge implements Challenge {
 					KeyEvent event) {
 				boolean handled = false;
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					boolean correctAnswer = false;
-					try {
-						if (Integer.parseInt(editText.getText().toString()) == getResult()) {
-							activity.complete();
-							activity.finish();
-							correctAnswer = true;
-							Toast.makeText(activity.getBaseContext(),
-									"Sorry, wrong answer!", Toast.LENGTH_SHORT)
-									.show();
-						}
-					} catch (NumberFormatException e) {
-
-					}
-					if (!correctAnswer) {
-						Toast.makeText(activity.getBaseContext(),
-								"Sorry, wrong answer!", Toast.LENGTH_SHORT)
-								.show();
-						runChallenge();
-						userText.setText(getCalculation());
-						editText.setText("");
-					}
+					handleAnswer(editText, activity, userText);
 					handled = true;
 				}
 				return handled;
 			}
 		});
 
+		Button answerButton = (Button) activity.findViewById(R.id.btnAnswer);
+		answerButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleAnswer(editText, activity, userText);
+			}
+		});
+	}
+
+	private void handleAnswer(EditText editText, ChallengeActivity activity,
+			TextView userText) {
+		boolean correctAnswer = false;
+		try {
+			if (Integer.parseInt(editText.getText().toString()) == getResult()) {
+				activity.complete();
+				activity.finish();
+				correctAnswer = true;
+				Toast.makeText(activity.getBaseContext(), "Correct answer!",
+						Toast.LENGTH_SHORT).show();
+			}
+		} catch (NumberFormatException e) {
+		}
+		if (!correctAnswer) {
+			Toast.makeText(activity.getBaseContext(), "Sorry, wrong answer!",
+					Toast.LENGTH_SHORT).show();
+			runChallenge();
+			userText.setText(getCalculation());
+			editText.setText("");
+		}
 	}
 }
