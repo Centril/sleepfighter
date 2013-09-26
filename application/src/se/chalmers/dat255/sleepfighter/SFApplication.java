@@ -83,7 +83,7 @@ public class SFApplication extends Application {
 	/**
 	 * Returns the PersistenceManager for the application.
 	 *
-	 * @return the perister
+	 * @return the persistence manager.
 	 */
 	public synchronized PersistenceManager getPersister() {
 		return this.persistenceManager;
