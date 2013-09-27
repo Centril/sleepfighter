@@ -1,9 +1,10 @@
-package se.chalmers.dat255.sleepfighter.activities;
+package se.chalmers.dat255.sleepfighter.reciever;
 
 import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.SFApplication;
-import se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService.Command;
+import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
+import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.content.BroadcastReceiver;

@@ -1,4 +1,4 @@
-package se.chalmers.dat255.sleepfighter.debug;
+package se.chalmers.dat255.sleepfighter.utils.debug;
 
 import android.util.Log;
 

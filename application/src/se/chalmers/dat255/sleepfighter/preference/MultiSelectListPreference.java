@@ -1,12 +1,11 @@
-package se.chalmers.dat255.sleepfighter;
+package se.chalmers.dat255.sleepfighter.preference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import se.chalmers.dat255.sleepfighter.debug.Debug;
-
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;

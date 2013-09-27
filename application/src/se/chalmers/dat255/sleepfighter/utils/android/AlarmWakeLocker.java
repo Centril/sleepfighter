@@ -1,4 +1,4 @@
-package se.chalmers.dat255.sleepfighter.activities;
+package se.chalmers.dat255.sleepfighter.utils.android;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package se.chalmers.dat255.sleepfighter;
+package se.chalmers.dat255.sleepfighter.utils.android;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import android.content.Intent;

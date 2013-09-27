@@ -1,6 +1,6 @@
-package se.chalmers.dat255.sleepfighter;
+package se.chalmers.dat255.sleepfighter.preference;
 
-import se.chalmers.dat255.sleepfighter.debug.Debug;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;

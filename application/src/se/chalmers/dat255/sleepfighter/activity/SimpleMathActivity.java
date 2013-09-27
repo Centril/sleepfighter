@@ -1,6 +1,6 @@
-package se.chalmers.dat255.sleepfighter.activities;
+package se.chalmers.dat255.sleepfighter.activity;
 
-import se.chalmers.dat255.sleepfighter.challenges.SimpleMathChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.SimpleMathChallenge;
 import android.os.Bundle;
 
 public class SimpleMathActivity extends ChallengeActivity {

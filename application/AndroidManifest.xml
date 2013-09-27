@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.MainActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,9 +29,9 @@
         </activity>
 
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.GlobalSettingsActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activity.GlobalSettingsActivity"
             android:label="@string/title_activity_global_settings"
-            android:parentActivityName="se.chalmers.dat255.sleepfighter.activities.MainActivity" >
+            android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="se.chalmers.dat255.sleepfighter.activities.MainActivity" />
@@ -39,17 +39,17 @@
 
         <!-- START: Alarm settings related activities -->
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.AlarmSettingsActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activity.AlarmSettingsActivity"
             android:label="@string/title_activity_alarm_settings"
-            android:parentActivityName="se.chalmers.dat255.sleepfighter.activities.MainActivity" >
+            android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="se.chalmers.dat255.sleepfighter.activities.MainActivity" />
         </activity>
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.RingerSettingsActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activity.RingerSettingsActivity"
             android:label="@string/title_alarm_ringer_settings"
-            android:parentActivityName="se.chalmers.dat255.sleepfighter.activities.AlarmSettingsActivity" >
+            android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.AlarmSettingsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="se.chalmers.dat255.sleepfighter.activities.AlarmSettingsActivity" />
@@ -57,33 +57,33 @@
 
         <!-- END: Alarm settings related activities -->
 
-        <receiver android:name="se.chalmers.dat255.sleepfighter.activities.AlarmReceiver" >
+        <receiver android:name="se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver" >
         </receiver>
 
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.AlarmActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activity.AlarmActivity"
             android:label="@string/app_name"
             android:showOnLockScreen="true" >
         </activity>
 
-        <service android:name="se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService"></service>
+        <service android:name="se.chalmers.dat255.sleepfighter.service.AlarmPlannerService"></service>
 
-        <receiver android:name="se.chalmers.dat255.sleepfighter.activities.AlarmRebootSetter" >
+        <receiver android:name="se.chalmers.dat255.sleepfighter.reciever.AlarmRebootSetter">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.ChallengeActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activity.ChallengeActivity"
             android:label="@string/pre_chal_act" >
         </activity>
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.SimpleMathActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activity.SimpleMathActivity"
             android:label="@string/math_chal_act" >
         </activity>        
         <activity
-            android:name="se.chalmers.dat255.sleepfighter.activities.MemoryActivity"
+            android:name="se.chalmers.dat255.sleepfighter.activity.MemoryActivity"
             android:label="memory" >
         </activity>
     </application>

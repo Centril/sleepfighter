@@ -1,6 +1,6 @@
 package se.chalmers.dat255.sleepfighter;
 
-import se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService;
+import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;

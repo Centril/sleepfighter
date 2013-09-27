@@ -1,12 +1,14 @@
-package se.chalmers.dat255.sleepfighter.activities;
+package se.chalmers.dat255.sleepfighter.activity;
 
 import org.joda.time.DateTime;
 
-import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
-import se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService.Command;
-import se.chalmers.dat255.sleepfighter.debug.Debug;
+import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
+import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
+import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
+import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.app.Activity;

@@ -1,7 +1,8 @@
-package se.chalmers.dat255.sleepfighter.activities;
+package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.challenges.MemoryChallenge;
+import se.chalmers.dat255.sleepfighter.adapter.MemoryAdapter;
+import se.chalmers.dat255.sleepfighter.challenge.MemoryChallenge;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

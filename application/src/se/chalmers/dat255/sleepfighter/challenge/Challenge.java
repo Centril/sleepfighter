@@ -1,6 +1,7 @@
-package se.chalmers.dat255.sleepfighter.challenges;
+package se.chalmers.dat255.sleepfighter.challenge;
 
-import se.chalmers.dat255.sleepfighter.activities.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+
 
 /**
  * Interface implemented by challenges.

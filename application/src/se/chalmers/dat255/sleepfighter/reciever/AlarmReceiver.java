@@ -1,6 +1,8 @@
-package se.chalmers.dat255.sleepfighter.activities;
+package se.chalmers.dat255.sleepfighter.reciever;
 
-import se.chalmers.dat255.sleepfighter.IntentUtils;
+import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
+import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
+import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

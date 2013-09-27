@@ -1,6 +1,6 @@
 package se.chalmers.dat255.sleepfighter.preference;
 
-import se.chalmers.dat255.sleepfighter.activities.RingerSettingsActivity;
+import se.chalmers.dat255.sleepfighter.activity.RingerSettingsActivity;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import android.content.Context;
 import android.net.Uri;

@@ -1,7 +1,7 @@
-package se.chalmers.dat255.sleepfighter.activities;
+package se.chalmers.dat255.sleepfighter.activity;
 
-import se.chalmers.dat255.sleepfighter.challenges.Challenge;
-import se.chalmers.dat255.sleepfighter.challenges.TestChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.TestChallenge;
 import android.app.Activity;
 import android.os.Bundle;
 

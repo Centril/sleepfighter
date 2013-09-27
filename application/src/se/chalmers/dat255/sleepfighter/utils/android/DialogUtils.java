@@ -1,4 +1,4 @@
-package se.chalmers.dat255.sleepfighter.utils;
+package se.chalmers.dat255.sleepfighter.utils.android;
 
 import se.chalmers.dat255.sleepfighter.R;
 import android.app.AlertDialog;
