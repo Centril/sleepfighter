@@ -10,10 +10,12 @@ import se.chalmers.dat255.sleepfighter.debug.Debug;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -25,6 +27,9 @@ import android.widget.Toast;
  * @since Sep 20, 2013
  */
 public class AlarmActivity extends Activity {
+	
+	public static final String EXTRA_ALARM_ID = "alarm_id";
+	
 	private static final int WINDOW_FLAGS_SCREEN_ON =
 			WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
 			WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
@@ -32,6 +37,9 @@ public class AlarmActivity extends Activity {
 
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
+	private static final int CHALLENGE_REQUEST_CODE = 1;
+
+	// TODO move to settings!
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 
@@ -47,7 +55,7 @@ public class AlarmActivity extends Activity {
 		// Turn and/or Keep screen on.
 		this.setScreenFlags();
 
-		this.setContentView(R.layout.activity_main);
+		this.setContentView(R.layout.activity_alarm_prechallenge);
 
 		// Fetch alarm Id.
 		int alarmId = new IntentUtils( this.getIntent() ).getAlarmId();
@@ -134,5 +142,31 @@ public class AlarmActivity extends Activity {
 		Log.d( "AlarmActivity", "work#1" );
 		// TODO: do something useful.
 		Toast.makeText(this, "Alarm ringing, get up! Alarm #" + this.alarm.getId(), Toast.LENGTH_LONG).show();
+	}
+	
+	public void button(View view) {
+//		Intent intent = new Intent(this, ChallengeActivity.class);
+		
+		//Intent intent = new Intent(this, MemoryActivity.class);
+		
+		Intent intent = new Intent(this, SimpleMathActivity.class);
+		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Check if result is from a challenge
+		if(requestCode == CHALLENGE_REQUEST_CODE) {
+			if(resultCode == Activity.RESULT_OK) {
+				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
+						.show();
+			} else {
+				Toast.makeText(this, "Returned from uncompleted challenge",
+						Toast.LENGTH_LONG).show();
+			}
+			
+		} else {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
 	}
 }

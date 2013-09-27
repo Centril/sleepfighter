@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="pre_chal_act">Antar du utmaningen?!</string>
+    <string name="math_chal_act">Klara matteuppgiften!</string>
     <string name="app_name">SleepFighter</string>
     <string name="action_settings">Inställningar</string>
     <string name="add">Lägg till</string>
@@ -8,6 +10,14 @@
     <string name="yes">Ja</string>
     <string name="no">Nej</string>
     <string name="confirm_delete">Är du säker på att du vill ta bort alarmet?"</string>
+
+    <!-- Challenges -->
+
+    <string name="btn_complete">Lyckas!</string>
+    <string name="btn_fail">Misslyckas!</string>
+    <string name="start_challenge">Avsluta galenskapet!</string>
+    <string name="btn_answer">Svara</string>
+    <string name="challengeBtn">Utmaning</string>
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>

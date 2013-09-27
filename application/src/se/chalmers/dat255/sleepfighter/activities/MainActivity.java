@@ -3,6 +3,7 @@ package se.chalmers.dat255.sleepfighter.activities;
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
@@ -16,7 +17,12 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -74,16 +80,42 @@ public class MainActivity extends Activity {
 		// Register to get context menu events associated with listView
 		this.registerForContextMenu(listView);
 	}
+		
+	private void immedateTestAlarmSchedule() {
+		// For testing purposes, we want an alarm 5 seconds in the future,
+		// calculate that time.
+		MutableDateTime time = new MutableDateTime();
+		time.addSeconds(6);
+
+		// Make an alarm with that time.
+		Alarm alarm = new Alarm(time);
+		alarm.setId(1);
+		this.manager.add(alarm);
+		long scheduleTime = alarm.getNextMillis(this.getNow());
+
+		// Make pending intent.
+		Intent intent = new Intent(this, AlarmReceiver.class);
+		intent.putExtra("alarm_id", alarm.getId());
+		PendingIntent pi = PendingIntent.getBroadcast(this, -1, intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+
+		// Schedule alarm.
+		AlarmManager androidAM = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		androidAM.set(AlarmManager.RTC_WAKEUP, scheduleTime, pi);
+
+	}
 
 	private long getNow() {
 		return new DateTime().getMillis();
 	}
-	
+
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		@Override
+
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			Alarm clickedAlarm = MainActivity.this.alarmAdapter.getItem(position);
 			startAlarmEdit(clickedAlarm, false);
+
 		}
 	};
 
@@ -136,6 +168,7 @@ public class MainActivity extends Activity {
 				
 			default:
 				return false;
+
 		}
 	}
 
@@ -176,13 +209,14 @@ public class MainActivity extends Activity {
 
 	/**
 	 * Handles a change in time related data in any alarm.
-	 *
-	 * @param evt the event.
+	 * 
+	 * @param evt
+	 *            the event.
 	 */
 	@Handler
 	public void handleDateChange( DateChangeEvent evt ) {
 		final MainActivity self = this;
-		this.runOnUiThread( new Runnable() {
+		this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				self.updateEarliestText();
@@ -209,8 +243,9 @@ public class MainActivity extends Activity {
 
 	/**
 	 * Sets the earliest time text.
-	 *
-	 * @param now the current time.
+	 * 
+	 * @param now
+	 *            the current time.
 	 */
 	private void updateEarliestText() {
 		long now = this.getNow();
@@ -219,6 +254,7 @@ public class MainActivity extends Activity {
 		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
 		String text = DateTextUtils.getTimeToText( this.getResources(), now,  stamp);
 		
+
 		earliestTimeText.setText(text);
 	}
 
@@ -228,8 +264,8 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
 		// Handle item selection
@@ -242,6 +278,12 @@ public class MainActivity extends Activity {
 			return true;
 		default:
 			return super.onOptionsItemSelected( item );
-		}
+		}	
+	}
+
+	public void challenge(View view) {
+		Intent intent = new Intent(this, AlarmActivity.class);
+		intent.putExtra(AlarmActivity.EXTRA_ALARM_ID, 1);
+		startActivity(intent);
 	}
 }

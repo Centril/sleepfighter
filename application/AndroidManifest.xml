@@ -74,6 +74,18 @@
             </intent-filter>
         </receiver>
 
-</application>
+        <activity
+            android:name="se.chalmers.dat255.sleepfighter.activities.ChallengeActivity"
+            android:label="@string/pre_chal_act" >
+        </activity>
+        <activity
+            android:name="se.chalmers.dat255.sleepfighter.activities.SimpleMathActivity"
+            android:label="@string/math_chal_act" >
+        </activity>        
+        <activity
+            android:name="se.chalmers.dat255.sleepfighter.activities.MemoryActivity"
+            android:label="memory" >
+        </activity>
+    </application>
 
 </manifest>
