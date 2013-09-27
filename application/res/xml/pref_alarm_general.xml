@@ -1,12 +1,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/time_category_title" >
-        <se.chalmers.dat255.sleepfighter.TimepickerPreference
+        <se.chalmers.dat255.sleepfighter.preference.TimepickerPreference
             android:defaultValue="00:00"
             android:key="pref_alarm_time"
             android:title="@string/pref_alarm_time" />
 
-        <se.chalmers.dat255.sleepfighter.MultiSelectListPreference
+        <se.chalmers.dat255.sleepfighter.preference.MultiSelectListPreference
             android:defaultValue="@array/default_week_days"
             android:entries="@array/week_days"
             android:entryValues="@array/week_days"
