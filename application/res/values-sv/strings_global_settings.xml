@@ -2,11 +2,11 @@
 
     <string name="title_activity_global_settings">Inställningar</string>
 
-    <string name="pref_alarm_turn_screen_on">Turn skärm on</string>
-    <string name="pref_alarm_turn_screen_on_summary">Turn screen on sammanfattning</string>    
+    <string name="pref_alarm_turn_screen_on">Sätt på skärmen</string>
+    <string name="pref_alarm_turn_screen_on_summary">Skärmen sätts på automatiskt när alarmet ringer</string>    
 
-    <string name="pref_alarm_bypass_lock_screen">Bypass lock skärm</string>
-    <string name="pref_alarm_bypass_lock_screen_summary">Bypass lock screen sammanfattning</string>    
+    <string name="pref_alarm_bypass_lock_screen">Förbigå skärmlås</string>
+    <string name="pref_alarm_bypass_lock_screen_summary">Skärmlåset låses upp automatiskt när alarmet ringer</string>    
 
     <string name="pref_about">Om</string>
     <string name="pref_version">Version</string>
