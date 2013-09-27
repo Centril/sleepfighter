@@ -34,7 +34,7 @@
             android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="se.chalmers.dat255.sleepfighter.activities.MainActivity" />
+                android:value="se.chalmers.dat255.sleepfighter.activity.MainActivity" />
         </activity>
 
         <!-- START: Alarm settings related activities -->
@@ -44,7 +44,7 @@
             android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="se.chalmers.dat255.sleepfighter.activities.MainActivity" />
+                android:value="se.chalmers.dat255.sleepfighter.activity.MainActivity" />
         </activity>
         <activity
             android:name="se.chalmers.dat255.sleepfighter.activity.RingerSettingsActivity"
@@ -52,7 +52,7 @@
             android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.AlarmSettingsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="se.chalmers.dat255.sleepfighter.activities.AlarmSettingsActivity" />
+                android:value="se.chalmers.dat255.sleepfighter.activity.AlarmSettingsActivity" />
         </activity>
 
         <!-- END: Alarm settings related activities -->
