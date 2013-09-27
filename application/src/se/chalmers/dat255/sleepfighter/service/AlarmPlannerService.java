@@ -151,7 +151,12 @@ public class AlarmPlannerService extends IntentService {
 
 		PendingIntent pi = this.makePendingIntent( alarm.getId() );
 
-		long scheduleTime = alarm.getNextMillis( new DateTime().getMillis() );
+		// Get alarm RTC time, could be null cause of threading, so check!
+		Long scheduleTime = alarm.getNextMillis( new DateTime().getMillis() );
+		if ( scheduleTime == null ) {
+			return;
+		}
+
 		this.getAlarmManager().set( AlarmManager.RTC_WAKEUP, scheduleTime, pi );
 
 		Log.d( "AlarmPlannerService", "Setting! " + alarm.toString() );
