@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -89,29 +91,11 @@ public class MultiSelectListPreference extends ListPreference {
             }
 
             String value = pack(values);
-            setSummary(prepareSummary(values));
-            setValueAndEvent(value);
-        }
-    }
 
-    private void setValueAndEvent(String value) {
-        if (callChangeListener(unpack(value))) {
-            setValue(value);
-        }
-    }
-
-    private CharSequence prepareSummary(List<CharSequence> joined) {
-        List<String> titles = new ArrayList<String>();
-        CharSequence[] entryTitle = getEntries();
-        CharSequence[] entryValues = getEntryValues();
-        int ix = 0;
-        for (CharSequence value : entryValues) {
-            if (joined.contains(value)) {
-                titles.add((String) entryTitle[ix]);
+            if (callChangeListener(value)) {
+            	persistString(value);
             }
-            ix += 1;
         }
-        return join(titles, ", ");
     }
 
     @Override
@@ -136,9 +120,6 @@ public class MultiSelectListPreference extends ListPreference {
         } else {
             value = joinedDefaultValue;
         }
-
-        setSummary(prepareSummary(Arrays.asList(unpack(value))));
-        setValueAndEvent(value);
     }
 
     /**
