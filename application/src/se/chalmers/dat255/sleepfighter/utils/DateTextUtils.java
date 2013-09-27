@@ -163,9 +163,8 @@ public class DateTextUtils {
 			boolean enabled = enabledDays[i];
 			int length = names[i].length();
 
-			if ( enabled ) {
-				text.setSpan( new ForegroundColorSpan( Color.WHITE ), start, start + length, 0 );
-			}
+			int color = enabled ? Color.WHITE : R.color.nearly_background_text;
+			text.setSpan( new ForegroundColorSpan( color ), start, start + length, 0 );
 
 			start += length + 1;
 		}
