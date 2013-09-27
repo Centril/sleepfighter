@@ -49,11 +49,6 @@ public class GlobalSettingsActivity extends PreferenceActivity {
 	};
 	
 	private void bindPreferenceSummaryToValue(Preference preference) {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
-		if (preference instanceof CheckBoxPreference) {
-			prefs.getBoolean(preference.getKey(), false);
-		}
 		
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 	}
