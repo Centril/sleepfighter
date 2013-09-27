@@ -1,8 +1,12 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
@@ -30,19 +34,27 @@ public class GlobalSettingsActivity extends PreferenceActivity {
 	private void setupSimplePreferencesScreen() {
 		addPreferencesFromResource(R.xml.pref_global_settings);
 
+		bindPreferenceSummaryToValue(findPreference("pref_alarm_turn_screen_on"));
+		bindPreferenceSummaryToValue(findPreference("pref_alarm_bypass_lock_screen"));
+		bindPreferenceSummaryToValue(findPreference("pref_global_when_or_in_how_much"));
 	}
-	/*
-	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
+	
+	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
+			
 			
 			return true;
 		}
 	};
 	
-	private static void bindPreferenceSummaryToValue(Preference preference) {
-		preference.setPersistent(false);
+	private void bindPreferenceSummaryToValue(Preference preference) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		
+		if (preference instanceof CheckBoxPreference) {
+			prefs.getBoolean(preference.getKey(), false);
+		}
 		
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-	}*/
+	}
 }
