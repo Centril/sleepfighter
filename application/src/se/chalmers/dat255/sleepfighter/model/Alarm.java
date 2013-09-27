@@ -1,5 +1,9 @@
 package se.chalmers.dat255.sleepfighter.model;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
@@ -8,6 +12,7 @@ import org.joda.time.ReadableDateTime;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
@@ -611,7 +616,17 @@ public class Alarm implements Cloneable {
 
 	@Override
 	public String toString() {
-		return DateTextUtils.joinTime( this.hour, this.minute, this.second ) + " is" + (this.isActivated ? " " : " NOT ") + "activated.";
+		final Map<String, String> prop = new HashMap<String, String>();
+		prop.put( "id", Integer.toString( this.getId() ) );
+		prop.put( "name", this.getName() );
+		prop.put( "time", DateTextUtils.joinTime( this.hour, this.minute, this.second ) );
+		prop.put( "weekdays", Arrays.toString( this.enabledDays ) );
+		prop.put( "activated", Boolean.toString( this.isActivated() ) );
+		prop.put( "repeating", Boolean.toString( this.isRepeating() ) );
+		prop.put( "audio_source", this.getAudioSource() == null ? null : this.getAudioSource().toString() );
+		prop.put( "audio_config", this.getAudioConfig().toString() );
+
+		return "Alarm[" + StringUtils.PROPERTY_MAP_JOINER.join( prop ) + "]";
 	}
 
 	/**
