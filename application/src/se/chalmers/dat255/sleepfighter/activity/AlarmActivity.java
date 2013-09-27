@@ -60,9 +60,11 @@ public class AlarmActivity extends Activity {
 
 		this.setContentView(R.layout.activity_alarm_prechallenge);
 
+		SFApplication app = SFApplication.get();
+
 		// Fetch alarm Id.
 		int alarmId = new IntentUtils( this.getIntent() ).getAlarmId();
-		this.alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
+		this.alarm = app.getPersister().fetchAlarmById( alarmId );
 
 		// Do stuff.
 		this.work();
@@ -80,8 +82,11 @@ public class AlarmActivity extends Activity {
 
 		// Disable alarm if not repeating.
 		if ( !this.alarm.isRepeating() ) {
+			if ( this.alarm.getMessageBus() == null ) {
+				this.alarm.setMessageBus( app.getBus() );
+			}
+
 			this.alarm.setActivated( false );
-			app.getPersister().updateAlarm( this.alarm );
 		} else {
 			// Reschedule earliest alarm (if any).
 			AlarmTimestamp at = app.getAlarms().getEarliestAlarm( new DateTime().getMillis() );
