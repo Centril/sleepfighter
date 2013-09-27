@@ -22,6 +22,13 @@ public interface AudioDriver {
 	public void setSource( Context context, AudioSource source );
 
 	/**
+	 * Returns the source the driver handles.
+	 *
+	 * @return the source.
+	 */
+	public AudioSource getSource();
+
+	/**
 	 * Prints the name of source in a human readable format.<br/>
 	 * This could for example be a songs title.
 	 *

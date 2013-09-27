@@ -15,15 +15,23 @@ import android.net.Uri;
  * @since Sep 27, 2013
  */
 public class RingtoneDriver implements AudioDriver {
+	private AudioSource source;
 	private Ringtone ringtone;
 	private Context context;
 
 	@Override
 	public void setSource( Context context, AudioSource source ) {
+		this.source = source;
+
 		this.context = context;
 
 		Uri ringtoneUri = Uri.parse( source.getUri() );
 		this.ringtone = RingtoneManager.getRingtone( context, ringtoneUri );
+	}
+
+	@Override
+	public AudioSource getSource() {
+		return this.source;
 	}
 
 	@Override
@@ -42,4 +50,6 @@ public class RingtoneDriver implements AudioDriver {
 	public void stop() {
 		this.ringtone.stop();
 	}
+
+
 }

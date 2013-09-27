@@ -23,6 +23,10 @@ public class SilentAudioDriver implements AudioDriver {
 		this.context = context;
 	}
 
+	public AudioSource getSource() {
+		return null;
+	}
+
 	@Override
 	public String printSourceName() {
 		return context.getString( R.string.ringtone_none );
