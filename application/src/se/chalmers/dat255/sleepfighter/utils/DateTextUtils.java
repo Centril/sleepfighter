@@ -12,6 +12,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.content.res.Resources;
@@ -158,12 +159,15 @@ public class DateTextUtils {
 			throw new AssertionError("A week has 7 days, wrong array lengths!");
 		}
 
+		int enabledColor = Color.WHITE;
+		int disabledColor = SFApplication.get().getResources().getColor( R.color.nearly_background_text );
+
 		int start = 0;
 		for ( int i = 0; i < enabledDays.length; i++ ) {
 			boolean enabled = enabledDays[i];
 			int length = names[i].length();
 
-			int color = enabled ? Color.WHITE : R.color.nearly_background_text;
+			int color = enabled ? enabledColor : disabledColor;
 			text.setSpan( new ForegroundColorSpan( color ), start, start + length, 0 );
 
 			start += length + 1;
