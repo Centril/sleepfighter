@@ -15,6 +15,7 @@
     
     <string name="time_category_title">Time</string>
     <string name="misc_category_title">Miscellaneous</string>
+    <string name="ringer_category_title">Ringer settings</string>
     
     
     <string-array name="week_days">
@@ -39,4 +40,6 @@
     
     <string name="pref_alarm_repeat">Repeat</string>
     <string name="pref_delete_alarm">Delete this alarm</string>
+
+	<string name="perf_alarm_ringtone">Ring tone</string>
 </resources>

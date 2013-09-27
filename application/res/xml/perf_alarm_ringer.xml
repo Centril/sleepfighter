@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/audio_source_category_title" >
+        <se.chalmers.dat255.sleepfighter.preference.AlarmRingtonePreference
+            android:key="pref_ringtone_picker"
+            android:ringtoneType="all"
+            android:showDefault="true"
+            android:title="@string/perf_ringtone_picker"
+            android:summary="@string/perf_ringtone_picker_summary"
+            android:persistent="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

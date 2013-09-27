@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_alarm_ringer_settings">Ring tone settings</string>
+
+    <string name="audio_source_category_title">Audio Source</string>
+
+    <string name="perf_ringtone_picker">Ring tone</string>
+    <string name="perf_ringtone_picker_summary">Select a ring tone from your phone</string>
+    <string name="alarm_audiosource_summary_name_title">Selected:</string>
+    <string name="alarm_audiosource_summary_type_label">From:</string>
+    <string name="alarm_audiosource_summary_name_none">None</string>
+    <string name="alarm_audiosource_summary_type_none">N/A</string>
+</resources>

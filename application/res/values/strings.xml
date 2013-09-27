@@ -8,6 +8,8 @@
     <string name="yes">Yes</string>
     <string name="no">Nej</string>
     <string name="confirm_delete">Do you really want to delete this alarm?"</string>
+
+    <string name="ringtone_none">None</string>
     
     <string-array name="earliest_time_formats">
         <item>No alarm active</item>

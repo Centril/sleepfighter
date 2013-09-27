@@ -14,7 +14,17 @@
             android:summary="summary summary..."
             android:title="@string/pref_alarm_enabled_days" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/misc_category_title" >
+
+    <PreferenceCategory android:title="@string/ringer_category_title">
+ 
+        <Preference
+            android:title="@string/perf_alarm_ringtone"
+            android:key="perf_alarm_ringtone"
+            android:persistent="false" />
+
+    </PreferenceCategory>
+
+	<PreferenceCategory android:title="@string/misc_category_title" >
 
         <!-- NOTE: EditTextPreference accepts EditText attributes. -->
         <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
@@ -38,5 +48,6 @@
             android:title="@string/pref_delete_alarm"
             android:key="pref_delete_alarm" />
     </PreferenceCategory>
+    
 
 </PreferenceScreen>

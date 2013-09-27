@@ -19,6 +19,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,7 +47,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private final String DAYS = "pref_enabled_days";
 	private final String REPEAT = "pref_alarm_repeat";
 	private final String DELETE = "pref_delete_alarm";
-	
+
+	private final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
+
 	// is used in sBindPreferenceSummaryToValueListener
 	private String[] weekdayStrings;
 	
@@ -72,6 +75,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 					return false;
 				}
 		    });
+		    edit_title_field.clearFocus();
 			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM);
 		}
 	}
@@ -174,6 +178,20 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				return true;
 			}
 		});
+
+		findPreference( RINGER_SUBSCREEN ).setOnPreferenceClickListener( new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick( Preference preference ) {
+				startRingerEdit();
+				return true;
+			}
+		} );
+	}
+
+	protected void startRingerEdit() {
+		Intent intent = new Intent(this, RingerSettingsActivity.class );
+		new IntentUtils( intent ).setAlarmId( alarm );
+		this.startActivity( intent );
 	}
 
 	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
