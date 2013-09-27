@@ -28,6 +28,7 @@ public class SFApplication extends Application {
 		app = this;
 
 		this.persistenceManager = new PersistenceManager( this );
+		this.getBus().subscribe( this.persistenceManager );
 	}
 
 	/**
@@ -52,10 +53,7 @@ public class SFApplication extends Application {
 			}
 
 			this.alarmList = this.getPersister().fetchAlarms();
-
-
 			this.alarmList.setMessageBus(this.getBus());
-			this.bus.subscribe( this.persistenceManager );
 
 			this.registerAlarmPlanner();
 		}
