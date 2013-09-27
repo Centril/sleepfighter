@@ -8,15 +8,22 @@ import org.joda.time.ReadableDateTime;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
-import android.util.Log;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Alarm models the alarm settings and business logic for an alarm.
  *
+ * Actual model fields are described in {@link Field}
+ *
  * @version 1.0
  * @since Sep 16, 2013
- */
-public class Alarm {
+ */	
+@DatabaseTable(tableName = "alarm")
+public class Alarm implements Cloneable {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -42,6 +49,8 @@ public class Alarm {
 		 * @return the alarm.
 		 */
 		public Alarm getAlarm();
+
+		public Field getModifiedField();
 	}
 
 	/**
@@ -109,18 +118,41 @@ public class Alarm {
 		}
 	}
 
-	private int id;
-	private boolean isActivated = true;
+	@DatabaseField(generatedId = true)
+	private int id = NOT_COMMITTED_ID;
+
+	/** IDs for non-committed Alarms. */
+	public static final int NOT_COMMITTED_ID = -1;
+
+	@DatabaseField
+	private boolean isActivated = false;
+
+	@DatabaseField
 	private String name;
 
+	/** The value for unnamed strings is {@value #UNNAMED} */
+	public static final String UNNAMED = null;
+
+	@DatabaseField
 	private int hour;
+
+	@DatabaseField
 	private int minute;
+
+	@DatabaseField
 	private int second;
 
 	/** The weekdays that this alarm can ring. */
+	@DatabaseField(width = 7)
 	private boolean[] enabledDays = { true, true, true, true, true, true, true };
 	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
+
+	@DatabaseField
+	private int unnamedPlacement;
+	
+	@DatabaseField
+	private boolean isRepeating = false;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
@@ -146,26 +178,48 @@ public class Alarm {
 	}
 
 	/**
-	 * Constructs an alarm to 00:00.<br/>
-	 * This is the equivalent of calling {@link #Alarm(int, int)} with (0, 0).
+	 * Constructs an alarm to current time.
 	 */
 	public Alarm() {
-		setTime(0, 0, 0);
+		this( new DateTime() );
 	}
 
 	/**
-	 * Constructs an alarm given an hour and minute.
+	 * Copy constructor
 	 *
+	 * @param rhs the alarm to copy from.
+	 */
+	public Alarm( Alarm rhs ) {
+		// Reset id.
+		this.setId( NOT_COMMITTED_ID );
+
+		// Copy data.
+		this.hour = rhs.hour;
+		this.minute = rhs.minute;
+		this.second = rhs.second;
+		this.isActivated = rhs.isActivated;
+		this.enabledDays = rhs.enabledDays;
+		this.name = rhs.name;
+
+		this.unnamedPlacement = 0;
+
+		// Copy dependencies.
+		this.bus = rhs.bus;
+	}
+
+	/**
+	 *  Constructs an alarm given an hour and minute.
+	 * 
 	 * @param hour the hour the alarm should occur.
 	 * @param minute the minute the alarm should occur.
 	 */
 	public Alarm(int hour, int minute) {
-		this.setTime(hour, minute);
+		this(hour, minute, 0);
 	}
 
 	/**
-	 * Constructs an alarm given an hour, minute and second.
-	 *
+	 *  Constructs an alarm given an hour, minute and, second.
+	 * 
 	 * @param hour the hour the alarm should occur.
 	 * @param minute the minute the alarm should occur.
 	 * @param second the second the alarm should occur.
@@ -180,7 +234,7 @@ public class Alarm {
 	 * @param time time in unix epoch timestamp.
 	 */
 	public Alarm(long time) {
-		this.setTime( time );
+		this.setTime(time);
 	}
 
 	/**
@@ -189,7 +243,7 @@ public class Alarm {
 	 * @param time a {@link ReadableDateTime} object. 
 	 */
 	public Alarm(ReadableDateTime time) {
-		this.setTime( time );
+		this.setTime(time);
 	}
 
 	/**
@@ -202,11 +256,16 @@ public class Alarm {
 	}
 
 	/**
-	 * Sets the ID of the alarm.
+	 * Sets the ID of the alarm.<br/>
+	 * Should only be used for testing.
 	 *
 	 * @param id the ID of the alarm.
 	 */
 	public void setId( int id ) {
+		if ( this.id == id ) {
+			return;
+		}
+
 		this.id = id;
 		this.publish( new MetaChangeEvent( this, Field.ID ) );
 	}
@@ -226,7 +285,16 @@ public class Alarm {
 	 * @param name the name of the Alarm to set.
 	 */
 	public void setName( String name ) {
+		if ( this.name == name ) {
+			return;
+		}
+
+		if ( name == null ) {
+			throw new IllegalArgumentException( "A named Alarm can not be unnamed." );
+		}
+
 		this.name = name;
+		this.unnamedPlacement = 0;
 		this.publish( new MetaChangeEvent( this, Field.NAME ) );
 	}
 
@@ -249,6 +317,10 @@ public class Alarm {
 	 * @param second the second the alarm should occur.
 	 */
 	public synchronized void setTime( int hour, int minute, int second ) {
+		if ( this.hour == hour && this.minute == minute && this.second == second ) {
+			return;
+		}
+
 		if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59 ) {
 			throw new IllegalArgumentException();
 		}
@@ -283,7 +355,7 @@ public class Alarm {
 	 *
 	 * @return the weekdays alarm is enabled for.
 	 */
-	public boolean[] getEnabledDays() {
+	public synchronized boolean[] getEnabledDays() {
 		return this.enabledDays.clone();
 	}
 
@@ -294,6 +366,12 @@ public class Alarm {
 	 * @param enabledDays the weekdays alarm should be enabled for.
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
+		Preconditions.checkNotNull( enabledDays );
+
+		if ( Objects.equal( this.enabledDays, enabledDays ) ) {
+			return;
+		}
+
 		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
@@ -319,19 +397,28 @@ public class Alarm {
 		next.setMinuteOfHour( this.minute );
 		next.setSecondOfMinute( this.second );
 
-		// Houston, we've a problem, alarm is before now, adjust 1 day.
+		// Check if alarm was earlier today. If so, move to next day
 		if ( next.isBefore( now ) ) {
 			next.addDays( 1 );
 		}
-
-		// Offset for weekdays. Checking canHappen() is important for this part, unless you want infinite loops.
+		// Offset for weekdays
 		int offset = 0;
-		for ( int currDay = next.getDayOfWeek() - 1; !this.enabledDays[currDay]; currDay++ ) {
-			Log.d( "Alarm", Integer.toString( currDay ) );
-			if ( currDay > MAX_WEEK_INDEX ) {
-				currDay = 0;
-			}
+		
+		// first weekday to check (0-6), getDayOfWeek returns (1-7)
+		int weekday = next.getDayOfWeek() - 1;
 
+		// Find the weekday the alarm should run, should at most run seven times
+		for (int i = 0; i < 7; i++) {
+			// Wrap to first weekday
+			if (weekday > MAX_WEEK_INDEX) {
+				weekday = 0;
+			}
+			if (this.enabledDays[weekday]) {
+				// We've found the closest day the alarm is enabled for
+				offset = i;
+				break;
+			}
+			weekday++;
 			offset++;
 		}
 
@@ -395,6 +482,10 @@ public class Alarm {
 	 * @param isActivated whether or not the alarm should be active.
 	 */
 	public void setActivated(boolean isActivated) {
+		if ( this.isActivated == isActivated ) {
+			return;
+		}
+
 		this.isActivated = isActivated;
 		this.publish( new DateChangeEvent( this, Field.ACTIVATED ) );
 	}
@@ -406,6 +497,48 @@ public class Alarm {
 	 */
 	public boolean isActivated() {
 		return this.isActivated;
+	}
+
+	/**
+	 * Returns true if the alarm is unnamed = ({@link #getName()} == {@link #UNNAMED}.
+	 *
+	 * @return true if the alarm is unnamed.
+	 */
+	public boolean isUnnamed() {
+		return this.name == UNNAMED;
+	}
+
+	/**
+	 * Returns the unnamed placement.<br/>
+	 * The unnamed placement is a number that is set for Alarms that honor {@link #isUnnamed()}.<br/>
+	 * It is a leaping number that is set upon addition to {@link AlarmList#add(int, Alarm)}.
+	 *
+	 * Let us assume that we have 3 alarms which all start out as unnamed.
+	 * Their placements will be 1,2,3,4.
+	 *
+	 * When the second alarm is removed, or renamed to "Holidays",
+	 * the 3rd alarm will not change its placement to 2.
+	 *
+	 * If then a 4th alarm is added, it will usurp the place that the 2nd alarm had,
+	 * and its unnamed placement will be 2.
+	 */
+	public int getUnnamedPlacement() {
+		return this.unnamedPlacement;
+	}
+
+	/**
+	 * Sets the unnamed placement of alarm, see {@link #getUnnamedPlacement()}.<br/>
+	 * This should be set directly after constructor, otherwise provided for testing.
+	 *
+	 * @param placement the unnamed placement of alarm.
+	 * @throws IllegalArgumentException if {@link #isUnnamed()} returns false.
+	 */
+	public void setUnnamedPlacement( int placement ) {
+		if ( !this.isUnnamed() ) {
+			throw new IllegalArgumentException("Can't set numeric placement when alarm is already named.");
+		}
+
+		this.unnamedPlacement = placement;
 	}
 
 	@Override
@@ -422,11 +555,19 @@ public class Alarm {
 		return String.format("%02d", this.getHour()) + ":" + String.format("%02d", this.getMinute());
 	}
 
+	/**
+	 * <p><code>{@link Alarm#hashCode()} == {@link Alarm#getId()}</code></p>
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int hashCode() {
 		return this.id;
 	}
 
+	/**
+	 * <p>Two alarms are considered equal iff <code>{@link Alarm#hashCode()} == {@link Alarm#getId()}</code></p>
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -437,8 +578,34 @@ public class Alarm {
 			return false;
 		}
 
+		// TODO uncomment when working unique ID
 		Alarm rhs = (Alarm) obj;
 		return this.id == rhs.id;
+	}
+
+	/**
+	 * @see Alarm#Alarm(Alarm)
+	 */
+	public Alarm clone() throws CloneNotSupportedException {
+		return new Alarm( this );
+	}
+
+	/**
+	 * Sets if the alarm is repeating or not.
+	 *
+	 * @param isRepeating true if it is repeating.
+	 */
+	public void setRepeat(boolean isRepeating) {
+		this.isRepeating = isRepeating;
+	}
+
+	/**
+	 * Returns whether or not this alarm is repeating or not.
+	 *
+	 * @return true if it is repeating.
+	 */
+	public boolean isRepeating() {
+		return this.isRepeating;
 	}
 
 	/**

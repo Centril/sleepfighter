@@ -1,11 +1,13 @@
 package se.chalmers.dat255.sleepfighter.utils;
 
+import java.util.Arrays;
+import java.util.Locale;
+
 import junit.framework.TestCase;
 
 import org.joda.time.MutablePeriod;
 import org.joda.time.Period;
 
-import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 
 public class DateTextUtilsTests extends TestCase {
@@ -32,7 +34,7 @@ public class DateTextUtilsTests extends TestCase {
 
 	public void testGetEarliestTextTest() {
 		// not active
-		AlarmTimestamp info = new AlarmTimestamp( Alarm.NEXT_NON_REAL, null );
+		AlarmTimestamp info = AlarmTimestamp.INVALID;
 		String earliest = DateTextUtils.getTimeToText( formats, partFormats, null, info );
 		assertEquals( formats[0], earliest );
 
@@ -54,4 +56,19 @@ public class DateTextUtilsTests extends TestCase {
 		// days, hours, and seconds.
 		test( "In 1d, 2h and 3m", 1, 2, 3 );
 	}
+	
+	//public static final String[] getWeekdayNames( int indiceLength, Locale locale ) {
+    public void testGetWeekdayNames(  ) {
+    	String[] days = DateTextUtils.getWeekdayNames(2, Locale.ENGLISH);
+    	String[] expected = { "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su" };
+    	
+    	assertTrue(Arrays.equals(expected, days));
+    	
+    	String[] dagar = DateTextUtils.getWeekdayNames(3, new Locale("sv"));
+    	String[] expected2 = { "mån", "tis", "ons", "tor", "fre", "lör", "sön" };
+    	
+    	assertTrue(Arrays.equals(expected2, dagar));
+    	
+    }
+		
 }

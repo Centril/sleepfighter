@@ -12,8 +12,13 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -26,6 +31,8 @@ import com.google.common.base.Strings;
  * @since Sep 19, 2013
  */
 public class DateTextUtils {
+	private static final int ENABLED_DAYS_INDICE_LENGTH = 2;
+
 	/** Joiner for time, the separator is ":". */
 	public static final Joiner TIME_JOINER = Joiner.on( ':' ).skipNulls();
 
@@ -48,7 +55,14 @@ public class DateTextUtils {
 	 * @return the built time-to string.
 	 */
 	public static final String getTimeToText( Resources res, long now, AlarmTimestamp ats ) {
-		Period diff = new Period( now, ats.getMillis() );
+		Period diff = null;
+		
+		// ats is invalid when all the alarms have been turned off. INVALID has the value null. 
+		// therefore, we must do a nullcheck, otherwise we get an exception. 
+		if(ats !=  AlarmTimestamp.INVALID) {
+			diff = new Period( now, ats.getMillis() );
+		}
+		
 		String[] formats = res.getStringArray( R.array.earliest_time_formats);
 		String[] partFormats =  res.getStringArray( R.array.earliest_time_formats_parts );
 
@@ -114,7 +128,7 @@ public class DateTextUtils {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern( Strings.repeat( "E", indiceLength ) ).withLocale( locale );
 
 		MutableDateTime time = new MutableDateTime();
-		time.setDayOfWeek( 1 );
+		time.setDayOfWeek( DateTimeConstants.MONDAY );
 
 		String[] names = new String[DateTimeConstants.DAYS_PER_WEEK];
 
@@ -131,6 +145,35 @@ public class DateTextUtils {
 		}
 
 		return names;
+	}
+
+	public static final SpannableString makeEnabledDaysText( final Alarm alarm ) {
+		// Compute weekday names & join.
+		String[] names = DateTextUtils.getWeekdayNames( ENABLED_DAYS_INDICE_LENGTH, Locale.getDefault() );
+
+		SpannableString text = new SpannableString( StringUtils.WS_JOINER.join( names ) );
+
+		// Create spans for enabled days.
+		boolean[] enabledDays = alarm.getEnabledDays();
+		if ( enabledDays.length != names.length || names.length != 7 ) {
+			throw new AssertionError("A week has 7 days, wrong array lengths!");
+		}
+
+		int enabledColor = Color.WHITE;
+		int disabledColor = SFApplication.get().getResources().getColor( R.color.nearly_background_text );
+
+		int start = 0;
+		for ( int i = 0; i < enabledDays.length; i++ ) {
+			boolean enabled = enabledDays[i];
+			int length = names[i].length();
+
+			int color = enabled ? enabledColor : disabledColor;
+			text.setSpan( new ForegroundColorSpan( color ), start, start + length, 0 );
+
+			start += length + 1;
+		}
+
+		return text;
 	}
 
 	/**

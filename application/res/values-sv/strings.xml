@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="pre_chal_act">Antar du utmaningen?!</string>
+    <string name="math_chal_act">Klara matteuppgiften!</string>
     <string name="app_name">SleepFighter</string>
     <string name="action_settings">Inställningar</string>
     <string name="add">Lägg till</string>
+    <string name="alarm_unnamed_format">Alarm %1$d</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
+    <string name="confirm_delete">Är du säker på att du vill ta bort alarmet?"</string>
+
+    <!-- Challenges -->
+
+    <string name="btn_complete">Lyckas!</string>
+    <string name="btn_fail">Misslyckas!</string>
+    <string name="start_challenge">Avsluta galenskapet!</string>
+    <string name="btn_answer">Svara</string>
+    <string name="challengeBtn">Utmaning</string>
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>
-        <item>Inom &lt; 1 minut</item>
-        <item>Inom %1$s</item>
-        <item>Inom %1$s och %2$s</item>
-        <item>Inom %1$s, %2$s och %3$s</item>
+        <item>Om &lt; 1 minut</item>
+        <item>Om %1$s</item>
+        <item>Om %1$s och %2$s</item>
+        <item>Om %1$s, %2$s och %3$s</item>
     </string-array>
     <string-array name="earliest_time_formats_parts">
         <item>%1$dd</item>
@@ -20,6 +34,13 @@
     <string-array name="main_list_context_menu">
         <item>Redigera alarm</item>
         <item>Ta bort alarm</item>
+
+        <!-- for debugging purposes. -->
+        <item>start alarm sound</item>
+        <item>stop alarm sound</item>
+        <item>start vibration</item>
+        <item>stop vibration</item>
+        <item>Kopiera alarm</item>
     </string-array>
 
 </resources>

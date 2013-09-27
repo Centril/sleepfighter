@@ -1,10 +1,13 @@
 package se.chalmers.dat255.sleepfighter.model;
 
+import java.util.Arrays;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
@@ -50,6 +53,20 @@ public class AlarmTest extends TestCase {
 		} catch (IllegalArgumentException e) {
 			// success
 		}
+
+		// invalid second
+		try {
+			new Alarm(4, 1, -1);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+		try {
+			new Alarm(4, 60, 61);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
 	}
 	
 	public void testSetTime() {
@@ -58,6 +75,14 @@ public class AlarmTest extends TestCase {
 		
 		assertEquals(3, alarm.getHour());
 		assertEquals(4, alarm.getMinute());
+		assertEquals(0, alarm.getSecond());
+		
+		Alarm alarm2 = new Alarm(4, 3);
+		alarm2.setTime(3, 4, 2);
+		
+		assertEquals(3, alarm2.getHour());
+		assertEquals(4, alarm2.getMinute());
+		assertEquals(2, alarm2.getSecond());
 	}
 	
 	public class Subscriber3 {
@@ -118,10 +143,19 @@ public class AlarmTest extends TestCase {
 	public void testEquals() {
 		Alarm alarm1 = new Alarm(3,2);
 		Alarm alarm2 = new Alarm(3,2);
+		alarm1.setId(0);
+		alarm2.setId(0);
+		
 		
 		assertEquals(alarm1, alarm2);
 		
+		
 		alarm2.setTime(3, 1);
+		
+		// equality is decided by ID.
+		assertTrue(alarm1.equals(alarm2));
+
+		alarm2.setId(1);
 		assertFalse(alarm1.equals(alarm2));
 		
 		// same reference test
@@ -173,7 +207,7 @@ public class AlarmTest extends TestCase {
 		alarm.setEnabledDays( new boolean[] { false, true, true, true, true, true, true } );
 
 		MutableDateTime time = new MutableDateTime(0, 1, 1, 0, 0, 0, 0);
-		time.setDayOfWeek( 1 );
+		time.setDayOfWeek( DateTimeConstants.MONDAY );
 		now = time.getMillis();
 
 		time.addDays( 1 );
@@ -275,7 +309,66 @@ public class AlarmTest extends TestCase {
 		
 		sub.alarm.setEnabledDays(enabledDays);
 		assertTrue(sub.passed);
-	}		
+		
+		// test for a too long array.
+		Alarm alarm = new Alarm(1,2);
+		boolean[] enabledDays2 = { true, true, true, true, true, true, true, true };
+		
+		// invalid minute
+		try {
+			alarm.setEnabledDays(enabledDays2);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+	}
 	
+	public void testCopyContructor() {
+		Alarm alarm = new Alarm(8, 30);
+		Alarm copy = new Alarm(alarm);
+		
+		// Check some properties of Alarm
+		// More fields could be checked as they are added
+		assertEquals(alarm.getHour(), copy.getHour());
+		assertEquals(alarm.getMinute(), copy.getMinute());
+		assertEquals(alarm.getName(), copy.getName());
+		assertTrue(Arrays.equals(alarm.getEnabledDays(), copy.getEnabledDays()));
+	}
+	
+	public void testGetTimeString() {
+		Alarm alarm = new Alarm(5, 5);
+		assertEquals("05:05", alarm.getTimeString());
+		
+		alarm = new Alarm(10, 5);
+		assertEquals("10:05", alarm.getTimeString());
+		
+		alarm = new Alarm(5, 10);
+		assertEquals("05:10", alarm.getTimeString());
+		
+		alarm = new Alarm(13, 13);
+		assertEquals("13:13", alarm.getTimeString());
+	}
+	
+	public void testSetUnnamedPlacement() {
+		Alarm alarm = new Alarm();
+		alarm.setName( "eric" );
+		try {
+		
+			// alarm is actually named, so we want an exception.
+			alarm.setUnnamedPlacement(3);
+			Assert.fail("Should have thrown IllegalArgumentException");
+			
+		} catch (IllegalArgumentException e) {
+			// success
+		}
+		alarm = new Alarm();
+		alarm.setUnnamedPlacement(3);
+		assertEquals(3, alarm.getUnnamedPlacement());
+	}
+	
+	public void testSetRepeat() {
+		Alarm alarm = new Alarm();
+		alarm.setRepeat(true);
+		assertTrue(alarm.isRepeating());
+	}
 }
-	

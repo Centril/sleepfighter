@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="title_activity_global_settings">設定</string>
+
+    <!-- TODO: translate -->
+    <string name="pref_alarm_turn_screen_on">Turn skärm on</string>
+    <string name="pref_alarm_turn_screen_on_summary">Turn screen on sammanfattning</string>    
+
+    <string name="pref_alarm_bypass_lock_screen">Bypass lock skärm</string>
+    <string name="pref_alarm_bypass_lock_screen_summary">Bypass lock screen sammanfattning</string>    
+
+    <string name="pref_about">スリープファイターについて</string>
+    <string name="pref_version">バージョン</string>
+</resources>

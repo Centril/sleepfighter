@@ -1,24 +1,45 @@
 <resources>
 
-    <string name="title_activity_alarm_settings">Settings</string>
+    <string name="title_activity_alarm_settings">Alarm</string>
 
     <!-- Strings related to Settings -->
 
 
     <!-- Example General settings -->
     <string name="pref_alarm_header_general">General</string>
-    <string name="pref_alarm_name">Alarm Name</string>
-    <string name="pref_alarm_time">Alarm Time</string>
+    <string name="pref_alarm_time">Time</string>
+    <string name="pref_alarm_name">Name</string>
+    <string name="pref_alarm_default_name">Untitled Alarm</string>
     
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+    <string name="pref_alarm_enabled_days">Days</string>
+    
+    <string name="time_category_title">Time</string>
+    <string name="misc_category_title">Miscellaneous</string>
+    <string name="ringer_category_title">Ring tone settings</string>
+    
+    
+    <string-array name="week_days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>       
+        <item>Thursday</item>      
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
     </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
+    
+    <string-array name="default_week_days">
+        <item>true</item>
+        <item>true</item>
+        <item>true</item>       
+        <item>true</item>      
+        <item>true</item>
+        <item>true</item>
+        <item>true</item>
     </string-array>
+    
+    <string name="pref_alarm_repeat">Repeat</string>
+    <string name="pref_delete_alarm">Delete this alarm</string>
 
+	<string name="perf_alarm_ringtone">Ring tone</string>
 </resources>
