@@ -8,7 +8,6 @@ import org.joda.time.ReadableDateTime;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
-import android.util.Log;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -398,19 +397,28 @@ public class Alarm implements Cloneable {
 		next.setMinuteOfHour( this.minute );
 		next.setSecondOfMinute( this.second );
 
-		// Houston, we've a problem, alarm is before now, adjust 1 day.
+		// Check if alarm was earlier today. If so, move to next day
 		if ( next.isBefore( now ) ) {
 			next.addDays( 1 );
 		}
-
-		// Offset for weekdays. Checking canHappen() is important for this part, unless you want infinite loops.
+		// Offset for weekdays
 		int offset = 0;
-		for ( int currDay = next.getDayOfWeek() - 1; !this.enabledDays[currDay]; currDay++ ) {
-			Log.d( "Alarm", Integer.toString( currDay ) );
-			if ( currDay > MAX_WEEK_INDEX ) {
-				currDay = 0;
-			}
+		
+		// first weekday to check (0-6), getDayOfWeek returns (1-7)
+		int weekday = next.getDayOfWeek() - 1;
 
+		// Find the weekday the alarm should run, should at most run seven times
+		for (int i = 0; i < 7; i++) {
+			// Wrap to first weekday
+			if (weekday > MAX_WEEK_INDEX) {
+				weekday = 0;
+			}
+			if (this.enabledDays[weekday]) {
+				// We've found the closest day the alarm is enabled for
+				offset = i;
+				break;
+			}
+			weekday++;
 			offset++;
 		}
 
