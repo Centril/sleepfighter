@@ -7,13 +7,14 @@ import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
+import se.chalmers.dat255.sleepfighter.preference.InitializableRingtonePreference;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.preference.RingtonePreference;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,7 +83,6 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.summaryType.setText( typeText );
 	}
 
-
 	/**
 	 * Sets up factory & make driver from current source.
 	 */
@@ -99,7 +99,13 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	@SuppressWarnings( "deprecation" )
 	private void setupRingtonePicker() {
-		RingtonePreference pref = (RingtonePreference) this.findPreference( RINGTONE_PICKER );
+		InitializableRingtonePreference pref = (InitializableRingtonePreference) this.findPreference( RINGTONE_PICKER );
+
+		AudioSource as = this.driver.getSource();
+		if ( as != null ) {
+			pref.setInitialUri( Uri.parse( as.getUri() ) );
+		}
+
 		pref.setOnPreferenceChangeListener( new OnPreferenceChangeListener() {
 			@Override
 			public boolean onPreferenceChange( Preference preference, Object newValue ) {
@@ -114,7 +120,6 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 *
 	 * @param uri 
 	 */
-
 	protected void setRingtone( String uri ) {
 		AudioSource source = null;
 
