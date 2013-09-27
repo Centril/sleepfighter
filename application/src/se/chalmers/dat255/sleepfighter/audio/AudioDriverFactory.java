@@ -28,18 +28,22 @@ public class AudioDriverFactory {
 	public AudioDriver produce( Context context, AudioSource source ) {
 		AudioDriver driver = null;
 
-		switch ( source.getType() ) {
-		case RINGTONE:
-			driver = new RingtoneDriver();
-			break;
+		if ( source == null ) {
+			driver = new SilentAudioDriver();
+		} else {
+			switch ( source.getType() ) {
+			case RINGTONE:
+				driver = new RingtoneDriver();
+				break;
 
-		case INTERNET_STREAM:
-		case LOCAL_CONTENT_URI:
-		case PLAYLIST:
-		case SPOTIFY:
-			Toast.makeText( context, "NOT IMPLEMENTED YET!", Toast.LENGTH_LONG ).show();
-			driver = new RingtoneDriver();
-			break;
+			case INTERNET_STREAM:
+			case LOCAL_CONTENT_URI:
+			case PLAYLIST:
+			case SPOTIFY:
+				Toast.makeText( context, "NOT IMPLEMENTED YET!", Toast.LENGTH_LONG ).show();
+				driver = new RingtoneDriver();
+				break;
+			}
 		}
 
 		driver.setSource( context, source );
