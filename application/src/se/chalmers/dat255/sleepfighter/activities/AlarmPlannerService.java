@@ -3,19 +3,25 @@ package se.chalmers.dat255.sleepfighter.activities;
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 
 import se.chalmers.dat255.sleepfighter.IntentUtils;
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -150,15 +156,31 @@ public class AlarmPlannerService extends IntentService {
 
 		PendingIntent pi = this.makePendingIntent( alarm.getId() );
 
-		long scheduleTime = alarm.getNextMillis( new DateTime().getMillis() );
+		long now = new DateTime().getMillis();
+		
+		long scheduleTime = alarm.getNextMillis(now);
 		this.getAlarmManager().set( AlarmManager.RTC_WAKEUP, scheduleTime, pi );
 
 		Log.d( "AlarmPlannerService", "Setting! " + alarm.toString() );
+		
+		// Notification showing alarm is active
+		// Clicking on takes user to MainActivity where it can easily be turned
+		// off
+		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+				intent, 0);
+
+		// TODO localize strings
+		NotificationHelper.showNotification(this, "Alarm is active!",
+				"Alarm set at " + alarm.getTimeString(), pendingIntent);
 	}
 
 	private void cancel() {
 		this.getAlarmManager().cancel( this.makePendingIntent( Alarm.NOT_COMMITTED_ID ) );
 		Log.d( "AlarmPlannerService", "Cancelling!" );
+
+		// Remove apps sticky notification
+		NotificationHelper.removeNotification(this);
 	}
 
 	private AlarmManager getAlarmManager() {
