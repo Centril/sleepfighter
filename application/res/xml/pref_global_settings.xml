@@ -12,6 +12,12 @@
         android:summary="@string/pref_alarm_bypass_lock_screen_summary"
         android:defaultValue="true" />
     
+    <CheckBoxPreference 
+        android:key="pref_global_when_or_in_how_much"
+        android:title="Display when next alarm rings"
+        android:summary="Shows when the next alarm will ring rather than in how much time"
+        android:defaultValue="false" />
+    
     <PreferenceCategory android:title="@string/pref_about" >
         <Preference
             android:title="@string/pref_version"
