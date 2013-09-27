@@ -119,8 +119,8 @@ public class SimpleMathChallenge implements Challenge {
 		});
 	}
 
-	private void handleAnswer(EditText editText, ChallengeActivity activity,
-			TextView userText) {
+	private void handleAnswer(final EditText editText,
+			final ChallengeActivity activity, final TextView userText) {
 		boolean correctAnswer = false;
 		try {
 			if (Integer.parseInt(editText.getText().toString()) == getResult()) {
