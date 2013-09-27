@@ -21,7 +21,7 @@
     <PreferenceCategory android:title="@string/pref_about" >
         <Preference
             android:title="@string/pref_version"
-            android:summary="0.1" />
+            android:summary="@string/version_name" />
     </PreferenceCategory>
 
 </PreferenceScreen>
