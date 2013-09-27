@@ -90,8 +90,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		weekdayStrings = AlarmSettingsActivity.this.getResources().getStringArray(R.array.week_days);
-		 
 		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
 
 		alarmList = ((SFApplication) getApplication()).getAlarms();
