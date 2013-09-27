@@ -125,7 +125,6 @@ public class SimpleMathChallenge implements Challenge {
 		try {
 			if (Integer.parseInt(editText.getText().toString()) == getResult()) {
 				activity.complete();
-				activity.finish();
 				correctAnswer = true;
 				Toast.makeText(activity.getBaseContext(), "Correct answer!",
 						Toast.LENGTH_SHORT).show();
