@@ -7,6 +7,7 @@ public class SimpleMathActivity extends ChallengeActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 
 		SimpleMathChallenge smc = new SimpleMathChallenge();
