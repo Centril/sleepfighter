@@ -2,9 +2,7 @@ package se.chalmers.dat255.sleepfighter;
 
 import se.chalmers.dat255.sleepfighter.debug.Debug;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.preference.DialogPreference;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
