@@ -9,7 +9,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.Toast;
-import android.view.View;;
+import android.view.View;
+import android.view.animation.AnimationUtils;
 
 public class MemoryActivity extends Activity {
 
@@ -26,7 +27,12 @@ public class MemoryActivity extends Activity {
 
 		    gridview.setOnItemClickListener(new OnItemClickListener() {
 		        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-		            Toast.makeText(MemoryActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+		        	MemoryActivity self = MemoryActivity.this; 
+		            Toast.makeText(self, "" + position, Toast.LENGTH_SHORT).show();
+		            v.setVisibility(View.GONE);
+		            
+		            v.startAnimation(AnimationUtils.loadAnimation(self, android.R.anim.fade_out));
+		            v.setVisibility(View.INVISIBLE);
 		        }
 		    });
 
