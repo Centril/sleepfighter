@@ -3,14 +3,18 @@ package se.chalmers.dat255.sleepfighter.activities;
 import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.RingtonePreference;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -25,6 +29,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 
 	private Alarm alarm;
 
+	private AudioDriver driver;
+	private AudioDriverFactory factory;
+
+	private TextView summaryName;
+	private TextView summaryType;
+
 	@SuppressWarnings( "deprecation" )
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -36,10 +46,57 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.perf_alarm_ringer);
 		this.setContentView(R.layout.perf_alarm_ringer_layout);
 
+		// Setup factory & make driver from current source.
+		this.setupDriver();
+
+		// Setup summary.
+		this.setupSummary();
+
 		// Setup pickers, etc.
 		this.setupRingtonePicker();
 	}
 
+	/**
+	 * Sets up the summary in the top.
+	 */
+	private void setupSummary() {
+		this.summaryName = (TextView) findViewById( R.id.alarm_audiosource_summary_name );
+		this.summaryType = (TextView) findViewById( R.id.alarm_audiosource_summary_type );
+
+		this.updateSummary();
+	}
+
+	private void updateSummary() {
+		this.summaryName.setText( this.driver.printSourceName() );
+
+		// Make and set typeText.
+		String typeText;
+		AudioSource source = this.driver.getSource();
+		if ( source == null ) {
+			typeText = this.getString( R.string.alarm_audiosource_summary_type_none );
+		} else {
+			Resources res = this.getResources();
+			typeText = res.getStringArray( R.array.alarm_audiosource_summary_type )[source.getType().ordinal()];
+		}
+
+		this.summaryType.setText( typeText );
+	}
+
+
+	/**
+	 * Sets up factory & make driver from current source.
+	 */
+	private void setupDriver() {
+		// Setup factory & make driver from current source.
+		// TODO make source from Alarm.
+		AudioSource source = null;
+		this.factory = new AudioDriverFactory();
+		this.driver = this.factory.produce( this, source );
+	}
+
+	/**
+	 * Sets up the ringtone picker.
+	 */
 	@SuppressWarnings( "deprecation" )
 	private void setupRingtonePicker() {
 		RingtonePreference pref = (RingtonePreference) this.findPreference( RINGTONE_PICKER );
@@ -65,9 +122,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 			source = new AudioSource( AudioSourceType.RINGTONE, uri );
 		}
 
+		this.driver = factory.produce( this, source );
+
+		this.updateSummary();
+
 		// TODO save source somewhere.
 	}
-
 
 	/**
 	 * Fetch the alarm from list or {@link #finish()} if not found.
