@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
+import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver;
@@ -81,7 +81,7 @@ public class AlarmPlannerService extends IntentService {
 		 * @param evt the event.
 		 */
 		@Handler
-		public void handleDateChange( DateChangeEvent evt ) {
+		public void handleDateChange( ScheduleChangeEvent evt ) {
 			this.handleChange();
 		}
 	}

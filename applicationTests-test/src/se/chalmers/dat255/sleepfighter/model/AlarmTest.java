@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
-import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
+import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -91,7 +91,7 @@ public class AlarmTest extends TestCase {
 		public Alarm alarm = new Alarm(1,2);
 		
 		@Handler
-		public void handleMetaChange( DateChangeEvent evt ) {
+		public void handleMetaChange( ScheduleChangeEvent evt ) {
 			passed = (evt.getModifiedField() == Alarm.Field.TIME) && (alarm == evt.getAlarm());
 		}
 		
@@ -269,7 +269,7 @@ public class AlarmTest extends TestCase {
 		public Alarm alarm = new Alarm(1,2);
 		
 		@Handler
-		public void handleMetaChange( DateChangeEvent evt ) {
+		public void handleMetaChange( ScheduleChangeEvent evt ) {
 			passed = (evt.getModifiedField() == Alarm.Field.ACTIVATED) && (alarm == evt.getAlarm());
 		}
 		
@@ -292,7 +292,7 @@ public class AlarmTest extends TestCase {
 		public Alarm alarm = new Alarm(1,2);
 		
 		@Handler
-		public void handleMetaChange( DateChangeEvent evt ) {
+		public void handleMetaChange( ScheduleChangeEvent evt ) {
 			passed = (evt.getModifiedField() == Alarm.Field.ENABLED_DAYS) && (alarm == evt.getAlarm());
 		}
 		
