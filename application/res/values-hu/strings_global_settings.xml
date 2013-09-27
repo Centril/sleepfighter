@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="title_activity_global_settings">Beállítások</string>
+
+    <string name="pref_alarm_turn_screen_on">A képernyőt bekapcsolni</string>
+    <string name="pref_alarm_turn_screen_on_summary">A képernyő magátol bekapcsol, mikor a riasztó beindul</string>    
+
+    <string name="pref_alarm_bypass_lock_screen">Képernyőzárat körbejárni</string>
+    <string name="pref_alarm_bypass_lock_screen_summary">A képernyőzár magátol kinyil, mikor a riasztó beindul</string>    
+
+    <string name="pref_about">Info</string>
+    <string name="pref_version">Változat</string>
+    
+</resources>

@@ -15,7 +15,7 @@
 
     <string name="btn_complete">Lyckas!</string>
     <string name="btn_fail">Misslyckas!</string>
-    <string name="start_challenge">Avsluta galenskapen!</string>
+    <string name="start_challenge">Avsluta galenskapet!</string>
     <string name="btn_answer">Svara</string>
     <string name="challengeBtn">Utmaning</string>
 

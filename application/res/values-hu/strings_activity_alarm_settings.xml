@@ -1,0 +1,50 @@
+<resources>
+
+    <string name="title_activity_alarm_settings">Riasztó</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_alarm_header_general">Allmänt</string>
+    <string name="pref_alarm_time">Idő</string>
+    <string name="pref_alarm_name">Név</string>
+    <string name="pref_alarm_default_name">Névtelen riasztó</string>
+
+    <string name="pref_alarm_enabled_days">Napol</string>
+    
+    <string name="time_category_title">Idő</string>
+    <string name="misc_category_title">Egyéb</string>
+    
+    <string name="ringer_category_title">Csengőhang beállítások</string>
+    
+ 
+    
+    <string-array name="week_days">
+        <item>Hétfő</item>
+        <item>Kedd</item>
+        <item>Szerda</item>       
+        <item>Csütörtök</item>      
+        <item>Péntek</item>
+        <item>Szombat</item>
+        <item>Vasárnap</item>
+    </string-array>
+    
+    
+    <string-array name="default_week_days">
+        <item>true</item>
+        <item>true</item>
+        <item>true</item>       
+        <item>true</item>      
+        <item>true</item>
+        <item>true</item>
+        <item>true</item>
+    </string-array>
+  
+  
+    
+    <string name="pref_alarm_repeat">Ismétlődés</string>
+    <string name="pref_delete_alarm">Riasztót kitörölni</string>
+    
+    <string name="perf_alarm_ringtone">Csengőhang</string>
+	
+</resources>
