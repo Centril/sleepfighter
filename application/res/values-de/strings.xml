@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="pre_chal_act">Antar du utmaningen?!</string>
-    <string name="math_chal_act">Klara matteuppgiften!</string>
+    <string name="pre_chal_act">Herausforderung annehmen?!</string>
+    <string name="math_chal_act">Löse die Aufgabe!</string>
     <string name="app_name">SleepFighter</string>
-    <string name="action_settings">Inställningar</string>
-    <string name="add">Lägg till</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="add">Hinzufügen</string>
     <string name="alarm_unnamed_format">Alarm %1$d</string>
     <string name="yes">Ja</string>
-    <string name="no">Nej</string>
-    <string name="confirm_delete">Är du säker på att du vill ta bort alarmet?"</string>
+    <string name="no">Nein</string>
+    <string name="confirm_delete">Sind Sie sicher, dass Sie den Alarm löschen möchte?"</string>
 
     <!-- Challenges -->
 
-    <string name="btn_complete">Lyckas!</string>
-    <string name="btn_fail">Misslyckas!</string>
-    <string name="start_challenge">Avsluta galenskapet!</string>
-    <string name="btn_answer">Svara</string>
-    <string name="challengeBtn">Utmaning</string>
+    <string name="btn_complete">Gelungen!</string>
+    <string name="btn_fail">Misslungen!</string>
+    <string name="start_challenge">Den Wahnsinn beendenen!</string>
+    <string name="btn_answer">Beantworten</string>
+    <string name="challengeBtn">Herausforderung</string>
 
     <string-array name="earliest_time_formats">
-        <item>Inget alarm är aktivt</item>
+        <item>Kein Alarm aktiv</item>
         <item>Om &lt; 1 minut</item>
         <item>Om %1$s</item>
         <item>Om %1$s och %2$s</item>
         <item>Om %1$s, %2$s och %3$s</item>
     </string-array>
     <string-array name="earliest_time_formats_parts">
-        <item>%1$dd</item>
-        <item>%2$dt</item>
+        <item>%1$dt</item>
+        <item>%2$ds</item>
         <item>%3$dm</item>
     </string-array>
     <string-array name="main_list_context_menu">
-        <item>Redigera alarm</item>
-        <item>Ta bort alarm</item>
+        <item>Alarm redigieren</item>
+        <item>Alarm löschen</item>
 
         <!-- for debugging purposes. -->
         <item>start alarm sound</item>

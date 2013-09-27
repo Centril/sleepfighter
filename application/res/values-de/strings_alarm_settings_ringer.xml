@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_alarm_ringer_settings">Ringsignal Inställningar</string>
+    <string name="title_alarm_ringer_settings">Klingelton Einstellungen</string>
 
-    <string name="audio_source_category_title">Ljud</string>
+    <string name="audio_source_category_title">Ton</string>
 
-    <string name="perf_ringtone_picker">Ringsignal</string>
-    <string name="perf_ringtone_picker_summary">Välj en ringsignal från din telefon</string>
-    <string name="alarm_audiosource_summary_name_title">Vald:</string>
-    <string name="alarm_audiosource_summary_type_label">Från:</string>
-    <string name="alarm_audiosource_summary_name_none">Inget</string>
+    <string name="perf_ringtone_picker">Klingelton</string>
+    <string name="perf_ringtone_picker_summary">Wehlen Sie einen Ton für Ihr Telefon.</string>
+    <string name="alarm_audiosource_summary_name_title">Gewählt:</string>
+    <string name="alarm_audiosource_summary_type_label">Von:</string>
+    <string name="alarm_audiosource_summary_name_none">Kein</string>
     
     <!--TODO:  Or is there a word for this in Swedish? Ej tillgänglig? -->
     <string name="alarm_audiosource_summary_type_none">N/A</string>
 
     <string-array name="alarm_audiosource_summary_type">
-        <item>Ringsignal</item>
-        <item>Lokal media</item>
+        <item>Klingelton</item>
+        <item>Lokale Medien</item>
         
         <!-- TODO: is there a Swedish for this? spellista? -->
         <item>Playlist</item>
