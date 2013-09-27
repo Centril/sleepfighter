@@ -198,7 +198,7 @@ public class Alarm implements Cloneable {
 	@DatabaseField
 	private boolean isRepeating = false;
 
-	@DatabaseField(foreign = true)
+	@DatabaseField(foreign = true, canBeNull = true)
 	private AudioSource audioSource;
 
 	// TODO: initialized here for now, remove.
