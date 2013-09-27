@@ -5,15 +5,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.res.TypedArray;
 import android.preference.ListPreference;
-import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
 /**
@@ -48,18 +45,11 @@ public class MultiSelectListPreference extends ListPreference {
                             + "array which are both the same length");
         }
 
-        restoreCheckedEntries();
         OnMultiChoiceClickListener listener = new DialogInterface.OnMultiChoiceClickListener() {
             public void onClick(DialogInterface dialog, int which, boolean val) {
                 entryChecked[which] = val;
             }
         };
-        
-    	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.getContext());
-     	for(int i = 0; i < 7; ++i) {
-			entryChecked[i] = sharedPref.getBoolean("days_transfer_info" + i, true);	
-			Debug.d("multi select day " + i + " value:" + entryChecked[i]);
-		}     
         
         builder.setMultiChoiceItems(entries, entryChecked, listener);
     }
@@ -85,21 +75,6 @@ public class MultiSelectListPreference extends ListPreference {
         return unpack(getValue());
     }
 
-    private void restoreCheckedEntries() {
-        CharSequence[] entryValues = getEntryValues();
-
-        // Explode the string read in sharedpreferences
-        CharSequence[] vals = unpack(getValue());
-
-        if (vals != null) {
-            List<CharSequence> valuesList = Arrays.asList(vals);
-            for (int i = 0; i < entryValues.length; i++) {
-                CharSequence entry = entryValues[i];
-                entryChecked[i] = valuesList.contains(entry);
-            }
-        }
-    }
-
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         List<CharSequence> values = new ArrayList<CharSequence>();
@@ -116,19 +91,6 @@ public class MultiSelectListPreference extends ListPreference {
             String value = pack(values);
             setSummary(prepareSummary(values));
             setValueAndEvent(value);
-            
-           
-        	SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this.getContext()).edit();
-    		
-    		for(int i = 0; i < entryChecked.length; ++i) {
-    			
-    			
-    			editor.putBoolean("days_transfer_info" + i, entryChecked[i]);	
-        		
-    		
-    		}
-    		editor.commit();
-    		
         }
     }
 
@@ -200,5 +162,12 @@ public class MultiSelectListPreference extends ListPreference {
             oBuilder.append(separator).append(oIter.next());
         return oBuilder.toString();
     }
+    
+    public void setEntryChecked(boolean[] entryChecked) {
+    	this.entryChecked = entryChecked;
+    }
 
+    public boolean[] getEntryChecked() {
+    	return this.entryChecked;
+    }
 }

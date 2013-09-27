@@ -9,6 +9,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.preference.MultiSelectListPreference;
 import se.chalmers.dat255.sleepfighter.preference.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
@@ -117,23 +118,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		// TODO: Remove this debug thing
 		this.setTitle(this.getTitle() + " (ID: " + alarm.getId() + ")");
-
-		
-		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-		
-		for(int i = 0; i < alarm.getEnabledDays().length; ++i) {
-			boolean b;
-			if(alarm.getEnabledDays()[i]) {
-				b = true;
-			} else {
-				b = false;
-				
-			}
-			// we transfer this info for the construction of MultiSelectListPreference.		
-			editor.putBoolean("days_transfer_info" + i, b);	
-		}	
-		
-		editor.commit();
 		
 		setupActionBar();
 		
@@ -214,24 +198,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				preference.setSummary(stringValue);
 			}
 			else if(DAYS.equals(preference.getKey())) {
-				
-
-				boolean[] enabledDays = { false, false, false, false, false, false, false };
-
-				// a set of all the selected weekdays. 
-				CharSequence[] set = (CharSequence[])value;
-
-				for(int i = 0; i < weekdayStrings.length; ++i) {
-					if( Arrays.asList(set).contains(weekdayStrings[i])) {
-						Debug.d("true day : " + weekdayStrings[i]);
-						
-						enabledDays[i] = true;
-					}
-				}
-	
-				alarm.setEnabledDays(enabledDays);
-	
-				preference.setSummary(new SpannableString(""));
+				alarm.setEnabledDays(((MultiSelectListPreference) preference).getEntryChecked());
 				preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 			}
 			else if (REPEAT.equals(preference.getKey())) {
@@ -254,6 +221,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			preference.setSummary(alarm.getTimeString());
 		}
 		else if(DAYS.equals(preference.getKey())) {
+			initiateWeekdayPicker((MultiSelectListPreference) preference);
 			preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 		}
 		else if (REPEAT.equals(preference.getKey())) {
@@ -266,5 +234,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private void initiateTimePicker(TimepickerPreference tp) {
 		tp.setHour(alarm.getHour());
 		tp.setMinute(alarm.getMinute());
+	}
+	
+	private void initiateWeekdayPicker(MultiSelectListPreference preference) {
+		preference.setEntryChecked(alarm.getEnabledDays());
 	}
 }
