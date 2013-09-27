@@ -5,6 +5,8 @@ import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 
+import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
+import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -32,8 +34,13 @@ public class Alarm implements Cloneable {
 	 * @since Sep 19, 2013
 	 */
 	public static enum Field {
-		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID
+		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID, REPEATING, AUDIO_SOURCE, AUDIO_CONFIG
 	}
+
+	/* --------------------------------
+	 * Defined Events.
+	 * --------------------------------
+	 */
 
 	/**
 	 * All events fired by {@link Alarm} extends this interface.
@@ -50,7 +57,19 @@ public class Alarm implements Cloneable {
 		 */
 		public Alarm getAlarm();
 
+		/**
+		 * Returns the Field that was modified in the alarm.
+		 *
+		 * @return the modified field.
+		 */
 		public Field getModifiedField();
+
+		/**
+		 * Returns the old value.
+		 *
+		 * @return the old value.
+		 */
+		public Object getOldValue();
 	}
 
 	/**
@@ -63,28 +82,30 @@ public class Alarm implements Cloneable {
 	public static abstract class BaseAlarmEvent implements AlarmEvent {
 		private Field field;
 		private Alarm alarm;
+		private Object oldValue;
 
-		private BaseAlarmEvent(Alarm alarm, Field field) {
+		private BaseAlarmEvent(Alarm alarm, Field field, Object oldValue ) {
 			this.alarm = alarm;
 			this.field = field;
+			this.oldValue = oldValue;
 		}
 
 		public Alarm getAlarm() {
 			return this.alarm;
 		}
 
-		/**
-		 * Returns the modified field in Alarm.
-		 *
-		 * @return the modified field.
-		 */
 		public Field getModifiedField() {
 			return this.field;
+		}
+
+		@Override
+		public Object getOldValue() {
+			return this.oldValue;
 		}
 	}
 
 	/**
-	 * DateChangeEvent occurs when a date-time related constraint is modified, these are:<br/>
+	 * ScheduleChangeEvent occurs when a scheduling related constraint is modified, these are:<br/>
 	 * <ul>
 	 * 	<li>{@link Field#TIME}</li>
 	 * 	<li>{@link Field#ACTIVATED}</li>
@@ -95,14 +116,14 @@ public class Alarm implements Cloneable {
 	 * @version 1.0
 	 * @since Sep 19, 2013
 	 */
-	public static class DateChangeEvent extends BaseAlarmEvent {
-		private DateChangeEvent(Alarm alarm, Field field) {
-			super(alarm, field);
+	public static class ScheduleChangeEvent extends BaseAlarmEvent {
+		private ScheduleChangeEvent(Alarm alarm, Field field, Object oldValue ) {
+			super(alarm, field, oldValue);
 		}
 	}
 
 	/**
-	 * DateChangeEvent occurs when a date-time related constraint is modified, these are:<br/>
+	 * MetaChangeEvent occurs when a name related constraint is modified, these are:<br/>
 	 * <ul>
 	 * 	<li>{@link Field#NAME}</li>
 	 * 	<li>{@link Field#ID}</li>
@@ -113,10 +134,33 @@ public class Alarm implements Cloneable {
 	 * @since Sep 19, 2013
 	 */
 	public static class MetaChangeEvent extends BaseAlarmEvent {
-		private MetaChangeEvent(Alarm alarm, Field field) {
-			super(alarm, field);
+		private MetaChangeEvent(Alarm alarm, Field field, Object oldValue ) {
+			super(alarm, field, oldValue);
 		}
 	}
+
+	/**
+	 * AudioChangeEvent occurs when a audio related constraint is modified, these are:<br/>
+	 * <ul>
+	 * 	<li>{@link Field#AUDIO_SOURCE}</li>
+	 * 	<li>{@link Field#AUDIO_CONFIG}</li>
+	 * </ul>
+	 * 
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Sep 27, 2013
+	 */
+	public static class AudioChangeEvent extends BaseAlarmEvent {
+		private AudioChangeEvent(Alarm alarm, Field field, Object oldValue ) {
+			super(alarm, field, oldValue);
+		}
+	}
+
+	/* --------------------------------
+	 * Fields.
+	 * --------------------------------
+	 */
 
 	@DatabaseField(generatedId = true)
 	private int id = NOT_COMMITTED_ID;
@@ -154,28 +198,22 @@ public class Alarm implements Cloneable {
 	@DatabaseField
 	private boolean isRepeating = false;
 
+	@DatabaseField(foreign = true)
+	private AudioSource audioSource;
+
+	// TODO: initialized here for now, remove.
+	@DatabaseField(foreign = true, canBeNull = false)
+	private AudioConfig audioConfig = new AudioConfig();
+
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
 	private MessageBus<Message> bus;
 
-	/**
-	 * Sets the message bus, if not set, no events will be received.
-	 *
-	 * @param bus the buss that receives events.
+	/* --------------------------------
+	 * Constructors.
+	 * --------------------------------
 	 */
-	public void setMessageBus( MessageBus<Message> bus ) {
-		this.bus = bus;
-	}
-
-	/**
-	 * Returns the message bus, or null if not set.
-	 *
-	 * @return the message bus.
-	 */
-	public MessageBus<Message> getMessageBus() {
-		return this.bus;
-	}
 
 	/**
 	 * Constructs an alarm to current time.
@@ -246,6 +284,29 @@ public class Alarm implements Cloneable {
 		this.setTime(time);
 	}
 
+	/* --------------------------------
+	 * Public methods.
+	 * --------------------------------
+	 */
+
+	/**
+	 * Sets the message bus, if not set, no events will be received.
+	 *
+	 * @param bus the buss that receives events.
+	 */
+	public void setMessageBus( MessageBus<Message> bus ) {
+		this.bus = bus;
+	}
+
+	/**
+	 * Returns the message bus, or null if not set.
+	 *
+	 * @return the message bus.
+	 */
+	public MessageBus<Message> getMessageBus() {
+		return this.bus;
+	}
+
 	/**
 	 * Returns the ID of the alarm.
 	 *
@@ -266,8 +327,9 @@ public class Alarm implements Cloneable {
 			return;
 		}
 
+		int old = this.id;
 		this.id = id;
-		this.publish( new MetaChangeEvent( this, Field.ID ) );
+		this.publish( new MetaChangeEvent( this, Field.ID, old ) );
 	}
 
 	/**
@@ -293,9 +355,10 @@ public class Alarm implements Cloneable {
 			throw new IllegalArgumentException( "A named Alarm can not be unnamed." );
 		}
 
+		String old = this.name;
 		this.name = name;
 		this.unnamedPlacement = 0;
-		this.publish( new MetaChangeEvent( this, Field.NAME ) );
+		this.publish( new MetaChangeEvent( this, Field.NAME, old ) );
 	}
 
 	/**
@@ -324,11 +387,14 @@ public class Alarm implements Cloneable {
 		if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59 ) {
 			throw new IllegalArgumentException();
 		}
+
+		int[] old = new int[] { hour, minute, second };
+
 		this.hour = hour;
 		this.minute = minute;
 		this.second = second;
 
-		this.publish( new DateChangeEvent( this, Field.TIME ) );
+		this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
 	}
 
 	/**
@@ -376,8 +442,9 @@ public class Alarm implements Cloneable {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
 
+		boolean[] old = this.enabledDays;
 		this.enabledDays = enabledDays.clone();
-		this.publish( new DateChangeEvent( this, Field.ENABLED_DAYS ) );
+		this.publish( new ScheduleChangeEvent( this, Field.ENABLED_DAYS, old ) );
 	}
 
 	/**
@@ -486,8 +553,9 @@ public class Alarm implements Cloneable {
 			return;
 		}
 
+		boolean old = this.isActivated;
 		this.isActivated = isActivated;
-		this.publish( new DateChangeEvent( this, Field.ACTIVATED ) );
+		this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, old ) );
 	}
 
 	/**
@@ -596,7 +664,13 @@ public class Alarm implements Cloneable {
 	 * @param isRepeating true if it is repeating.
 	 */
 	public void setRepeat(boolean isRepeating) {
+		if ( this.isRepeating == isRepeating ) {
+			return;
+		}
+	
+		boolean old = this.isRepeating;
 		this.isRepeating = isRepeating;
+		this.publish( new ScheduleChangeEvent( this, Field.REPEATING, old ) );
 	}
 
 	/**
@@ -607,6 +681,59 @@ public class Alarm implements Cloneable {
 	public boolean isRepeating() {
 		return this.isRepeating;
 	}
+
+	/**
+	 * Sets the audio source for this alarm.
+	 *
+	 * @param source the audio source to set.
+	 */
+	public void setAudioSource( AudioSource source ) {
+		if ( this.audioSource == source ) {
+			return;
+		}
+
+		AudioSource old = this.audioSource;
+		this.audioSource = source;
+		this.publish( new AudioChangeEvent( this, Field.AUDIO_SOURCE, old ) );
+	}
+
+	/**
+	 * Returns the audio source of this Alarm.
+	 *
+	 * @return the audio source.
+	 */
+	public AudioSource getAudioSource() {
+		return this.audioSource;
+	}
+
+	/**
+	 * Sets the audio configuration for this alarm.
+	 *
+	 * @param source the audio config to set.
+	 */
+	public void setAudioConfig( AudioConfig config ) {
+		if ( this.audioConfig == Preconditions.checkNotNull( config ) ) {
+			return;
+		}
+
+		AudioConfig old = this.audioConfig;
+		this.audioConfig = config;
+		this.publish( new AudioChangeEvent( this, Field.AUDIO_CONFIG, old ) );
+	}
+
+	/**
+	 * Returns the audio configuration for this alarm.
+	 *
+	 * @return the audio configuration.
+	 */
+	public AudioConfig getAudioConfig() {
+		return this.audioConfig;
+	}
+
+	/* --------------------------------
+	 * Private Methods.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Publishes an event to event bus.
