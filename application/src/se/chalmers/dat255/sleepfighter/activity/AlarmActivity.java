@@ -65,9 +65,6 @@ public class AlarmActivity extends Activity {
 
 		// Do stuff.
 		this.work();
-
-		// TODO: move to more optimal location!
-		this.performRescheduling();
 	}
 
 	protected void onPause() {
@@ -84,12 +81,12 @@ public class AlarmActivity extends Activity {
 		if ( !this.alarm.isRepeating() ) {
 			this.alarm.setActivated( false );
 			app.getPersister().updateAlarm( this.alarm );
-		}
-
-		// Reschedule earliest alarm (if any).
-		AlarmTimestamp at = app.getAlarms().getEarliestAlarm( new DateTime().getMillis() );
-		if ( at != AlarmTimestamp.INVALID ) {
-			AlarmPlannerService.call( app, Command.CREATE, at.getAlarm().getId() );
+		} else {
+			// Reschedule earliest alarm (if any).
+			AlarmTimestamp at = app.getAlarms().getEarliestAlarm( new DateTime().getMillis() );
+			if ( at != AlarmTimestamp.INVALID ) {
+				AlarmPlannerService.call( app, Command.CREATE, at.getAlarm().getId() );
+			}
 		}
 	}
 
@@ -162,6 +159,7 @@ public class AlarmActivity extends Activity {
 			if(resultCode == Activity.RESULT_OK) {
 				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
 						.show();
+				stopAlarm();
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();
@@ -170,5 +168,11 @@ public class AlarmActivity extends Activity {
 		} else {
 			super.onActivityResult(requestCode, resultCode, data);
 		}
+	}
+
+	// TODO move out of class
+	public void stopAlarm() {
+		// TODO more here
+		this.performRescheduling();
 	}
 }
