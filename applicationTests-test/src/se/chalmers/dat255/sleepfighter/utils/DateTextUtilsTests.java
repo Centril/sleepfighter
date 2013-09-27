@@ -69,7 +69,6 @@ public class DateTextUtilsTests extends TestCase {
     	
     	assertTrue(Arrays.equals(expected2, dagar));
     	
-    	
     }
 		
 }

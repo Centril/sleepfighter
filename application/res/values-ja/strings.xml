@@ -3,6 +3,7 @@
 
    <string name="app_name">スリープファイター</string>
     
+   
     <string name="action_settings">設定</string>
     <string name="add">追加</string>
     <string name="alarm_unnamed_format">アラーム %1$d</string>
