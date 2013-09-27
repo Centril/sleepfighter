@@ -61,7 +61,6 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 					@Override
 					public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 						alarm.setTime(hourOfDay, minute);
-						timeTextView.setText( alarm.getTimeString() );
 					}
 				};
 				// TODO take am/pm into account

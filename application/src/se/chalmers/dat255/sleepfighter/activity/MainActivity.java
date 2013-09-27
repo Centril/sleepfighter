@@ -220,6 +220,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void run() {
 				self.updateEarliestText();
+				self.alarmAdapter.notifyDataSetChanged();
 			}
 		});
 	}
