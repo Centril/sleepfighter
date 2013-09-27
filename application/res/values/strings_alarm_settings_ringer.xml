@@ -12,7 +12,7 @@
     <string name="alarm_audiosource_summary_type_none">N/A</string>
 
     <string-array name="alarm_audiosource_summary_type">
-        <item>Ring tone</item>
+        <item>Ring tones</item>
         <item>Local media</item>
         <item>Playlist</item>
         <item>Internet stream</item>
