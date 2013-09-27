@@ -9,6 +9,7 @@ import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.app.Activity;
@@ -173,6 +174,10 @@ public class AlarmActivity extends Activity {
 	// TODO move out of class
 	public void stopAlarm() {
 		// TODO more here
+
+		// TODO temporarily
+		AlarmAudioManager.getInstance().stop();
+		
 		this.performRescheduling();
 	}
 }
