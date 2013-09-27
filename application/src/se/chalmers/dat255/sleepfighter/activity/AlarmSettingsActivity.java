@@ -45,9 +45,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	private final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
 
-	// is used in sBindPreferenceSummaryToValueListener
-	private String[] weekdayStrings;
-	
 	private Alarm alarm;
 	private AlarmList alarmList;
 	
