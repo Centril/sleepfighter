@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_alarm_ringer_settings">着信音設定</string>
+
+    
+    <!-- TODO: is this really the right word for it? -->
+    <string name="audio_source_category_title">音ソース</string>
+
+    <string name="perf_ringtone_picker">着信音</string>
+    <!--TODO: Is this polite enough? -->
+    <string name="perf_ringtone_picker_summary">貴方の携帯から着信音を洗濯してください</string>
+    <string name="alarm_audiosource_summary_name_title">洗濯:</string>
+    <!-- TODO: is this really correct? -->
+    <string name="alarm_audiosource_summary_type_label">ソース:</string>
+    <string name="alarm_audiosource_summary_name_none"></string>
+    
+    <!--TODO:  Or is there a word for this in Japanese? -->
+    <string name="alarm_audiosource_summary_type_none">N/A</string>
+
+    <!--TODO: Figure out good translations for these.  -->
+    <string-array name="alarm_audiosource_summary_type">
+        <item>着信音</item>
+        <item>Lokal media</item>
+        <item>プレイリスト</item>
+        <item>Internet stream</item>
+        <item>Spotify</item>
+    </string-array>
+    
+</resources>

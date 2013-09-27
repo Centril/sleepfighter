@@ -15,7 +15,7 @@
     
     <string name="time_category_title">Time</string>
     <string name="misc_category_title">Miscellaneous</string>
-    <string name="ringer_category_title">Ringer settings</string>
+    <string name="ringer_category_title">Ring tone settings</string>
     
     
     <string-array name="week_days">
