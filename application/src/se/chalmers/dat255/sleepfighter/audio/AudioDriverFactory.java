@@ -2,6 +2,7 @@ package se.chalmers.dat255.sleepfighter.audio;
 
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -31,6 +32,8 @@ public class AudioDriverFactory {
 		if ( source == null ) {
 			driver = new SilentAudioDriver();
 		} else {
+			Log.d( "AudioDriverFactory", source.toString() );
+
 			switch ( source.getType() ) {
 			case RINGTONE:
 				driver = new RingtoneDriver();

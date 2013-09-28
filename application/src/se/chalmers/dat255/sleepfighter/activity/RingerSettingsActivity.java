@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,9 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.updateSummary();
 	}
 
+	/**
+	 * Updates the summary in the top.
+	 */
 	private void updateSummary() {
 		this.summaryName.setText( this.driver.printSourceName() );
 
@@ -88,8 +92,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	private void setupDriver() {
 		// Setup factory & make driver from current source.
-		// TODO make source from Alarm.
-		AudioSource source = null;
+		AudioSource source = this.alarm.getAudioSource();
 		this.factory = new AudioDriverFactory();
 		this.driver = this.factory.produce( this, source );
 	}
@@ -118,20 +121,20 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	/**
 	 * Sets the AudioSource to a ringtone.
 	 *
-	 * @param uri 
+	 * @param uri the URI to set.
 	 */
-	protected void setRingtone( String uri ) {
+	private void setRingtone( String uri ) {
 		AudioSource source = null;
 
 		if ( !uri.equals( "" ) ) {
 			source = new AudioSource( AudioSourceType.RINGTONE, uri );
 		}
 
-		this.driver = factory.produce( this, source );
+		this.driver = this.factory.produce( this, source );
 
 		this.updateSummary();
 
-		// TODO save source somewhere.
+		this.alarm.setAudioSource( source );
 	}
 
 	/**
@@ -143,11 +146,13 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
 		this.alarm = app.getAlarms().getById(id);
 
-		if (alarm == null) {
+		if (this.alarm == null) {
 			// TODO: Better handling for final product
 			Toast.makeText(this, "Alarm is null (ID: " + id + ")", Toast.LENGTH_SHORT).show();
 			this.finish();
 		}
+
+		Log.d( "RingerSettingsActivity", "fetchAlarm, " + this.alarm );
 	}
 
 	/**
