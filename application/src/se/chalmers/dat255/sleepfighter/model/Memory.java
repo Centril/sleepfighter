@@ -26,7 +26,7 @@ public class Memory {
 	 * Therefore, both rows and cols must not be odd
 	 * (an odd number times an odd number is an odd number)
 	 */
-	Memory(final int rows, final int cols) {
+	public Memory(final int rows, final int cols) {
 		
 		if(isOdd(rows) && isOdd(cols)) {
 			throw new IllegalArgumentException("The numbers of cards must be even");

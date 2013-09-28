@@ -1,6 +1,7 @@
 package se.chalmers.dat255.sleepfighter.adapter;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.model.Memory;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import android.widget.ImageView;
 public class MemoryAdapter extends BaseAdapter {
    
 	private Context context;
-
-    public MemoryAdapter(final Context c) {
+	private final Memory mem;
+	
+    public MemoryAdapter(final Context c, final Memory mem) {
         context = c;
+        this.mem = mem;
     }
 
     public int getCount() {
@@ -51,6 +54,23 @@ public class MemoryAdapter extends BaseAdapter {
     		R.drawable.c, R.drawable.d,
     		R.drawable.e, R.drawable.f,
     		R.drawable.g, R.drawable.h,
-
     };
+    
+    // list of all the usable memory cards. 
+    private Integer[] memoryCardDatabse = {
+    		R.drawable.a, R.drawable.b,
+    		R.drawable.c, R.drawable.d,
+    		R.drawable.e, R.drawable.f,
+    		R.drawable.g, R.drawable.h,
+    		R.drawable.h, R.drawable.j,
+    		R.drawable.k, R.drawable.l,
+    		R.drawable.m, R.drawable.n,
+    		R.drawable.o, R.drawable.p,
+    		R.drawable.q, R.drawable.r,
+    		R.drawable.s, R.drawable.t,
+    		R.drawable.u, R.drawable.v,
+    		R.drawable.w, R.drawable.x,
+    		R.drawable.y, R.drawable.z,
+    };
+
 }

@@ -11,15 +11,22 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.activity.MemoryActivity;
 import se.chalmers.dat255.sleepfighter.adapter.MemoryAdapter;
+import se.chalmers.dat255.sleepfighter.model.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 /**
  * Example implementation of Challenge.
  */
 public class MemoryChallenge implements Challenge, OnItemClickListener {
 
-	ChallengeActivity act;
+	private ChallengeActivity act;
 	
-	boolean flag = true;
+	private Memory mem;
+	
+	private boolean flag = true;
+	
+	private final static int COLS = 2;
+
+	private final static int ROWS = 3;
 	
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
@@ -45,7 +52,8 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 		
 		GridView gridview = (GridView) act.findViewById(R.id.memory_gridview);
 		
-		gridview.setAdapter(new MemoryAdapter(act));
+		mem = new Memory(ROWS, COLS);
+		gridview.setAdapter(new MemoryAdapter(act, mem));
 
 		gridview.setOnItemClickListener(this);
 	}
