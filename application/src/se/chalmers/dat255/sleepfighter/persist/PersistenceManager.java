@@ -8,6 +8,7 @@ import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.AlarmEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
@@ -221,13 +222,13 @@ public class PersistenceManager {
 		// Set AudioSource to each alarm.
 		for ( AudioSource source : audioSourceList ) {
 			int alarmIndex = audioSourceLookup.get( source.getId() );
-			alarms.get( alarmIndex ).setFetchedAudioSource( source );
+			alarms.get( alarmIndex ).setFetched( source );
 		}
 
 		// Set AudioConfig to each alarm.
 		for ( AudioConfig config : audioConfigList ) {
 			int alarmIndex = audioConfigLookup.get( config.getId() );
-			alarms.get( alarmIndex ).setFetchedAudioConfig( config );
+			alarms.get( alarmIndex ).setFetched( config );
 		}
 
 		return alarms;
@@ -240,7 +241,7 @@ public class PersistenceManager {
 	 * @param lookup the lookup table to get IDs from.
 	 * @return the list of items.
 	 */
-	private <T> List<T> queryInIds( Dao<T, Integer> dao, Map<Integer, Integer> lookup ) {
+	private <T extends IdProvider> List<T> queryInIds( Dao<T, Integer> dao, Map<Integer, Integer> lookup ) {
 		try {
 			return dao.queryBuilder().where().in( AudioSource.ID_COLUMN, lookup.keySet().toArray() ).query();
 		} catch ( SQLException e ) {

@@ -776,7 +776,6 @@ public class Alarm implements Cloneable, IdProvider {
 		this.audioSource = source;
 	}
 
-
 	/* --------------------------------
 	 * Private Methods.
 	 * --------------------------------
