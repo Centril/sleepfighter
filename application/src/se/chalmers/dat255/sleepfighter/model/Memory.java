@@ -1,5 +1,6 @@
 package se.chalmers.dat255.sleepfighter.model;
 
+import java.util.Arrays;
 import java.util.Random;
 
 // class for modelling a memory game.
@@ -94,5 +95,18 @@ public class Memory {
 	
 	private boolean isUnoccupied(int row, int col) {
 		return cards[row][col] == UNOCCUPIED;
+	}
+	
+	public String toString() {
+		String s = "";
+		s += "{";
+		
+        for (int[] row : cards) {
+        	s += Arrays.toString(row) + "\n";
+        }
+        
+        s += "}";
+        
+        return s;
 	}
 }
