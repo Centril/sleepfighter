@@ -18,6 +18,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +31,12 @@ import android.widget.Toast;
  * @since Sep 27, 2013
  */
 public class RingerSettingsActivity extends PreferenceActivity {
-	private enum ID {
-		RINGTONE_PICKER("pref_ringtone_picker"),
-		MUSIC_PICKER("pref_local_content_uri_picker");
+	public enum ID {
+		RINGTONE_PICKER( "pref_ringtone_picker" ),
+		MUSIC_PICKER( "pref_local_content_uri_picker" ),
+		PLAYLIST_PICKER( "pref_playlist_picker" );
 
-		public String id;
+		public final String id;
 
 		ID( String id ) {
 			this.id = id;
@@ -69,6 +71,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		// Setup pickers, etc.
 		this.setupRingtonePicker();
 		this.setupMusicPicker();
+		this.setupPlaylistPicker();
 	}
 
 	/**
@@ -144,10 +147,8 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	/**
 	 * Sets up the music picker.
 	 */
-	@SuppressWarnings( "deprecation" )
 	private void setupMusicPicker() {
-		Preference pref = (Preference) this.findPreference( ID.MUSIC_PICKER.id );
-		pref.setOnPreferenceClickListener( new OnPreferenceClickListener() {
+		this.preferenceBind( ID.MUSIC_PICKER, new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick( Preference preference ) {
 				launchMusicPicker();
@@ -156,15 +157,13 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		} );
 	}
 
-	private static final int MUSIC_PICKER_REQUEST_CODE = 1337;
-
 	/**
 	 * Launches the music picker.
 	 */
 	private void launchMusicPicker() {
 		Log.d( this.getClass().getSimpleName(), "launchMusicPicker#1" );
-		Intent i = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI );
-		this.startActivityForResult( i, MUSIC_PICKER_REQUEST_CODE );
+		Intent i = new Intent( Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI );
+		this.startActivityForResult( i, ID.MUSIC_PICKER.ordinal() );
 	}
 
 	/**
@@ -178,6 +177,27 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		String uri = data.getDataString();
 		AudioSource source = uri == null ? null : new AudioSource( AudioSourceType.LOCAL_CONTENT_URI, uri );
 		this.setAudioSource( source );
+	}
+
+	private void setupPlaylistPicker() {
+		this.preferenceBind( ID.PLAYLIST_PICKER, new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick( Preference preference ) {
+				launchPlaylistPicker();
+				return false;
+			}
+		} );
+	}
+
+	protected void launchPlaylistPicker() {
+		Intent intent = new Intent(Intent.ACTION_PICK);
+		intent.setType(MediaStore.Audio.Playlists.CONTENT_TYPE); 
+		intent.putExtra("oneshot", false);
+		this.startActivityForResult( intent, ID.PLAYLIST_PICKER.ordinal() );
+	}
+
+	private void setPlaylist( Intent data ) {
+		Log.d( this.getClass().getSimpleName(), data.toString() );
 	}
 
 	/**
@@ -194,10 +214,29 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
 		if ( resultCode == Activity.RESULT_OK ) {
-			if ( requestCode == MUSIC_PICKER_REQUEST_CODE ) {
-				this.setMusic( data );
+			ID[] ids = ID.values();
+			if ( requestCode < ids.length ) {
+				switch( ID.values()[requestCode] ) {
+				case MUSIC_PICKER:
+					this.setMusic( data );
+					break;
+
+				case PLAYLIST_PICKER:
+					this.setPlaylist( data );
+
+				default:
+					throw new AssertionError( "Shouldn't happen!" );
+				}
+			} else {
+				super.onActivityResult( requestCode, resultCode, data );
 			}
 		}
+	}
+
+	@SuppressWarnings( "deprecation" )
+	private void preferenceBind( ID id, OnPreferenceClickListener listener ) {
+		Preference pref = (Preference) this.findPreference( id.id );
+		pref.setOnPreferenceClickListener( listener );
 	}
 
 	/**

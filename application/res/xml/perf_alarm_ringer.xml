@@ -17,6 +17,14 @@
             android:showDefault="true"
             android:summary="@string/pref_local_content_uri_picker_summary"
             android:title="@string/pref_local_content_uri_picker" />
+
+        <Preference
+            android:key="pref_playlist_picker"
+            android:persistent="false"
+            android:ringtoneType="all"
+            android:showDefault="true"
+            android:summary="@string/pref_playlist_picker_summary"
+            android:title="@string/pref_playlist_picker" />
     </PreferenceCategory>
 
 </PreferenceScreen>

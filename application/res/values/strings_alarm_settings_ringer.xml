@@ -19,6 +19,9 @@
     </string-array>
 
     <string name="pref_local_content_uri_picker">Music</string>
-    <string name="pref_local_content_uri_picker_summary">Select an audio file from your phone</string>
+    <string name="pref_local_content_uri_picker_summary">Select an audio file from your device</string>
+
+    <string name="pref_playlist_picker">Playlist</string>
+    <string name="pref_playlist_picker_summary">Select a playlist from your device</string>
 
 </resources>
