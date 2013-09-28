@@ -224,9 +224,9 @@ public class PersistenceManager {
 			alarms.get( alarmIndex ).setFetchedAudioSource( source );
 		}
 
-		// Set AudioSource to each alarm.
+		// Set AudioConfig to each alarm.
 		for ( AudioConfig config : audioConfigList ) {
-			int alarmIndex = audioSourceLookup.get( config.getId() );
+			int alarmIndex = audioConfigLookup.get( config.getId() );
 			alarms.get( alarmIndex ).setFetchedAudioConfig( config );
 		}
 
