@@ -13,39 +13,16 @@ import android.widget.Toast;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
-public class MemoryActivity extends Activity {
+public class MemoryActivity extends ChallengeActivity {
 
-	private MemoryChallenge mc;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_alarm_challenge_memory);
-	
-		GridView gridview = (GridView) findViewById(R.id.memory_gridview);
 		
-		gridview.setAdapter(new MemoryAdapter(this));
+		MemoryChallenge challenge = new MemoryChallenge();
+		challenge.start(this);
+		
 
-		    gridview.setOnItemClickListener(new OnItemClickListener() {
-		        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-		        	MemoryActivity self = MemoryActivity.this; 
-		            Toast.makeText(self, "" + position, Toast.LENGTH_SHORT).show();
-		            v.setVisibility(View.GONE);
-		            
-		            v.startAnimation(AnimationUtils.loadAnimation(self, android.R.anim.fade_out));
-		            v.setVisibility(View.INVISIBLE);
-		        }
-		    });
-
-		
-		
-		
-		
-		mc = new MemoryChallenge();
-	}
-
-	private void next() {
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
 	}
 }
