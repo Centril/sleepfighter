@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.model.audio;
 
+import se.chalmers.dat255.sleepfighter.model.IdProvider;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -16,7 +18,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 26, 2013
  */
 @DatabaseTable(tableName = "audio_source")
-public class AudioSource {
+public class AudioSource implements IdProvider {
 	/** Signifies a silent/non-existent AudioSource which is = null. */
 	public static final AudioSource SILENT = null;
 

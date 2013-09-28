@@ -30,7 +30,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 16, 2013
  */	
 @DatabaseTable(tableName = "alarm")
-public class Alarm implements Cloneable {
+public class Alarm implements Cloneable, IdProvider {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -713,19 +713,6 @@ public class Alarm implements Cloneable {
 	}
 
 	/**
-	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
-	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
-	 * This is also a better method than reflection which is particularly expensive on android.</p>
-	 *
-	 * <p>Sets the {@link AudioSource}, bypassing any and all checks, and does not send any event to bus.</p>
-	 *
-	 * @param source the {@link AudioSource} to set.
-	 */
-	public void setFetchedAudioSource( AudioSource source ) {
-		this.audioSource = source;
-	}
-
-	/**
 	 * Returns the audio source of this Alarm.
 	 *
 	 * @return the audio source.
@@ -750,6 +737,20 @@ public class Alarm implements Cloneable {
 	}
 
 	/**
+	 * Returns the audio configuration for this alarm.
+	 *
+	 * @return the audio configuration.
+	 */
+	public AudioConfig getAudioConfig() {
+		return this.audioConfig;
+	}
+
+	/* --------------------------------
+	 * PERSISTENCE ONLY METHODS.
+	 * --------------------------------
+	 */
+
+	/**
 	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
 	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
 	 * This is also a better method than reflection which is particularly expensive on android.</p>
@@ -758,18 +759,23 @@ public class Alarm implements Cloneable {
 	 *
 	 * @param config the {@link AudioConfig} to set.
 	 */
-	public void setFetchedAudioConfig( AudioConfig config ) {
+	public void setFetched( AudioConfig config ) {
 		this.audioConfig = config;
 	}
 
 	/**
-	 * Returns the audio configuration for this alarm.
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
 	 *
-	 * @return the audio configuration.
+	 * <p>Sets the {@link AudioSource}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param source the {@link AudioSource} to set.
 	 */
-	public AudioConfig getAudioConfig() {
-		return this.audioConfig;
+	public void setFetched( AudioSource source ) {
+		this.audioSource = source;
 	}
+
 
 	/* --------------------------------
 	 * Private Methods.
