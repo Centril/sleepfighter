@@ -240,4 +240,9 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected( item );
 		}	
 	}
+	
+	public void challenge(View view) {
+		Intent intent = new Intent(this, MemoryActivity.class);
+		startActivityForResult(intent, AlarmActivity.CHALLENGE_REQUEST_CODE);
+	}
 }

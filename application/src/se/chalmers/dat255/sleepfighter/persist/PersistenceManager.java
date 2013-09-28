@@ -205,7 +205,9 @@ public class PersistenceManager {
 				audioSourceLookup.put( source.getId(), i );
 			}
 
+			if(source != null){
 			audioConfigLookup.put( alarm.getAudioConfig().getId(), i );
+			}
 		}
 
 		/*

@@ -39,7 +39,7 @@ public class AlarmActivity extends Activity {
 
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
-	private static final int CHALLENGE_REQUEST_CODE = 1;
+	public static final int CHALLENGE_REQUEST_CODE = 1;
 
 	// TODO move to settings!
 	private boolean turnScreenOn = true;
