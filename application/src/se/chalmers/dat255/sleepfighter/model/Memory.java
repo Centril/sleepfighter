@@ -44,6 +44,12 @@ public class Memory {
 		return rows * cols;
 	}
 	
+	public int getNumPairs() {
+		// because the number of cards is guaranteed to be even.
+		return getNumCards() / 2;
+	}
+	
+	
 	public int getRows() {
 		return rows;
 	}
@@ -67,8 +73,7 @@ public class Memory {
 		
 		int nextCardNumber = 0;
 		
-		int assignedCards = 0;
-		while(assignedCards != (getNumCards() / 2)) {
+		while(nextCardNumber != this.getNumPairs()) {
 			
 			// place out the first card in the pair
 			int[] card1pos = new int[2];
