@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.google.common.collect.Maps;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DataPersisterManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.TableUtils;
@@ -210,8 +211,8 @@ public class PersistenceManager {
 		/*
 		 * Query for all tables.
 		 */
-		List<AudioSource> audioSourceList = this.queryInIds( helper.getAudioSourceDao().queryBuilder(), audioSourceLookup );
-		List<AudioConfig> audioConfigList = this.queryInIds( helper.getAudioConfigDao().queryBuilder(), audioConfigLookup );
+		List<AudioSource> audioSourceList = this.queryInIds( helper.getAudioSourceDao(), audioSourceLookup );
+		List<AudioConfig> audioConfigList = this.queryInIds( helper.getAudioConfigDao(), audioConfigLookup );
 
 		/*
 		 * Set all to respective Alarm object.
@@ -235,13 +236,13 @@ public class PersistenceManager {
 	/**
 	 * Helper for {@link #joinFetched(List)}, returns a list of items given a lookup table.
 	 *
-	 * @param qb query builder.
+	 * @param dao the Domain Access Object for item type.
 	 * @param lookup the lookup table to get IDs from.
 	 * @return the list of items.
 	 */
-	private <T> List<T> queryInIds( QueryBuilder<T, Integer> qb, Map<Integer, Integer> lookup ) {
+	private <T> List<T> queryInIds( Dao<T, Integer> dao, Map<Integer, Integer> lookup ) {
 		try {
-			return qb.where().in( AudioSource.ID_COLUMN, lookup.keySet().toArray() ).query();
+			return dao.queryBuilder().where().in( AudioSource.ID_COLUMN, lookup.keySet().toArray() ).query();
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );
 		}
