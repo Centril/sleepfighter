@@ -12,7 +12,7 @@
     <string name="alarm_audiosource_summary_name_title">洗濯:</string>
     <!-- TODO: is this really correct? -->
     <string name="alarm_audiosource_summary_type_label">ソース:</string>
-    <string name="alarm_audiosource_summary_name_none"></string>
+    <string name="alarm_audiosource_summary_name_none">なし</string>
     
     <!--TODO:  Or is there a word for this in Japanese? -->
     <string name="alarm_audiosource_summary_type_none">N/A</string>
@@ -25,5 +25,9 @@
         <item>Internet stream</item>
         <item>Spotify</item>
     </string-array>
+    
+    
+    <string name="pref_local_content_uri_picker">音楽</string>
+    <string name="pref_local_content_uri_picker_summary">オーディオ ファイルを洗濯してください</string>
     
 </resources>

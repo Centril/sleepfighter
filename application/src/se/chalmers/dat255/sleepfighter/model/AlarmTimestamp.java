@@ -13,7 +13,7 @@ public class AlarmTimestamp {
 
 	/** The value of an invalid (non-existent AlarmTimestamp) */
 	public final static AlarmTimestamp INVALID = null;
-
+	
 	/**
 	 * Constructs an AlarmTimestamp.
 	 *

@@ -23,4 +23,8 @@
         <item>Spotify</item>
     </string-array>
     
+    <string name="pref_local_content_uri_picker">Musik</string>
+    <string name="pref_local_content_uri_picker_summary">Välj en ljudfil från din telefon</string>
+    
+    
 </resources>
