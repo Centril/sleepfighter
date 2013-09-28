@@ -8,7 +8,6 @@ import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
@@ -115,9 +114,6 @@ public class AlarmActivity extends Activity {
 	
 		this.turnScreenOn = sharedPref.getBoolean(TURN_SCREEN_ON, true);
 		this.bypassLockscreen = sharedPref.getBoolean(BYPASS_LOCK_SCREEN, true);
-	
-		Debug.d("turn screen on :" + this.turnScreenOn);
-		Debug.d("bypass lock screen :" + this.bypassLockscreen);
 	}
 
 	/**

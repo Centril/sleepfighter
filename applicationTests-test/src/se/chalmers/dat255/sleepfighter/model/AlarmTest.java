@@ -102,10 +102,7 @@ public class AlarmTest extends TestCase {
 			
 			// else we will aslo test for old value
 			int[] old = (int[])evt.getOldValue();
-			
-			Debug.d("old: " + Arrays.toString(old));
-			Debug.d("new: " + alarm.getHour() + " " + alarm.getMinute() + " " + alarm.getSecond());
-			
+				
 			passed = 1 == old[0] && 2 == old[1] && 3 == old[2];
 		}
 		

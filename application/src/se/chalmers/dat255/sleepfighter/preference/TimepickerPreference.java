@@ -1,6 +1,5 @@
 package se.chalmers.dat255.sleepfighter.preference;
 
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -25,8 +24,6 @@ public class TimepickerPreference extends DialogPreference {
 	
 	@Override
 	protected View onCreateDialogView() {
-
-		Debug.d("created time picker preference view");
 		tp = new TimePicker(getContext());
 		tp.setIs24HourView(true);
 	
@@ -50,8 +47,7 @@ public class TimepickerPreference extends DialogPreference {
 		
 		
 		if (positiveResult && callChangeListener(time)) {
-			Debug.d("persist time");
-            persistString(time);
+			persistString(time);
         }
 	}
 	

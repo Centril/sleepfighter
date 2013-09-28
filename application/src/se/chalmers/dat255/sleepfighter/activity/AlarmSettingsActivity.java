@@ -32,7 +32,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
@@ -97,17 +96,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		alarm = alarmList.getById(id);
 
-		if (alarm == null) {
-			// TODO: Better handling for final product
-			Toast.makeText(this, "Alarm is null (ID: " + id + ")", Toast.LENGTH_SHORT).show();
-			finish();
-		}
-
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
-		// TODO: Remove this debug thing
-		this.setTitle(this.getTitle() + " (ID: " + alarm.getId() + ")");
-		
 		setupActionBar();
 		
 		setupSimplePreferencesScreen();

@@ -15,7 +15,6 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -111,25 +110,19 @@ public class MainActivity extends Activity {
 				deleteAlarm(selectedAlarm);
 				return true;
 			case 2:
-				Debug.d("start alarm");
 				AlarmAudioManager.getInstance().play();
 				return true;
 			case 3:
-				Debug.d("stop alarm");
 				AlarmAudioManager.getInstance().stop();	
 				return true;
 			
 			case 4:
-				Debug.d("start vibration");
 				VibrationManager.getInstance().startVibrate();
 				return true;
 			case 5:
-				Debug.d("stop vibration");
 				VibrationManager.getInstance().stopVibrate();	
 				return true;
-
 			case 6:
-				Debug.d("copy alarm");
 				copyAlarm(selectedAlarm);
 				return true;
 
