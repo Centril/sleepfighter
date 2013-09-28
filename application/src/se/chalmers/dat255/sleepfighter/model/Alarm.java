@@ -1,7 +1,6 @@
 package se.chalmers.dat255.sleepfighter.model;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.joda.time.DateTime;
@@ -18,6 +17,7 @@ import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -616,7 +616,7 @@ public class Alarm implements Cloneable {
 
 	@Override
 	public String toString() {
-		final Map<String, String> prop = new HashMap<String, String>();
+		final Map<String, String> prop = Maps.newHashMap();
 		prop.put( "id", Integer.toString( this.getId() ) );
 		prop.put( "name", this.getName() );
 		prop.put( "time", DateTextUtils.joinTime( this.hour, this.minute, this.second ) );
@@ -713,6 +713,19 @@ public class Alarm implements Cloneable {
 	}
 
 	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link AudioSource}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param source the {@link AudioSource} to set.
+	 */
+	public void setFetchedAudioSource( AudioSource source ) {
+		this.audioSource = source;
+	}
+
+	/**
 	 * Returns the audio source of this Alarm.
 	 *
 	 * @return the audio source.
@@ -734,6 +747,19 @@ public class Alarm implements Cloneable {
 		AudioConfig old = this.audioConfig;
 		this.audioConfig = config;
 		this.publish( new AudioChangeEvent( this, Field.AUDIO_CONFIG, old ) );
+	}
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link AudioConfig}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param config the {@link AudioConfig} to set.
+	 */
+	public void setFetchedAudioConfig( AudioConfig config ) {
+		this.audioConfig = config;
 	}
 
 	/**
