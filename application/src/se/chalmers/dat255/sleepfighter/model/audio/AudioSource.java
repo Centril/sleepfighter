@@ -18,9 +18,11 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "audio_source")
 public class AudioSource {
 	/** Signifies a silent/non-existent AudioSource which is = null. */
-	public final static AudioSource SILENT = null;
+	public static final AudioSource SILENT = null;
 
-	@DatabaseField(generatedId = true)
+	public static final String ID_COLUMN = "id";
+
+	@DatabaseField(generatedId = true, columnName = ID_COLUMN)
 	private int id;
 
 	@DatabaseField
@@ -63,5 +65,18 @@ public class AudioSource {
 	 */
 	public String getUri() {
 		return this.uri;
+	}
+
+	public String toString() {
+		return "AudioSource[type: " + this.getType() + ", uri: " + this.getUri() + "]";
+	}
+
+	/**
+	 * Returns the id of AudioSource (in DB).
+	 *
+	 * @return the id.
+	 */
+	public int getId() {
+		return this.id;
 	}
 }

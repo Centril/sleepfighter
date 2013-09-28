@@ -12,6 +12,8 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 @DatabaseTable(tableName = "audio_config")
 public class AudioConfig {
+	public static final String ID_COLUMN = "id";
+
 	@DatabaseField(generatedId = true)
 	private int id;
 
@@ -25,5 +27,12 @@ public class AudioConfig {
 	public AudioConfig() {
 	}
 
-	// TOOD.
+	/**
+	 * Returns the id of the AudioConfig (in DB).
+	 *
+	 * @return the id.
+	 */
+	public int getId() {
+		return this.id;
+	}
 }

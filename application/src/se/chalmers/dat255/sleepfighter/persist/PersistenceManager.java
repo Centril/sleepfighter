@@ -1,16 +1,22 @@
 package se.chalmers.dat255.sleepfighter.persist;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.AlarmEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
+import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.common.collect.Maps;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.field.DataPersisterManager;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.TableUtils;
 
 /**
@@ -22,7 +28,6 @@ import com.j256.ormlite.table.TableUtils;
  * @since Sep 21, 2013
  */
 public class PersistenceManager {
-
 	private volatile OrmHelper ormHelper = null;
 
 	private Context context;
@@ -69,7 +74,7 @@ public class PersistenceManager {
 	@Handler
 	public void handleAlarmChange( AlarmEvent evt ) {
 		Log.d( "handleAlarmChange", evt.toString() );
-		this.updateAlarm( evt.getAlarm() );
+		this.updateAlarm( evt.getAlarm(), evt );
 	}
 
 	/**
@@ -92,8 +97,6 @@ public class PersistenceManager {
 
 	/**
 	 * Rebuilds all data-structures. Any data is lost.
-	 *
-	 * @param context android context.
 	 */
 	public void cleanStart() {
 		this.getHelper().rebuild();
@@ -105,8 +108,19 @@ public class PersistenceManager {
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void clearAlarms() throws PersistenceException {
+		this.clearTable( Alarm.class );
+		this.clearTable( AudioSource.class );
+		this.clearTable( AudioConfig.class );
+	}
+
+	/**
+	 * Clears a DB table for given class.
+	 *
+	 * @param clazz the class to clear table for.
+	 */
+	private void clearTable( Class<?> clazz ) {
 		try {
-			TableUtils.clearTable( this.getHelper().getConnectionSource(), Alarm.class );
+			TableUtils.clearTable( this.getHelper().getConnectionSource(), clazz );
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );
 		}
@@ -115,29 +129,26 @@ public class PersistenceManager {
 	/**
 	 * Fetches an AlarmsManager from database, it is sorted on ID.
 	 *
-	 * @param context android context.
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public AlarmList fetchAlarms() throws PersistenceException {
-		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
-		return new AlarmList( dao.queryForAll() );
+		try {
+			return new AlarmList( this.joinFetched( this.makeAlarmQB().query() ) );
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
 	}
 
 	/**
 	 * Fetches an AlarmsManager from database, it is sorted on names.
 	 *
-	 * @param context android context.
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public AlarmList fetchAlarmsSortedNames() throws PersistenceException {
-		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
-
 		try {
-			return new AlarmList( dao.queryBuilder().orderBy( "name", true ).query() );
+			return new AlarmList( this.joinFetched( this.makeAlarmQB().orderBy( "name", true ).query() ) );
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );
 		}
@@ -146,54 +157,175 @@ public class PersistenceManager {
 	/**
 	 * Fetches a single alarm from database by its id.
 	 *
-	 * @param context android context.
 	 * @param id the ID of the alarm to fetch.
 	 * @return the fetched Alarm.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public Alarm fetchAlarmById( int id ) throws PersistenceException {
+		try {
+			List<Alarm> alarms = this.joinFetched( this.makeAlarmQB().where().idEq( id ).query() );
+			return alarms == null || alarms.size() == 0 ? null : alarms.get( 0 );
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
+	}
+
+	/**
+	 * Constructs a QueryBuilder (QB) for querying 0-many Alarm(s).
+	 *
+	 * @return the query builder.
+	 */
+	private QueryBuilder<Alarm, Integer> makeAlarmQB() {
+		return this.getHelper().getAlarmDao().queryBuilder();
+	}
+
+	/**
+	 * Performs "Joins" and fetches all to Alarm associated objects and sets to respective Alarm.
+	 *
+	 * @param alarms the list of alarms to fill in blanks for.
+	 * @return the passed argument, for fluid interface.
+	 */
+	private List<Alarm> joinFetched( final List<Alarm> alarms ) {
 		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
-		return dao.queryForId( id );
+
+		/*
+		 * Make lookup tables.
+		 * -------------------
+		 * Find all AudioSource:s present and make AudioSource.id -> index(Alarm) lookup table.
+		 * Make a AudioConfig.id -> index(Alarm) lookup table.
+		 */
+		Map<Integer, Integer> audioSourceLookup = Maps.newHashMap();
+		Map<Integer, Integer> audioConfigLookup = Maps.newHashMap();
+		for ( int i = 0; i < alarms.size(); ++i ) {
+			Alarm alarm = alarms.get( i );
+
+			AudioSource source = alarm.getAudioSource();
+			if ( source != null ) {
+				audioSourceLookup.put( source.getId(), i );
+			}
+
+			audioConfigLookup.put( alarm.getAudioConfig().getId(), i );
+		}
+
+		/*
+		 * Query for all tables.
+		 */
+		List<AudioSource> audioSourceList = this.queryInIds( helper.getAudioSourceDao().queryBuilder(), audioSourceLookup );
+		List<AudioConfig> audioConfigList = this.queryInIds( helper.getAudioConfigDao().queryBuilder(), audioConfigLookup );
+
+		/*
+		 * Set all to respective Alarm object.
+		 */
+
+		// Set AudioSource to each alarm.
+		for ( AudioSource source : audioSourceList ) {
+			int alarmIndex = audioSourceLookup.get( source.getId() );
+			alarms.get( alarmIndex ).setFetchedAudioSource( source );
+		}
+
+		// Set AudioSource to each alarm.
+		for ( AudioConfig config : audioConfigList ) {
+			int alarmIndex = audioSourceLookup.get( config.getId() );
+			alarms.get( alarmIndex ).setFetchedAudioConfig( config );
+		}
+
+		return alarms;
+	}
+
+	/**
+	 * Helper for {@link #joinFetched(List)}, returns a list of items given a lookup table.
+	 *
+	 * @param qb query builder.
+	 * @param lookup the lookup table to get IDs from.
+	 * @return the list of items.
+	 */
+	private <T> List<T> queryInIds( QueryBuilder<T, Integer> qb, Map<Integer, Integer> lookup ) {
+		try {
+			return qb.where().in( AudioSource.ID_COLUMN, lookup.keySet().toArray() ).query();
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
 	}
 
 	/**
 	 * Updates an alarm to database.
 	 *
-	 * @param context android context
 	 * @param alarm the alarm to update.
+	 * @param evt AlarmEvent that occurred, required to update foreign fields.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void updateAlarm( Alarm alarm ) throws PersistenceException {
+	public void updateAlarm( Alarm alarm, AlarmEvent evt ) throws PersistenceException {
 		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
-		dao.update( alarm );
+
+		// First handle any updates to foreign fields that are set directly in Alarm.
+		switch ( evt.getModifiedField() ) {
+		case AUDIO_SOURCE:
+			PersistenceExceptionDao<AudioSource, Integer> asDao = helper.getAudioSourceDao();
+			if ( evt.getOldValue() != AudioSource.SILENT ) {
+				asDao.delete( (AudioSource) evt );
+			}
+
+			asDao.create( alarm.getAudioSource() );
+			break;
+
+		/*
+		 * TODO: Will AudioConfig really be directly set via Alarm#setAudioConfig?
+		 * It can never be null so... Maybe use own event?
+		 */
+		case AUDIO_CONFIG:
+			helper.getAudioConfigDao().update( alarm.getAudioConfig() );
+			break;
+
+		default:
+			break;
+		}
+
+		// Finally update alarm itself.
+		helper.getAlarmDao().update( alarm );
 	}
 
 	/**
 	 * Stores/adds an alarm to database.
 	 *
-	 * @param context android context.
 	 * @param alarm the alarm to store.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void addAlarm( Alarm alarm ) throws PersistenceException {
 		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
-		dao.create( alarm );
+
+		// Handle audio source foreign object if present.
+		AudioSource audioSource = alarm.getAudioSource();
+		helper.getAudioSourceDao().create( audioSource );
+
+		// Handle audio config foreign object.
+		AudioConfig audioConfig = alarm.getAudioConfig();
+		helper.getAudioConfigDao().create( audioConfig );
+
+		// Finally persist alarm itself to DB.
+		helper.getAlarmDao().create( alarm );
 	}
 
 	/**
 	 * Removes an alarm from database.
 	 *
-	 * @param context android context.
 	 * @param alarm the alarm to remove.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void removeAlarm( Alarm alarm ) throws PersistenceException {
 		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<Alarm, Integer> dao = helper.getAlarmDao();
-		dao.delete( alarm );
+
+		// Handle audio source foreign object if present.
+		AudioSource audioSource = alarm.getAudioSource();
+		if ( audioSource != null ) {
+			helper.getAudioSourceDao().delete( audioSource );
+		}
+
+		// Handle audio config foreign object.
+		AudioConfig audioConfig = alarm.getAudioConfig();
+		helper.getAudioConfigDao().delete( audioConfig );
+
+		// Finally delete alarm itself from DB.
+		helper.getAlarmDao().delete( alarm );
 	}
 
 	/**
@@ -209,7 +341,6 @@ public class PersistenceManager {
 	/**
 	 * Returns the OrmHelper.
 	 *
-	 * @param context the context to use to get helper.
 	 * @return the helper.
 	 */
 	public OrmHelper getHelper() {
