@@ -9,11 +9,14 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.preference.InitializableRingtonePreference;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.widget.TextView;
@@ -27,7 +30,16 @@ import android.widget.Toast;
  * @since Sep 27, 2013
  */
 public class RingerSettingsActivity extends PreferenceActivity {
-	private static final CharSequence RINGTONE_PICKER = "pref_ringtone_picker";
+	private enum ID {
+		RINGTONE_PICKER("pref_ringtone_picker"),
+		MUSIC_PICKER("pref_local_content_uri_picker");
+
+		public String id;
+
+		ID( String id ) {
+			this.id = id;
+		}
+	}
 
 	private Alarm alarm;
 
@@ -56,6 +68,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 
 		// Setup pickers, etc.
 		this.setupRingtonePicker();
+		this.setupMusicPicker();
 	}
 
 	/**
@@ -102,7 +115,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	@SuppressWarnings( "deprecation" )
 	private void setupRingtonePicker() {
-		InitializableRingtonePreference pref = (InitializableRingtonePreference) this.findPreference( RINGTONE_PICKER );
+		InitializableRingtonePreference pref = (InitializableRingtonePreference) this.findPreference( ID.RINGTONE_PICKER.id );
 
 		AudioSource as = this.driver.getSource();
 		if ( as != null ) {
@@ -124,17 +137,67 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 * @param uri the URI to set.
 	 */
 	private void setRingtone( String uri ) {
-		AudioSource source = null;
+		AudioSource source = uri.equals( "" ) ? null : new AudioSource( AudioSourceType.RINGTONE, uri );
+		this.setAudioSource( source );
+	}
 
-		if ( !uri.equals( "" ) ) {
-			source = new AudioSource( AudioSourceType.RINGTONE, uri );
-		}
+	/**
+	 * Sets up the music picker.
+	 */
+	@SuppressWarnings( "deprecation" )
+	private void setupMusicPicker() {
+		Preference pref = (Preference) this.findPreference( ID.MUSIC_PICKER.id );
+		pref.setOnPreferenceClickListener( new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick( Preference preference ) {
+				launchMusicPicker();
+				return false;
+			}
+		} );
+	}
 
+	private static final int MUSIC_PICKER_REQUEST_CODE = 1337;
+
+	/**
+	 * Launches the music picker.
+	 */
+	private void launchMusicPicker() {
+		Log.d( this.getClass().getSimpleName(), "launchMusicPicker#1" );
+		Intent i = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI );
+		this.startActivityForResult( i, MUSIC_PICKER_REQUEST_CODE );
+	}
+
+	/**
+	 * Sets the AudioSource to a music file.
+	 *
+	 * @param data the intent data that contains music URI.
+	 */
+	private void setMusic( Intent data ) {
+		Log.d( this.getClass().getSimpleName(), data.toString() );
+
+		String uri = data.getDataString();
+		AudioSource source = uri == null ? null : new AudioSource( AudioSourceType.LOCAL_CONTENT_URI, uri );
+		this.setAudioSource( source );
+	}
+
+	/**
+	 * Sets & stores the current audio source.
+	 *
+	 * @param source the audio source.
+	 */
+	private void setAudioSource( AudioSource source ) {
 		this.driver = this.factory.produce( this, source );
-
-		this.updateSummary();
-
 		this.alarm.setAudioSource( source );
+		this.updateSummary();
+	}
+
+	@Override
+	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+		if ( resultCode == Activity.RESULT_OK ) {
+			if ( requestCode == MUSIC_PICKER_REQUEST_CODE ) {
+				this.setMusic( data );
+			}
+		}
 	}
 
 	/**

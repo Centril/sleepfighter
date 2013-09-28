@@ -4,11 +4,19 @@
     <PreferenceCategory android:title="@string/audio_source_category_title" >
         <se.chalmers.dat255.sleepfighter.preference.InitializableRingtonePreference
             android:key="pref_ringtone_picker"
+            android:persistent="false"
             android:ringtoneType="all"
             android:showDefault="true"
-            android:title="@string/perf_ringtone_picker"
             android:summary="@string/perf_ringtone_picker_summary"
-            android:persistent="false" />
+            android:title="@string/perf_ringtone_picker" />
+
+        <Preference
+            android:key="pref_local_content_uri_picker"
+            android:persistent="false"
+            android:ringtoneType="all"
+            android:showDefault="true"
+            android:summary="@string/pref_local_content_uri_picker_summary"
+            android:title="@string/pref_local_content_uri_picker" />
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="title_alarm_ringer_settings">Ring tone settings</string>
-
     <string name="audio_source_category_title">Audio Source</string>
-
     <string name="perf_ringtone_picker">Ring tone</string>
     <string name="perf_ringtone_picker_summary">Select a ring tone from your phone</string>
     <string name="alarm_audiosource_summary_name_title">Selected:</string>
@@ -18,5 +17,8 @@
         <item>Internet stream</item>
         <item>Spotify</item>
     </string-array>
-    
+
+    <string name="pref_local_content_uri_picker">Music</string>
+    <string name="pref_local_content_uri_picker_summary">Select an audio file from your phone</string>
+
 </resources>
