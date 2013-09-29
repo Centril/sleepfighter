@@ -12,7 +12,6 @@
     
     <string name="alarm_audiosource_summary_type_none">利用できない</string>
 
-    <!--TODO: Figure out good translations for these.  -->
     <string-array name="alarm_audiosource_summary_type">
         <item>着信音</item>
         <item>ローカルファイル</item>
