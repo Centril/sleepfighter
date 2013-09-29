@@ -53,11 +53,11 @@ public class PlaylistDriver extends BaseAudioDriver {
 
 	@Override
 	public void play( AudioConfig config ) {
-		// TODO
+		super.play( config );
 	}
 
 	@Override
 	public void stop() {
-		// TODO
+		super.stop();
 	}
 }

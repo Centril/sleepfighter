@@ -33,6 +33,8 @@ public class RingtoneDriver extends BaseAudioDriver  {
 
 	@Override
 	public void play( AudioConfig config ) {
+		super.play( config );
+
 		// TODO: Use volume and stuff, use MediaPlayer maybe?
 		this.ringtone.setStreamType( AudioManager.STREAM_ALARM );
 		this.ringtone.play();
@@ -41,6 +43,6 @@ public class RingtoneDriver extends BaseAudioDriver  {
 	@Override
 	public void stop() {
 		this.ringtone.stop();
+		super.stop();
 	}
-
 }
