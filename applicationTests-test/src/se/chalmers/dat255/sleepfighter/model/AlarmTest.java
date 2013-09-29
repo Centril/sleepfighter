@@ -10,7 +10,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
-import android.provider.ContactsContract.CommonDataKinds.Event;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
