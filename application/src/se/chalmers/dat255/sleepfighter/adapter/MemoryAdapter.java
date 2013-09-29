@@ -85,19 +85,20 @@ public class MemoryAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-    	MemoryCardView imageView;
+    	MemoryCardView view;
         if (convertView == null) { 
-            imageView = new MemoryCardView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            view = new MemoryCardView(context);
+            view.setLayoutParams(new GridView.LayoutParams(85, 85));
+            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            view.setPadding(8, 8, 8, 8);
         } else {
-            imageView = (MemoryCardView) convertView;
+            view = (MemoryCardView) convertView;
         }
-        
+      
+        view.setPosition(position);
         int image = memoryCardImages[mem.getCard(position)];
-        imageView.setImageResource(image);
-        return imageView;
+        view.setImageResource(image);
+        return view;
      
     }
     

@@ -6,11 +6,11 @@ import se.chalmers.dat255.sleepfighter.adapter.MemoryAdapter;
 import se.chalmers.dat255.sleepfighter.model.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.Toast;
 /**
  * Example implementation of Challenge.
  */
@@ -20,20 +20,59 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 	
 	private Memory mem;
 	
+	private MemoryCardView flippedCard = null;
+	
 	private final static int COLS = 2;
 
 	private final static int ROWS = 3;
+	private int remainingPairs;
+
+	private void fadeOutRemove(View v) {
+		// fade out and remove
+        v.startAnimation(AnimationUtils.loadAnimation(act, android.R.anim.fade_out));
+        v.setVisibility(View.INVISIBLE);
+        
+	}
 	
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
        // Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
       
         MemoryCardView card = (MemoryCardView)v;
+        
+        if(flippedCard == card) {
+        	// you can't flip a card, and then flip over the same card again.
+        	// you must pick two separate cards. 
+        	return;
+        }
+        
+        
+        
         card.flip();
         
-        // fade out and remove
-        /*v.startAnimation(AnimationUtils.loadAnimation(act, android.R.anim.fade_out));
-        v.setVisibility(View.INVISIBLE);*/
-
+        if(flippedCard != null ) {
+       
+        	if(mem.getCard(card.getPosition())  == mem.getCard(flippedCard.getPosition())) {
+        		// remove cards
+        		fadeOutRemove(card);
+        		fadeOutRemove(flippedCard);
+        		flippedCard = null;
+        		--this.remainingPairs;
+        		if(this.remainingPairs == 0) {
+        			Toast.makeText(act.getBaseContext(), "You won!",
+    						Toast.LENGTH_SHORT).show();
+        			// TODO: now we should return to the start menu. 
+        		}
+        	} else {
+        		// TODO: wait some seconds 
+        		flippedCard.flip();
+        		card.flip();
+        		flippedCard = null;
+        	}
+        		 
+        } else 
+        	flippedCard = card;
+        
+        
     }
 	
 	@Override
@@ -47,6 +86,7 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 		mem = new Memory(ROWS, COLS);
 		Debug.d(mem.toString());
 		gridview.setAdapter(new MemoryAdapter(act, mem));
+		this.remainingPairs = mem.getNumPairs();
 
 		gridview.setOnItemClickListener(this);
 	}

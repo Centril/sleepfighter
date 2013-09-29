@@ -10,12 +10,13 @@ public class MemoryCardView extends ImageView {
 
 	
 	// what to show when the memory card is flipped over and hidden.
-  	static final int HIDDEN =  android.R.color.white;
+  	private static final int HIDDEN =  android.R.color.white;
   	// what to show when the memory card s flipped over and shown.
-  	int SHOWN;
+  	private int SHOWN;
   	
+  	private int position;
   	
-  	int currentImage;
+  	private int currentImage;
     
 	
 	public MemoryCardView(Context context) {
@@ -54,5 +55,13 @@ public class MemoryCardView extends ImageView {
 		
 		// all cards are hidden by default. 
 		hide();
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+	
+	public int getPosition() {
+		return this.position;
 	}
 }
