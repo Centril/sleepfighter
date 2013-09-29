@@ -2,14 +2,19 @@
 
     <string name="title_activity_global_settings">設定</string>
 
-    <!-- TODO: translate -->
     <string name="pref_alarm_turn_screen_on">画面をつける</string>
-    <string name="pref_alarm_turn_screen_on_summary">アラームが鳴ると画面をつける</string>    
+    <string name="pref_alarm_turn_screen_on_summary">アラームが鳴ると画面をつける</string>
 
     <string name="pref_alarm_bypass_lock_screen">ロック画面</string>
-    <string name="pref_alarm_bypass_lock_screen_summary">Bypass lock screen sammanfattning</string>    
-        
+    <!-- TODO: translate -->
+    <string name="pref_alarm_bypass_lock_screen_summary">Bypass lock screen sammanfattning</string>
+
+    <!-- TODO: 次 feels a bit confusing and clear... -->
+    <string name="display_when_next_alarm_rings">次のアラームが鳴る時間を表示</string>
+    <!-- TODO: translate -->
+    <string name="display_when_next_alarm_rings_summary">Shows when the next alarm will ring rather than in how much time</string>
 
     <string name="pref_about">スリープファイターについて</string>
     <string name="pref_version">バージョン</string>
+
 </resources>
