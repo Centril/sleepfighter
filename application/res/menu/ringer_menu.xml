@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/ringer_action_test"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:title="@string/ringer_action_test"/>
+    <item
+        android:id="@+id/ringer_action_cancel"
+        android:orderInCategory="2"
+        android:icon="@drawable/ic_menu_mute"
+        android:showAsAction="ifRoom"
+        android:title="@string/ringer_action_cancel"/>
+
+</menu>
