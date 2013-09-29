@@ -161,6 +161,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		this.updateRingerSummary();
 	}
 
+	
 	private void updateRingerSummary() {
 		AudioDriverFactory factory = SFApplication.get().getAudioDriverFactory();
 		AudioDriver driver = factory.produce( this, this.alarm.getAudioSource() );
