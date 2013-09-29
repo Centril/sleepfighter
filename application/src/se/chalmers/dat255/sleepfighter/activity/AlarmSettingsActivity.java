@@ -3,7 +3,10 @@ package se.chalmers.dat255.sleepfighter.activity;
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.Alarm.AudioChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
@@ -43,6 +46,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private final String DELETE = "pref_delete_alarm";
 
 	private final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
+	private Preference ringerPreference;
 
 	private Alarm alarm;
 	private AlarmList alarmList;
@@ -71,7 +75,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Handler
 	public void handleNameChange(MetaChangeEvent e) {
@@ -142,19 +145,44 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			}
 		});
 
-		findPreference( RINGER_SUBSCREEN ).setOnPreferenceClickListener( new OnPreferenceClickListener() {
+		this.setupRingerPreferences();
+	}
+
+	private void setupRingerPreferences() {
+		this.ringerPreference = this.findPreference( RINGER_SUBSCREEN );
+		this.ringerPreference.setOnPreferenceClickListener( new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick( Preference preference ) {
 				startRingerEdit();
 				return true;
 			}
 		} );
+
+		this.updateRingerSummary();
 	}
 
-	protected void startRingerEdit() {
+	private void updateRingerSummary() {
+		AudioDriverFactory factory = SFApplication.get().getAudioDriverFactory();
+		AudioDriver driver = factory.produce( this, this.alarm.getAudioSource() );
+		this.ringerPreference.setSummary( driver.printSourceName() );
+	}
+
+	@Handler
+	public void handleAudioChange( AudioChangeEvent evt ) {
+		if ( evt.getModifiedField() == Field.AUDIO_SOURCE ) {
+			this.updateRingerSummary();
+		}
+	}
+
+	private void startRingerEdit() {
 		Intent intent = new Intent(this, RingerSettingsActivity.class );
 		new IntentUtils( intent ).setAlarmId( alarm );
 		this.startActivity( intent );
+	}
+
+	@SuppressWarnings( "deprecation" )
+	public Preference findPreference( CharSequence key ) {
+		return super.findPreference( key );
 	}
 
 	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
