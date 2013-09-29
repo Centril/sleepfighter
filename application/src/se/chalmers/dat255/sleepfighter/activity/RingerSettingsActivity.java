@@ -31,6 +31,8 @@ import android.widget.Toast;
  * @since Sep 27, 2013
  */
 public class RingerSettingsActivity extends PreferenceActivity {
+	private final static String TAG = RingerSettingsActivity.class.getSimpleName();
+
 	public enum ID {
 		RINGTONE_PICKER( "pref_ringtone_picker" ),
 		MUSIC_PICKER( "pref_local_content_uri_picker" ),
@@ -172,13 +174,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 * @param data the intent data that contains music URI.
 	 */
 	private void setMusic( Intent data ) {
-		Log.d( this.getClass().getSimpleName(), data.toString() );
-
-		String uri = data.getDataString();
-		AudioSource source = uri == null ? null : new AudioSource( AudioSourceType.LOCAL_CONTENT_URI, uri );
-		this.setAudioSource( source );
+		this.setAudioSource( AudioSourceType.LOCAL_CONTENT_URI, data );
 	}
 
+	/**
+	 * Sets up the playlist picker.
+	 */
 	private void setupPlaylistPicker() {
 		this.preferenceBind( ID.PLAYLIST_PICKER, new OnPreferenceClickListener() {
 			@Override
@@ -189,15 +190,39 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		} );
 	}
 
-	protected void launchPlaylistPicker() {
-		Intent intent = new Intent(Intent.ACTION_PICK);
-		intent.setType(MediaStore.Audio.Playlists.CONTENT_TYPE); 
-		intent.putExtra("oneshot", false);
+	/**
+	 * Launches the playlist picker.
+	 */
+	private void launchPlaylistPicker() {
+		Intent intent = new Intent( this, PlaylistSelectActivity.class );
+
+		AudioSource source = this.alarm.getAudioSource();
+		if ( source != null && source.getType() == AudioSourceType.PLAYLIST ) {
+			intent.putExtra( "selected_uri", source.getUri() );
+		}
+
 		this.startActivityForResult( intent, ID.PLAYLIST_PICKER.ordinal() );
 	}
 
+	/**
+	 * Sets the AudioSource to a playlist.
+	 *
+	 * @param data the intent data that contains playlist URI.
+	 */
 	private void setPlaylist( Intent data ) {
-		Log.d( this.getClass().getSimpleName(), data.toString() );
+		this.setAudioSource( AudioSourceType.PLAYLIST, data );
+	}
+
+	/**
+	 * Sets & stores the current audio source using an intent for data.
+	 *
+	 * @param type the type of AudioSource.
+	 * @param data the intent data.
+	 */
+	private void setAudioSource( AudioSourceType type, Intent data ) {
+		String uri = data.getDataString();
+		AudioSource source = uri == null ? null : new AudioSource( type, uri );
+		this.setAudioSource( source );
 	}
 
 	/**
@@ -214,15 +239,18 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
 		if ( resultCode == Activity.RESULT_OK ) {
+			Log.d( TAG, data.toString() );
+
 			ID[] ids = ID.values();
 			if ( requestCode < ids.length ) {
-				switch( ID.values()[requestCode] ) {
+				switch( ids[requestCode] ) {
 				case MUSIC_PICKER:
 					this.setMusic( data );
 					break;
 
 				case PLAYLIST_PICKER:
 					this.setPlaylist( data );
+					break;
 
 				default:
 					throw new AssertionError( "Shouldn't happen!" );

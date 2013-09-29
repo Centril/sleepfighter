@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.audio;
 
+import se.chalmers.dat255.sleepfighter.audio.playlist.PlaylistDriver;
+import se.chalmers.dat255.sleepfighter.audio.playlist.PlaylistProviderFactory;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
 import android.util.Log;
@@ -39,9 +41,12 @@ public class AudioDriverFactory {
 				driver = new RingtoneDriver();
 				break;
 
+			case PLAYLIST:
+				driver = new PlaylistDriver( new PlaylistProviderFactory() );
+				break;
+
 			case INTERNET_STREAM:
 			case LOCAL_CONTENT_URI:
-			case PLAYLIST:
 			case SPOTIFY:
 				Toast.makeText( context, "NOT IMPLEMENTED YET!", Toast.LENGTH_LONG ).show();
 				driver = new RingtoneDriver();
