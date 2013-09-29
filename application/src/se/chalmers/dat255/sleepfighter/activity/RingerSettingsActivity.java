@@ -152,7 +152,9 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	private void updateSummary() {
 		String name = this.driver.printSourceName();
 		this.summaryName.setText( name );
-		this.actionBarSummary.setText( name );
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			this.actionBarSummary.setText(name);
+		}
 
 		// Make and set typeText.
 		String typeText;
