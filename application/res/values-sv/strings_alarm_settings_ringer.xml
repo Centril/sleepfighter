@@ -17,8 +17,7 @@
         <item>Ringsignal</item>
         <item>Lokal media</item>
         
-        <!-- TODO: is there a Swedish for this? spellista? -->
-        <item>Playlist</item>
+        <item>Spellista</item>
         <item>Internet stream</item>
         <item>Spotify</item>
     </string-array>
@@ -26,5 +25,8 @@
     <string name="pref_local_content_uri_picker">Musik</string>
     <string name="pref_local_content_uri_picker_summary">Välj en ljudfil från din telefon</string>
     
+    <string name="pref_playlist_picker">Spellista</string>
+    <string name="pref_playlist_picker_summary">Välj en spellista från din mobil</string>
+    	
     
 </resources>

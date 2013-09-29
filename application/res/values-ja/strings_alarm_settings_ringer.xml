@@ -30,4 +30,7 @@
     <string name="pref_local_content_uri_picker">音楽</string>
     <string name="pref_local_content_uri_picker_summary">オーディオ ファイルを洗濯してください</string>
     
+    <string name="pref_playlist_picker">プレイリスト</string>
+    <string name="pref_playlist_picker_summary">プレイリストを選択してください</string>
+    
 </resources>

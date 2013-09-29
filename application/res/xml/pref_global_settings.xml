@@ -14,8 +14,8 @@
     
     <CheckBoxPreference 
         android:key="pref_global_when_or_in_how_much"
-        android:title="Display when next alarm rings"
-        android:summary="Shows when the next alarm will ring rather than in how much time"
+        android:title="@string/display_when_next_alarm_rings"
+        android:summary="@string/display_when_next_alarm_rings_summary"
         android:defaultValue="false" />
     
     <PreferenceCategory android:title="@string/pref_about" >
