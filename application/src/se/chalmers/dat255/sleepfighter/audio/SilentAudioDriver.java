@@ -37,6 +37,15 @@ public class SilentAudioDriver implements AudioDriver {
 	}
 
 	@Override
+	public boolean isPlaying() {
+		return false;
+	}
+
+	@Override
 	public void stop() {
+	}
+
+	@Override
+	public void toggle( AudioConfig config ) {
 	}
 }

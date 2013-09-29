@@ -1,6 +1,6 @@
 package se.chalmers.dat255.sleepfighter.audio.playlist;
 
-import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.audio.BaseAudioDriver;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
@@ -12,10 +12,7 @@ import android.content.Context;
  * @version 1.0
  * @since Sep 29, 2013
  */
-public class PlaylistDriver implements AudioDriver {
-	private Context context;
-	private AudioSource source;
-
+public class PlaylistDriver extends BaseAudioDriver {
 	private PlaylistProviderFactory factory;
 	private PlaylistProvider provider;
 	private Playlist playlist;
@@ -31,21 +28,16 @@ public class PlaylistDriver implements AudioDriver {
 
 	@Override
 	public void setSource( Context context, AudioSource source ) {
-		this.source = source;
-		this.context = context;
+		super.setSource( context, source );
+
 		this.playlist = null;
 		this.provider = null;
 	}
 
 	@Override
-	public AudioSource getSource() {
-		return this.source;
-	}
-
-	@Override
 	public String printSourceName() {
 		if ( this.playlist == null ) {
-			this.playlist = this.getProvider().getPlaylistFor( this.context, this.source.getUri() );
+			this.playlist = this.getProvider().getPlaylistFor( this.getContext(), this.getSource().getUri() );
 		}
 
 		return this.playlist.getName();
@@ -53,7 +45,7 @@ public class PlaylistDriver implements AudioDriver {
 
 	private PlaylistProvider getProvider() {
 		if ( this.provider == null ) {
-			this.provider = this.factory.getProvider( this.source.getUri() );
+			this.provider = this.factory.getProvider( this.getSource().getUri() );
 		}
 
 		return this.provider;

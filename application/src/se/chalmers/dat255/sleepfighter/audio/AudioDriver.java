@@ -44,7 +44,21 @@ public interface AudioDriver {
 	public void play( AudioConfig config );
 
 	/**
+	 * Returns true if the driver is currently playing.
+	 *
+	 * @return true if playing.
+	 */
+	public boolean isPlaying();
+
+	/**
 	 * Stops playing audio source.
 	 */
 	public void stop();
+
+	/**
+	 * Toggles playing or pausing depending on {@link #isPlaying()}.
+	 *
+	 * @param config audio configuration.
+	 */
+	public void toggle( AudioConfig config );
 }
