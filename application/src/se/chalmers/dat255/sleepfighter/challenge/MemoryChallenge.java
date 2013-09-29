@@ -1,18 +1,16 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
-import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.activity.MemoryActivity;
 import se.chalmers.dat255.sleepfighter.adapter.MemoryAdapter;
 import se.chalmers.dat255.sleepfighter.model.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Toast;
 /**
  * Example implementation of Challenge.
  */
@@ -53,6 +51,7 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 		GridView gridview = (GridView) act.findViewById(R.id.memory_gridview);
 		
 		mem = new Memory(ROWS, COLS);
+		Debug.d(mem.toString());
 		gridview.setAdapter(new MemoryAdapter(act, mem));
 
 		gridview.setOnItemClickListener(this);

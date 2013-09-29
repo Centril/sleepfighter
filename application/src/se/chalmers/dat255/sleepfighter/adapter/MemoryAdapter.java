@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.adapter;
 
+import java.util.Random;
+
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.model.Memory;
 import android.content.Context;
@@ -14,9 +16,58 @@ public class MemoryAdapter extends BaseAdapter {
 	private Context context;
 	private final Memory mem;
 	
+	private int[] memoryCardImages;
+	
+	private Random rng = new Random();
+
+	// assign each card type an image.
+	private void assignCards() {
+		memoryCardImages = new int[mem.getNumPairs()];
+		
+		for(int i = 0; i< memoryCardImages.length; ++i) {
+			// so far unassigned ones are given the value 0.
+			// (0 is not a valid resource ID)
+			// http://developer.android.com/reference/android/content/res/Resources.html#getIdentifier%28java.lang.String,%20java.lang.String,%20java.lang.String%29
+			memoryCardImages[i] = 0;
+		}
+		
+		int cardI = 0;
+		
+		while(cardI != mem.getNumPairs()) {
+			
+			// find unassigned image
+			boolean unassigned;
+			int image;
+			do {
+		
+				
+				// get random memory card image from the database.
+				image = memoryCardDatabase[rng.nextInt(memoryCardDatabase.length)];
+				
+				// ensure that it hasn't already been assigned.
+				unassigned = true;
+				for(int i = 0; i < memoryCardImages.length; ++i) {
+					if(memoryCardImages[i] == image) {
+						// the image has already been assigned to another card type
+						unassigned = false;
+						break;
+					}
+				}
+			
+			
+			}while(!unassigned);
+			
+			memoryCardImages[cardI] = image;
+			
+			++cardI;
+		}
+	}
+	
     public MemoryAdapter(final Context c, final Memory mem) {
         context = c;
-        this.mem = mem;
+        this.mem = mem;       
+       
+        assignCards();
     }
 
     public int getCount() {
@@ -42,8 +93,10 @@ public class MemoryAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-
-        imageView.setImageResource(mThumbIds[position]);
+        
+        
+      //  int image = memoryCardImages[mem.getCard(position)];
+        imageView.setImageResource(/*image*/ R.drawable.a);
         return imageView;
      
     }
@@ -57,7 +110,7 @@ public class MemoryAdapter extends BaseAdapter {
     };
     
     // list of all the usable memory cards. 
-    private Integer[] memoryCardDatabse = {
+    private int[] memoryCardDatabase = {
     		R.drawable.a, R.drawable.b,
     		R.drawable.c, R.drawable.d,
     		R.drawable.e, R.drawable.f,

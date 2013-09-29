@@ -63,6 +63,13 @@ public class Memory {
 		return cards[row][col];
 	}
 	
+	// access the card using array indexing instead(zero-based indexing)
+	public int getCard(int index) {
+		int row = (int)Math.floor(index / cols);
+		int col = index - row * cols;
+		return this.getCard(row, col);
+	}
+	
 	private void placeOutCards() {
 		// all unassigned spaces we'll set to -1
 		for(int i = 0; i < rows; ++i) {

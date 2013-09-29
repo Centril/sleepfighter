@@ -70,4 +70,20 @@ public class MemoryTest extends TestCase {
 			testPlaceOutCards(6,6);
 		}
 	}
+	
+	public void testGetCard() {
+		
+		
+		Memory mem = new Memory(4, 3);
+	
+		Debug.d(mem.toString());
+		
+		// we already knows that getCard(row, col) works. We are testing getCard(i)
+		
+		assertEquals(mem.getCard(0, 2), mem.getCard(2));
+		assertEquals(mem.getCard(1, 1), mem.getCard(4));
+
+		// the very last card
+		assertEquals(mem.getCard(3, 2), mem.getCard(11));
+	}
 }
