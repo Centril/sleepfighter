@@ -72,6 +72,7 @@ public class DateTextUtils {
 		String[] formats = res.getStringArray( R.array.exact_time_formats );
 		return getTime( formats, noActive, now, ats, locale );
 	}
+	
 
 	/**
 	 * Builds and returns text for the "exact" time an alarm occurs as opposed to the period left for it to occur.<br/>
@@ -85,7 +86,11 @@ public class DateTextUtils {
 	 * @return the built time-to string.
 	 */
 	public static final String getTime( String[] formats, String noActive, long now, AlarmTimestamp ats, Locale locale ) {
-		Log.d( TAG, ats.toString() );
+		// otherwise it'll obviously crash.
+		if(ats != AlarmTimestamp.INVALID)
+			Log.d( TAG, ats.toString() );
+		
+		
 		if ( ats == AlarmTimestamp.INVALID ) {
 			return noActive;
 		} else {
