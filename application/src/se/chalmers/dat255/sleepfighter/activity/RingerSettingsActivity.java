@@ -172,7 +172,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	private void setupDriver() {
 		// Setup factory & make driver from current source.
 		AudioSource source = this.alarm.getAudioSource();
-		this.factory = new AudioDriverFactory();
+		this.factory = SFApplication.get().getAudioDriverFactory();
 		this.driver = this.factory.produce( this, source );
 	}
 

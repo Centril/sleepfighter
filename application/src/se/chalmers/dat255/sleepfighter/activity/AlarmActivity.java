@@ -4,13 +4,13 @@ import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
-import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -95,7 +95,6 @@ public class AlarmActivity extends Activity {
 		}
 	}
 
-
 	/**
 	 * Sets screen related flags, reads from preferences.
 	 */
@@ -140,6 +139,8 @@ public class AlarmActivity extends Activity {
 	private void work() {
 		Log.d( "AlarmActivity", "alarm #id: " + Integer.toString( this.alarm.getId() ) );
 
+		this.startAudio( this.alarm );
+
 		Log.d( "AlarmActivity", "work#1" );
 		// TODO: do something useful.
 		Toast.makeText(this, "Alarm ringing, get up! Alarm #" + this.alarm.getId(), Toast.LENGTH_LONG).show();
@@ -176,9 +177,21 @@ public class AlarmActivity extends Activity {
 	public void stopAlarm() {
 		// TODO more here
 
-		// TODO temporarily
-		AlarmAudioManager.getInstance().stop();
+		// TODO move ?
+		this.stopAudio();
 		
 		this.performRescheduling();
+	}
+
+	private void startAudio( Alarm alarm ) {
+		SFApplication app = SFApplication.get();
+		AudioDriver driver = app.getAudioDriverFactory().produce( app, alarm.getAudioSource() );
+		app.setAudioDriver( driver );
+
+		driver.play( alarm.getAudioConfig() );
+	}
+
+	private void stopAudio() {
+		SFApplication.get().setAudioDriver( null );
 	}
 }

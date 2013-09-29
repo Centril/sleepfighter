@@ -1,7 +1,6 @@
 package se.chalmers.dat255.sleepfighter.reciever;
 
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
-import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.content.BroadcastReceiver;
@@ -53,9 +52,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 		return true;
 	}
 
-
-
-
 	/**
 	 * Starts AlarmActivity, extras are passed on.
 	 *
@@ -71,8 +67,5 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		// Start activity!
 		context.startActivity( activityIntent );
-		
-		// TODO temporary
-		AlarmAudioManager.getInstance().play();
 	}
 }
