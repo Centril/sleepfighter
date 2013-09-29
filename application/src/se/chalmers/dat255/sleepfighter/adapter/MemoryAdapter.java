@@ -94,9 +94,8 @@ public class MemoryAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         
-        
-      //  int image = memoryCardImages[mem.getCard(position)];
-        imageView.setImageResource(/*image*/ R.drawable.a);
+        int image = memoryCardImages[mem.getCard(position)];
+        imageView.setImageResource(image);
         return imageView;
      
     }
