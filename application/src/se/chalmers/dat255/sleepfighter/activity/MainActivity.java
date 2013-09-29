@@ -9,6 +9,7 @@ import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.AlarmAdapter;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
@@ -159,20 +160,38 @@ public class MainActivity extends Activity {
 	}
 
 	/**
+	 * Handles a change to an alarm's name by refreshing the list.
+	 * 
+	 * @param event the event
+	 */
+	@Handler
+	public void handleAlarmNameChange(Alarm.MetaChangeEvent event) {
+		// Ignore other than name change events
+		if (event.getModifiedField() != Field.NAME) {
+			return;
+		}
+
+		// Refresh the list items
+		this.alarmAdapter.notifyDataSetChanged();
+	}
+	
+	/**
 	 * Handles a change in time related data in any alarm.
 	 * 
 	 * @param evt the event.
 	 */
 	@Handler
-	public void handleDateChange( ScheduleChangeEvent evt ) {
+	public void handleScheduleChange( ScheduleChangeEvent evt ) {
 		final MainActivity self = this;
 		this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				self.updateEarliestText();
-				self.alarmAdapter.notifyDataSetChanged();
 			}
 		});
+
+		// Refresh the list items
+		this.alarmAdapter.notifyDataSetChanged();
 	}
 
 	/**
