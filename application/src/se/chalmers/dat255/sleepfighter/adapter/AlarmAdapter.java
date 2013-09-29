@@ -90,7 +90,11 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		final CompoundButton activatedSwitch = (CompoundButton) convertView.findViewById(R.id.activated);
 
 		View activatedBackground =  convertView.findViewById(R.id.activated_background);
-		
+
+		// Makes sure that previous alarm for a recycled view won't get changed
+		// when setting initial value
+		activatedSwitch.setOnCheckedChangeListener(null);
+
 		activatedSwitch.setChecked(alarm.isActivated());
 
 		activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
