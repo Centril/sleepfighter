@@ -9,6 +9,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 
 /**
+ * RingtoneDriver is the AudioDriver for ringtones.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
@@ -50,6 +51,4 @@ public class RingtoneDriver implements AudioDriver {
 	public void stop() {
 		this.ringtone.stop();
 	}
-
-
 }
