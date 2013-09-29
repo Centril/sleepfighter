@@ -12,9 +12,15 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+
 /**
  * Example implementation of Challenge.
+ *
+ * @author Eric Arnebäck
+ * @version 1.0
+ * @since Sep 28, 2013
  */
+
 public class MemoryChallenge implements Challenge, OnItemClickListener {
 
 	private ChallengeActivity act;
@@ -75,7 +81,7 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
         		flippedCard = null;
         		--this.remainingPairs;
         		if(this.remainingPairs == 0) {
-        			Toast.makeText(act.getBaseContext(), "You won!",
+        			Toast.makeText(act.getBaseContext(), "Alarm deactivated!",
     						Toast.LENGTH_SHORT).show();
         			// TODO: now we should return to the start menu. 
         		}

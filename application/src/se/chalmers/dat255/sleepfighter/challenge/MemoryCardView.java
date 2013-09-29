@@ -3,9 +3,14 @@ package se.chalmers.dat255.sleepfighter.challenge;
 import android.content.Context;
 import android.widget.ImageView;
 
-/*
+/**
  * Represents a memory card graphically
+ *
+ * @author Eric Arnebäck
+ * @version 1.0
+ * @since Sep 28, 2013
  */
+
 public class MemoryCardView extends ImageView {
 
 	
