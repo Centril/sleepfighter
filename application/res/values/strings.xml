@@ -25,6 +25,13 @@
         <item>%2$dh</item>
         <item>%3$dm</item>
     </string-array>
+
+    <string-array name="exact_time_formats">
+        <item>Today %1$s</item>
+        <item>Tomorrow %1$s</item>
+        <item>%2$s %1$s</item> <!-- %2$s = [Monday, ...]  -->
+    </string-array>
+
     <string-array name="main_list_context_menu">
         <item>Edit alarm</item>
         <item>Delete alarm</item>

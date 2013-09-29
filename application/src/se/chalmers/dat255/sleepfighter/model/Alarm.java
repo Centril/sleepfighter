@@ -635,7 +635,7 @@ public class Alarm implements Cloneable, IdProvider {
 	 * @return the formatted time.
 	 */
 	public String getTimeString() {
-		return String.format("%02d", this.getHour()) + ":" + String.format("%02d", this.getMinute());
+		return DateTextUtils.joinTime( this.getHour(), this.getMinute() );
 	}
 
 	/**

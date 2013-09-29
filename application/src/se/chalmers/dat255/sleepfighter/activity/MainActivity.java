@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
+import java.util.Locale;
+
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
@@ -17,7 +19,9 @@ import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -29,6 +33,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+	private final static String TAG = MainActivity.class.getSimpleName();
+
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
@@ -60,6 +66,13 @@ public class MainActivity extends Activity {
 		this.updateEarliestText();
 
 		VibrationManager.getInstance().setup(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		this.updateEarliestText();
 	}
 
 	private void setupListView() {
@@ -213,17 +226,19 @@ public class MainActivity extends Activity {
 
 	/**
 	 * Sets the earliest time text.
-	 * 
-	 * @param now
-	 *            the current time.
 	 */
 	private void updateEarliestText() {
 		long now = this.getNow();
 
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
-		String text = DateTextUtils.getTimeToText( this.getResources(), now,  stamp);
-		
+
+		Log.d( TAG, Boolean.toString( this.app().getPrefs().displayPeriodOrTime() ) );
+
+		Resources res = this.getResources();
+		String text = this.app().getPrefs().displayPeriodOrTime()
+					? DateTextUtils.getTime( res, now, stamp, Locale.getDefault() )
+					: DateTextUtils.getTimeToText( res, now,  stamp);
 
 		earliestTimeText.setText(text);
 	}

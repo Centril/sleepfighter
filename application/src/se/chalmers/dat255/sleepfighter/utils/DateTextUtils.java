@@ -5,7 +5,9 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
 import org.joda.time.MutableDateTime;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
@@ -19,6 +21,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -31,19 +34,96 @@ import com.google.common.base.Strings;
  * @since Sep 19, 2013
  */
 public class DateTextUtils {
+	private final static String TAG = DateTextUtils.class.getSimpleName();
+
 	private static final int ENABLED_DAYS_INDICE_LENGTH = 2;
 
 	/** Joiner for time, the separator is ":". */
 	public static final Joiner TIME_JOINER = Joiner.on( ':' ).skipNulls();
 
 	/**
-	 * Joins time parts together according to {@link #TIME_JOINER}.
+	 * Joins time parts together according to {@link #TIME_JOINER}.<br/>
+	 * All the parts are padded with 1 leading zero before joining.
 	 *
 	 * @param parts the time parts to join together.
 	 * @return the time parts joined together.
 	 */
 	public static final String joinTime( Integer... parts ) {
-		return TIME_JOINER.join( parts );
+		String[] paddedParts = new String[parts.length];
+		for ( int i = 0; i < parts.length; ++i ) {
+			paddedParts[i] = Strings.padStart( Integer.toString( parts[i] ), 2, '0' );
+		}
+
+		return TIME_JOINER.join( paddedParts );
+	}
+
+	/**
+	 * Builds and returns text for the "exact" time an alarm occurs as opposed to the period left for it to occur.<br/>
+	 * In English, 12:00 today would become "Today 12:00", tomorrow would be come "Tomorrow 12:00", and on Monday it would become
+	 *
+	 * @param res resources bundle
+	 * @param now current time in Unix epoch timestamp.
+	 * @param ats an AlarmTimestamp: the information about the alarm & its timestamp.
+	 * @param locale the locale to use for weekdays.
+	 * @return the built time-to string.
+	 */
+	public static final String getTime( Resources res, long now, AlarmTimestamp ats, Locale locale ) {
+		String noActive = res.getStringArray( R.array.earliest_time_formats)[0];
+		String[] formats = res.getStringArray( R.array.exact_time_formats );
+		return getTime( formats, noActive, now, ats, locale );
+	}
+
+	/**
+	 * Builds and returns text for the "exact" time an alarm occurs as opposed to the period left for it to occur.<br/>
+	 * In English, 12:00 today would become "Today 12:00", tomorrow would be come "Tomorrow 12:00", and on Monday it would become
+	 *
+	 * @param formats the formats to use, e.g: [Today %1$s, Tomorrow %1$s, %2$s %1$s].
+	 * @param noActive if no alarm was active, this is used.
+	 * @param now current time in Unix epoch timestamp.
+	 * @param ats an AlarmTimestamp: the information about the alarm & its timestamp.
+	 * @param locale the locale to use for weekdays.
+	 * @return the built time-to string.
+	 */
+	public static final String getTime( String[] formats, String noActive, long now, AlarmTimestamp ats, Locale locale ) {
+		Log.d( TAG, ats.toString() );
+		if ( ats == AlarmTimestamp.INVALID ) {
+			return noActive;
+		} else {
+			if ( ats.getMillis() < now ) {
+				throw new RuntimeException( "Time given is before now." );
+			}
+
+			// Prepare replacements.
+			Alarm alarm = ats.getAlarm();
+			String timeReplacement = joinTime( alarm.getHour(), alarm.getMinute() );
+
+			// Calculate start of tomorrow.
+			DateTime nowTime = new DateTime( now );
+			DateTime time = new DateTime( ats.getMillis() );
+			LocalDate tomorrow = new LocalDate( nowTime ).plusDays( 1 );
+			DateTime startOfTomorrow = tomorrow.toDateTimeAtStartOfDay( nowTime.getZone() );
+
+			if ( time.isBefore( startOfTomorrow ) ) {
+				// Alarm is today.
+				Log.d( TAG, "today" );
+				return String.format( formats[0], timeReplacement );
+			}
+
+			// Calculate start of the day after tomorrow.
+			LocalDate afterTomorrow = tomorrow.plusDays( 1 );
+			DateTime startOfAfterTomorrow = afterTomorrow.toDateTimeAtStartOfDay( nowTime.getZone() );
+
+			if ( time.isBefore( startOfAfterTomorrow ) ) {
+				Log.d( TAG, "tomorrow" );
+				// Alarm is tomorrow.
+				return String.format( formats[1], timeReplacement );
+			}
+
+			// Alarm is after tomorrow.
+			Log.d( TAG, "after tomorrow" );
+			String weekday = new DateTime( ats.getMillis() ).dayOfWeek().getAsText( locale );
+			return String.format( formats[2], timeReplacement, weekday );
+		}
 	}
 
 	/**
@@ -59,7 +139,7 @@ public class DateTextUtils {
 		
 		// ats is invalid when all the alarms have been turned off. INVALID has the value null. 
 		// therefore, we must do a nullcheck, otherwise we get an exception. 
-		if(ats !=  AlarmTimestamp.INVALID) {
+		if(ats != AlarmTimestamp.INVALID) {
 			diff = new Period( now, ats.getMillis() );
 		}
 		
@@ -147,6 +227,13 @@ public class DateTextUtils {
 		return names;
 	}
 
+	/**
+	 * Returns a SpannableString of the enabled days in an alarm,<br/>
+	 * where the days are differently colored if enabled/disabled.
+	 *
+	 * @param alarm the alarm to make text for.
+	 * @return the string.
+	 */
 	public static final SpannableString makeEnabledDaysText( final Alarm alarm ) {
 		// Compute weekday names & join.
 		String[] names = DateTextUtils.getWeekdayNames( ENABLED_DAYS_INDICE_LENGTH, Locale.getDefault() );
