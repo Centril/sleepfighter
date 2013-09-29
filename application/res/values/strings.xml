@@ -31,8 +31,6 @@
         <item>Delete alarm</item>
 
         <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
         <item>start vibration</item>
         <item>stop vibration</item>
         <item>Copy Alarm</item>

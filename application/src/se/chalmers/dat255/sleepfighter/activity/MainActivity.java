@@ -7,7 +7,6 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.AlarmAdapter;
-import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
@@ -58,8 +57,7 @@ public class MainActivity extends Activity {
 		this.setupListView();
 
 		this.updateEarliestText();
-		
-		AlarmAudioManager.getInstance().setup(this);
+
 		VibrationManager.getInstance().setup(this);
 	}
 
@@ -110,23 +108,15 @@ public class MainActivity extends Activity {
 				deleteAlarm(selectedAlarm);
 				return true;
 			case 2:
-				AlarmAudioManager.getInstance().play();
-				return true;
-			case 3:
-				AlarmAudioManager.getInstance().stop();	
-				return true;
-			
-			case 4:
 				VibrationManager.getInstance().startVibrate();
 				return true;
-			case 5:
+			case 3:
 				VibrationManager.getInstance().stopVibrate();	
 				return true;
-			case 6:
+			case 4:
 				copyAlarm(selectedAlarm);
 				return true;
 
-				
 			default:
 				return false;
 
