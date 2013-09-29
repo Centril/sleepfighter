@@ -3,6 +3,7 @@ package se.chalmers.dat255.sleepfighter.adapter;
 import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.challenge.MemoryCardView;
 import se.chalmers.dat255.sleepfighter.model.Memory;
 import android.content.Context;
 import android.view.View;
@@ -71,7 +72,7 @@ public class MemoryAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return mThumbIds.length;
+        return this.mem.getNumCards();
     }
 
     public Object getItem(final int position) {
@@ -84,14 +85,14 @@ public class MemoryAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
-        if (convertView == null) {  // if it's not recycled, initialize some attributes
-            imageView = new ImageView(context);
+    	MemoryCardView imageView;
+        if (convertView == null) { 
+            imageView = new MemoryCardView(context);
             imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(8, 8, 8, 8);
         } else {
-            imageView = (ImageView) convertView;
+            imageView = (MemoryCardView) convertView;
         }
         
         int image = memoryCardImages[mem.getCard(position)];
@@ -99,14 +100,6 @@ public class MemoryAdapter extends BaseAdapter {
         return imageView;
      
     }
-
-    // references to our images
-    private Integer[] mThumbIds = {
-    		R.drawable.a, R.drawable.b,
-    		R.drawable.c, R.drawable.d,
-    		R.drawable.e, R.drawable.f,
-    		R.drawable.g, R.drawable.h,
-    };
     
     // list of all the usable memory cards. 
     private int[] memoryCardDatabase = {

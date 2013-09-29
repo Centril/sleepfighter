@@ -20,26 +20,20 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 	
 	private Memory mem;
 	
-	private boolean flag = true;
-	
 	private final static int COLS = 2;
 
 	private final static int ROWS = 3;
 	
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
       
-        ImageView view = (ImageView)v;
+        MemoryCardView card = (MemoryCardView)v;
+        card.flip();
         
         // fade out and remove
         /*v.startAnimation(AnimationUtils.loadAnimation(act, android.R.anim.fade_out));
         v.setVisibility(View.INVISIBLE);*/
-        if(flag)
-        	view.setImageResource(android.R.color.white);
-        else
-        	view.setImageResource(R.drawable.a);
-        
-        flag = !flag;
+
     }
 	
 	@Override
