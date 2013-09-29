@@ -7,15 +7,14 @@ import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,9 +45,6 @@ public class AlarmActivity extends Activity {
 	private boolean bypassLockscreen = true;
 
 	private Alarm alarm;
-
-	private static final String TURN_SCREEN_ON = "pref_alarm_turn_screen_on";
-	private static final String BYPASS_LOCK_SCREEN = "pref_alarm_bypass_lock_screen";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -109,10 +105,10 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void readPreferences() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		GlobalPreferencesReader prefs = SFApplication.get().getPrefs();
 	
-		this.turnScreenOn = sharedPref.getBoolean(TURN_SCREEN_ON, true);
-		this.bypassLockscreen = sharedPref.getBoolean(BYPASS_LOCK_SCREEN, true);
+		this.turnScreenOn = prefs.turnScreenOn();
+		this.bypassLockscreen = prefs.bypassLockscreen();
 	}
 
 	/**

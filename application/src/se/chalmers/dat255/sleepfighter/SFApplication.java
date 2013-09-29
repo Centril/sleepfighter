@@ -4,6 +4,7 @@ import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
+import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -16,6 +17,8 @@ public class SFApplication extends Application {
 	private static final boolean CLEAN_START = false;
 
 	private static SFApplication app;
+
+	private GlobalPreferencesReader prefs;
 
 	private AlarmList alarmList;
 	private MessageBus<Message> bus;
@@ -32,6 +35,8 @@ public class SFApplication extends Application {
 		super.onCreate();
 		app = this;
 
+		this.prefs = new GlobalPreferencesReader( this );
+
 		this.persistenceManager = new PersistenceManager( this );
 		this.getBus().subscribe( this.persistenceManager );
 	}
@@ -43,6 +48,15 @@ public class SFApplication extends Application {
 	 */
 	public static final SFApplication get() {
 		return app;
+	}
+
+	/**
+	 * Returns the application global GlobalPreferencesReader object.
+	 *
+	 * @return the GlobalPreferencesReader.
+	 */
+	public synchronized GlobalPreferencesReader getPrefs() {
+		return this.prefs;
 	}
 
 	/**
