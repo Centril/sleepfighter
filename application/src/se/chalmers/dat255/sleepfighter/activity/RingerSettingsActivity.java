@@ -95,12 +95,11 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		// Make and set typeText.
 		String typeText;
 		AudioSource source = this.driver.getSource();
-		if ( source == null ) {
-			typeText = this.getString( R.string.alarm_audiosource_summary_type_none );
-		} else {
-			Resources res = this.getResources();
-			typeText = res.getStringArray( R.array.alarm_audiosource_summary_type )[source.getType().ordinal()];
-		}
+
+		Resources res = this.getResources();
+		typeText = source == null
+				 ? this.getString( R.string.alarm_audiosource_summary_type_none )
+				 : res.getStringArray( R.array.alarm_audiosource_summary_type )[source.getType().ordinal()];
 
 		this.summaryType.setText( typeText );
 	}
