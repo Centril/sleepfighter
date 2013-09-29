@@ -15,10 +15,10 @@
     <!--TODO: Figure out good translations for these.  -->
     <string-array name="alarm_audiosource_summary_type">
         <item>着信音</item>
-        <item>Lokal media</item>
+        <item>ローカルファイル</item>
         <item>プレイリスト</item>
-        <item>Internet stream</item>
-        <item>Spotify</item>
+        <item>インターネットストリーム</item>
+        <item>スポティファイ</item>
     </string-array>
     
     
