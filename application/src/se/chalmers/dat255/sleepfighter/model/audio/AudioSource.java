@@ -81,4 +81,14 @@ public class AudioSource implements IdProvider {
 	public int getId() {
 		return this.id;
 	}
+
+	/**
+	 * Sets the ID of the AudioSource, only used for DB purposes or testing.
+	 *
+	 * @param id the ID.
+	 */
+
+	public void setId( int id ) {
+		this.id = id;
+	}
 }

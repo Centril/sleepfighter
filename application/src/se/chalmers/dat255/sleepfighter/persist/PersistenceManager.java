@@ -30,6 +30,8 @@ import com.j256.ormlite.table.TableUtils;
  * @since Sep 21, 2013
  */
 public class PersistenceManager {
+	private final static String TAG = PersistenceManager.class.getSimpleName();
+
 	private volatile OrmHelper ormHelper = null;
 
 	private Context context;
@@ -75,7 +77,7 @@ public class PersistenceManager {
 	 */
 	@Handler
 	public void handleAlarmChange( AlarmEvent evt ) {
-		Log.d( "handleAlarmChange", evt.toString() );
+		Log.d( TAG, "handleAlarmChange, " + evt.toString() );
 		this.updateAlarm( evt.getAlarm(), evt );
 	}
 
@@ -263,11 +265,15 @@ public class PersistenceManager {
 		switch ( evt.getModifiedField() ) {
 		case AUDIO_SOURCE:
 			PersistenceExceptionDao<AudioSource, Integer> asDao = helper.getAudioSourceDao();
-			if ( evt.getOldValue() != AudioSource.SILENT ) {
-				asDao.delete( (AudioSource) evt );
-			}
+			AudioSource audioSource = alarm.getAudioSource();
 
-			asDao.create( alarm.getAudioSource() );
+			if ( evt.getOldValue() != null ) {
+				AudioSource old = (AudioSource) evt.getOldValue();
+				audioSource.setId( old.getId() );
+				asDao.update( audioSource );
+			} else {
+				asDao.create( alarm.getAudioSource() );
+			}
 			break;
 
 		/*
@@ -279,11 +285,9 @@ public class PersistenceManager {
 			break;
 
 		default:
+			helper.getAlarmDao().update( alarm );
 			break;
 		}
-
-		// Finally update alarm itself.
-		helper.getAlarmDao().update( alarm );
 	}
 
 	/**
