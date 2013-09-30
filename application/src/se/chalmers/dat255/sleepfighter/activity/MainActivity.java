@@ -66,6 +66,10 @@ public class MainActivity extends Activity {
 		this.updateEarliestText();
 
 		VibrationManager.getInstance().setup(this);
+		
+		// TODO: Remove this when merging back
+		Intent intent = new Intent(this, ChallengeActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
