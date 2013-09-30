@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_pending_title">「%s」がオンになっている</string>
+    <string name="notification_pending_message">%sで鳴る</string>
+    <string name="notification_ringing_title">「%s」が鳴っている</string>
+    <string name="notification_ringing_message">オフにするために、ここにタップしてください</string>
+</resources>
