@@ -3,7 +3,7 @@
     <string name="title_activity_global_settings">設定</string>
 
     <string name="pref_alarm_turn_screen_on">画面をつける</string>
-    <string name="pref_alarm_turn_screen_on_summary">アラームが鳴ると画面をつける</string>
+    <string name="pref_alarm_turn_screen_on_summary">アラームが鳴っているときに画面をつける</string>
 
     <string name="pref_alarm_bypass_lock_screen">ロック画面</string>
     <!-- TODO: translate -->

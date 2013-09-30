@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_alarm_ringer_settings">着信音設定</string>
+    <string name="title_alarm_ringer_settings">アラーム音</string>
 
     <string name="audio_source_category_title">音ソース</string>
 

@@ -16,7 +16,7 @@
     
     <string name="misc_category_title">その他</string>
     
-    <string name="ringer_category_title">着信音設定</string>
+    <string name="ringer_category_title">アラーム音</string>
     
     <string-array name="week_days">
         <item>月曜日</item>
