@@ -2,19 +2,15 @@ package se.chalmers.dat255.sleepfighter.adapter;
 
 import java.util.Random;
 
-import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.challenge.MemoryCardView;
 import se.chalmers.dat255.sleepfighter.challenge.MemoryChallenge;
 import se.chalmers.dat255.sleepfighter.model.Memory;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 public class MemoryAdapter extends BaseAdapter implements View.OnClickListener {
   
@@ -88,12 +84,17 @@ public class MemoryAdapter extends BaseAdapter implements View.OnClickListener {
     }
 
     // create a new ImageView for each item referenced by the Adapter
-    public View getView(int position, View convertView, ViewGroup parent) {
+    @SuppressWarnings("deprecation")
+	public View getView(int position, View convertView, ViewGroup parent) {
     	MemoryCardView view;
         if (convertView == null) { 
             view = new MemoryCardView(context);
             view.setLayoutParams(new GridView.LayoutParams(85, 85));
             view.setTextSize(TypedValue.COMPLEX_UNIT_SP,60);
+            
+            // TODO: make the memory cards look less like buttons, and more like cards. 
+         
+     
         } else {
             view = (MemoryCardView) convertView;
         }
