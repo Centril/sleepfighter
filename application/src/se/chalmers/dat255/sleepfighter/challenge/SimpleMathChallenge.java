@@ -19,6 +19,7 @@ import android.widget.Toast;
  * 
  * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist
  */
+
 public class SimpleMathChallenge implements Challenge {
 
 	private Random random = new Random();
@@ -31,6 +32,14 @@ public class SimpleMathChallenge implements Challenge {
 		nextOp();
 		nextInts();
 	}
+
+	/**
+	 * The random interval of the operands 
+	 * case 0: addition 
+	 * case 1: subtraction
+	 * case 2: multiplication 
+	 * case 3: division
+	 */
 
 	private void nextInts() {
 		switch (operation) {
@@ -57,22 +66,17 @@ public class SimpleMathChallenge implements Challenge {
 		}
 	}
 
+	// What the next operation will be, add/sub/mul/div
 	private void nextOp() {
 		operation = random.nextInt(4);
 	}
 
-	/*
-	 * private void result() { if (operation == 0) { result = operand1 +
-	 * operand2; } else if (operation == 1) { result = operand1 - operand2; }
-	 * else if (operation == 2) { result = operand1 * operand2; } else if
-	 * (operation == 3) { operand1 = operand1 * operand2; result = operand1 /
-	 * operand2; } }
-	 */
-
+	// Get the result
 	public int getResult() {
 		return result;
 	}
 
+	// Get the calculation between the operands in strings
 	public String getCalculation() {
 		if (operation == 0) {
 			return operand1 + " + " + operand2;
@@ -126,13 +130,13 @@ public class SimpleMathChallenge implements Challenge {
 			if (Integer.parseInt(editText.getText().toString()) == getResult()) {
 				activity.complete();
 				correctAnswer = true;
-				Toast.makeText(activity.getBaseContext(), "Correct answer!",
+				Toast.makeText(activity.getBaseContext(), "Alarm deactivated!",
 						Toast.LENGTH_SHORT).show();
 			}
 		} catch (NumberFormatException e) {
 		}
 		if (!correctAnswer) {
-			Toast.makeText(activity.getBaseContext(), "Sorry, wrong answer!",
+			Toast.makeText(activity.getBaseContext(), "Wrong answer!",
 					Toast.LENGTH_SHORT).show();
 			runChallenge();
 			userText.setText(getCalculation());
