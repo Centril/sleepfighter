@@ -165,16 +165,15 @@ public class AlarmPlannerService extends IntentService {
 	}
 
 	/**
-	 * Shows a notification for a pendng alarm.
+	 * Shows a notification for a pending alarm.
 	 * 
-	 * The user can click it to get to MainActivity.
+	 * The user can click on it to get to MainActivity, where it can be turned
+	 * off easily.
 	 * 
-	 * @param alarm the alarm
+	 * @param alarm
+	 *            the alarm
 	 */
 	private void showNotification(Alarm alarm) {
-		// Launch notification showing alarm is active
-		// Clicking on it takes user to MainActivity where it can be turned
-		// off easily
 		Intent mainActIntent = new Intent(getApplicationContext(),
 				MainActivity.class);
 		PendingIntent mainActPI = PendingIntent.getActivity(this, 0,

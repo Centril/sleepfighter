@@ -59,9 +59,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 		return true;
 	}
 
-
-
-
 	/**
 	 * Starts AlarmActivity, extras are passed on.
 	 * 
@@ -85,7 +82,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 	/**
 	 * Launches notification showing that the alarm has gone off.
 	 * 
-	 * Clicking on it takes the user to AlarmActivity.
+	 * Clicking on it takes the user to AlarmActivity, where a challenge can be
+	 * started.
 	 * 
 	 * @param alarm
 	 *            the alarm
