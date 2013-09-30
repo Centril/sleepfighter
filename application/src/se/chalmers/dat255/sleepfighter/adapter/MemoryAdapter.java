@@ -4,6 +4,7 @@ import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.challenge.MemoryCardView;
+import se.chalmers.dat255.sleepfighter.challenge.MemoryChallenge;
 import se.chalmers.dat255.sleepfighter.model.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
@@ -13,24 +14,23 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class MemoryAdapter extends BaseAdapter {
-   
+public class MemoryAdapter extends BaseAdapter implements View.OnClickListener {
+  
 	private Context context;
 	private final Memory mem;
 	
-	private int[] memoryCardImages;
+	private String[] memoryCardImages;
+	
+	private MemoryChallenge challenge;
 	
 	private Random rng = new Random();
 
 	// assign each card type an image.
 	private void assignCards() {
-		memoryCardImages = new int[mem.getNumPairs()];
+		memoryCardImages = new String[mem.getNumPairs()];
 		
 		for(int i = 0; i< memoryCardImages.length; ++i) {
-			// so far unassigned ones are given the value 0.
-			// (0 is not a valid resource ID)
-			// http://developer.android.com/reference/android/content/res/Resources.html#getIdentifier%28java.lang.String,%20java.lang.String,%20java.lang.String%29
-			memoryCardImages[i] = 0;
+			memoryCardImages[i] = "";
 		}
 		
 		int cardI = 0;
@@ -39,7 +39,7 @@ public class MemoryAdapter extends BaseAdapter {
 			
 			// find unassigned image
 			boolean unassigned;
-			int image;
+			String image;
 			do {
 		
 				
@@ -65,9 +65,10 @@ public class MemoryAdapter extends BaseAdapter {
 		}
 	}
 	
-    public MemoryAdapter(final Context c, final Memory mem) {
+    public MemoryAdapter(final Context c, final Memory mem, MemoryChallenge challenge) {
         context = c;
-        this.mem = mem;       
+        this.mem = mem;     
+        this.challenge = challenge;
        
         assignCards();
     }
@@ -86,38 +87,42 @@ public class MemoryAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-    	Debug.d("pos: " + position);
     	MemoryCardView view;
         if (convertView == null) { 
             view = new MemoryCardView(context);
             view.setLayoutParams(new GridView.LayoutParams(85, 85));
-            view.setScaleType(ImageView.ScaleType.CENTER_CROP);
             view.setPadding(8, 8, 8, 8);
         } else {
             view = (MemoryCardView) convertView;
         }
       
+        view.setOnClickListener(this);
         view.setPosition(position);
-       // int image = memoryCardImages[mem.getCard(position)];
-        view.setImageResource(/*image*/  android.R.color.white);
+        String image = memoryCardImages[mem.getCard(position)];
+        
+        view.setImage(image);
         return view;
     }
     
+    public void onClick(View v) {
+        challenge.onItemClick(null, v, 0, 0);
+    }
+    
     // list of all the usable memory cards. 
-    private int[] memoryCardDatabase = {
-    		R.drawable.a, R.drawable.b,
-    		R.drawable.c, R.drawable.d,
-    		R.drawable.e, R.drawable.f,
-    		R.drawable.g, R.drawable.h,
-    		R.drawable.h, R.drawable.j,
-    		R.drawable.k, R.drawable.l,
-    		R.drawable.m, R.drawable.n,
-    		R.drawable.o, R.drawable.p,
-    		R.drawable.q, R.drawable.r,
-    		R.drawable.s, R.drawable.t,
-    		R.drawable.u, R.drawable.v,
-    		R.drawable.w, R.drawable.x,
-    		R.drawable.y, R.drawable.z,
+    private String[] memoryCardDatabase = {
+    		"a", "b",
+    		"c", "d",
+    		"e", "f",
+    		"g", "h",
+    		"h", "j",
+    		"k", "l",
+    		"m", "n",
+    		"o", "p",
+    		"q", "r",
+    		"s", "t",
+    		"u", "v",
+    		"w", "x",
+    		"y", "z",
     };
 
 }

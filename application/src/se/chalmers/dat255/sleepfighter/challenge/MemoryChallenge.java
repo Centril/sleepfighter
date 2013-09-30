@@ -53,6 +53,7 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
        // Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
       
+		Debug.d("button click");
 		
 		if(waitingForCardsToFlipOver) {
 			// we are still waiting, so you can't pick any cards now.
@@ -115,7 +116,7 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 		
 		mem = new Memory(ROWS, COLS);
 		Debug.d(mem.toString());
-		gridview.setAdapter(new MemoryAdapter(act, mem));
+		gridview.setAdapter(new MemoryAdapter(act, mem, this));
 		this.remainingPairs = mem.getNumPairs();
 
 		gridview.setOnItemClickListener(this);

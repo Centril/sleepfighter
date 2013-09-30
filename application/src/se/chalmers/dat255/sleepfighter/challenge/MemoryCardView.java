@@ -1,27 +1,27 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
 import android.content.Context;
+import android.widget.Button;
 import android.widget.ImageView;
 
 /**
  * Represents a memory card graphically
  *
- * @author Eric Arnebäck
+ * @author Eric Arnebï¿½ck
  * @version 1.0
  * @since Sep 28, 2013
  */
 
-public class MemoryCardView extends ImageView {
+public class MemoryCardView extends Button {
 
-	
 	// what to show when the memory card is flipped over and hidden.
-  	private static final int HIDDEN =  android.R.color.white;
+  	private static String HIDDEN =  "";
   	// what to show when the memory card s flipped over and shown.
-  	private int SHOWN;
+  	private String SHOWN;
   	
   	private int position;
   	
-  	private int currentImage;
+  	private String currentImage;
     
 	
 	public MemoryCardView(Context context) {
@@ -29,13 +29,13 @@ public class MemoryCardView extends ImageView {
 	}
 	
 	public void hide() {
-		super.setImageResource(HIDDEN);
 		currentImage = HIDDEN;
+		super.setText(currentImage);
 	}
 	
 	public void show() {
-		super.setImageResource(SHOWN);
 		currentImage = SHOWN;
+		super.setText(currentImage);
 	}
 	
 	public boolean isHidden() {
@@ -53,9 +53,9 @@ public class MemoryCardView extends ImageView {
 			this.hide();
 	}
 	
-	@Override
-	public void setImageResource(int image) {
-		super.setImageResource(image);
+	public void setImage(String image) {
+		//super.setBackgroundResource(android.R.color.white);
+
 		SHOWN = image;
 		
 		// all cards are hidden by default. 
