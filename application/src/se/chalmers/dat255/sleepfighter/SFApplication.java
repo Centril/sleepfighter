@@ -2,6 +2,7 @@ package se.chalmers.dat255.sleepfighter;
 
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
+import se.chalmers.dat255.sleepfighter.challenge.sort.SortModel;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
@@ -39,6 +40,9 @@ public class SFApplication extends Application {
 
 		this.persistenceManager = new PersistenceManager( this );
 		this.getBus().subscribe( this.persistenceManager );
+
+		// testing SortModel!
+		new SortModel();
 	}
 
 	/**
