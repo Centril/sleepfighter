@@ -7,6 +7,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.activities.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.debug.Debug;
+import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.app.Activity;
@@ -160,6 +161,9 @@ public class AlarmActivity extends Activity {
 			if(resultCode == Activity.RESULT_OK) {
 				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
 						.show();
+				// Remove notification saying alarm is ringing
+				// TODO move
+				NotificationHelper.removeNotification(this);
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();

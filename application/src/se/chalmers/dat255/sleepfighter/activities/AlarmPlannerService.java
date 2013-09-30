@@ -3,7 +3,6 @@ package se.chalmers.dat255.sleepfighter.activities;
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
-import org.joda.time.Period;
 
 import se.chalmers.dat255.sleepfighter.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
@@ -13,15 +12,13 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import android.app.AlarmManager;
 import android.app.IntentService;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -157,29 +154,50 @@ public class AlarmPlannerService extends IntentService {
 		PendingIntent pi = this.makePendingIntent( alarm.getId() );
 
 		long now = new DateTime().getMillis();
-		
+
 		long scheduleTime = alarm.getNextMillis(now);
 		this.getAlarmManager().set( AlarmManager.RTC_WAKEUP, scheduleTime, pi );
 
-		Log.d( "AlarmPlannerService", "Setting! " + alarm.toString() );
-		
-		// Notification showing alarm is active
-		// Clicking on takes user to MainActivity where it can easily be turned
-		// off
-		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-				intent, 0);
+		Log.d(getClass().getSimpleName(), "Scheduled alarm [" + alarm.toString()
+				+ "] at " + scheduleTime);
 
-		// TODO localize strings
-		NotificationHelper.showNotification(this, "Alarm is active!",
-				"Alarm set at " + alarm.getTimeString(), pendingIntent);
+		showNotification(alarm);
+	}
+
+	/**
+	 * Shows a notification for a pendng alarm.
+	 * 
+	 * The user can click it to get to MainActivity.
+	 * 
+	 * @param alarm the alarm
+	 */
+	private void showNotification(Alarm alarm) {
+		// Launch notification showing alarm is active
+		// Clicking on it takes user to MainActivity where it can be turned
+		// off easily
+		Intent mainActIntent = new Intent(getApplicationContext(),
+				MainActivity.class);
+		PendingIntent mainActPI = PendingIntent.getActivity(this, 0,
+				mainActIntent, 0);
+
+		String name = MetaTextUtils.printAlarmName(this, alarm);
+		String time = alarm.getTimeString();
+
+		// Localized strings which we inserts current time and name into
+		String titleFormat = getString(R.string.notification_pending_title);
+		String messageFormat = getString(R.string.notification_pending_message);
+
+		String title = String.format(titleFormat, name);
+		String message = String.format(messageFormat, time);
+
+		NotificationHelper.showNotification(this, title, message, mainActPI);
 	}
 
 	private void cancel() {
 		this.getAlarmManager().cancel( this.makePendingIntent( Alarm.NOT_COMMITTED_ID ) );
 		Log.d( "AlarmPlannerService", "Cancelling!" );
 
-		// Remove apps sticky notification
+		// Remove app's sticky notification
 		NotificationHelper.removeNotification(this);
 	}
 
