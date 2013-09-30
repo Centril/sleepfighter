@@ -265,8 +265,10 @@ public class MainActivity extends Activity {
 		}	
 	}
 	
+	// Start the activity for when an alarm rings/occurs.
+	// If you want to change challenge, do so in AlarmActivity -> button
 	public void challenge(View view) {
-		Intent intent = new Intent(this, MemoryActivity.class);
+		Intent intent = new Intent(this, AlarmActivity.class);
 		startActivityForResult(intent, AlarmActivity.CHALLENGE_REQUEST_CODE);
 	}
 }

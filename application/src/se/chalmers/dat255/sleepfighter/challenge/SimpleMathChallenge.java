@@ -89,6 +89,12 @@ public class SimpleMathChallenge implements Challenge {
 		}
 	}
 
+	/**
+	 * An activity with the math layout; 
+	 * TextView, EditText and an answer-Button.
+	 * 
+	 */
+	
 	@Override
 	public void start(final ChallengeActivity activity) {
 		activity.setContentView(R.layout.alarm_challenge_math);
@@ -122,6 +128,10 @@ public class SimpleMathChallenge implements Challenge {
 			}
 		});
 	}
+	
+	/**
+	 * Handles what will happen when you answer
+	 */
 
 	private void handleAnswer(final EditText editText,
 			final ChallengeActivity activity, final TextView userText) {
@@ -134,6 +144,7 @@ public class SimpleMathChallenge implements Challenge {
 						Toast.LENGTH_SHORT).show();
 			}
 		} catch (NumberFormatException e) {
+			// Handles exception when the user answer with empty strings
 		}
 		if (!correctAnswer) {
 			Toast.makeText(activity.getBaseContext(), "Wrong answer!",

@@ -23,19 +23,18 @@ import android.widget.Toast;
 
 /**
  * The activity for when an alarm rings/occurs.
- *
+ * 
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Sep 20, 2013
  */
 public class AlarmActivity extends Activity {
-	
+
 	public static final String EXTRA_ALARM_ID = "alarm_id";
-	
-	private static final int WINDOW_FLAGS_SCREEN_ON =
-			WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-			WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-			WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
+
+	private static final int WINDOW_FLAGS_SCREEN_ON = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+			| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+			| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
 
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
@@ -59,8 +58,8 @@ public class AlarmActivity extends Activity {
 		SFApplication app = SFApplication.get();
 
 		// Fetch alarm Id.
-		int alarmId = new IntentUtils( this.getIntent() ).getAlarmId();
-		this.alarm = app.getPersister().fetchAlarmById( alarmId );
+		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
+		this.alarm = app.getPersister().fetchAlarmById(alarmId);
 
 		// Do stuff.
 		this.work();
@@ -77,17 +76,19 @@ public class AlarmActivity extends Activity {
 		SFApplication app = SFApplication.get();
 
 		// Disable alarm if not repeating.
-		if ( !this.alarm.isRepeating() ) {
-			if ( this.alarm.getMessageBus() == null ) {
-				this.alarm.setMessageBus( app.getBus() );
+		if (!this.alarm.isRepeating()) {
+			if (this.alarm.getMessageBus() == null) {
+				this.alarm.setMessageBus(app.getBus());
 			}
 
-			this.alarm.setActivated( false );
+			this.alarm.setActivated(false);
 		} else {
 			// Reschedule earliest alarm (if any).
-			AlarmTimestamp at = app.getAlarms().getEarliestAlarm( new DateTime().getMillis() );
-			if ( at != AlarmTimestamp.INVALID ) {
-				AlarmPlannerService.call( app, Command.CREATE, at.getAlarm().getId() );
+			AlarmTimestamp at = app.getAlarms().getEarliestAlarm(
+					new DateTime().getMillis());
+			if (at != AlarmTimestamp.INVALID) {
+				AlarmPlannerService.call(app, Command.CREATE, at.getAlarm()
+						.getId());
 			}
 		}
 	}
@@ -98,35 +99,35 @@ public class AlarmActivity extends Activity {
 	private void setScreenFlags() {
 		int flags = this.computeScreenFlags();
 
-		if ( flags == 0 ) {
+		if (flags == 0) {
 			return;
 		}
 
-		this.getWindow().addFlags( flags );
+		this.getWindow().addFlags(flags);
 	}
 
 	private void readPreferences() {
 		GlobalPreferencesReader prefs = SFApplication.get().getPrefs();
-	
+
 		this.turnScreenOn = prefs.turnScreenOn();
 		this.bypassLockscreen = prefs.bypassLockscreen();
 	}
 
 	/**
 	 * Computes screen flags based on preferences.
-	 *
+	 * 
 	 * @return screen flags.
 	 */
 	private int computeScreenFlags() {
 		readPreferences();
-		
+
 		int flags = 0;
 
-		if ( this.turnScreenOn ) {
+		if (this.turnScreenOn) {
 			flags |= WINDOW_FLAGS_SCREEN_ON;
 		}
 
-		if ( this.bypassLockscreen ) {
+		if (this.bypassLockscreen) {
 			flags |= WINDOW_FLAGS_LOCKSCREEN;
 		}
 
@@ -134,29 +135,35 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void work() {
-		Log.d( "AlarmActivity", "alarm #id: " + Integer.toString( this.alarm.getId() ) );
+		Log.d("AlarmActivity",
+				"alarm #id: " + Integer.toString(this.alarm.getId()));
 
-		this.startAudio( this.alarm );
+		this.startAudio(this.alarm);
 
-		Log.d( "AlarmActivity", "work#1" );
+		Log.d("AlarmActivity", "work#1");
 		// TODO: do something useful.
-		Toast.makeText(this, "Alarm ringing, get up! Alarm #" + this.alarm.getId(), Toast.LENGTH_LONG).show();
+		Toast.makeText(this,
+				"Alarm ringing, get up! Alarm #" + this.alarm.getId(),
+				Toast.LENGTH_LONG).show();
 	}
-	
+
+	// Change the intent to the challenge you want to play
+	// TODO: This should randomize the challenges
+
 	public void button(View view) {
-//		Intent intent = new Intent(this, ChallengeActivity.class);
-		
-		//Intent intent = new Intent(this, MemoryActivity.class);
-		
+		// Intent intent = new Intent(this, ChallengeActivity.class);
+
+		// Intent intent = new Intent(this, MemoryActivity.class);
+
 		Intent intent = new Intent(this, SimpleMathActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Check if result is from a challenge
-		if(requestCode == CHALLENGE_REQUEST_CODE) {
-			if(resultCode == Activity.RESULT_OK) {
+		if (requestCode == CHALLENGE_REQUEST_CODE) {
+			if (resultCode == Activity.RESULT_OK) {
 				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
 						.show();
 				stopAlarm();
@@ -165,7 +172,7 @@ public class AlarmActivity extends Activity {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();
 			}
-			
+
 		} else {
 			super.onActivityResult(requestCode, resultCode, data);
 		}
@@ -185,15 +192,16 @@ public class AlarmActivity extends Activity {
 		this.performRescheduling();
 	}
 
-	private void startAudio( Alarm alarm ) {
+	private void startAudio(Alarm alarm) {
 		SFApplication app = SFApplication.get();
-		AudioDriver driver = app.getAudioDriverFactory().produce( app, alarm.getAudioSource() );
-		app.setAudioDriver( driver );
+		AudioDriver driver = app.getAudioDriverFactory().produce(app,
+				alarm.getAudioSource());
+		app.setAudioDriver(driver);
 
-		driver.play( alarm.getAudioConfig() );
+		driver.play(alarm.getAudioConfig());
 	}
 
 	private void stopAudio() {
-		SFApplication.get().setAudioDriver( null );
+		SFApplication.get().setAudioDriver(null);
 	}
 }
