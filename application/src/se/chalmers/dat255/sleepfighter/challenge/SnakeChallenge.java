@@ -184,11 +184,11 @@ public class SnakeChallenge implements Challenge {
 			float relativeX = derpX - x; 
 			float relativeY = derpY - y;
 			
-			float hypotenusa = (float) Math.sqrt(relativeX*relativeX + relativeY*relativeY);
+			float hypotenuse = (float) Math.sqrt(relativeX*relativeX + relativeY*relativeY);
 			
-			if (hypotenusa != 0) {
-				x += relativeX/hypotenusa;
-				y += relativeY/hypotenusa;
+			if (hypotenuse != 0) {
+				x += relativeX/hypotenuse;
+				y += relativeY/hypotenuse;
 			}
 		}
 	}
