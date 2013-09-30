@@ -19,9 +19,23 @@ public class NotificationHelper {
 	/**
 	 * Prevent instantiation.
 	 */
-	private NotificationHelper() {
-	}
+	private NotificationHelper() {}
 
+	/**
+	 * Shows a notification, with specified content, for SleepFighter.
+	 * 
+	 * When using this, any previous notification will be replaced with the new
+	 * one.
+	 * 
+	 * @param context
+	 *            the context
+	 * @param title
+	 *            the title of the notification
+	 * @param message
+	 *            the message for the notification, shown below the tidle
+	 * @param intent
+	 *            the PendingIntent to be launched when a user click
+	 */
 	public static void showNotification(Context context, String title,
 			String message, PendingIntent intent) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
@@ -31,7 +45,7 @@ public class NotificationHelper {
 		builder.setContentText(message);
 		// Makes it non-removable from drawer
 		builder.setOngoing(true);
-		// To prevent showing date in top corner
+		// To prevent showing time notification was created
 		builder.setWhen(0);
 		builder.setContentIntent(intent);
 
@@ -41,7 +55,13 @@ public class NotificationHelper {
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(ID, notification);
 	}
-	
+
+	/**
+	 * Removes the notification that has been launched using this class.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public static void removeNotification(Context context) {
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
