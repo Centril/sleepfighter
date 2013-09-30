@@ -136,6 +136,14 @@ public class SortModel {
 		return list;
 	}
 
+	public void advanceStep( int number ) {
+		if ( !this.isNextNumber( number ) ) {
+			throw new IllegalArgumentException( "Can not advance to next step, given number: " + number + ", is not correct." );
+		}
+
+		++this.stepIndex;
+	}
+
 	/**
 	 * Returns true if the given number is the next step in list.
 	 *
@@ -152,7 +160,7 @@ public class SortModel {
 	 * @return true if we're finished.
 	 */
 	public boolean isFinished() {
-		return this.stepIndex == this.generatedList.length - 1;
+		return this.stepIndex == this.generatedList.length;
 	}
 
 	/* --------------------------------
