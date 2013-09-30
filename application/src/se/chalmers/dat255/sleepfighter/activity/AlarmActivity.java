@@ -159,6 +159,7 @@ public class AlarmActivity extends Activity {
 				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
 						.show();
 				stopAlarm();
+				finish();
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();
