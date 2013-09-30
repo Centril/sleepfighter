@@ -41,6 +41,7 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 	// when the user has selected two cards that are different, the user is given
 	// some seconds to view the cards. 
 	private boolean waitingForCardsToFlipOver = false;
+	private boolean waitingForLastCardsToBeRemoved = false;
 	
 	
 	private void fadeOutRemove(View v) {
@@ -55,8 +56,8 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
       
 		Debug.d("button click");
 		
-		if(waitingForCardsToFlipOver) {
-			// we are still waiting, so you can't pick any cards now.
+		if(waitingForCardsToFlipOver || waitingForLastCardsToBeRemoved) {
+			// we are still waiting, so you can't pick any cards now, so block all input
 			return;
         }
 		
@@ -83,11 +84,21 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
         		--this.remainingPairs;
         		if(this.remainingPairs == 0) {
         			
-        			// return to start menu. 
-        			Toast.makeText(act.getBaseContext(), "Alarm deactivated!",
-    						Toast.LENGTH_SHORT).show();		
-        			act.complete();
-    		
+        			// we will wait some seconds before finishing the game,
+        			// otherwise we won't get to see the cool fade out animation 
+        			// one last time :-)
+        			
+        			waitingForLastCardsToBeRemoved = true;
+            		handler.postDelayed(new Runnable() {
+                        public void run() {
+                    		// return to start menu. 
+                			Toast.makeText(act.getBaseContext(), "Alarm deactivated!",
+            						Toast.LENGTH_SHORT).show();		
+                			act.complete();	
+                        }
+                    }, 600);
+        			
+        	
         		}
         	} else {
         	   	waitingForCardsToFlipOver = true;
