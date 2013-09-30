@@ -1,49 +1,49 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.view.Display;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
 public class SnakeChallenge implements Challenge {
 
 	private Model model;
 	
+	private float touchX;
+	private float touchY;
+	
+	private int screenWidth;
+	private int screenHeight;
+	
 	@Override
 	public void start(ChallengeActivity activity) {
+		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
+		Display display = activity.getWindowManager().getDefaultDisplay(); 
+		screenWidth = display.getWidth();  // deprecated
+		screenHeight = display.getHeight();  // deprecated
+		
 		model = new Model();
 		activity.setContentView(new GameView(activity));
 	}
 
-	public class GameView extends SurfaceView implements Callback {
-		// used to keep track of time between updates and amount of time to
-		// sleep for
-		long lastUpdate = 0;
-		long sleepTime = 0;
-
-		// objects which house info about the screen
-		SurfaceHolder surfaceHolder;
+	private class GameView extends SurfaceView implements Callback {
 		Context context;
 
-		// our Thread class which houses the game loop
 		private GameThread thread;
 
-		// initialization code
-		void InitView() {
-			// initialize our screen holder
+		void initView() {
 			SurfaceHolder holder = getHolder();
 			holder.addCallback(this);
-
-			// initialize our Thread class. A call will be made to start it
-			// later
 			thread = new GameThread(holder, context, new Handler());
 			setFocusable(true);
 		}
@@ -52,7 +52,7 @@ public class SnakeChallenge implements Challenge {
 		public GameView(Context context) {
 			super(context);
 			this.context = context;
-			InitView();
+			initView();
 		}
 
 		@Override
@@ -63,11 +63,10 @@ public class SnakeChallenge implements Challenge {
 		@Override
 		public void surfaceDestroyed(SurfaceHolder arg0) {
 			boolean retry = true;
-			// code to end gameloop
+			
 			thread.setRunning(false);
 			while (retry) {
 				try {
-					// code to kill Thread
 					thread.join();
 					retry = false;
 				} catch (InterruptedException e) {
@@ -87,17 +86,24 @@ public class SnakeChallenge implements Challenge {
 				thread.start();
 			}
 		}
+		
+		@Override
+		public boolean onTouchEvent(MotionEvent e) {
+			touchX = e.getX();
+			touchY = e.getY();
+			
+			return true;
+		}
 	}
 
 	private class GameThread extends Thread {
-		private SurfaceHolder mSurfaceHolder;
-		private Paint mLinePaint;
+		private SurfaceHolder holder;
 		private Paint blackPaint;
 
 		// for consistent rendering
 		private long sleepTime;
 		// amount of time to sleep for (in milliseconds)
-		private long delay = 70;
+		private long delay = 1000/60;
 
 		private boolean isRunning = true;
 
@@ -105,17 +111,10 @@ public class SnakeChallenge implements Challenge {
 				Handler handler) {
 
 			// data about the screen
-			mSurfaceHolder = surfaceHolder;
+			holder = surfaceHolder;
 
-			// standard game painter. Used to draw on the canvas
-			mLinePaint = new Paint();
-			mLinePaint.setARGB(255, 0, 255, 0);
-			// black painter below to clear the screen before the game is
-			// rendered
 			blackPaint = new Paint();
 			blackPaint.setARGB(255, 0, 0, 0);
-			// mLinePaint.setAntiAlias(true);
-
 		}
 
 		public void setRunning(boolean isRunning) {
@@ -130,18 +129,17 @@ public class SnakeChallenge implements Challenge {
 		public void run() {
 			while (isRunning) {
 				long beforeTime = System.nanoTime();
-				model.update();
 				Canvas c = null;
 				try {
-					c = mSurfaceHolder.lockCanvas(null);
-					synchronized (mSurfaceHolder) {
-						c.drawRect(0, 0, c.getWidth(), c.getHeight(),
-								blackPaint);
+					c = holder.lockCanvas(null);
+					model.update(touchX/c.getWidth(), touchY/c.getHeight());
+					synchronized (holder) {
+						c.drawRect(0, 0, c.getWidth(), c.getHeight(), blackPaint);
 						model.draw(c);
 					}
 				} finally {
 					if (c != null) {
-						mSurfaceHolder.unlockCanvasAndPost(c);
+						holder.unlockCanvasAndPost(c);
 					}
 				}
 
@@ -152,31 +150,46 @@ public class SnakeChallenge implements Challenge {
 						this.sleep(sleepTime);
 					}
 				} catch (InterruptedException ex) {
-					Logger.getLogger(GameThread.class.getName()).log(Level.SEVERE, null, ex);
+					Debug.d("GameThread (SnakeChallenge) sleep interrupted!");
 				}
 			}
 		}
 	}
 	
 	private class Model {
-		private int x;
-		private int y;
+		private final int boardWidth = 200;
+		private final int boardHeight = 400;
 		
-		private Paint snakePaint = new Paint();
+		private float x;
+		private float y;
+		
+		private Paint snakePaint;
 		
 		public Model() {
-			x = 20;
-			y = 200;
+			x = 0;
+			y = 10;
 			
+			snakePaint = new Paint();
 			snakePaint.setColor(Color.rgb(255, 255, 0));
 		}
 		
 		public void draw(Canvas c) {
-			c.drawCircle(x, y, 50, snakePaint);
+			c.drawCircle((c.getWidth()*x/boardWidth), (c.getHeight()*y/boardHeight), 50, snakePaint);
 		}
 		
-		public void update() {
-			x += 20;
+		public void update(float touchX, float touchY) {
+			float derpX = touchX * boardWidth;
+			float derpY = touchY * boardHeight;
+			
+			float relativeX = derpX - x; 
+			float relativeY = derpY - y;
+			
+			float hypotenusa = (float) Math.sqrt(relativeX*relativeX + relativeY*relativeY);
+			
+			if (hypotenusa != 0) {
+				x += relativeX/hypotenusa;
+				y += relativeY/hypotenusa;
+			}
 		}
 	}
 }
