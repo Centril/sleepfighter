@@ -44,6 +44,10 @@ public class SortModel {
 		}
 	}
 
+	/* --------------------------------
+	 * Private fields.
+	 * --------------------------------
+	 */
 	private int[] generatedList;
 
 	private int stepIndex = 0;
@@ -51,19 +55,9 @@ public class SortModel {
 	private Order sortOrder;
 
 	/* --------------------------------
-	 * Configuration variables.
+	 * Public interface.
 	 * --------------------------------
 	 */
-	private static final int INNER_MIN = 1;
-	private static final int INNER_MAX = 99;
-
-	// Config variables.
-	private int min = 101;
-	private int max = 999;
-	private double varianceOuterMin = 100.0; // The numbers here were just picked "at random".
-	private double varianceInnerMax = 33.0;
-
-	private int[] sizes;
 
 	/**
 	 * Sets the size of the generated numbers list.<br/>
@@ -117,37 +111,12 @@ public class SortModel {
 	 * <p>Before generating the list, you must call {@link #setSize(int)}.</p>
 	 */
 	public void generateList() {
+		int[] numbers = this.computeList();
+
 		this.stepIndex = 0;
 
-		int innerSize = sizes[0];
-		int outerSize = sizes[1];
-
-		// java.util.Random is maybe not optimal, but for now...
-		Random rng = new Random();
-
-		int[] numbers = new int[outerSize * innerSize];
-
-		// Fill big array first.
-		int[] big = new int[outerSize];
-		while ( computeVariance( big ) < varianceOuterMin ) {
-			for ( int i = 0; i < outerSize; ++i ) {
-				big[i] = nextRandomNon10( rng, min, max );
-			}
-		}
-
-		// Fill a small array for each big array.
-		for ( int i = 0; i < outerSize; ++i ) {
-			int[] small = new int[innerSize];
-			while ( computeVariance( small ) > varianceInnerMax ) {
-				for ( int j = 0; i < innerSize; ++i ) {
-					small[i] = big[i] + nextRandomNon10( rng, INNER_MIN, INNER_MAX );
-					numbers[innerSize * i + j] = small[i];
-				}
-			}
-		}
-
 		// Finally, sort list.
-		this.sortOrder = Order.fromBool( rng.nextBoolean() );
+		this.sortOrder = Order.fromBool( new Random().nextBoolean() );
 		Arrays.sort( numbers );
 		if ( this.sortOrder == Order.DESCENDING ) {
 			reverseOrder( numbers );
@@ -184,6 +153,62 @@ public class SortModel {
 	 */
 	public boolean isFinished() {
 		return this.stepIndex == this.generatedList.length - 1;
+	}
+
+	/* --------------------------------
+	 * Configuration variables.
+	 * --------------------------------
+	 */
+	private static final int INNER_MIN = 1;
+	private static final int INNER_MAX = 99;
+
+	// Config variables.
+	private int min = 101;
+	private int max = 999;
+	private double varianceOuterMin = 100.0; // The numbers here were just picked "at random".
+	private double varianceInnerMax = 33.0;
+
+	private int[] sizes;
+
+	/* --------------------------------
+	 * Private implementation details.
+	 * --------------------------------
+	 */
+
+	/**
+	 * Here goes the actual generation of the list.
+	 *
+	 * @return the generated list.
+	 */
+	private int[] computeList() {
+		int innerSize = sizes[0];
+		int outerSize = sizes[1];
+
+		// java.util.Random is maybe not optimal, but for now...
+		Random rng = new Random();
+
+		int[] numbers = new int[outerSize * innerSize];
+
+		// Fill big array first.
+		int[] big = new int[outerSize];
+		while ( computeVariance( big ) < varianceOuterMin ) {
+			for ( int i = 0; i < outerSize; ++i ) {
+				big[i] = nextRandomNon10( rng, min, max );
+			}
+		}
+
+		// Fill a small array for each big array.
+		for ( int i = 0; i < outerSize; ++i ) {
+			int[] small = new int[innerSize];
+			while ( computeVariance( small ) > varianceInnerMax ) {
+				for ( int j = 0; i < innerSize; ++i ) {
+					small[i] = big[i] + nextRandomNon10( rng, INNER_MIN, INNER_MAX );
+					numbers[innerSize * i + j] = small[i];
+				}
+			}
+		}
+
+		return numbers;
 	}
 
 	/**
