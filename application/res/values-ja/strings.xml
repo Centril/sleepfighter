@@ -41,4 +41,13 @@
         <item>コピー</item>
     </string-array>
 
+    <!--  challenge -->
+    <string name="pre_chal_act">チャレンジ!</string>
+    
+    <string name="math_chal_act">数学の問題を解く</string>
+    <string name="btn_answer">解答</string>
+    <string name="memory_chal_act">神経衰弱</string>
+   
+    <string name="start_challenge">チャレンジ</string>
+    
 </resources>

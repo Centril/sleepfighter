@@ -11,7 +11,9 @@
     <string name="confirm_delete">Do you really want to delete this alarm?"</string>
     <string name="pre_chal_act">A wild challenge appears!</string>
     <string name="math_chal_act">Do some MATH!</string>
-
+    <string name="memory_chal_act">Memory</string>
+    
+  
 
     <string-array name="earliest_time_formats">
         <item>No alarm active</item>

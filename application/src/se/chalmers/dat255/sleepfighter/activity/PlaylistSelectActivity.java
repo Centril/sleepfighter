@@ -36,6 +36,7 @@ public class PlaylistSelectActivity extends Activity {
 
 	private PlaylistsAdapter listAdapter;
 
+	
 	private Uri selectedUri;
 
 	@Override
