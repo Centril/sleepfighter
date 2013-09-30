@@ -16,7 +16,7 @@ import android.widget.GridView;
 /**
  * Example implementation of Challenge.
  *
- * @author Eric Arneb‰ck
+ * @author Eric Arneb√§ck
  * @version 1.0
  * @since Sep 28, 2013
  */
@@ -31,7 +31,7 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 	
 	private final static int COLS = 2;
 
-	private final static int ROWS = 3;
+	private final static int ROWS = 4;
 	
 	private int remainingPairs;
 

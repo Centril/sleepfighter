@@ -5,6 +5,7 @@ import java.util.Random;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.challenge.MemoryCardView;
 import se.chalmers.dat255.sleepfighter.model.Memory;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,6 +86,7 @@ public class MemoryAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
+    	Debug.d("pos: " + position);
     	MemoryCardView view;
         if (convertView == null) { 
             view = new MemoryCardView(context);
@@ -96,10 +98,9 @@ public class MemoryAdapter extends BaseAdapter {
         }
       
         view.setPosition(position);
-        int image = memoryCardImages[mem.getCard(position)];
-        view.setImageResource(image);
+       // int image = memoryCardImages[mem.getCard(position)];
+        view.setImageResource(/*image*/  android.R.color.white);
         return view;
-     
     }
     
     // list of all the usable memory cards. 
