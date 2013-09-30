@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
@@ -176,7 +177,11 @@ public class AlarmActivity extends Activity {
 
 		// TODO move ?
 		this.stopAudio();
-		
+
+		// Remove notification saying alarm is ringing
+		// TODO move
+		NotificationHelper.removeNotification(this);
+
 		this.performRescheduling();
 	}
 

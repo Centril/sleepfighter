@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="notification_pending_title">\"%s\" är aktiverad</string>
+    <string name="notification_pending_message">Kommer gå av %s</string>
+    <string name="notification_ringing_title">\"%s\" har gått av</string>
+    <string name="notification_ringing_message">Klicka här för att stänga av</string>
+
+</resources>

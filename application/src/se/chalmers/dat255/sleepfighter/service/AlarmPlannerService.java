@@ -4,13 +4,17 @@ import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
 
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.activity.MainActivity;
+import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -159,12 +163,46 @@ public class AlarmPlannerService extends IntentService {
 
 		this.getAlarmManager().set( AlarmManager.RTC_WAKEUP, scheduleTime, pi );
 
-		Log.d( "AlarmPlannerService", "Setting! " + alarm.toString() );
+		Log.d(getClass().getSimpleName(), "Scheduled alarm [" + alarm.toString()
+				+ "] at " + scheduleTime);
+
+		showNotification(alarm);
+	}
+
+	/**
+	 * Shows a notification for a pending alarm.
+	 * 
+	 * The user can click on it to get to MainActivity, where it can be turned
+	 * off easily.
+	 * 
+	 * @param alarm
+	 *            the alarm
+	 */
+	private void showNotification(Alarm alarm) {
+		Intent mainActIntent = new Intent(getApplicationContext(),
+				MainActivity.class);
+		PendingIntent mainActPI = PendingIntent.getActivity(this, 0,
+				mainActIntent, 0);
+
+		String name = MetaTextUtils.printAlarmName(this, alarm);
+		String time = alarm.getTimeString();
+
+		// Localized strings which we inserts current time and name into
+		String titleFormat = getString(R.string.notification_pending_title);
+		String messageFormat = getString(R.string.notification_pending_message);
+
+		String title = String.format(titleFormat, name);
+		String message = String.format(messageFormat, time);
+
+		NotificationHelper.showNotification(this, title, message, mainActPI);
 	}
 
 	private void cancel() {
 		this.getAlarmManager().cancel( this.makePendingIntent( Alarm.NOT_COMMITTED_ID ) );
 		Log.d( "AlarmPlannerService", "Cancelling!" );
+
+		// Remove app's sticky notification
+		NotificationHelper.removeNotification(this);
 	}
 
 	private AlarmManager getAlarmManager() {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="notification_pending_title">\"%s\" is enabled</string>
+    <string name="notification_pending_message">Will ring at %s</string>
+    <string name="notification_ringing_title">\"%s\" is ringing</string>
+    <string name="notification_ringing_message">Click to disable</string>
+
+</resources>
