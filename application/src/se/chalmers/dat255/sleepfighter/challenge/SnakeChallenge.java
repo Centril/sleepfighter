@@ -1,10 +1,18 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
+import java.math.BigInteger;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -159,37 +167,128 @@ public class SnakeChallenge implements Challenge {
 	private class Model {
 		private final int boardWidth = 200;
 		private final int boardHeight = 400;
+		private final int snakeWidth = 10;
 		
-		private float x;
-		private float y;
+		private List<Segment> snakeSegments;
+		
+		private float lastX;
+		private float lastY;
 		
 		private Paint snakePaint;
 		
 		public Model() {
-			x = 0;
-			y = 10;
-			
 			snakePaint = new Paint();
 			snakePaint.setColor(Color.rgb(255, 255, 0));
+			
+			lastX = 0;
+			lastY = 0;
+			
+			snakeSegments = new ArrayList<Segment>();
+			snakeSegments.add(new Segment(lastX, lastY));
 		}
 		
 		public void draw(Canvas c) {
-			c.drawCircle((c.getWidth()*x/boardWidth), (c.getHeight()*y/boardHeight), 50, snakePaint);
+			for (int i = 0; i < snakeSegments.size(); i++) {
+				c.drawCircle((snakeSegments.get(i).getX()*c.getWidth()/boardWidth),
+						(snakeSegments.get(i).getY()*c.getHeight()/boardHeight),
+						(snakeWidth*c.getHeight()/boardHeight), snakePaint);
+				
+				c.drawOval(new RectF((snakeSegments.get(i).getX()*c.getWidth()/boardWidth - snakeWidth*c.getWidth()/boardWidth),
+						(snakeSegments.get(i).getY()*c.getHeight()/boardHeight - snakeWidth*c.getHeight()/boardHeight),
+						(snakeSegments.get(i).getX()*c.getWidth()/boardWidth + snakeWidth*c.getWidth()/boardWidth),
+						(snakeSegments.get(i).getY()*c.getHeight()/boardHeight + snakeWidth*c.getHeight()/boardHeight)), snakePaint);
+			}
+			
+			c.drawText("Segments: " + snakeSegments.size(), 10, 10, snakePaint);
+			c.drawText("Pos: " + (int)snakeSegments.get(0).x + ", " + (int)snakeSegments.get(0).y, 10, 25, snakePaint);
+			c.drawText("LastSeg: " + snakeSegments.get(snakeSegments.size()-1).x + ", " + snakeSegments.get(snakeSegments.size()-1).y, 10, 40, snakePaint);
 		}
 		
 		public void update(float touchX, float touchY) {
-			float derpX = touchX * boardWidth;
-			float derpY = touchY * boardHeight;
+
+			float segX = snakeSegments.get(0).getX();
+			float segY = snakeSegments.get(0).getY();
 			
-			float relativeX = derpX - x; 
-			float relativeY = derpY - y;
+			float nextX = touchX * boardWidth;
+			float nextY = touchY * boardHeight;
+			
+			float relativeX = nextX - segX;
+			float relativeY = nextY - segY;
 			
 			float hypotenuse = (float) Math.sqrt(relativeX*relativeX + relativeY*relativeY);
 			
 			if (hypotenuse != 0) {
-				x += relativeX/hypotenuse;
-				y += relativeY/hypotenuse;
+				snakeSegments.get(0).xList.add(segX);
+				snakeSegments.get(0).yList.add(segY);
+				
+				snakeSegments.get(0).setX(snakeSegments.get(0).getX() + relativeX/hypotenuse);
+				snakeSegments.get(0).setY(snakeSegments.get(0).getY() + relativeY/hypotenuse);
+				
+				for (int i = 1; i < snakeSegments.size(); i++) {
+					snakeSegments.get(i).setX(snakeSegments.get(0).xList.get(snakeSegments.get(i).iter));
+					snakeSegments.get(i).setY(snakeSegments.get(0).yList.get(snakeSegments.get(i).iter));
+						
+					snakeSegments.get(i).iter++;
+				}
+				
+				snakeSegments.get(0).iter++;
+				
+				if (snakeSegments.size() <= 5 && snakeSegments.get(0).iter % (snakeWidth*2) == 0) {
+					snakeSegments.add(new Segment(lastX, lastY));
+				}
 			}
+		}
+	}
+	
+	private class Segment {
+		float x;
+		float y;
+		
+		List<Float> xList;
+		List<Float> yList;
+		
+		private int iter;
+		
+		public Segment(float x, float y) {
+			this.x = x;
+			this.y = y;
+			
+			iter = 0;
+			
+			xList = new ArrayList<Float>();
+			yList = new ArrayList<Float>();
+		}
+		
+		public float getX() {
+			return x;
+		}
+		
+		public void setX(float x) {
+			this.x = x;
+		}
+		
+		public float getY() {
+			return y;
+		}
+		
+		public void setY(float y) {
+			this.y = y;
+		}
+		
+		public List<Float> getXList() {
+			return xList;
+		}
+		
+		public void setDx(List<Float> xList) {
+			this.xList = xList;
+		}
+		
+		public List<Float> getYList() {
+			return yList;
+		}
+		
+		public void setDy(List<Float> yList) {
+			this.yList = yList;
 		}
 	}
 }
