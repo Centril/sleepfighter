@@ -8,6 +8,8 @@ import se.chalmers.dat255.sleepfighter.challenge.MemoryChallenge;
 import se.chalmers.dat255.sleepfighter.model.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -91,7 +93,7 @@ public class MemoryAdapter extends BaseAdapter implements View.OnClickListener {
         if (convertView == null) { 
             view = new MemoryCardView(context);
             view.setLayoutParams(new GridView.LayoutParams(85, 85));
-            view.setPadding(8, 8, 8, 8);
+            view.setTextSize(TypedValue.COMPLEX_UNIT_SP,60);
         } else {
             view = (MemoryCardView) convertView;
         }
