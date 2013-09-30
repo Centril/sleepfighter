@@ -147,7 +147,7 @@ public class AlarmActivity extends Activity {
 		
 		//Intent intent = new Intent(this, MemoryActivity.class);
 		
-		Intent intent = new Intent(this, SimpleMathActivity.class);
+		Intent intent = new Intent(this, ChallengeActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
 	}
 	
