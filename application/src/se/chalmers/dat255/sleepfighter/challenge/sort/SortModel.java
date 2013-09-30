@@ -76,6 +76,15 @@ public class SortModel {
 	}
 
 	/**
+	 * Sets the generator to use to use numbers.
+	 *
+	 * @param generator
+	 */
+	public void setGenerator( NumberListGenerator generator ) {
+		this.generator = generator;
+	}
+
+	/**
 	 * <p>Generates the list of numbers, sets sort order.<br/>
 	 * This resets the model.</p>
 	 *
@@ -107,6 +116,11 @@ public class SortModel {
 		return list;
 	}
 
+	/**
+	 * Advances one step or throws an exception {@link #isNextNumber(int)} does not pass for given number.
+	 *
+	 * @param number the number to advance with.
+	 */
 	public void advanceStep( int number ) {
 		if ( !this.isNextNumber( number ) ) {
 			throw new IllegalArgumentException( "Can not advance to next step, given number: " + number + ", is not correct." );
