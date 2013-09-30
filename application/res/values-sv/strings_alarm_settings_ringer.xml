@@ -8,7 +8,7 @@
     <string name="perf_ringtone_picker_summary">Välj en ringsignal från din telefon</string>
     <string name="alarm_audiosource_summary_name_title">Vald:</string>
     <string name="alarm_audiosource_summary_type_label">Från:</string>
-    <string name="alarm_audiosource_summary_name_none">Inget</string>
+    <string name="alarm_audiosource_summary_name_none">Ingen</string>
     
     <!--TODO:  Or is there a word for this in Swedish? Ej tillgänglig? -->
     <string name="alarm_audiosource_summary_type_none">N/A</string>
@@ -17,10 +17,16 @@
         <item>Ringsignal</item>
         <item>Lokal media</item>
         
-        <!-- TODO: is there a Swedish for this? spellista? -->
-        <item>Playlist</item>
+        <item>Spellista</item>
         <item>Internet stream</item>
         <item>Spotify</item>
     </string-array>
+    
+    <string name="pref_local_content_uri_picker">Musik</string>
+    <string name="pref_local_content_uri_picker_summary">Välj en ljudfil från din telefon</string>
+    
+    <string name="pref_playlist_picker">Spellista</string>
+    <string name="pref_playlist_picker_summary">Välj en spellista från din mobil</string>
+    	
     
 </resources>

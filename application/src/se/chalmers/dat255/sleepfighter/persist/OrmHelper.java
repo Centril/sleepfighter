@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
+import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,10 +30,16 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 10;
 
-	// the DAO object we use to access the SimpleData table
+	// Dao for Alarm.
 	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;
+
+	// Dao for AudioSource.
+	private PersistenceExceptionDao<AudioSource, Integer> audioSourceDao = null;
+
+	// Dao for AudioConfig.
+	private PersistenceExceptionDao<AudioConfig, Integer> audioConfigDao = null;
 
 	/**
 	 * Constructs the helper from a given context.
@@ -52,7 +60,10 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
 		try {
 			Log.i( OrmHelper.class.getName(), "onCreate" );
+
 			TableUtils.createTable( connectionSource, Alarm.class );
+			TableUtils.createTable( connectionSource, AudioSource.class );
+			TableUtils.createTable( connectionSource, AudioConfig.class );
 		} catch ( SQLException e ) {
 			Log.e( OrmHelper.class.getName(), "Can't create database", e );
 			throw new PersistenceException( e );
@@ -73,7 +84,11 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 		try {
 			// Drop DB & create new ones.
 			Log.i(OrmHelper.class.getName(), "onUpgrade");
-			TableUtils.dropTable(connectionSource, Alarm.class, true);
+
+			TableUtils.dropTable( connectionSource, Alarm.class, true );
+			TableUtils.dropTable( connectionSource, AudioSource.class, true );
+			TableUtils.dropTable( connectionSource, AudioConfig.class, true );
+
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
 			Log.e(OrmHelper.class.getName(), "Can't drop databases", e);
@@ -119,6 +134,32 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			this.alarmDao = this.getExceptionDao( Alarm.class );
 		}
 		return this.alarmDao;
+	}
+
+	/**
+	 * Returns DAO for AudioSource model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for AudioSource model.
+	 */
+	public PersistenceExceptionDao<AudioSource, Integer> getAudioSourceDao() throws PersistenceException {
+		if ( this.audioSourceDao == null ) {
+			this.audioSourceDao = this.getExceptionDao( AudioSource.class );
+		}
+		return this.audioSourceDao;
+	}
+
+	/**
+	 * Returns DAO for AudioConfig model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for AudioConfig model.
+	 */
+	public PersistenceExceptionDao<AudioConfig, Integer> getAudioConfigDao() throws PersistenceException {
+		if ( this.audioConfigDao == null ) {
+			this.audioConfigDao = this.getExceptionDao( AudioConfig.class );
+		}
+		return this.audioConfigDao;
 	}
 
 	/**

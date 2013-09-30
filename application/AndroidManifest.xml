@@ -55,6 +55,11 @@
                 android:value="se.chalmers.dat255.sleepfighter.activity.AlarmSettingsActivity" />
         </activity>
 
+        <activity
+            android:name="se.chalmers.dat255.sleepfighter.activity.PlaylistSelectActivity"
+            android:label="@string/title_activity_playlist_select" >
+        </activity>
+
         <!-- END: Alarm settings related activities -->
 
         <receiver android:name="se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver" >

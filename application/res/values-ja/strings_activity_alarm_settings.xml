@@ -10,14 +10,10 @@
     <string name="pref_alarm_name">名前</string>
     <string name="pref_alarm_default_name">名前なしアラーム</string>
 
-    <!-- TODO: Is it really 曜日? -->
     <string name="pref_alarm_enabled_days">曜日</string>
     
     <string name="time_category_title">時間</string>
     
-    <!-- TOOD: or maybe 雑 is a better translation? See
-    http://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q124683587
-     -->
     <string name="misc_category_title">その他</string>
     
     <string name="ringer_category_title">着信音設定</string>

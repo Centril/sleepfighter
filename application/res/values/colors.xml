@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_layout_botton_color">#555555</color>
+    <color name="main_background">#161616</color>
+    <color name="main_layout_botton_color">#363636</color>
 
     <!-- START ANDROID API 17 COLORS -->
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Locale;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.base.Splitter;
 
 /**
@@ -25,6 +26,8 @@ public class StringUtils {
 
 	/** Pair splitter for directory paths. */
 	public static final Splitter PAIR_DIRECTORY_SPLITTER = DIRECTORY_SPLITTER.limit( 2 );
+
+	public static final MapJoiner PROPERTY_MAP_JOINER = Joiner.on(", ").withKeyValueSeparator(": ").useForNull( "null" );
 
 	/** Joiner for whitespace. */
 	public static final Joiner WS_JOINER = Joiner.on( ' ' ).skipNulls();

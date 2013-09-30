@@ -6,7 +6,7 @@ import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
+import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver;
@@ -30,7 +30,7 @@ import android.util.Log;
  * @since Sep 25, 2013
  */
 public class AlarmPlannerService extends IntentService {
-	private static final String TAG = "se.chalmers.dat255.sleepfighter.activities.AlarmService";
+	private static final String TAG = AlarmPlannerService.class.getSimpleName();
 
 	/**
 	 * Handles changes in alarms and alarm list and regarding and plans.
@@ -56,7 +56,7 @@ public class AlarmPlannerService extends IntentService {
 
 		private void handleChange() {
 			AlarmTimestamp at = this.list.getEarliestAlarm( new DateTime().getMillis() );
-			Log.d( this.getClass().getName(), "handleChange, " + at );
+			Log.d( this.getClass().getSimpleName(), "handleChange, " + at );
 
 			if ( at == AlarmTimestamp.INVALID ) {
 				call( this.context, Command.CANCEL, Alarm.NOT_COMMITTED_ID );
@@ -81,7 +81,7 @@ public class AlarmPlannerService extends IntentService {
 		 * @param evt the event.
 		 */
 		@Handler
-		public void handleDateChange( DateChangeEvent evt ) {
+		public void handleDateChange( ScheduleChangeEvent evt ) {
 			this.handleChange();
 		}
 	}

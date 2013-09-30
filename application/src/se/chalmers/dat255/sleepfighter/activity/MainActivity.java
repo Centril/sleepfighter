@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
+import java.util.Locale;
+
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
@@ -7,18 +9,19 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.AlarmAdapter;
-import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
+import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
+import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -30,6 +33,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+	private final static String TAG = MainActivity.class.getSimpleName();
+
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
@@ -59,9 +64,15 @@ public class MainActivity extends Activity {
 		this.setupListView();
 
 		this.updateEarliestText();
-		
-		AlarmAudioManager.getInstance().setup(this);
+
 		VibrationManager.getInstance().setup(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		this.updateEarliestText();
 	}
 
 	private void setupListView() {
@@ -111,29 +122,15 @@ public class MainActivity extends Activity {
 				deleteAlarm(selectedAlarm);
 				return true;
 			case 2:
-				Debug.d("start alarm");
-				AlarmAudioManager.getInstance().play();
-				return true;
-			case 3:
-				Debug.d("stop alarm");
-				AlarmAudioManager.getInstance().stop();	
-				return true;
-			
-			case 4:
-				Debug.d("start vibration");
 				VibrationManager.getInstance().startVibrate();
 				return true;
-			case 5:
-				Debug.d("stop vibration");
+			case 3:
 				VibrationManager.getInstance().stopVibrate();	
 				return true;
-
-			case 6:
-				Debug.d("copy alarm");
+			case 4:
 				copyAlarm(selectedAlarm);
 				return true;
 
-				
 			default:
 				return false;
 
@@ -176,20 +173,38 @@ public class MainActivity extends Activity {
 	}
 
 	/**
+	 * Handles a change to an alarm's name by refreshing the list.
+	 * 
+	 * @param event the event
+	 */
+	@Handler
+	public void handleAlarmNameChange(Alarm.MetaChangeEvent event) {
+		// Ignore other than name change events
+		if (event.getModifiedField() != Field.NAME) {
+			return;
+		}
+
+		// Refresh the list items
+		this.alarmAdapter.notifyDataSetChanged();
+	}
+	
+	/**
 	 * Handles a change in time related data in any alarm.
 	 * 
 	 * @param evt the event.
 	 */
 	@Handler
-	public void handleDateChange( DateChangeEvent evt ) {
+	public void handleScheduleChange( ScheduleChangeEvent evt ) {
 		final MainActivity self = this;
 		this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				self.updateEarliestText();
-				self.alarmAdapter.notifyDataSetChanged();
 			}
 		});
+
+		// Refresh the list items
+		this.alarmAdapter.notifyDataSetChanged();
 	}
 
 	/**
@@ -211,17 +226,19 @@ public class MainActivity extends Activity {
 
 	/**
 	 * Sets the earliest time text.
-	 * 
-	 * @param now
-	 *            the current time.
 	 */
 	private void updateEarliestText() {
 		long now = this.getNow();
 
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
-		String text = DateTextUtils.getTimeToText( this.getResources(), now,  stamp);
-		
+
+		Log.d( TAG, Boolean.toString( this.app().getPrefs().displayPeriodOrTime() ) );
+
+		Resources res = this.getResources();
+		String text = this.app().getPrefs().displayPeriodOrTime()
+					? DateTextUtils.getTime( res, now, stamp, Locale.getDefault() )
+					: DateTextUtils.getTimeToText( res, now,  stamp);
 
 		earliestTimeText.setText(text);
 	}

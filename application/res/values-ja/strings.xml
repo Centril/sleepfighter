@@ -3,7 +3,6 @@
 
    <string name="app_name">スリープファイター</string>
     
-   
     <string name="action_settings">設定</string>
     <string name="add">追加</string>
     <string name="alarm_unnamed_format">アラーム %1$d</string>
@@ -12,10 +11,8 @@
     <string name="confirm_delete">このアラームを削除してもよろしいですか</string>
 
     <string-array name="earliest_time_formats">
-        <!-- TODO: I think this sounds a bit unnatural. Find better translation. x -->
-        <item>つけられたアラームがありません</item>
-        <item>&lt; 一分で</item>
-        <!--TODO: should it really be で? -->
+        <item>つけたアラームがありません</item>
+        <item>&lt; 1分で</item>
         <item>%1$sで</item>
         <item>%1$s %2$sで</item>
         <item>%1$s %2$s %3$sで</item>
@@ -25,6 +22,13 @@
         <item>%2$d時間</item>
         <item>%3$d分</item>
     </string-array>
+    	
+    <string-array name="exact_time_formats">
+        <item>本日 %1$s</item>
+        <item>明日 %1$s</item>
+        <item>%2$s %1$s</item> <!-- %2$s = [Monday, ...]  -->
+    </string-array>
+    
     <string-array name="main_list_context_menu">
         <item>編集</item>
         <item>削除</item>

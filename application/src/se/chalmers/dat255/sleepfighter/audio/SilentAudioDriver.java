@@ -29,7 +29,7 @@ public class SilentAudioDriver implements AudioDriver {
 
 	@Override
 	public String printSourceName() {
-		return context.getString( R.string.ringtone_none );
+		return context.getString( R.string.alarm_audiosource_summary_name_none );
 	}
 
 	@Override
@@ -37,6 +37,15 @@ public class SilentAudioDriver implements AudioDriver {
 	}
 
 	@Override
+	public boolean isPlaying() {
+		return false;
+	}
+
+	@Override
 	public void stop() {
+	}
+
+	@Override
+	public void toggle( AudioConfig config ) {
 	}
 }

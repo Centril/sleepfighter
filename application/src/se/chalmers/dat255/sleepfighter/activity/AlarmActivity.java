@@ -4,19 +4,17 @@ import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
-import se.chalmers.dat255.sleepfighter.audio.AlarmAudioManager;
-import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -48,9 +46,6 @@ public class AlarmActivity extends Activity {
 
 	private Alarm alarm;
 
-	private static final String TURN_SCREEN_ON = "pref_alarm_turn_screen_on";
-	private static final String BYPASS_LOCK_SCREEN = "pref_alarm_bypass_lock_screen";
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,9 +55,11 @@ public class AlarmActivity extends Activity {
 
 		this.setContentView(R.layout.activity_alarm_prechallenge);
 
+		SFApplication app = SFApplication.get();
+
 		// Fetch alarm Id.
 		int alarmId = new IntentUtils( this.getIntent() ).getAlarmId();
-		this.alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
+		this.alarm = app.getPersister().fetchAlarmById( alarmId );
 
 		// Do stuff.
 		this.work();
@@ -80,8 +77,11 @@ public class AlarmActivity extends Activity {
 
 		// Disable alarm if not repeating.
 		if ( !this.alarm.isRepeating() ) {
+			if ( this.alarm.getMessageBus() == null ) {
+				this.alarm.setMessageBus( app.getBus() );
+			}
+
 			this.alarm.setActivated( false );
-			app.getPersister().updateAlarm( this.alarm );
 		} else {
 			// Reschedule earliest alarm (if any).
 			AlarmTimestamp at = app.getAlarms().getEarliestAlarm( new DateTime().getMillis() );
@@ -90,7 +90,6 @@ public class AlarmActivity extends Activity {
 			}
 		}
 	}
-
 
 	/**
 	 * Sets screen related flags, reads from preferences.
@@ -106,13 +105,10 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void readPreferences() {
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		GlobalPreferencesReader prefs = SFApplication.get().getPrefs();
 	
-		this.turnScreenOn = sharedPref.getBoolean(TURN_SCREEN_ON, true);
-		this.bypassLockscreen = sharedPref.getBoolean(BYPASS_LOCK_SCREEN, true);
-	
-		Debug.d("turn screen on :" + this.turnScreenOn);
-		Debug.d("bypass lock screen :" + this.bypassLockscreen);
+		this.turnScreenOn = prefs.turnScreenOn();
+		this.bypassLockscreen = prefs.bypassLockscreen();
 	}
 
 	/**
@@ -138,6 +134,8 @@ public class AlarmActivity extends Activity {
 
 	private void work() {
 		Log.d( "AlarmActivity", "alarm #id: " + Integer.toString( this.alarm.getId() ) );
+
+		this.startAudio( this.alarm );
 
 		Log.d( "AlarmActivity", "work#1" );
 		// TODO: do something useful.
@@ -175,9 +173,21 @@ public class AlarmActivity extends Activity {
 	public void stopAlarm() {
 		// TODO more here
 
-		// TODO temporarily
-		AlarmAudioManager.getInstance().stop();
+		// TODO move ?
+		this.stopAudio();
 		
 		this.performRescheduling();
+	}
+
+	private void startAudio( Alarm alarm ) {
+		SFApplication app = SFApplication.get();
+		AudioDriver driver = app.getAudioDriverFactory().produce( app, alarm.getAudioSource() );
+		app.setAudioDriver( driver );
+
+		driver.play( alarm.getAudioConfig() );
+	}
+
+	private void stopAudio() {
+		SFApplication.get().setAudioDriver( null );
 	}
 }

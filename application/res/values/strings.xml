@@ -12,8 +12,7 @@
     <string name="pre_chal_act">A wild challenge appears!</string>
     <string name="math_chal_act">Do some MATH!</string>
 
-    <string name="ringtone_none">None</string>
-    
+
     <string-array name="earliest_time_formats">
         <item>No alarm active</item>
         <item>In &lt; 1 minute</item>
@@ -26,13 +25,18 @@
         <item>%2$dh</item>
         <item>%3$dm</item>
     </string-array>
+
+    <string-array name="exact_time_formats">
+        <item>Today %1$s</item>
+        <item>Tomorrow %1$s</item>
+        <item>%2$s %1$s</item> <!-- %2$s = [Monday, ...]  -->
+    </string-array>
+
     <string-array name="main_list_context_menu">
         <item>Edit alarm</item>
         <item>Delete alarm</item>
 
         <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
         <item>start vibration</item>
         <item>stop vibration</item>
         <item>Copy Alarm</item>
