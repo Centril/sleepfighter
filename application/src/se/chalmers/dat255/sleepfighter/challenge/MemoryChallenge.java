@@ -82,9 +82,12 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
         		flippedCard = null;
         		--this.remainingPairs;
         		if(this.remainingPairs == 0) {
+        			
+        			// return to start menu. 
         			Toast.makeText(act.getBaseContext(), "Alarm deactivated!",
-    						Toast.LENGTH_SHORT).show();
-        			// TODO: now we should return to the start menu. 
+    						Toast.LENGTH_SHORT).show();		
+        			act.complete();
+    		
         		}
         	} else {
         	   	waitingForCardsToFlipOver = true;

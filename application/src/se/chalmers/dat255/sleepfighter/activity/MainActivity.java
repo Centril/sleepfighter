@@ -264,11 +264,4 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected( item );
 		}	
 	}
-	
-	// Start the activity for when an alarm rings/occurs.
-	// If you want to change challenge, do so in AlarmActivity -> button
-	public void challenge(View view) {
-		Intent intent = new Intent(this, AlarmActivity.class);
-		startActivityForResult(intent, AlarmActivity.CHALLENGE_REQUEST_CODE);
-	}
 }

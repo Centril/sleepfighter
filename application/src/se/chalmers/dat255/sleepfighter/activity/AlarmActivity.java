@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
+import java.util.Random;
+
 import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
@@ -155,8 +157,15 @@ public class AlarmActivity extends Activity {
 
 		// Intent intent = new Intent(this, MemoryActivity.class);
 
-		Intent intent = new Intent(this, SimpleMathActivity.class);
+		Random rng = new Random();
+		Intent intent;
+		if(rng.nextBoolean())
+	
+			intent = new Intent(this, SimpleMathActivity.class);
+		else
+			intent = new Intent(this, MemoryActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
+		
 	}
 
 	@Override
