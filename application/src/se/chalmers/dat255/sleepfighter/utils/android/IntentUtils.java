@@ -57,9 +57,9 @@ public class IntentUtils {
 	 */
 	public int getAlarmId() {
 		int id = this.intent.getIntExtra( ALARM_EXTRA_ID, Alarm.NOT_COMMITTED_ID );
-		if ( id == Alarm.NOT_COMMITTED_ID ) {
+		/*if ( id == Alarm.NOT_COMMITTED_ID ) {
 			throw new IllegalArgumentException( "ID is outside of valid range, only positive integers allowed." );
-		}
+		}*/
 
 		return id;
 	}

@@ -264,4 +264,16 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected( item );
 		}	
 	}
+	
+	public void startAlarm(View view) {
+		// Create intent & re-put extras.
+		Intent activityIntent;
+		activityIntent = new Intent( this, AlarmActivity.class );
+		activityIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+	//	activityIntent.putExtras( null );
+		
+		
+		// Start activity!
+		this.startActivity( activityIntent );
+	}
 }

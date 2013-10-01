@@ -137,16 +137,14 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void work() {
-		Log.d("AlarmActivity",
-				"alarm #id: " + Integer.toString(this.alarm.getId()));
-
-		this.startAudio(this.alarm);
+	
+		//this.startAudio(this.alarm);
 
 		Log.d("AlarmActivity", "work#1");
 		// TODO: do something useful.
-		Toast.makeText(this,
+/*		Toast.makeText(this,
 				"Alarm ringing, get up! Alarm #" + this.alarm.getId(),
-				Toast.LENGTH_LONG).show();
+				Toast.LENGTH_LONG).show();*/
 	}
 
 	// Change the intent to the challenge you want to play
