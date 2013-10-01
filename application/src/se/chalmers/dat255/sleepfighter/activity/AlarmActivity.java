@@ -159,6 +159,8 @@ public class AlarmActivity extends Activity {
 		else
 			intent = new Intent(this, MemoryActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
+		// The vibration stops whenever you start the challenge
+		VibrationManager.getInstance().stopVibrate();
 	}
 
 	@Override
