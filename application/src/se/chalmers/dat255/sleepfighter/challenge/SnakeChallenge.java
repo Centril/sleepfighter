@@ -149,7 +149,7 @@ public class SnakeChallenge implements Challenge {
 							model.updateDirection(touchX/c.getWidth(), touchY/c.getHeight());
 						}
 						
-						model.update(touchX/c.getWidth(), touchY/c.getHeight());
+						model.update();
 						c.drawRect(0, 0, c.getWidth(), c.getHeight(), blackPaint);
 						model.draw(c);
 					}
@@ -178,6 +178,7 @@ public class SnakeChallenge implements Challenge {
 		private final int maxSegments = 6;
 		
 		private final int obstacleWidth = 15;
+		private final int obstacleMargin = 8;
 		
 		private List<Segment> snakeSegments;
 		private List<RectEntity> obstacles;
@@ -195,6 +196,9 @@ public class SnakeChallenge implements Challenge {
 		private Paint obstaclePaint;
 		private Paint sphereFruitPaint;
 		private Paint exitPaint;
+		
+		private float dx;
+		private float dy;
 		
 		public Model() {
 			snakePaint = new Paint();
@@ -227,8 +231,6 @@ public class SnakeChallenge implements Challenge {
 			lost = false;
 			won = false;
 		}
-		
-		private long lastUpdate = System.nanoTime();
 		
 		public void draw(Canvas c) {
 			float scaleX = c.getWidth()*1f/boardWidth;
@@ -276,18 +278,7 @@ public class SnakeChallenge implements Challenge {
 						(s.getX() * scaleX + s.getWidth() * scaleX),
 						(s.getY() * scaleY + s.getHeight() * scaleY)), snakePaint);
 			}
-			
-			c.drawText("Fps: " + 1000/((System.nanoTime() - lastUpdate)/1000000L), 10, 10, snakePaint);
-			c.drawText("Segments: " + snakeSegments.size(), 10, 25, snakePaint);
-			c.drawText("Pos: " + (int)snakeSegments.get(0).x + ", " + (int)snakeSegments.get(0).y, 10, 40, snakePaint);
-			c.drawText("LastSeg: " + (int)snakeSegments.get(snakeSegments.size()-1).x + ", " + (int)snakeSegments.get(snakeSegments.size()-1).y, 10, 55, snakePaint);
-			c.drawText("Fruits: " + sphereFruits.size(), 10, 70, snakePaint);
-			
-			lastUpdate = System.nanoTime();
 		}
-		
-		private float dx;
-		private float dy;
 		
 		public void updateDirection(float touchX, float touchY) {
 			float segX = snakeSegments.get(0).getX();
@@ -307,28 +298,26 @@ public class SnakeChallenge implements Challenge {
 			}
 		}
 		
-		public void update(float touchX, float touchY) {
-				
-				snakeSegments.get(0).setX(snakeSegments.get(0).getX() + dx);
-				snakeSegments.get(0).setY(snakeSegments.get(0).getY() + dy);
-				
-				snakeSegments.get(0).getXList().add(snakeSegments.get(0).getX());
-				snakeSegments.get(0).getYList().add(snakeSegments.get(0).getY());
-				
-				
-				for (int i = 1; i < snakeSegments.size(); i++) {
-					snakeSegments.get(i).setX(snakeSegments.get(0).getXList().get(snakeSegments.get(i).iter));
-					snakeSegments.get(i).setY(snakeSegments.get(0).getYList().get(snakeSegments.get(i).iter));
-						
-					snakeSegments.get(i).iter++;
-				}
-				
-				snakeSegments.get(0).iter++;
-				
-				if (snakeSegments.size() < maxSegments && snakeSegments.get(0).iter % (snakeSegments.get(0).getWidth()*2) == 0) {
-					snakeSegments.add(new Segment(startX, startY));
-				}
+		public void update() {
+			snakeSegments.get(0).setX(snakeSegments.get(0).getX() + dx);
+			snakeSegments.get(0).setY(snakeSegments.get(0).getY() + dy);
 			
+			snakeSegments.get(0).getXList().add(snakeSegments.get(0).getX());
+			snakeSegments.get(0).getYList().add(snakeSegments.get(0).getY());
+			
+			
+			for (int i = 1; i < snakeSegments.size(); i++) {
+				snakeSegments.get(i).setX(snakeSegments.get(0).getXList().get(snakeSegments.get(i).iter));
+				snakeSegments.get(i).setY(snakeSegments.get(0).getYList().get(snakeSegments.get(i).iter));
+					
+				snakeSegments.get(i).iter++;
+			}
+			
+			snakeSegments.get(0).iter++;
+			
+			if (snakeSegments.size() < maxSegments && snakeSegments.get(0).iter % (snakeSegments.get(0).getWidth()*2) == 0) {
+				snakeSegments.add(new Segment(startX, startY));
+			}
 			
 			checkCollision();
 		}
@@ -348,21 +337,18 @@ public class SnakeChallenge implements Challenge {
 				}
 			}
 			
-			
-			if (exit != null
+			if (!(exit != null
 					&& 0 < head.getX() - head.getWidth() - exit.getX() 
 					&& 0 < exit.getX() + exit.getWidth() - head.getWidth() - head.getX()
 					&& 0 < head.getY() + head.getHeight() - exit.getY()
-					&& 0 < exit.getY() + exit.getHeight() + head.getHeight() - head.getY()) {
+					&& 0 < exit.getY() + exit.getHeight() + head.getHeight() - head.getY())) {
 				
-			}
-			else {
 				for (int i = 0; i < obstacles.size(); i++) {
 					RectEntity o = obstacles.get(i);
-					if (0 < head.getX() + head.getWidth() - o.getX() 
-							&& 0 < o.getX() + o.getWidth() + head.getWidth() - head.getX()
-							&& 0 < head.getY() + head.getHeight() - o.getY()
-							&& 0 < o.getY() + o.getHeight() + head.getHeight() - head.getY()) {
+					if (obstacleMargin < head.getX() + head.getWidth() - o.getX() 
+							&& obstacleMargin < o.getX() + o.getWidth() + head.getWidth() - head.getX()
+							&& obstacleMargin < head.getY() + head.getHeight() - o.getY()
+							&& obstacleMargin < o.getY() + o.getHeight() + head.getHeight() - head.getY()) {
 						lost = true;
 						break;
 					}
