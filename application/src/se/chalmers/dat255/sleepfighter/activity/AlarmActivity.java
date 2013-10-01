@@ -24,6 +24,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +51,8 @@ public class AlarmActivity extends Activity {
 
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
-
+	private TextView tvName;
+	private TextView tvTime;
 	private Alarm alarm;
 
 	@Override
@@ -70,6 +72,13 @@ public class AlarmActivity extends Activity {
 
 		// Do stuff.
 		this.work();
+		
+		
+		tvName = (TextView) findViewById(R.id.tvAlarmName);
+        tvName.setText(alarm.getName());
+        
+        tvTime = (TextView) findViewById(R.id.tvAlarmTime);
+        tvTime.setText(alarm.getTimeString());
 	}
 
 	protected void onPause() {
