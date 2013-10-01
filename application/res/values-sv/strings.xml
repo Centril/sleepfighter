@@ -44,12 +44,6 @@
     <string-array name="main_list_context_menu">
         <item>Redigera alarm</item>
         <item>Ta bort alarm</item>
-
-        <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
-        <item>start vibration</item>
-        <item>stop vibration</item>
         <item>Kopiera alarm</item>
     </string-array>
     

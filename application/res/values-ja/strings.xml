@@ -32,12 +32,6 @@
     <string-array name="main_list_context_menu">
         <item>編集</item>
         <item>削除</item>
-
-        <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
-        <item>start vibration</item>
-        <item>stop vibration</item>
         <item>コピー</item>
     </string-array>
 

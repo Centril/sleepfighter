@@ -44,7 +44,6 @@ public class AlarmActivity extends Activity {
 
 	public static final int CHALLENGE_REQUEST_CODE = 1;
 
-	// TODO move to settings!
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 
@@ -186,18 +185,14 @@ public class AlarmActivity extends Activity {
 		}
 	}
 
-	// TODO move out of class
 	public void stopAlarm() {
-		// TODO more here
-
-		// TODO move ?
+		
 		this.stopAudio();
 		
 		if(this.alarm.getVibrationEnabled())
 			VibrationManager.getInstance().stopVibrate();
 
 		// Remove notification saying alarm is ringing
-		// TODO move
 		NotificationHelper.removeNotification(this);
 
 		this.performRescheduling();

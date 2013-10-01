@@ -37,10 +37,6 @@
     <string-array name="main_list_context_menu">
         <item>Edit alarm</item>
         <item>Delete alarm</item>
-
-        <!-- for debugging purposes. -->
-        <item>start vibration</item>
-        <item>stop vibration</item>
         <item>Copy Alarm</item>
     </string-array>
 

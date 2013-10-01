@@ -113,7 +113,6 @@ public class MainActivity extends Activity {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		Alarm selectedAlarm = (alarmAdapter.getItem(info.position));
 
-		// TODO perhaps use something other than order
 		switch (item.getOrder()) {
 			case 0:
 				startAlarmEdit(selectedAlarm, false);
@@ -122,12 +121,6 @@ public class MainActivity extends Activity {
 				deleteAlarm(selectedAlarm);
 				return true;
 			case 2:
-				VibrationManager.getInstance().startVibrate();
-				return true;
-			case 3:
-				VibrationManager.getInstance().stopVibrate();	
-				return true;
-			case 4:
 				copyAlarm(selectedAlarm);
 				return true;
 
