@@ -16,8 +16,11 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.android.DialogUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -143,8 +146,15 @@ public class MainActivity extends Activity {
 		startActivity( intent );
 	}
 
-	private void deleteAlarm( Alarm alarm ) {
-		this.manager.remove( alarm );
+	private void deleteAlarm(final Alarm alarm) {
+		String message = getString(R.string.confirm_delete);
+		DialogUtils.showConfirmationDialog(message, this,
+				new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				MainActivity.this.manager.remove(alarm);
+			}
+		});
 	}
 
 	private void copyAlarm( Alarm alarm ) {
