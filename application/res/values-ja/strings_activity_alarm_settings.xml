@@ -44,4 +44,7 @@
     
 	<string name="perf_alarm_ringtone">着信音</string>
 	
+	
+	  <string name="pref_alarm_vibration">バイブレーション</string>
+	
 </resources>

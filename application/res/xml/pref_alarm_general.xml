@@ -43,6 +43,11 @@
             android:title="@string/pref_alarm_repeat"
             android:key="pref_alarm_repeat"
             android:defaultValue="false" />
+   
+        <CheckBoxPreference
+            android:title="@string/pref_alarm_vibration"
+            android:key="pref_alarm_vibration"
+            android:defaultValue="true" />
         
         <Preference
             android:title="@string/pref_delete_alarm"

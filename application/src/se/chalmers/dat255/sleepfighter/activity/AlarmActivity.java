@@ -16,6 +16,7 @@ import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -162,8 +163,6 @@ public class AlarmActivity extends Activity {
 		else
 			intent = new Intent(this, MemoryActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
-		
-		stopAlarm();
 	}
 
 	@Override
@@ -173,8 +172,10 @@ public class AlarmActivity extends Activity {
 			if (resultCode == Activity.RESULT_OK) {
 				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
 						.show();
+				Debug.d("done with challenge");
+				
 				stopAlarm();
-				finish();
+					finish();
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();

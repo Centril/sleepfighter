@@ -44,7 +44,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private final String DAYS = "pref_enabled_days";
 	private final String REPEAT = "pref_alarm_repeat";
 	private final String DELETE = "pref_delete_alarm";
-
+	private final String VIBRATION = "pref_alarm_vibration";
+	
 	private final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
 	private Preference ringerPreference;
 
@@ -125,6 +126,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(NAME));
 		bindPreferenceSummaryToValue(findPreference(DAYS));
 		bindPreferenceSummaryToValue(findPreference(REPEAT));
+		bindPreferenceSummaryToValue(findPreference(VIBRATION));
 		
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
@@ -212,6 +214,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			else if (REPEAT.equals(preference.getKey())) {
 				alarm.setRepeat(("true".equals(stringValue)) ? true : false);
 			}
+			else if (VIBRATION.equals(preference.getKey())) {
+				alarm.setVibrationEnabled(("true".equals(stringValue)) ? true : false);
+			}
 			
 			return true;
 		}
@@ -234,6 +239,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		else if (REPEAT.equals(preference.getKey())) {
 			((CheckBoxPreference) preference).setChecked(alarm.isRepeating());
+		}
+		else if (VIBRATION.equals(preference.getKey())) {
+			((CheckBoxPreference) preference).setChecked(alarm.getVibrationEnabled());
 		}
 		
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
