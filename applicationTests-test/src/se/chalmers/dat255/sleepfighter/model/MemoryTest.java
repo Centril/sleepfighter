@@ -64,7 +64,7 @@ public class MemoryTest extends TestCase {
 		 * randomly generated card placements. 
 		 */
 		
-		int TESTS = 10;
+		int TESTS = 30;
 		for(int i = 0; i < TESTS; ++i) {
 			
 			testPlaceOutCards(6,6);
