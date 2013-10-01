@@ -91,6 +91,14 @@
             android:name="se.chalmers.dat255.sleepfighter.activity.MemoryActivity"
             android:label="@string/memory_chal_act" >
         </activity>
+        <service
+            android:name="se.chalmers.dat255.sleepfighter.audio.AudioService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY" />
+                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.STOP" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
