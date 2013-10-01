@@ -38,7 +38,7 @@ public class MemoryCardView extends Button {
 	}
 	
 	public boolean isHidden() {
-		return this.currentImage == HIDDEN;
+		return this.currentImage.equals(HIDDEN);
 	}
 	
 	public boolean isShown() {

@@ -47,7 +47,7 @@ public class MemoryAdapter extends BaseAdapter implements View.OnClickListener {
 				// ensure that it hasn't already been assigned.
 				unassigned = true;
 				for(int i = 0; i < memoryCardImages.length; ++i) {
-					if(memoryCardImages[i] == image) {
+					if(memoryCardImages[i].equals(image)) {
 						// the image has already been assigned to another card type
 						unassigned = false;
 						break;

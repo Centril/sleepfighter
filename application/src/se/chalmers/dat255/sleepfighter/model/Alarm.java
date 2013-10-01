@@ -355,7 +355,7 @@ public class Alarm implements Cloneable, IdProvider {
 	 * @param name the name of the Alarm to set.
 	 */
 	public void setName( String name ) {
-		if ( this.name == name ) {
+		if ( this.name.equals(name)) {
 			return;
 		}
 
@@ -441,10 +441,6 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
 		Preconditions.checkNotNull( enabledDays );
-
-		if ( Objects.equal( this.enabledDays, enabledDays ) ) {
-			return;
-		}
 
 		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
