@@ -9,6 +9,7 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.preference.InitializableRingtonePreference;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.android.ActivityUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -26,7 +27,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +59,6 @@ public class RingerSettingsActivity extends PreferenceActivity {
 
 	private TextView summaryName;
 	private TextView summaryType;
-
-	private TextView actionBarSummary;
 
 	@SuppressWarnings( "deprecation" )
 	@Override
@@ -100,11 +98,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		case R.id.ringer_action_cancel:
 			this.setAudioSource( null );
 			return true;
-
 		case R.id.ringer_action_test:
 			this.testRinger();
 			return true;
-
+		case android.R.id.home:
+			finish();
+			return true;
 		default:
 			return super.onOptionsItemSelected( item );
 		}	
@@ -120,19 +119,9 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= 11) {
-			// Add the custom view to the action bar.
 			ActionBar actionBar = this.getActionBar();
-			actionBar.setCustomView( R.layout.pref_alarm_ringer_actionbar );
-
-			View customView = actionBar.getCustomView();
-
-			TextView titleField = (TextView) customView.findViewById( R.id.alarm_actionbar_title_field );
-			titleField.setText( MetaTextUtils.printAlarmName( this, alarm ) );
-
-			this.actionBarSummary = (TextView) customView.findViewById( R.id.alarm_actionbar_audiosource_summary );
-			actionBarSummary.setText( MetaTextUtils.printAlarmName( this, alarm ) );
-
-			actionBar.setDisplayOptions( ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM );
+			actionBar.setTitle(MetaTextUtils.printAlarmName(this, alarm));
+			ActivityUtils.setupStandardActionBar(this);
 		}
 	}
 
@@ -152,9 +141,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	private void updateSummary() {
 		String name = this.driver.printSourceName();
 		this.summaryName.setText( name );
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			this.actionBarSummary.setText(name);
-		}
+		setActionBarSubtitle(name);
 
 		// Make and set typeText.
 		String typeText;
@@ -166,6 +153,14 @@ public class RingerSettingsActivity extends PreferenceActivity {
 				 : res.getStringArray( R.array.alarm_audiosource_summary_type )[source.getType().ordinal()];
 
 		this.summaryType.setText( typeText );
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setActionBarSubtitle(String subtitle) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionbar = getActionBar();
+			actionbar.setSubtitle(subtitle);
+		}
 	}
 
 	/**
