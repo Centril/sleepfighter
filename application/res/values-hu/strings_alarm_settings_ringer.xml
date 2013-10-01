@@ -10,14 +10,11 @@
     <string name="alarm_audiosource_summary_type_label">Forrás:</string>
     <string name="alarm_audiosource_summary_name_none">Semmi</string>
     
-    <!--TODO:  Or is there a word for this in Swedish? Ej tillgänglig? -->
     <string name="alarm_audiosource_summary_type_none">N/A</string>
 
     <string-array name="alarm_audiosource_summary_type">
         <item>Csengőhang</item>
         <item>Helybeli media</item>
-        
-        <!-- TODO: is there a Swedish for this? spellista? -->
         <item>Playlist</item>
         <item>Internet stream</item>
         <item>Spotify</item>

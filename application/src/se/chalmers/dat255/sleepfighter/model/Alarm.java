@@ -660,7 +660,6 @@ public class Alarm implements Cloneable, IdProvider {
 			return false;
 		}
 
-		// TODO uncomment when working unique ID
 		Alarm rhs = (Alarm) obj;
 		return this.id == rhs.id;
 	}

@@ -145,9 +145,7 @@ public class AlarmActivity extends Activity {
 		if(this.alarm.getVibrationEnabled())
 			VibrationManager.getInstance().startVibrate();
 
-		Log.d("AlarmActivity", "work#1");
-		// TODO: do something useful.
-	Toast.makeText(this,
+		Toast.makeText(this,
 				"Alarm ringing, get up! Alarm #" + this.alarm.getId(),
 				Toast.LENGTH_LONG).show();
 	}
