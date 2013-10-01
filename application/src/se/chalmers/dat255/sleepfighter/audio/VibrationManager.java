@@ -12,7 +12,10 @@ public class VibrationManager {
 	private static VibrationManager instance = null;
 
 	protected VibrationManager() {
+		startedVibration = false;
 	}
+	
+	boolean startedVibration; 
 
 	/*
 	 * The class is a singleton for now. We'll probably fix this later. 
@@ -27,8 +30,6 @@ public class VibrationManager {
 	Vibrator vib;
 	
 	public void setup(Context context) {
-		
-		
 		try {
 			vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);	
 		} catch (Exception e) {
@@ -37,22 +38,28 @@ public class VibrationManager {
 	}
 	
 	public void startVibrate() {
-		try {	
-			// Start without a delay
-			// Vibrate for 100 milliseconds
-			// Sleep for 1000 milliseconds
-			long[] pattern = {0, 100, 1000};
+		if(startedVibration) {
+			return;
+		}
+		
+		try {
+			long[] pattern = {0, 1000, 1000};
 
 			// 0 means vibrate indefinitely.
 			vib.vibrate(pattern, 0);
+			this.startedVibration = true;
 		} catch (Exception e) {
 			Debug.e(e);
 		}
 	}
 
 	public void stopVibrate() {
+		if(!startedVibration) 
+			return;
+		
 		try {
 			vib.cancel();
+			this.startedVibration = false;
 		} catch (Exception e) {
 			Debug.e(e);
 		}

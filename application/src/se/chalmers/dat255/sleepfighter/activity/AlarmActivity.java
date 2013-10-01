@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
@@ -139,6 +140,9 @@ public class AlarmActivity extends Activity {
 	private void work() {
 	
 		//this.startAudio(this.alarm);
+		
+		// start vibration. 
+		VibrationManager.getInstance().startVibrate();
 
 		Log.d("AlarmActivity", "work#1");
 		// TODO: do something useful.
@@ -155,7 +159,7 @@ public class AlarmActivity extends Activity {
 
 		// Intent intent = new Intent(this, MemoryActivity.class);
 
-		Random rng = new Random();
+		/*Random rng = new Random();
 		Intent intent;
 		if(rng.nextBoolean())
 	
@@ -163,7 +167,8 @@ public class AlarmActivity extends Activity {
 		else
 			intent = new Intent(this, MemoryActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
-		
+		*/
+		stopAlarm();
 	}
 
 	@Override
@@ -191,6 +196,9 @@ public class AlarmActivity extends Activity {
 
 		// TODO move ?
 		this.stopAudio();
+		
+		// TODO: stop vibration.
+		VibrationManager.getInstance().stopVibrate();
 
 		// Remove notification saying alarm is ringing
 		// TODO move

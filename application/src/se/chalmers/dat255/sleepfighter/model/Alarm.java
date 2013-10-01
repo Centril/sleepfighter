@@ -202,7 +202,8 @@ public class Alarm implements Cloneable, IdProvider {
 	
 	@DatabaseField
 	private boolean isRepeating = false;
-
+	
+	
 	@DatabaseField(foreign = true, canBeNull = true)
 	private AudioSource audioSource;
 
