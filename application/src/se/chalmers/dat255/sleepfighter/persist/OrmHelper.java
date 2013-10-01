@@ -59,8 +59,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
 		try {
-			Log.i( OrmHelper.class.getName(), "onCreate" );
-
 			TableUtils.createTable( connectionSource, Alarm.class );
 			TableUtils.createTable( connectionSource, AudioSource.class );
 			TableUtils.createTable( connectionSource, AudioConfig.class );
@@ -82,9 +80,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		try {
-			// Drop DB & create new ones.
-			Log.i(OrmHelper.class.getName(), "onUpgrade");
-
 			TableUtils.dropTable( connectionSource, Alarm.class, true );
 			TableUtils.dropTable( connectionSource, AudioSource.class, true );
 			TableUtils.dropTable( connectionSource, AudioConfig.class, true );
@@ -100,8 +95,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 * Rebuilds all data-structures. Any data is lost.
 	 */
 	public void rebuild() {
-		Log.d(OrmHelper.class.getName(), "onRestart");
-
 		// Drop all tables.
 		List<String> tables = new ArrayList<String>();
 		Cursor cursor = this.getReadableDatabase().rawQuery("SELECT * FROM sqlite_master WHERE type='table';", null );

@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -225,8 +224,6 @@ public class MainActivity extends Activity {
 
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
-
-		Log.d( TAG, Boolean.toString( this.app().getPrefs().displayPeriodOrTime() ) );
 
 		Resources res = this.getResources();
 		String text = this.app().getPrefs().displayPeriodOrTime()

@@ -85,11 +85,7 @@ public class DateTextUtils {
 	 * @param locale the locale to use for weekdays.
 	 * @return the built time-to string.
 	 */
-	public static final String getTime( String[] formats, String noActive, long now, AlarmTimestamp ats, Locale locale ) {
-		// otherwise it'll obviously crash.
-		if(ats != AlarmTimestamp.INVALID)
-			Log.d( TAG, ats.toString() );
-		
+	public static final String getTime( String[] formats, String noActive, long now, AlarmTimestamp ats, Locale locale ) {	
 		
 		if ( ats == AlarmTimestamp.INVALID ) {
 			return noActive;

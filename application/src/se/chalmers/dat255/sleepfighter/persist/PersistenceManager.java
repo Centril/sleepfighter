@@ -12,7 +12,6 @@ import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
-import android.util.Log;
 
 import com.google.common.collect.Maps;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -77,7 +76,6 @@ public class PersistenceManager {
 	 */
 	@Handler
 	public void handleAlarmChange( AlarmEvent evt ) {
-		Log.d( TAG, "handleAlarmChange, " + evt.toString() );
 		this.updateAlarm( evt.getAlarm(), evt );
 	}
 
