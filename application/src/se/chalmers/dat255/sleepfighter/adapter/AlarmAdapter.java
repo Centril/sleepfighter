@@ -24,6 +24,18 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	public AlarmAdapter(Context context, List<Alarm> alarms) {
 		super(context, 0, alarms);
 	}
+	
+	public void makeTimeTextViewHitboxBigger(View convertView) {
+
+		View container = convertView.findViewById(R.id.time_view_container);
+		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
+		container.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				timeTextView.performClick();
+			}
+		});	
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -31,8 +43,9 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 			// A view isn't being recycled, so make a new one from definition
 			convertView = LayoutInflater.from(getContext()).inflate( R.layout.alarm_list_item, null);
 		}
-
-
+		
+		makeTimeTextViewHitboxBigger(convertView);
+	
 		// The alarm associated with the row
 		final Alarm alarm = getItem(position);
 
