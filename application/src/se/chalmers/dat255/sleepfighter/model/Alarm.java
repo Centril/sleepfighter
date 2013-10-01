@@ -203,6 +203,8 @@ public class Alarm implements Cloneable, IdProvider {
 	@DatabaseField
 	private boolean isRepeating = false;
 	
+	@DatabaseField
+	private boolean vibrationEnabled = true;
 	
 	@DatabaseField(foreign = true, canBeNull = true)
 	private AudioSource audioSource;
@@ -750,6 +752,15 @@ public class Alarm implements Cloneable, IdProvider {
 	 * PERSISTENCE ONLY METHODS.
 	 * --------------------------------
 	 */
+	
+	public boolean getVibrationEnabled() {
+		return this.vibrationEnabled;
+	}
+	
+	
+	public void setVibrationEnabled(boolean vibrationEnabled) {
+		this.vibrationEnabled = vibrationEnabled;
+	}
 
 	/**
 	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>

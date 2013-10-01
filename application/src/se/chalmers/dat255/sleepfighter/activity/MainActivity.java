@@ -264,7 +264,7 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected( item );
 		}	
 	}
-	
+	/*
 	public void startAlarm(View view) {
 		// Create intent & re-put extras.
 		Intent activityIntent;
@@ -275,5 +275,5 @@ public class MainActivity extends Activity {
 		
 		// Start activity!
 		this.startActivity( activityIntent );
-	}
+	}*/
 }

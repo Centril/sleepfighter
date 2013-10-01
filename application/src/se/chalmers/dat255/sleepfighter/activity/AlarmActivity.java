@@ -139,27 +139,22 @@ public class AlarmActivity extends Activity {
 
 	private void work() {
 	
-		//this.startAudio(this.alarm);
+		this.startAudio(this.alarm);
 		
 		// start vibration. 
-		VibrationManager.getInstance().startVibrate();
+		if(this.alarm.getVibrationEnabled())
+			VibrationManager.getInstance().startVibrate();
 
 		Log.d("AlarmActivity", "work#1");
 		// TODO: do something useful.
-/*		Toast.makeText(this,
+	Toast.makeText(this,
 				"Alarm ringing, get up! Alarm #" + this.alarm.getId(),
-				Toast.LENGTH_LONG).show();*/
+				Toast.LENGTH_LONG).show();
 	}
 
-	// Change the intent to the challenge you want to play
-	// TODO: This should randomize the challenges
-
 	public void button(View view) {
-		// Intent intent = new Intent(this, ChallengeActivity.class);
-
-		// Intent intent = new Intent(this, MemoryActivity.class);
-
-		/*Random rng = new Random();
+	
+		Random rng = new Random();
 		Intent intent;
 		if(rng.nextBoolean())
 	
@@ -167,7 +162,7 @@ public class AlarmActivity extends Activity {
 		else
 			intent = new Intent(this, MemoryActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
-		*/
+		
 		stopAlarm();
 	}
 
@@ -197,8 +192,8 @@ public class AlarmActivity extends Activity {
 		// TODO move ?
 		this.stopAudio();
 		
-		// TODO: stop vibration.
-		VibrationManager.getInstance().stopVibrate();
+		if(this.alarm.getVibrationEnabled())
+			VibrationManager.getInstance().stopVibrate();
 
 		// Remove notification saying alarm is ringing
 		// TODO move
