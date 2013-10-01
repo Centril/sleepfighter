@@ -188,6 +188,10 @@ public class PersistenceManager {
 	 * @return the passed argument, for fluid interface.
 	 */
 	private List<Alarm> joinFetched( final List<Alarm> alarms ) {
+		if ( alarms.size() == 0 ) {
+			return alarms;
+		}
+
 		OrmHelper helper = this.getHelper();
 
 		/*
@@ -261,6 +265,8 @@ public class PersistenceManager {
 	public void updateAlarm( Alarm alarm, AlarmEvent evt ) throws PersistenceException {
 		OrmHelper helper = this.getHelper();
 
+		boolean updateAlarmTable = false;
+
 		// First handle any updates to foreign fields that are set directly in Alarm.
 		switch ( evt.getModifiedField() ) {
 		case AUDIO_SOURCE:
@@ -272,6 +278,7 @@ public class PersistenceManager {
 				audioSource.setId( old.getId() );
 				asDao.update( audioSource );
 			} else {
+				updateAlarmTable = true;
 				asDao.create( alarm.getAudioSource() );
 			}
 			break;
@@ -285,9 +292,13 @@ public class PersistenceManager {
 			break;
 
 		default:
+			updateAlarmTable = true;
 			break;
 		}
-		helper.getAlarmDao().update( alarm );
+
+		if ( updateAlarmTable ) {
+			helper.getAlarmDao().update( alarm );
+		}
 	}
 
 	/**
