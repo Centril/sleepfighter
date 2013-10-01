@@ -106,6 +106,15 @@ public class SortModel {
 	}
 
 	/**
+	 * Returns a copy of the generated list.
+	 *
+	 * @return a copy of the list.
+	 */
+	public int[] getListCopy() {
+		return this.generatedList.clone();
+	}
+
+	/**
 	 * Returns a shuffled representation of the generated list.
 	 *
 	 * @return the shuffled list.

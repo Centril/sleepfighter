@@ -19,7 +19,7 @@ public class IntMath {
 		for ( int j = i;  j >= 0; --j ) {
 			for ( int k = i; i <= val; ++i ) {
 				if ( j * k == val ) {
-					return new int[] { j * k };
+					return new int[] { j, k };
 				}
 			}
 		}

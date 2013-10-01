@@ -21,10 +21,17 @@ public interface NumberListGenerator {
 	public int[] generateList( Random rng, int size );
 
 	/**
-	 * Sets the range of numbers possible to generate.
+	 * Sets the amount of digits > 1 a generated number must exactly have.<br/>
+	 * The default is 3 digits.
 	 *
-	 * @param min the minimum value, inclusive.
-	 * @param max the maximum value, inclusive.
+	 * @param digits the number of digits in every number, e.g: 3 for 100-999.
 	 */
-	public void setRange( int min, int max );
+	public void setNumDigits( int digits );
+
+	/**
+	 * Returns the amount of digits > 1 a generated number must exactly have.
+	 *
+	 * @return n(digits) in generated numbers.
+	 */
+	public int getNumDigits();
 }
