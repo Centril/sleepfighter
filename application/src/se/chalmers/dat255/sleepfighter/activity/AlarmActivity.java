@@ -20,9 +20,14 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TextView.OnEditorActionListener;
 
 /**
  * The activity for when an alarm rings/occurs.
@@ -137,24 +142,38 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void work() {
-	
-		this.startAudio(this.alarm);
 		
-		// start vibration. 
-		if(this.alarm.getVibrationEnabled())
+		this.startAudio(this.alarm);
+
+		// start vibration.
+		if (this.alarm.getVibrationEnabled())
 			VibrationManager.getInstance().startVibrate();
 
 		Toast.makeText(this,
-				"Alarm ringing, get up! Alarm #" + this.alarm.getId(),
+				"Alarm #" + this.alarm.getId() + " is ringing! GET UP!",
 				Toast.LENGTH_LONG).show();
 	}
+	
+	public void alarmString(final AlarmActivity activity) {
+		
+		final TextView alarmName = (TextView) activity
+				.findViewById(R.id.tvAlarmName);
+
+		alarmName.setText(alarm.getName());
+
+		final TextView alarmTime = (TextView) activity
+				.findViewById(R.id.tvAlarmTime);
+
+		alarmTime.setText(alarm.getTimeString());
+		}
+	
 
 	public void button(View view) {
-	
+
 		Random rng = new Random();
 		Intent intent;
-		if(rng.nextBoolean())
-	
+		if (rng.nextBoolean())
+
 			intent = new Intent(this, SimpleMathActivity.class);
 		else
 			intent = new Intent(this, MemoryActivity.class);
@@ -171,9 +190,9 @@ public class AlarmActivity extends Activity {
 				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
 						.show();
 				Debug.d("done with challenge");
-				
+
 				stopAlarm();
-					finish();
+				finish();
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();
@@ -185,10 +204,10 @@ public class AlarmActivity extends Activity {
 	}
 
 	public void stopAlarm() {
-		
+
 		this.stopAudio();
-		
-		if(this.alarm.getVibrationEnabled())
+
+		if (this.alarm.getVibrationEnabled())
 			VibrationManager.getInstance().stopVibrate();
 
 		// Remove notification saying alarm is ringing
