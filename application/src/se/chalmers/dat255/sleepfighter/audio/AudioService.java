@@ -113,6 +113,7 @@ public class AudioService extends Service implements OnPreparedListener,
 	@Override
 	public void onDestroy() {
 		stopPlayback();
+		player.release();
 		super.onDestroy();
 	}
 
