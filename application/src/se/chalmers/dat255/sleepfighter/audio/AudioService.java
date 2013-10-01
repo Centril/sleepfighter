@@ -10,6 +10,7 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
 
 /**
@@ -40,9 +41,13 @@ public class AudioService extends Service implements OnPreparedListener,
 		this.player = new MediaPlayer();
 		this.player.setAudioStreamType(AudioManager.STREAM_ALARM);
 		this.player.setLooping(true);
-		this.state = State.Stopped;
 		this.player.setOnPreparedListener(this);
 		this.player.setOnErrorListener(this);
+
+		// Makes MediaPlayer hold a wake lock while playing
+		this.player.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
+		
+		this.state = State.Stopped;
 	}
 
 	@Override
