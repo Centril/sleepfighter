@@ -96,6 +96,10 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	public boolean onOptionsItemSelected( MenuItem item ) {
 		switch ( item.getItemId() ) {
 		case R.id.ringer_action_cancel:
+			// Stop any playback
+			if(this.driver != null && this.driver.isPlaying()) {
+				this.driver.stop();
+			}
 			this.setAudioSource( null );
 			return true;
 		case R.id.ringer_action_test:
@@ -350,5 +354,14 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	public Alarm getAlarm() {
 		return this.alarm;
+	}
+	
+	@Override
+	protected void onPause() {
+		// Stop any playback
+		if (this.driver != null && this.driver.isPlaying()) {
+			this.driver.stop();
+		}
+		super.onPause();
 	}
 }

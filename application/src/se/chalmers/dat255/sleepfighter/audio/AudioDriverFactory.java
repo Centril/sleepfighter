@@ -44,9 +44,10 @@ public class AudioDriverFactory {
 			case PLAYLIST:
 				driver = new PlaylistDriver( new PlaylistProviderFactory() );
 				break;
-
-			case INTERNET_STREAM:
 			case LOCAL_CONTENT_URI:
+				driver = new LocalContentDriver();
+				break;
+			case INTERNET_STREAM:
 			case SPOTIFY:
 				Toast.makeText( context, "NOT IMPLEMENTED YET!", Toast.LENGTH_LONG ).show();
 				driver = new RingtoneDriver();
