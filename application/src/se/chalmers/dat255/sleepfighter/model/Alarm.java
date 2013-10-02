@@ -15,7 +15,6 @@ import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
-
 import android.provider.Settings;
 
 import com.google.common.base.Preconditions;

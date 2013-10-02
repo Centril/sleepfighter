@@ -2,8 +2,6 @@ package se.chalmers.dat255.sleepfighter.adapter;
 
 import java.util.List;
 
-import com.google.common.base.Objects;
-
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.audio.playlist.Playlist;
 import android.content.Context;
@@ -13,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.google.common.base.Objects;
 
 /**
  * PlaylistsAdapter displays items for PlaylistSelectActivity.

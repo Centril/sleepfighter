@@ -1,15 +1,15 @@
 package se.chalmers.dat255.sleepfighter.reciever;
 
+import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
-import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
+import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
