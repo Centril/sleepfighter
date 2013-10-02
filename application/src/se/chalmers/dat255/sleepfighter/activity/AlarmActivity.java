@@ -27,6 +27,7 @@ import android.widget.Toast;
  * The activity for when an alarm rings/occurs.
  * 
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+ * @author Lam(m)<dannylam@gmail.com> / Danny Lam
  * @version 1.0
  * @since Sep 20, 2013
  */
@@ -63,6 +64,7 @@ public class AlarmActivity extends Activity {
 		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
 		this.alarm = app.getPersister().fetchAlarmById(alarmId);
 
+		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
         tvName.setText(alarm.getName());
         
@@ -70,6 +72,21 @@ public class AlarmActivity extends Activity {
         tvTime.setText(alarm.getTimeString());
 	}
 
+	/**
+	 * A Button to start the challenge
+	 */
+	public void button(View view) {
+		// The vibration stops whenever you start the challenge
+		VibrationManager.getInstance().stopVibrate(getApplicationContext());
+
+		Intent i = new Intent(this, ChallengeActivity.class);
+
+		// TODO use property from Alarm
+		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, ChallengeType.TEST);
+		
+		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
+	}
+	
 	protected void onPause() {
 		super.onPause();
 
@@ -139,31 +156,9 @@ public class AlarmActivity extends Activity {
 		return flags;
 	}
 
-	public void alarmString(final AlarmActivity activity) {
-
-		final TextView alarmName = (TextView) activity
-				.findViewById(R.id.tvAlarmName);
-
-		alarmName.setText(alarm.getName());
-
-		final TextView alarmTime = (TextView) activity
-				.findViewById(R.id.tvAlarmTime);
-
-		alarmTime.setText(alarm.getTimeString());
-	}
-
-	public void button(View view) {
-		// The vibration stops whenever you start the challenge
-		VibrationManager.getInstance().stopVibrate(getApplicationContext());
-
-		Intent i = new Intent(this, ChallengeActivity.class);
-
-		// TODO use property from Alarm
-		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, ChallengeType.TEST);
-		
-		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
-	}
-
+	/**
+	 * What will happen when you complete a challenge or press back.
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Check if result is from a challenge
@@ -173,8 +168,10 @@ public class AlarmActivity extends Activity {
 						.show();
 				Debug.d("done with challenge");
 
+				// If completed, shut the alarm and navigate to main
 				stopAlarm();
 				finish();
+				
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();
@@ -185,6 +182,9 @@ public class AlarmActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Stop the current alarm sound and vibration
+	 */
 	public void stopAlarm() {
 
 		this.stopAudio();
