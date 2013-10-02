@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.AlarmAdapter;
-import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
@@ -19,6 +19,7 @@ import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.DialogUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -258,6 +259,9 @@ public class MainActivity extends Activity {
 		case R.id.action_settings:
 			this.startGlobalSettings();
 			return true;
+		case R.id.action_start_challenge:
+			startDebugChallenge();
+			return true;
 		default:
 			return super.onOptionsItemSelected( item );
 		}	
@@ -274,4 +278,35 @@ public class MainActivity extends Activity {
 		// Start activity!
 		this.startActivity( activityIntent );
 	}*/
+
+	/**
+	 * Debug method for launching dialog where any challenge defined in {@link ChallengeType} can be
+	 * started.
+	 */
+	private void startDebugChallenge() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final ChallengeType[] types = ChallengeType.values();
+
+		// Making string array "copy" of types for use with standard dialog
+		String[] items = new String[types.length];
+		for(int i = 0; i < types.length; i++) {
+			items[i] = types[i].name();
+		}
+
+		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// The clicked challenge type
+				ChallengeType type = types[which];
+				
+				// Start the selected challenge
+				Intent i = new Intent(MainActivity.this, ChallengeActivity.class);
+				i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
+				startActivity(i);
+			}
+		};
+		builder.setItems(items, listener);
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
 }
