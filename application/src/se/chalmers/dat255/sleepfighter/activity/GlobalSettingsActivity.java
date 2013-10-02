@@ -1,15 +1,13 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.SFApplication;
-import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.utils.android.ActivityUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceActivity;
 
 public class GlobalSettingsActivity extends PreferenceActivity {
 	

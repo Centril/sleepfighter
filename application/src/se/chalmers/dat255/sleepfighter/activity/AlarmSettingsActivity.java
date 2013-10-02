@@ -33,9 +33,6 @@ import android.preference.PreferenceCategory;
 import android.support.v4.app.NavUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -239,6 +236,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			}
 			else if (REPEAT.equals(preference.getKey())) {
 				alarm.setRepeat(("true".equals(stringValue)) ? true : false);
+				Debug.d("setting repeat: " + alarm.isRepeating() );
+				
 			}
 			else if (VIBRATION.equals(preference.getKey())) {
 				alarm.setVibrationEnabled(("true".equals(stringValue)) ? true : false);
@@ -264,6 +263,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 		}
 		else if (REPEAT.equals(preference.getKey())) {
+			
 			((CheckBoxPreference) preference).setChecked(alarm.isRepeating());
 		}
 		else if (VIBRATION.equals(preference.getKey())) {

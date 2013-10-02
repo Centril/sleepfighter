@@ -237,6 +237,7 @@ public class Alarm implements Cloneable, IdProvider {
 		this( new DateTime() );
 	}
 
+	
 	/**
 	 * Copy constructor
 	 *
@@ -258,6 +259,12 @@ public class Alarm implements Cloneable, IdProvider {
 
 		// Copy dependencies.
 		this.bus = rhs.bus;
+		
+		this.vibrationEnabled = rhs.vibrationEnabled;
+		this.isRepeating = rhs.isRepeating;
+		
+		this.audioSource = rhs.audioSource;
+		this.audioConfig = rhs.audioConfig;
 	}
 
 	/**

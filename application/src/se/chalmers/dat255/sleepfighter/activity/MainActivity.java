@@ -17,6 +17,7 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -155,6 +156,7 @@ public class MainActivity extends Activity {
 		Alarm copy = null;
 		try {
 			copy = this.manager.getPresetAlarm().clone();
+			Debug.d("repeat: " + copy.isRepeating() );
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -163,6 +165,7 @@ public class MainActivity extends Activity {
 		copy.setId(Alarm.NOT_COMMITTED_ID);
 		this.newAlarm(copy, true );
 	}
+	
 
 	private void newAlarm( Alarm alarm, boolean isAdded ) {
 		if ( alarm.isUnnamed() ) {
