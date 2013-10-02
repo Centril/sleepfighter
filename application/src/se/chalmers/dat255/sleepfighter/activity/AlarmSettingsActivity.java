@@ -29,9 +29,13 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.support.v4.app.NavUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -90,6 +94,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 	}
 	
+	
+	private void removeDeleteButton() {
+		Preference pref = (Preference) findPreference(DELETE);
+		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
+		category.removePreference(pref);		
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,16 +110,23 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		alarmList = ((SFApplication) getApplication()).getAlarms();
 		((SFApplication) getApplication()).getBus().subscribe(this);
 		
-		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm())
+		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm()) {
 			alarm = alarmList.getPresetAlarm();
-		else
+		}else{
 			alarm = alarmList.getById(id);
-
+	
+		}
+			
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
 		setupActionBar();
 		
 		setupSimplePreferencesScreen();
+		
+		if(alarm.isPresetAlarm()) {
+			// having a delete button for the presets alarm makes no sense, so remove it. 
+			removeDeleteButton();			
+		}
 	}
 
 	@Override

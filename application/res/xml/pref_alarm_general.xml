@@ -24,7 +24,8 @@
 
     </PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/misc_category_title" >
+	<PreferenceCategory android:title="@string/misc_category_title" 
+	    android:key="pref_category_misc"  >
 
         <!-- NOTE: EditTextPreference accepts EditText attributes. -->
         <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
@@ -50,6 +51,8 @@
             android:defaultValue="true" />
         
         <Preference
+       
+                    android:id="@+id/pref_delete_alarm"
             android:title="@string/pref_delete_alarm"
             android:key="pref_delete_alarm" />
     </PreferenceCategory>
