@@ -155,8 +155,9 @@ public class AlarmActivity extends Activity {
 		this.startAudio(this.alarm);
 
 		// start vibration.
-		if (this.alarm.getVibrationEnabled())
-			VibrationManager.getInstance().startVibrate();
+		if (this.alarm.getVibrationEnabled()) {
+			VibrationManager.getInstance().startVibrate(this);
+		}
 
 		Toast.makeText(this,
 				"Alarm #" + this.alarm.getId() + " is ringing! GET UP!",
@@ -188,7 +189,7 @@ public class AlarmActivity extends Activity {
 			intent = new Intent(this, MemoryActivity.class);
 		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
 		// The vibration stops whenever you start the challenge
-		VibrationManager.getInstance().stopVibrate();
+		VibrationManager.getInstance().stopVibrate(this);
 	}
 
 	@Override
@@ -216,8 +217,9 @@ public class AlarmActivity extends Activity {
 
 		this.stopAudio();
 
-		if (this.alarm.getVibrationEnabled())
-			VibrationManager.getInstance().stopVibrate();
+		if (this.alarm.getVibrationEnabled()) {
+			VibrationManager.getInstance().stopVibrate(this);
+		}
 
 		// Remove notification saying alarm is ringing
 		NotificationHelper.removeNotification(this);

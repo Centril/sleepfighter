@@ -66,8 +66,6 @@ public class MainActivity extends Activity {
 		this.setupListView();
 
 		this.updateEarliestText();
-
-		VibrationManager.getInstance().setup(this);
 	}
 
 	@Override

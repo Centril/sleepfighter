@@ -11,36 +11,28 @@ public class VibrationManager {
 
 	private static VibrationManager instance = null;
 
-	protected VibrationManager() {
+	private boolean startedVibration; 
+
+	private VibrationManager() {
 		startedVibration = false;
 	}
-	
-	boolean startedVibration; 
 
 	/*
 	 * The class is a singleton for now. We'll probably fix this later. 
 	 */
-	public static VibrationManager getInstance() {
+	public synchronized static VibrationManager getInstance() {
 		if (instance == null) {
 			instance = new VibrationManager();
 		}
 		return instance;
 	}
 	
-	Vibrator vib;
-	
-	public void setup(Context context) {
-		try {
-			vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);	
-		} catch (Exception e) {
-			Debug.e(e);
-		}
-	}
-	
-	public void startVibrate() {
+	public void startVibrate(Context context) {
 		if(startedVibration) {
 			return;
 		}
+		
+		Vibrator vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);	
 		
 		try {
 			long[] pattern = {0, 1000, 1000};
@@ -53,10 +45,12 @@ public class VibrationManager {
 		}
 	}
 
-	public void stopVibrate() {
-		if(!startedVibration) 
+	public void stopVibrate(Context context) {
+		if (!startedVibration) {
 			return;
-		
+		}
+		Vibrator vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);	
+
 		try {
 			vib.cancel();
 			this.startedVibration = false;
