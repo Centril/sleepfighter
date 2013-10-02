@@ -31,7 +31,7 @@ public class MotionChallenge implements Challenge, PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		tv.setText((mc.getFloatList()).toString());
+		// tv.setText((mc.getFloatList()).toString());
+		tv.setText(Float.toString((mc.getZ())));
 	}
-
 }
