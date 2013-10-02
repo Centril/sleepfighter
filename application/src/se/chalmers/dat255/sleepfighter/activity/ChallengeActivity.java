@@ -31,11 +31,6 @@ public class ChallengeActivity extends Activity {
 		ChallengeType type = (ChallengeType) bundled;
 		Challenge challenge = ChallengeFactory.getChallenge(type);
 		challenge.start(this);
-
-		// TODO do something else to get an instance of Challenge and call
-		// challenge.start(this)
-		Challenge challenge1 = new SimpleMathChallenge();
-		challenge1.start(this);
 	}
 
 	public void complete() {
