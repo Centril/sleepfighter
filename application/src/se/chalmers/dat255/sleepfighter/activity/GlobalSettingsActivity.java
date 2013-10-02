@@ -30,9 +30,7 @@ public class GlobalSettingsActivity extends PreferenceActivity {
 	
 	private void startGlobalPresetAlarmEdit() {
 		Intent intent = new Intent(this, AlarmSettingsActivity.class );
-		Alarm presetAlarm =  SFApplication.get().getAlarms().getPresetAlarm();
-		new IntentUtils( intent ).setAlarmId( presetAlarm ).setSettingPresetAlarm(true);
-
+		new IntentUtils( intent ).setSettingPresetAlarm(true);
 		startActivity( intent );
 	}
 	

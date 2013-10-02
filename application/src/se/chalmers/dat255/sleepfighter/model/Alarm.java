@@ -10,10 +10,13 @@ import org.joda.time.ReadableDateTime;
 
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+
+import android.provider.Settings;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -210,7 +213,7 @@ public class Alarm implements Cloneable, IdProvider {
 	private boolean vibrationEnabled = true;
 	
 	@DatabaseField(foreign = true, canBeNull = true)
-	private AudioSource audioSource;
+	private AudioSource audioSource = new AudioSource(AudioSourceType.RINGTONE, Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
 
 	// TODO: initialized here for now, remove.
 	@DatabaseField(foreign = true, canBeNull = false)

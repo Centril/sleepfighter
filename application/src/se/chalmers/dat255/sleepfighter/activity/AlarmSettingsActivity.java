@@ -105,22 +105,19 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
-
 		alarmList = ((SFApplication) getApplication()).getAlarms();
 		((SFApplication) getApplication()).getBus().subscribe(this);
 		
 		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm()) {
 			alarm = alarmList.getPresetAlarm();
 		}else{
+			final int id = new IntentUtils( this.getIntent() ).getAlarmId();
 			alarm = alarmList.getById(id);
-	
 		}
 			
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
 		setupActionBar();
-		
 		setupSimplePreferencesScreen();
 		
 		if(alarm.isPresetAlarm()) {
@@ -201,7 +198,14 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	private void startRingerEdit() {
 		Intent intent = new Intent(this, RingerSettingsActivity.class );
-		new IntentUtils( intent ).setAlarmId( alarm );
+		
+
+		if(this.alarm.isPresetAlarm()) {
+			new IntentUtils( intent ).setSettingPresetAlarm(true);
+		} else
+			new IntentUtils( intent ).setAlarmId( alarm );
+	
+		
 		this.startActivity( intent );
 	}
 
