@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
+import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
+
 /**
  * A simple factory class for construction of challenges.
  */
@@ -21,6 +23,8 @@ public class ChallengeFactory {
 			return new SimpleMathChallenge();
 		case MEMORY:
 			return new MemoryChallenge();
+		case SORT:
+			return new SortChallenge();
 		default:
 			throw new IllegalArgumentException("Undefined challenge");
 		}
