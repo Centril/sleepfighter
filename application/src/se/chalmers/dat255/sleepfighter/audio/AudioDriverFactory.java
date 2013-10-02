@@ -31,11 +31,13 @@ public class AudioDriverFactory {
 	public AudioDriver produce( Context context, AudioSource source ) {
 		AudioDriver driver = null;
 
+		
 		if ( source == null ) {
 			driver = new SilentAudioDriver();
 		} else {
 			Log.d( "AudioDriverFactory", source.toString() );
 
+			
 			switch ( source.getType() ) {
 			case RINGTONE:
 				driver = new RingtoneDriver();

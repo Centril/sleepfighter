@@ -14,4 +14,7 @@
     <string name="pref_about">Om</string>
     <string name="pref_version">Version</string>
 
+    
+    <string name="pref_global_preset_alarm">Förvalt Alarm</string>
+    
 </resources>

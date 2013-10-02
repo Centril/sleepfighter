@@ -25,7 +25,7 @@
     </PreferenceCategory>
           
     <Preference
-            android:title="global preset alarm"
+            android:title="@string/pref_global_preset_alarm"
             android:key="perf_global_preset_alarm"
             android:persistent="false" />
     

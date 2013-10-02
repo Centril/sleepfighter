@@ -139,6 +139,7 @@ public class SimpleMathChallenge implements Challenge {
 				
 	}
 	
+	
 	/**
 	 * Handles what will happen when you answer
 	 */
