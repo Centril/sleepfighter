@@ -277,12 +277,17 @@ public class PersistenceManager {
 			AudioSource audioSource = alarm.getAudioSource();
 
 			if ( evt.getOldValue() != null ) {
-				AudioSource old = (AudioSource) evt.getOldValue();
-				audioSource.setId( old.getId() );
-				asDao.update( audioSource );
+				if ( audioSource == null ) {
+					updateAlarmTable = true;
+					asDao.delete( audioSource );
+				} else {
+					AudioSource old = (AudioSource) evt.getOldValue();
+					audioSource.setId( old.getId() );
+					asDao.update( audioSource );
+				}
 			} else {
 				updateAlarmTable = true;
-				asDao.create( alarm.getAudioSource() );
+				asDao.create( audioSource );
 			}
 			break;
 
