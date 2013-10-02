@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
-import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
@@ -64,10 +63,6 @@ public class AlarmActivity extends Activity {
 		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
 		this.alarm = app.getPersister().fetchAlarmById(alarmId);
 
-		// Do stuff.
-		this.work();
-		
-		
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
         tvName.setText(alarm.getName());
         
@@ -144,22 +139,8 @@ public class AlarmActivity extends Activity {
 		return flags;
 	}
 
-	private void work() {
-		
-		this.startAudio(this.alarm);
-
-		// start vibration.
-		if (this.alarm.getVibrationEnabled()) {
-			VibrationManager.getInstance().startVibrate(this);
-		}
-
-		Toast.makeText(this,
-				"Alarm #" + this.alarm.getId() + " is ringing! GET UP!",
-				Toast.LENGTH_LONG).show();
-	}
-	
 	public void alarmString(final AlarmActivity activity) {
-		
+
 		final TextView alarmName = (TextView) activity
 				.findViewById(R.id.tvAlarmName);
 
@@ -169,12 +150,11 @@ public class AlarmActivity extends Activity {
 				.findViewById(R.id.tvAlarmTime);
 
 		alarmTime.setText(alarm.getTimeString());
-		}
-	
+	}
 
 	public void button(View view) {
 		// The vibration stops whenever you start the challenge
-		VibrationManager.getInstance().stopVibrate(this);
+		VibrationManager.getInstance().stopVibrate(getApplicationContext());
 
 		Intent i = new Intent(this, ChallengeActivity.class);
 
@@ -209,23 +189,12 @@ public class AlarmActivity extends Activity {
 
 		this.stopAudio();
 
-		if (this.alarm.getVibrationEnabled()) {
-			VibrationManager.getInstance().stopVibrate(this);
-		}
+		VibrationManager.getInstance().stopVibrate(getApplicationContext());
 
 		// Remove notification saying alarm is ringing
 		NotificationHelper.removeNotification(this);
 
 		this.performRescheduling();
-	}
-
-	private void startAudio(Alarm alarm) {
-		SFApplication app = SFApplication.get();
-		AudioDriver driver = app.getAudioDriverFactory().produce(app,
-				alarm.getAudioSource());
-		app.setAudioDriver(driver);
-
-		driver.play(alarm.getAudioConfig());
 	}
 
 	private void stopAudio() {

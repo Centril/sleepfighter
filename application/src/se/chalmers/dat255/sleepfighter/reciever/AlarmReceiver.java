@@ -1,6 +1,8 @@
 package se.chalmers.dat255.sleepfighter.reciever;
 
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.R;
@@ -13,6 +15,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 /**
  * <p>AlarmReceiver is responsible for receiving broadcasts<br/>
@@ -69,6 +72,17 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @param extras extras to pass on.
 	 */
 	private void startAlarm( Alarm alarm, Bundle extras ) {
+		startAudio(alarm);
+
+		// start vibration.
+		if (alarm.getVibrationEnabled()) {
+			VibrationManager.getInstance().startVibrate(context.getApplicationContext());
+		}
+
+		Toast.makeText(context,
+				"Alarm #" + alarm.getId() + " is ringing! GET UP!",
+				Toast.LENGTH_LONG).show();
+
 		// Create intent & re-put extras.
 		Intent activityIntent;
 		activityIntent = new Intent( context, AlarmActivity.class );
@@ -79,6 +93,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 		context.startActivity( activityIntent );
 
 		showNotification(alarm, activityIntent);
+	}
+
+	private void startAudio(Alarm alarm) {
+		SFApplication app = SFApplication.get();
+		AudioDriver driver = app.getAudioDriverFactory().produce(app,
+				alarm.getAudioSource());
+		app.setAudioDriver(driver);
+
+		driver.play(alarm.getAudioConfig());
 	}
 
 	/**
