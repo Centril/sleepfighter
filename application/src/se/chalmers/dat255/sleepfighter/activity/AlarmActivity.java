@@ -1,13 +1,12 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
-import java.util.Random;
-
 import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
@@ -20,15 +19,10 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.TextView.OnEditorActionListener;
 
 /**
  * The activity for when an alarm rings/occurs.
@@ -179,17 +173,15 @@ public class AlarmActivity extends Activity {
 	
 
 	public void button(View view) {
-
-		Random rng = new Random();
-		Intent intent;
-		if (rng.nextBoolean())
-
-			intent = new Intent(this, SimpleMathActivity.class);
-		else
-			intent = new Intent(this, MemoryActivity.class);
-		startActivityForResult(intent, CHALLENGE_REQUEST_CODE);
 		// The vibration stops whenever you start the challenge
 		VibrationManager.getInstance().stopVibrate(this);
+
+		Intent i = new Intent(this, ChallengeActivity.class);
+
+		// TODO use property from Alarm
+		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, ChallengeType.TEST);
+		
+		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
 	}
 
 	@Override
