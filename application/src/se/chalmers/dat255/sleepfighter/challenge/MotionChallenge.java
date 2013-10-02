@@ -5,9 +5,9 @@ import java.beans.PropertyChangeListener;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.widget.TextView;
 
 /**
@@ -21,7 +21,7 @@ public class MotionChallenge implements Challenge, PropertyChangeListener {
 
 	@Override
 	public void start(ChallengeActivity activity) {
-		Debug.d("Starting MotionChallenge");
+		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		this.mc = new MotionControl(activity);
 		this.mc.addListener(this);
 		this.activity = activity;
@@ -30,8 +30,7 @@ public class MotionChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-		// tv.setText((mc.getFloatList()).toString());
-		tv.setText(Float.toString((mc.getZ())));
+	public void propertyChange(PropertyChangeEvent event) {
+		tv.setText(Double.toString(mc.getAngle()));
 	}
 }
