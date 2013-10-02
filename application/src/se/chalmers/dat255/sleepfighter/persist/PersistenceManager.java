@@ -11,6 +11,7 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 
 import com.google.common.collect.Maps;
@@ -51,6 +52,7 @@ public class PersistenceManager {
 
 		case ADD:
 			for ( Object elem : evt.elements() ) {
+				Debug.d("added alarm to database");
 				this.addAlarm( (Alarm) elem );
 			}
 			break;
@@ -136,6 +138,7 @@ public class PersistenceManager {
 	 */
 	public AlarmList fetchAlarms() throws PersistenceException {
 		try {
+			Debug.d("fetching alarms");
 			return new AlarmList( this.joinFetched( this.makeAlarmQB().query() ) );
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );

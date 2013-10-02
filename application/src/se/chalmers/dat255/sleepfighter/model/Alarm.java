@@ -10,10 +10,13 @@ import org.joda.time.ReadableDateTime;
 
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+
+import android.provider.Settings;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -202,11 +205,15 @@ public class Alarm implements Cloneable, IdProvider {
 	@DatabaseField
 	private boolean isRepeating = false;
 	
+	// whether this alarm is the preset alarm(the default alarm)
+	@DatabaseField
+	private boolean isPresetAlarm = false;
+	
 	@DatabaseField
 	private boolean vibrationEnabled = true;
 	
 	@DatabaseField(foreign = true, canBeNull = true)
-	private AudioSource audioSource;
+	private AudioSource audioSource = new AudioSource(AudioSourceType.RINGTONE, Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
 
 	// TODO: initialized here for now, remove.
 	@DatabaseField(foreign = true, canBeNull = false)
@@ -216,6 +223,7 @@ public class Alarm implements Cloneable, IdProvider {
 	public static final Long NEXT_NON_REAL = null;
 
 	private MessageBus<Message> bus;
+	
 
 	/* --------------------------------
 	 * Constructors.
@@ -229,6 +237,7 @@ public class Alarm implements Cloneable, IdProvider {
 		this( new DateTime() );
 	}
 
+	
 	/**
 	 * Copy constructor
 	 *
@@ -250,6 +259,12 @@ public class Alarm implements Cloneable, IdProvider {
 
 		// Copy dependencies.
 		this.bus = rhs.bus;
+		
+		this.vibrationEnabled = rhs.vibrationEnabled;
+		this.isRepeating = rhs.isRepeating;
+		
+		this.audioSource = rhs.audioSource;
+		this.audioConfig = rhs.audioConfig;
 	}
 
 	/**
@@ -780,6 +795,14 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public void setFetched( AudioSource source ) {
 		this.audioSource = source;
+	}
+	
+	public void setIsPresetAlarm(boolean isPresetAlarm) {
+		this.isPresetAlarm = isPresetAlarm;
+	}
+	
+	public boolean isPresetAlarm() {
+		return this.isPresetAlarm;
 	}
 
 	/* --------------------------------

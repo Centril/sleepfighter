@@ -18,6 +18,7 @@ import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.DialogUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -161,18 +162,29 @@ public class MainActivity extends Activity {
 	}
 
 	private void addAlarm() {
-		this.newAlarm( new Alarm(), true );
+		Alarm copy = null;
+		try {
+			copy = this.manager.getPresetAlarm().clone();
+			Debug.d("repeat: " + copy.isRepeating() );
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		// it hasn't yet been assigned an ID by the database. 
+		copy.setId(Alarm.NOT_COMMITTED_ID);
+		this.newAlarm(copy, true );
 	}
+	
 
 	private void newAlarm( Alarm alarm, boolean isAdded ) {
 		if ( alarm.isUnnamed() ) {
-			alarm.setUnnamedPlacement( this.manager.findLowestUnnamedPlacement() );
+			alarm.setUnnamedPlacement(  this.manager.findLowestUnnamedPlacement() );
 		}
 
 		this.manager.add( alarm );
 		this.startAlarmEdit( alarm, isAdded );
 	}
-
+	
 	/**
 	 * Handles a change to an alarm's name by refreshing the list.
 	 * 

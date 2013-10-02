@@ -16,6 +16,7 @@ import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.DialogUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
@@ -28,6 +29,7 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.support.v4.app.NavUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -89,22 +91,36 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 	}
 	
+	
+	private void removeDeleteButton() {
+		Preference pref = (Preference) findPreference(DELETE);
+		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
+		category.removePreference(pref);		
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
-
 		alarmList = ((SFApplication) getApplication()).getAlarms();
 		((SFApplication) getApplication()).getBus().subscribe(this);
 		
-		alarm = alarmList.getById(id);
-
+		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm()) {
+			alarm = alarmList.getPresetAlarm();
+		}else{
+			final int id = new IntentUtils( this.getIntent() ).getAlarmId();
+			alarm = alarmList.getById(id);
+		}
+			
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
 		setupActionBar();
-		
 		setupSimplePreferencesScreen();
+		
+		if(alarm.isPresetAlarm()) {
+			// having a delete button for the presets alarm makes no sense, so remove it. 
+			removeDeleteButton();			
+		}
 	}
 
 	@Override
@@ -179,7 +195,14 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	private void startRingerEdit() {
 		Intent intent = new Intent(this, RingerSettingsActivity.class );
-		new IntentUtils( intent ).setAlarmId( alarm );
+		
+
+		if(this.alarm.isPresetAlarm()) {
+			new IntentUtils( intent ).setSettingPresetAlarm(true);
+		} else
+			new IntentUtils( intent ).setAlarmId( alarm );
+	
+		
 		this.startActivity( intent );
 	}
 
@@ -213,6 +236,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			}
 			else if (REPEAT.equals(preference.getKey())) {
 				alarm.setRepeat(("true".equals(stringValue)) ? true : false);
+				Debug.d("setting repeat: " + alarm.isRepeating() );
+				
 			}
 			else if (VIBRATION.equals(preference.getKey())) {
 				alarm.setVibrationEnabled(("true".equals(stringValue)) ? true : false);
@@ -238,6 +263,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 		}
 		else if (REPEAT.equals(preference.getKey())) {
+			
 			((CheckBoxPreference) preference).setChecked(alarm.isRepeating());
 		}
 		else if (VIBRATION.equals(preference.getKey())) {

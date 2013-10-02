@@ -1,4 +1,4 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <CheckBoxPreference
         android:key="pref_alarm_turn_screen_on"
@@ -23,5 +23,10 @@
             android:title="@string/pref_version"
             android:summary="@string/version_name" />
     </PreferenceCategory>
-
+          
+    <Preference
+            android:title="global preset alarm"
+            android:key="perf_global_preset_alarm"
+            android:persistent="false" />
+    
 </PreferenceScreen>

@@ -2,9 +2,11 @@ package se.chalmers.dat255.sleepfighter.model;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
@@ -18,6 +20,25 @@ import com.badlogic.gdx.utils.IntArray;
  * @since Sep 18, 2013
  */
 public class AlarmList extends ObservableList<Alarm> {
+	
+	// this alarm is basically the default alarm. The settings of this alarm, will become the initial 
+	// default settings of all newly created alarms. 
+	private Alarm presetAlarm;
+	
+	public Alarm getPresetAlarm() {
+		if(this.presetAlarm == null) {
+			// we haven't yet created a preset alarm, so we'll create one.
+			this.presetAlarm = new Alarm(0,0);
+			this.presetAlarm.setIsPresetAlarm(true);
+			// ensure that it gets added to the database. 
+			Debug.d("created preset alarm");
+			this.fireEvent( new Event( Operation.ADD, -1, Collections.singleton( this.presetAlarm)));
+		}
+		
+		return this.presetAlarm;
+	}
+	
+	
 	/**
 	 * Constructs the manager with no initial alarms.
 	 */	
@@ -41,6 +62,22 @@ public class AlarmList extends ObservableList<Alarm> {
 	 */
 	@Override
 	public void setDelegate( List<Alarm> delegate ) {
+		
+		Debug.d("setting delegate");
+		
+		
+		// here we do magic!
+		// find the preset alarm.
+		for(Alarm alarm : delegate) {
+			if(alarm.isPresetAlarm()) {
+				this.presetAlarm = alarm;
+				break;
+			}
+		}
+		
+		if(this.presetAlarm !=  null)
+			delegate.remove(this.presetAlarm);
+		
 		super.setDelegate( delegate );
 	}
 
