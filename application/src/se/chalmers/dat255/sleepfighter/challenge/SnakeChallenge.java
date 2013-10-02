@@ -4,181 +4,192 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
-public class SnakeChallenge implements Challenge {
+public class SnakeChallenge implements Challenge, OnTouchListener {
 
 	private Model model;
-	private ChallengeActivity activity;
+	private Thread thread;
+	private GameView view;
 	
 	private float touchX;
 	private float touchY;
+	private boolean updateDir;
 	
 	@Override
-	public void start(ChallengeActivity activity) {
-		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		
+	public void start(final ChallengeActivity activity) {
 		model = new Model();
-		this.activity = activity;
-		activity.setContentView(new GameView(activity));
+		view = new GameView(activity, model);
+		view.setOnTouchListener(this);
+		activity.setContentView(view);
+		
+		thread = new Thread() {
+			@Override
+			public void run() {
+				while (!model.won) {
+					if (model.lost) {
+						model = new Model();
+					}
+					
+					if (view.isSurfaceCreated()) {
+						Canvas c = null;
+						
+						try {
+							c = view.getHolder().lockCanvas();
+							
+							synchronized(view.getHolder()) {
+								
+								if (c != null) {
+									if (updateDir) {
+										model.updateDirection(touchX/c.getWidth(), touchY/c.getHeight());
+										updateDir = false;
+									}
+									model.update();
+									view.render(c);
+								}
+							}
+						}
+						finally {
+							if (c != null) {
+								view.getHolder().unlockCanvasAndPost(c);
+							}
+						}
+					}
+				}
+				activity.complete();
+			}
+		};
+		thread.start();
 	}
-
+	
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		touchX = event.getX();
+		touchY = event.getY();
+		
+		updateDir = true;
+		
+		return true;
+	}
+	
 	private class GameView extends SurfaceView implements Callback {
-		Context context;
 
-		private GameThread thread;
-
-		void initView() {
-			SurfaceHolder holder = getHolder();
-			holder.addCallback(this);
-			thread = new GameThread(holder, context, new Handler());
+		private boolean isSurfaceCreated;
+		private Model model;
+		
+		Paint clearPaint = new Paint();
+		
+		private GameView(Context context) {
+			super(context);
+		}
+		
+		public GameView(Context context, Model model) {
+			this(context);
+			
+			isSurfaceCreated = false;
+			this.model = model;
+			clearPaint.setARGB(255, 0, 0, 0);
+			
+			getHolder().addCallback(this);
 			setFocusable(true);
 		}
 
-		// class constructors
-		public GameView(Context context) {
-			super(context);
-			this.context = context;
-			initView();
+		@Override
+		public void surfaceChanged(SurfaceHolder holder, int format, int width,
+				int height) {
 		}
 
 		@Override
-		public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2,
-				int arg3) {
+		public void surfaceCreated(SurfaceHolder holder) {
+			isSurfaceCreated = true;
 		}
 
 		@Override
-		public void surfaceDestroyed(SurfaceHolder arg0) {
-			boolean retry = true;
+		public void surfaceDestroyed(SurfaceHolder holder) {
+		}
+		
+		public boolean isSurfaceCreated() {
+			return isSurfaceCreated;
+		}
+		
+		public void render(Canvas c) {
+			c.drawRect(0, 0, c.getWidth(), c.getHeight(), clearPaint);
 			
-			thread.setRunning(false);
-			while (retry) {
-				try {
-					thread.join();
-					retry = false;
-				} catch (InterruptedException e) {
-				}
+			List<RectEntity> obstacles = model.getObstacles();
+			Paint obstaclePaint = model.obstaclePaint;
+			RectEntity exit = model.getExit();
+			Paint exitPaint = model.exitPaint;
+			List<SphereFruit> sphereFruits = model.getSphereFruits();
+			Paint sphereFruitPaint = model.sphereFruitPaint;
+			List<Segment> snakeSegments = model.getSnakeSegments();
+			Paint snakePaint = model.snakePaint;
+			
+			float scaleX = c.getWidth()*1f/model.boardWidth;
+			float scaleY = c.getHeight()*1f/model.boardHeight;
+
+			for (int i = 0; i < obstacles.size(); i++) {
+				RectEntity o = obstacles.get(i);
+
+				c.drawRect(
+						o.getX() * scaleX,
+						o.getY() * scaleY,
+						o.getX() * scaleX + o.getWidth() * scaleX,
+						o.getY() * scaleY + o.getHeight() * scaleY, obstaclePaint);
 			}
-		}
 
-		@Override
-		public void surfaceCreated(SurfaceHolder arg0) {
-			if (thread.isRunning()) {
-				// When game is opened again in the Android OS
-				thread = new GameThread(getHolder(), context, new Handler());
-				thread.start();
-			} else {
-				// creating the game Thread for the first time
-				thread.start();
+			if (exit != null) {
+				c.drawRect(
+						exit.getX() * scaleX,
+						exit.getY() * scaleY,
+						exit.getX() * scaleX + exit.getWidth() * scaleX,
+						exit.getY() * scaleY + exit.getHeight() * scaleY, exitPaint);
 			}
-		}
-		
-		@Override
-		public boolean onTouchEvent(MotionEvent e) {
-			touchX = e.getX();
-			touchY = e.getY();
-			
-			thread.dirChanged();
-			
-			return true;
-		}
-	}
 
-	private class GameThread extends Thread {
-		private SurfaceHolder holder;
-		private Paint blackPaint;
+			for (int i = 0; i < sphereFruits.size(); i++) {
+				SphereFruit f = sphereFruits.get(i);
 
-		// for consistent rendering
-		private long sleepTime;
-		// amount of time to sleep for (in milliseconds)
-		private long delay = 1000/60;
+				c.drawOval(new RectF(
+						f.getX() * scaleX - f.getWidth() * scaleX,
+						f.getY() * scaleY - f.getHeight() * scaleY,
+						f.getX() * scaleX + f.getWidth() * scaleX,
+						f.getY() * scaleY + f.getHeight() * scaleY), sphereFruitPaint);
+			}
 
-		private boolean isRunning = true;
-		boolean updateDir = false;
-		
-		public void dirChanged() {
-			updateDir = true;
-		}
-		
-		public GameThread(SurfaceHolder surfaceHolder, Context context,
-				Handler handler) {
+			for (int i = 0; i < snakeSegments.size(); i++) {
+				Segment s = snakeSegments.get(i);
 
-			// data about the screen
-			holder = surfaceHolder;
+				c.drawCircle(
+						(s.getX()*scaleX),
+						(s.getY()*scaleY),
+						(s.getHeight()*scaleY), snakePaint);
 
-			blackPaint = new Paint();
-			blackPaint.setARGB(255, 0, 0, 0);
-		}
-
-		public void setRunning(boolean isRunning) {
-			this.isRunning = isRunning;
-		}
-		
-		public boolean isRunning() {
-			return isRunning;
-		}
-		
-		@Override
-		public void run() {
-			while (isRunning) {
-				long beforeTime = System.nanoTime();
-				Canvas c = null;
-				try {
-					c = holder.lockCanvas(null);
-					synchronized (holder) {
-						if (model.lost) {
-							model = new Model();
-						}
-						else if (model.won) {
-							activity.complete();
-						}
-						
-						if (updateDir) {
-							updateDir = false;
-							model.updateDirection(touchX/c.getWidth(), touchY/c.getHeight());
-						}
-						
-						model.update();
-						c.drawRect(0, 0, c.getWidth(), c.getHeight(), blackPaint);
-						model.draw(c);
-					}
-				} finally {
-					if (c != null) {
-						holder.unlockCanvasAndPost(c);
-					}
-				}
-
-				this.sleepTime = delay - ((System.nanoTime() - beforeTime) / 1000000L);
-
-				try {
-					if (sleepTime > 0) {
-						this.sleep(sleepTime);
-					}
-				} catch (InterruptedException ex) {
-					Debug.d("GameThread (SnakeChallenge) sleep interrupted!");
-				}
+				c.drawOval(new RectF(
+						(s.getX() * scaleX - s.getWidth() * scaleX),
+						(s.getY() * scaleY - s.getHeight() * scaleY),
+						(s.getX() * scaleX + s.getWidth() * scaleX),
+						(s.getY() * scaleY + s.getHeight() * scaleY)), snakePaint);
 			}
 		}
 	}
 	
 	private class Model {
-		private final int boardWidth = 200;
-		private final int boardHeight = 400;
-		private final int maxSegments = 6;
+		public final int boardWidth = 200;
+		public final int boardHeight = 400;
 		
-		private final int obstacleWidth = 15;
-		private final int obstacleMargin = 8;
+		public final int maxSegments = 6;
+		
+		public final int obstacleWidth = 15;
+		public final int obstacleMargin = 8;
 		
 		private List<Segment> snakeSegments;
 		private List<RectEntity> obstacles;
@@ -189,6 +200,7 @@ public class SnakeChallenge implements Challenge {
 		
 		private RectEntity exit;
 		
+		private boolean started;
 		private boolean lost;
 		private boolean won;
 		
@@ -232,54 +244,6 @@ public class SnakeChallenge implements Challenge {
 			won = false;
 		}
 		
-		public void draw(Canvas c) {
-			float scaleX = c.getWidth()*1f/boardWidth;
-			float scaleY = c.getHeight()*1f/boardHeight;
-			
-			for (int i = 0; i < obstacles.size(); i++) {
-				RectEntity o = obstacles.get(i);
-				
-				c.drawRect(
-						o.getX() * scaleX,
-						o.getY() * scaleY,
-						o.getX() * scaleX + o.getWidth() * scaleX,
-						o.getY() * scaleY + o.getHeight() * scaleY, obstaclePaint);
-			}
-			
-			if (exit != null) {
-				c.drawRect(
-						exit.getX() * scaleX,
-						exit.getY() * scaleY,
-						exit.getX() * scaleX + exit.getWidth() * scaleX,
-						exit.getY() * scaleY + exit.getHeight() * scaleY, exitPaint);
-			}
-			
-			for (int i = 0; i < sphereFruits.size(); i++) {
-				SphereFruit f = sphereFruits.get(i);
-				
-				c.drawOval(new RectF(
-						f.getX() * scaleX - f.getWidth() * scaleX,
-						f.getY() * scaleY - f.getHeight() * scaleY,
-						f.getX() * scaleX + f.getWidth() * scaleX,
-						f.getY() * scaleY + f.getHeight() * scaleY), sphereFruitPaint);
-			}
-			
-			for (int i = 0; i < snakeSegments.size(); i++) {
-				Segment s = snakeSegments.get(i);
-				
-				c.drawCircle(
-						(s.getX()*scaleX),
-						(s.getY()*scaleY),
-						(s.getHeight()*scaleY), snakePaint);
-				
-				c.drawOval(new RectF(
-						(s.getX() * scaleX - s.getWidth() * scaleX),
-						(s.getY() * scaleY - s.getHeight() * scaleY),
-						(s.getX() * scaleX + s.getWidth() * scaleX),
-						(s.getY() * scaleY + s.getHeight() * scaleY)), snakePaint);
-			}
-		}
-		
 		public void updateDirection(float touchX, float touchY) {
 			float segX = snakeSegments.get(0).getX();
 			float segY = snakeSegments.get(0).getY();
@@ -295,31 +259,35 @@ public class SnakeChallenge implements Challenge {
 			if (hypotenuse != 0) {
 				dx = relativeX/hypotenuse;
 				dy = relativeY/hypotenuse;
+				
+				started = true;
 			}
 		}
 		
 		public void update() {
-			snakeSegments.get(0).setX(snakeSegments.get(0).getX() + dx);
-			snakeSegments.get(0).setY(snakeSegments.get(0).getY() + dy);
-			
-			snakeSegments.get(0).getXList().add(snakeSegments.get(0).getX());
-			snakeSegments.get(0).getYList().add(snakeSegments.get(0).getY());
-			
-			
-			for (int i = 1; i < snakeSegments.size(); i++) {
-				snakeSegments.get(i).setX(snakeSegments.get(0).getXList().get(snakeSegments.get(i).iter));
-				snakeSegments.get(i).setY(snakeSegments.get(0).getYList().get(snakeSegments.get(i).iter));
-					
-				snakeSegments.get(i).iter++;
+			if (started) {
+				snakeSegments.get(0).setX(snakeSegments.get(0).getX() + dx);
+				snakeSegments.get(0).setY(snakeSegments.get(0).getY() + dy);
+				
+				snakeSegments.get(0).getXList().add(snakeSegments.get(0).getX());
+				snakeSegments.get(0).getYList().add(snakeSegments.get(0).getY());
+				
+				
+				for (int i = 1; i < snakeSegments.size(); i++) {
+					snakeSegments.get(i).setX(snakeSegments.get(0).getXList().get(snakeSegments.get(i).iter));
+					snakeSegments.get(i).setY(snakeSegments.get(0).getYList().get(snakeSegments.get(i).iter));
+						
+					snakeSegments.get(i).iter++;
+				}
+				
+				snakeSegments.get(0).iter++;
+				
+				if (snakeSegments.size() < maxSegments && snakeSegments.get(0).iter % (snakeSegments.get(0).getWidth()*2) == 0) {
+					snakeSegments.add(new Segment(startX, startY));
+				}
+				
+				checkCollision();
 			}
-			
-			snakeSegments.get(0).iter++;
-			
-			if (snakeSegments.size() < maxSegments && snakeSegments.get(0).iter % (snakeSegments.get(0).getWidth()*2) == 0) {
-				snakeSegments.add(new Segment(startX, startY));
-			}
-			
-			checkCollision();
 		}
 		
 		public void checkCollision() {
@@ -366,6 +334,22 @@ public class SnakeChallenge implements Challenge {
 			if (sphereFruits.isEmpty() && exit == null) {
 				exit = new RectEntity(boardWidth/2, 0, 50, 30);
 			}
+		}
+		
+		public List<SphereFruit> getSphereFruits() {
+			return sphereFruits;
+		}
+		
+		public List<RectEntity> getObstacles() {
+			return obstacles;
+		}
+		
+		public List<Segment> getSnakeSegments() {
+			return snakeSegments;
+		}
+		
+		public RectEntity getExit() {
+			return exit;
 		}
 	}
 
