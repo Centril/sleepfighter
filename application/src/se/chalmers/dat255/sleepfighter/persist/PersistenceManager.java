@@ -285,9 +285,9 @@ public class PersistenceManager {
 			break;
 
 		default:
-			helper.getAlarmDao().update( alarm );
 			break;
 		}
+		helper.getAlarmDao().update( alarm );
 	}
 
 	/**
