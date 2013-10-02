@@ -3,6 +3,7 @@ package se.chalmers.dat255.sleepfighter.activity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
+import se.chalmers.dat255.sleepfighter.challenge.SimpleMathChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.TestChallenge;
 import android.app.Activity;
 import android.os.Bundle;
@@ -29,10 +30,11 @@ public class ChallengeActivity extends Activity {
 		}
 		ChallengeType type = (ChallengeType) bundled;
 		Challenge challenge = ChallengeFactory.getChallenge(type);
+		challenge.start(this);
 
 		// TODO do something else to get an instance of Challenge and call
 		// challenge.start(this)
-		Challenge challenge1 = new TestChallenge();
+		Challenge challenge1 = new SimpleMathChallenge();
 		challenge1.start(this);
 	}
 
