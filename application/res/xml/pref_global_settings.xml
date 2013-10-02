@@ -23,5 +23,10 @@
             android:title="@string/pref_version"
             android:summary="@string/version_name" />
     </PreferenceCategory>
-
+          
+    <Preference
+            android:title="global preset alarm"
+            android:key="perf_global_preset_alarm"
+            android:persistent="false" />
+    
 </PreferenceScreen>

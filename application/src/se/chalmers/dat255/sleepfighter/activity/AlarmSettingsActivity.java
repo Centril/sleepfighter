@@ -16,6 +16,7 @@ import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.DialogUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
@@ -98,7 +99,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		alarmList = ((SFApplication) getApplication()).getAlarms();
 		((SFApplication) getApplication()).getBus().subscribe(this);
 		
-		alarm = alarmList.getById(id);
+		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm())
+			alarm = alarmList.getPresetAlarm();
+		else
+			alarm = alarmList.getById(id);
 
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 

@@ -202,6 +202,10 @@ public class Alarm implements Cloneable, IdProvider {
 	@DatabaseField
 	private boolean isRepeating = false;
 	
+	// whether this alarm is the preset alarm(the default alarm)
+	@DatabaseField
+	private boolean isPresetAlarm = false;
+	
 	@DatabaseField
 	private boolean vibrationEnabled = true;
 	
@@ -216,6 +220,7 @@ public class Alarm implements Cloneable, IdProvider {
 	public static final Long NEXT_NON_REAL = null;
 
 	private MessageBus<Message> bus;
+	
 
 	/* --------------------------------
 	 * Constructors.
@@ -780,6 +785,14 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public void setFetched( AudioSource source ) {
 		this.audioSource = source;
+	}
+	
+	public void setIsPresetAlarm(boolean isPresetAlarm) {
+		this.isPresetAlarm = isPresetAlarm;
+	}
+	
+	public boolean isPresetAlarm() {
+		return this.isPresetAlarm;
 	}
 
 	/* --------------------------------

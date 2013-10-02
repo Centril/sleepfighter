@@ -50,7 +50,7 @@ public class ObservableList<E> extends ForwardingList<E> {
 		private int index;
 		private Collection<?> elements;
 
-		protected Event( Operation op, int index, Collection<?> elements ) {
+		public Event( Operation op, int index, Collection<?> elements ) {
 			this.operation = op;
 			this.index = index;
 			this.elements = elements;

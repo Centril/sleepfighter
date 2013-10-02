@@ -13,7 +13,8 @@ import android.content.Intent;
  */
 public class IntentUtils {
 	private final String ALARM_EXTRA_ID = "alarm_id";
-
+	private final String SETTING_PRESET_ALARM = "setting_preset_alarm";
+	
 	private final Intent intent;
 
 	/**
@@ -48,6 +49,18 @@ public class IntentUtils {
 		}
 
 		return this;
+	}
+	
+	// if we are about to go to the settings for the preset(default) alarm, set this to true.
+	public IntentUtils setSettingPresetAlarm(final boolean settingPresetAlarm) {
+		this.intent.putExtra( SETTING_PRESET_ALARM,  settingPresetAlarm);
+		
+		return this;
+	}
+	
+	
+	public boolean isSettingPresetAlarm() {
+		return this.intent.getBooleanExtra(SETTING_PRESET_ALARM, false);
 	}
 
 	/**
