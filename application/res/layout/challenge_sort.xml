@@ -6,15 +6,7 @@
     android:layout_marginRight="30dp"
     android:orientation="vertical" >
 
-    <se.chalmers.dat255.sleepfighter.android_component.textview.FontFitTextView
-        android:id="@+id/challenge_sort_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <include android:id="@+id/challenge_sort_description" layout="@layout/challenge_sort_description" />
 
     <se.chalmers.dat255.sleepfighter.android_component.layout.SquareLayout
         android:id="@+id/challenge_sort_square"

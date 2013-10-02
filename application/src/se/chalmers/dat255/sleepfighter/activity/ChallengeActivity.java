@@ -5,6 +5,7 @@ import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.challenge.SimpleMathChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.TestChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -30,7 +31,9 @@ public class ChallengeActivity extends Activity {
 		}
 		ChallengeType type = (ChallengeType) bundled;
 		Challenge challenge = ChallengeFactory.getChallenge(type);
-		challenge.start(this);
+	//	challenge.start(this);
+
+		new SortChallenge().start( this );
 	}
 
 	public void complete() {

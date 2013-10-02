@@ -8,21 +8,38 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortModel.Order;
+import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
+import android.graphics.Color;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 
 public class SortChallenge implements Challenge {
-	private ChallengeActivity activity;
+	private static final int HSV_MAX_HUE = 360;
+	private static final int HSV_MIN_HUE = 0;
+	private static final float HSV_SATURATION = 0.20f;
+	private static final float HSV_VALUE = 1f;
 
-	private List<Button> buttons;
+	// Unfortunately, colors must be hard-coded since it is dynamic.
+	private static final int COLOR_PRESS = Color.BLACK;
+	private static final int COLOR_ANSWERED = Color.WHITE;
+
+	private static final int NUMBERS_COUNT = 9;
+
+	private ChallengeActivity activity;
 
 	private TextView description;
 
+	private List<Button> buttons;
+
 	private SortModel model;
+
+	private int[] currentHues;
 
 	private Random rng;
 
@@ -49,8 +66,34 @@ public class SortChallenge implements Challenge {
 		ClusteredGaussianListGenerator gen = new ClusteredGaussianListGenerator();
 
 		this.model = new SortModel();
-		this.model.setSize( 9 );
+		this.model.setSize( NUMBERS_COUNT );
 		this.model.setGenerator( gen );
+	}
+
+	/**
+	 * Randomizes an array of hues (in HSV) with size.
+	 *
+	 * @param size the size of array.
+	 * @return the array of hues of size.
+	 */
+	private int[] selectHues( int size ) {
+		int[] hues = new int[size];
+
+		for ( int i = 0; i < hues.length; ++i ) {
+			hues[i] = RandomMath.nextRandomRanged( this.rng, HSV_MIN_HUE, HSV_MAX_HUE / 36 ) * 36;
+		}
+
+		return hues;
+	}
+
+	/**
+	 * Completes a hue with hard coded saturation & value making an ARGB color.
+	 *
+	 * @param hue the hue to use in color.
+	 * @return the color.
+	 */
+	private int computeHSVWithHue( int hue ) {
+		return Color.HSVToColor( new float[] { hue, HSV_SATURATION, HSV_VALUE } );
 	}
 
 	/**
@@ -63,8 +106,14 @@ public class SortChallenge implements Challenge {
 
 		int[] shuffledNumbers = this.model.getShuffledList();
 
+		this.currentHues = this.selectHues( shuffledNumbers.length );
+
 		for ( int i = 0; i < shuffledNumbers.length; ++i ) {
-			this.buttons.get( i ).setText( Integer.toString( shuffledNumbers[i]) );
+			Button button = this.buttons.get( i );
+			button.setEnabled( true );
+
+			button.setText( Integer.toString( shuffledNumbers[i]) );
+			button.setBackgroundColor( this.computeHSVWithHue( this.currentHues[i] ) );
 		}
 	}
 
@@ -98,6 +147,7 @@ public class SortChallenge implements Challenge {
 			this.model.advanceStep( number );
 
 			button.setEnabled( false );
+			button.setBackgroundColor( COLOR_ANSWERED );
 
 			if ( this.model.isFinished() ) {
 				this.challengeCompleted();
@@ -111,6 +161,20 @@ public class SortChallenge implements Challenge {
 		@Override
 		public void onClick( View v ) {
 			numberClicked( (Button) v );
+		}
+	};
+
+	private OnTouchListener onButtonPressListener = new OnTouchListener() {
+		@Override
+		public boolean onTouch( View v, MotionEvent event ) {
+			switch ( event.getAction() ) {
+			case MotionEvent.ACTION_DOWN:
+				v.setBackgroundColor( COLOR_PRESS );
+				return false;
+
+			default:
+				return false;
+			}
 		}
 	};
 
@@ -128,6 +192,7 @@ public class SortChallenge implements Challenge {
 			this.buttons.add( button );
 
 			button.setOnClickListener( this.onButtonClickListener );
+			button.setOnTouchListener( this.onButtonPressListener );
 		}
 	}
 }
