@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="challenge_sort_ascending">Tap them low to high</string>
+    <string name="challenge_sort_descending">Tap them high to low</string>
+    <string name="challenge_sort_done">Done!</string>
+</resources>

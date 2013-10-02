@@ -156,4 +156,13 @@ public class SortModel {
 	public boolean isFinished() {
 		return this.stepIndex == this.generatedList.length;
 	}
+
+	/**
+	 * Returns the sort order currently used.
+	 *
+	 * @return the sort order.
+	 */
+	public Order getSortOrder() {
+		return this.sortOrder;
+	}
 }

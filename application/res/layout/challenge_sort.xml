@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:orientation="vertical" >
+
+    <se.chalmers.dat255.sleepfighter.android_component.textview.FontFitTextView
+        android:id="@+id/challenge_sort_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <se.chalmers.dat255.sleepfighter.android_component.layout.SquareLayout
+        android:id="@+id/challenge_sort_square"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" >
+
+        <TableLayout
+            android:id="@+id/challenge_sort_button_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_1"
+                    style="@style/ChallengeSortButton" />
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_2"
+                    style="@style/ChallengeSortButton" />
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_3"
+                    style="@style/ChallengeSortButton" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_4"
+                    style="@style/ChallengeSortButton" />
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_5"
+                    style="@style/ChallengeSortButton" />
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_6"
+                    style="@style/ChallengeSortButton" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_7"
+                    style="@style/ChallengeSortButton" />
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_8"
+                    style="@style/ChallengeSortButton" />
+
+                <se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton
+                    android:id="@+id/challenge_sort_button_9"
+                    style="@style/ChallengeSortButton" />
+
+            </TableRow>
+        </TableLayout>
+    </se.chalmers.dat255.sleepfighter.android_component.layout.SquareLayout>
+
+</LinearLayout>
