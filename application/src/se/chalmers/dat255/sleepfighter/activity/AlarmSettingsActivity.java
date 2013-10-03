@@ -30,15 +30,20 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.support.v4.app.NavUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
+	private static final String TAG = AlarmSettingsActivity.class.getSimpleName();
+
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
 	private final String NAME = "pref_alarm_name";
@@ -60,13 +65,14 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			ActionBar actionBar = getActionBar();
 		    // add the custom view to the action bar
 		    actionBar.setCustomView(R.layout.alarm_settings_actionbar);
-		    EditText edit_title_field = (EditText) actionBar.getCustomView().findViewById(R.id.alarm_edit_title_field);
+
+		    View customView = actionBar.getCustomView();
+
+		    EditText edit_title_field = (EditText) customView.findViewById(R.id.alarm_edit_title_field);
 		    edit_title_field.setText(MetaTextUtils.printAlarmName(this, alarm));
 		    edit_title_field.setOnEditorActionListener(new OnEditorActionListener() {
-
 				@Override
-				public boolean onEditorAction(TextView v, int actionId,
-						KeyEvent event) {
+				public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 					alarm.setName(v.getText().toString());
 					InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -75,9 +81,24 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		    });
 		    edit_title_field.clearFocus();
 			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM);
+
+			CompoundButton activatedSwitch = (CompoundButton) customView.findViewById( R.id.alarm_actionbar_toggle );
+			activatedSwitch.setChecked( this.alarm.isActivated() );
+			activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+					alarm.setActivated( isChecked );
+				}
+			} );
 		}
 	}
-	
+
+	@Override
+	public boolean onCreateOptionsMenu( Menu menu ) {
+		this.getMenuInflater().inflate( R.menu.alarm_settings_menu, menu );
+		return true;
+	}
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Handler
 	public void handleNameChange(MetaChangeEvent e) {
@@ -90,8 +111,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			}
 		}
 	}
-	
-	
+
 	private void removeDeleteButton() {
 		Preference pref = (Preference) findPreference(DELETE);
 		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
@@ -126,8 +146,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.alarm_settings_action_remove:
+			this.deleteAlarm();
+			break;
+
 		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
+			finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -147,23 +171,26 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						alarmList.remove(alarm);
-						finish();
-					}
-				};
-				DialogUtils
-				.showConfirmationDialog(getResources()
-						.getString(R.string.confirm_delete),
-						AlarmSettingsActivity.this,
-						dialogClickListener);
+				deleteAlarm();
 				return true;
 			}
 		});
 
 		this.setupRingerPreferences();
+	}
+
+	private void deleteAlarm() {
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				alarmList.remove(alarm);
+				finish();
+			}
+		};
+		DialogUtils.showConfirmationDialog(
+				getResources().getString(R.string.confirm_delete),
+				AlarmSettingsActivity.this,
+				dialogClickListener);
 	}
 
 	private void setupRingerPreferences() {
@@ -179,7 +206,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		this.updateRingerSummary();
 	}
 
-	
 	private void updateRingerSummary() {
 		AudioDriverFactory factory = SFApplication.get().getAudioDriverFactory();
 		AudioDriver driver = factory.produce( this, this.alarm.getAudioSource() );
