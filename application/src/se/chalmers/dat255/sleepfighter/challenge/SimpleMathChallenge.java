@@ -22,12 +22,12 @@ import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -153,11 +153,28 @@ public class SimpleMathChallenge implements Challenge {
 		});
 		
 		// make the keyboard appear.
-		InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+	/*	InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-				
+	*/
+		setupWebview(activity);
+		
 	}
 	
+	public static String open_html =
+"<!DOCTYPE html><html lang=\"en\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\"><head><meta charset=\"utf-8\"><link rel=\"stylesheet\" href=\"file:///android_asset/jqmath-0.4.0.css\"><script src=\"file:///android_asset/jquery-1.4.3.min.js\"></script><script src=\"file:///android_asset/jqmath-etc-0.4.0.min.js\"></script></head><html>";
+public static String close_html = "</html>";
+	
+	@SuppressLint("SetJavaScriptEnabled")
+	public void setupWebview(final ChallengeActivity activity) {
+		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
+		w.getSettings().setJavaScriptEnabled(true);
+		
+		String problem = "$x={-b±√{b^2-4ac}}/{2a}$";
+		
+		String html = new StringBuilder().append(open_html).append(problem).append(close_html).toString();
+		
+		w.loadDataWithBaseURL("file:///android_asset", html, "text/html", "utf-8", "");
+	}
 	
 	/**
 	 * Handles what will happen when you answer
