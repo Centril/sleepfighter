@@ -19,7 +19,6 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
-import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
