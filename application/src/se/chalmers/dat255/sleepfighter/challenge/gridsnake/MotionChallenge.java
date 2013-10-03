@@ -27,7 +27,6 @@ import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.widget.TextView;
 
@@ -36,35 +35,53 @@ import android.widget.TextView;
  */
 public class MotionChallenge implements Challenge, PropertyChangeListener {
 
-	private MotionControl mc;
-	private Activity activity;
-	private TextView tv;
-	private double[] conditions = new double[2];
+	private MotionControl motionControl;
+	private TextView textView;
 	private double angle;
-	private long timeStamp;
+	private ChallengeActivity activity;
+	private SnakeController snakeController;
 
 	@Override
 	public void start(ChallengeActivity activity) {
-		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		this.mc = new MotionControl(activity);
-		this.mc.addListener(this);
 		this.activity = activity;
-		activity.setContentView(R.layout.alarm_challenge_motion);
-		tv = (TextView) activity.findViewById(R.id.motionText);
-		timeStamp = System.nanoTime();
+		this.activity
+				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		this.activity.setContentView(R.layout.alarm_challenge_motion);
+
+		this.motionControl = new MotionControl(activity);
+		this.motionControl.addListener(this);
+		this.textView = (TextView) activity.findViewById(R.id.motionText);
+		
+		this.snakeController = new SnakeController();
+		
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-
-		angle = Math.abs(mc.getAngle());
-
-		tv.setText(Double.toString(angle));
-
-		// If rotation between 0.5 and Math.PI - 0.5, update listeners
-		if ((angle % (Math.PI / 2) >= 0.5 && angle % (Math.PI / 2) <= (Math.PI / 2) - 0.5)) {
-			Debug.d("Woah!");
+		Object source = event.getSource();
+		if (source.equals(this.motionControl)) {
+			this.handleRotation();
+		} else if (source.equals(snakeController)) {
+			this.complete();
 		}
 
+	}
+
+	private void handleRotation() {
+		this.angle = Math.abs(this.motionControl.getAngle());
+
+		// For debugging, like most of this method for now.
+		this.textView.setText(Double.toString(this.angle));
+
+		// If rotation between 0.5 and Math.PI - 0.5, update listeners
+		// For debugging
+		if ((this.angle % (Math.PI / 2) >= 0.5 && this.angle % (Math.PI / 2) <= (Math.PI / 2) - 0.5)) {
+			Debug.d("Woah!");
+		}
+	}
+
+	public void complete() {
+		this.motionControl.unregisterSensorListener();
+		this.activity.complete();
 	}
 }

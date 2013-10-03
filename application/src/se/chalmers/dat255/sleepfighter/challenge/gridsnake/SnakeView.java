@@ -1,4 +1,4 @@
-package Snake;
+package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
 import java.awt.Color;
 import java.awt.Graphics;

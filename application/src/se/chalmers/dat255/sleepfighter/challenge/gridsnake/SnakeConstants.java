@@ -1,18 +1,36 @@
-package Snake;
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 
-import java.awt.Color;
+package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
-import Geometry.Dimension;
-
+import android.graphics.Color;
+import se.chalmers.dat255.sleepfighter.challenge.gridsnake.geometry.Dimension;
 
 /**
- * Configuration constants for the game Snake.
+ * Configuration constants for the game Snake. Original author Centril, modified
+ * by Laszlo for Sleepfighter.
  */
 public enum SnakeConstants {
 	; // Safe Singleton pattern, prevent instantiation.
 
-	/* --------------------------------
-	 * Constants.
+	/*
+	 * -------------------------------- Constants.
 	 * --------------------------------
 	 */
 	/** The size of games, that is how many tiles there is in each axis. */
@@ -28,16 +46,19 @@ public enum SnakeConstants {
 	private static final int INITIAL_SNAKE_LENGTH = 2;
 
 	/** The color of food. */
-	private static final Color FOOD_COLOR = new Color( 238, 110, 2 );
+	private static final int FOOD_COLOR = Color.rgb(238, 110, 2);
 
 	/** The color of the snake. */
-	private static final Color SNAKE_COLOR = new Color( 9, 205, 218 );
+	private static final int SNAKE_COLOR = Color.rgb(9, 205, 218);
 
 	/** The color of the snakes head. */
-	private static final Color SNAKE_HEAD_COLOR = Color.BLACK;
+	private static final int SNAKE_HEAD_COLOR = Color.BLACK;
 
-	/* --------------------------------
-	 * Getters.
+	/** Points needed to win. */
+	private static final int VICTORY_CONDITION = 1;
+
+	/*
+	 * -------------------------------- Getters.
 	 * --------------------------------
 	 */
 	/** @return The size of games, that is how many tiles there is in each axis. */
@@ -59,34 +80,43 @@ public enum SnakeConstants {
 	/**
 	 * @return The color of food.
 	 */
-	public static Color getFoodColor() {
+	public static int getFoodColor() {
 		return FOOD_COLOR;
 	}
 
 	/**
 	 * The color of the snake.
-	 *
+	 * 
 	 * @return The color of the snake.
 	 */
-	public static Color getSnakeColor() {
+	public static int getSnakeColor() {
 		return SNAKE_COLOR;
 	}
 
 	/**
 	 * The color of the snakes head.
-	 *
+	 * 
 	 * @return The color of the snakes head.
 	 */
-	public static Color getSnakeHeadColor() {
+	public static int getSnakeHeadColor() {
 		return SNAKE_HEAD_COLOR;
 	}
 
 	/**
 	 * Returns the initial length of snake.
-	 *
+	 * 
 	 * @return The initial length of snake.
 	 */
 	public static int getInitialSnakeLength() {
 		return INITIAL_SNAKE_LENGTH;
+	}
+
+	/**
+	 * Returns the number of points needed to win.
+	 * 
+	 * @return The number of points needed to win.
+	 */
+	public static int getVictoryCondition() {
+		return VICTORY_CONDITION;
 	}
 }

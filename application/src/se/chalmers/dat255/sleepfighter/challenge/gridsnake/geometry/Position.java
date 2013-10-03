@@ -1,13 +1,27 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package se.chalmers.dat255.sleepfighter.challenge.gridsnake.geometry;
-
-import java.awt.Dimension;
-
 
 /**
  * Immutable class describing integer 2D-points.
- * 
- * @author evensen
- * 
+ * Original author Mazdak, modified by Laszlo for SleepFighter.
  */
 public class Position implements Comparable<Position>  {
 	private final int x;
@@ -78,7 +92,7 @@ public class Position implements Comparable<Position>  {
 	 * @return true if out of bounds, false otherwise.
 	 */
 	public boolean isOutOfBounds( Dimension dim ) {
-		return	this.getX() < 0 || this.getX() >= dim.width ||
-				this.getY() < 0 || this.getY() >= dim.height;
+		return	this.getX() < 0 || this.getX() >= dim.getWidth() ||
+				this.getY() < 0 || this.getY() >= dim.getHeight();
 	}
 }

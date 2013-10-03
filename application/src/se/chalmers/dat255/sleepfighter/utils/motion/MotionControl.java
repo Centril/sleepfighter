@@ -22,7 +22,6 @@ package se.chalmers.dat255.sleepfighter.utils.motion;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -49,21 +48,21 @@ public class MotionControl implements SensorEventListener {
 	 */
 	public MotionControl(Activity activity) {
 		// Get an instance of the SensorManager
-		mSensorManager = (SensorManager) activity
+		this.mSensorManager = (SensorManager) activity
 				.getSystemService(Activity.SENSOR_SERVICE);
 		setSensor(defaultType);
-		mSensorManager.registerListener(this, mSensor,
+		this.mSensorManager.registerListener(this, mSensor,
 				SensorManager.SENSOR_DELAY_FASTEST);
 
-		pcs = new PropertyChangeSupport(this);
+		this.pcs = new PropertyChangeSupport(this);
 	}
 
 	public boolean setSensor(int type) {
-		Sensor temp = mSensorManager.getDefaultSensor(type);
+		Sensor temp = this.mSensorManager.getDefaultSensor(type);
 
 		// Check if Sensor of designated type exists on device
 		if (temp != null) {
-			mSensor = temp;
+			this.mSensor = temp;
 			return true;
 		} else {
 			return false;
@@ -71,11 +70,11 @@ public class MotionControl implements SensorEventListener {
 	}
 
 	public double getAngle() {
-		return angle;
+		return this.angle;
 	}
 
 	public void addListener(PropertyChangeListener pcl) {
-		pcs.addPropertyChangeListener(pcl);
+		this.pcs.addPropertyChangeListener(pcl);
 	}
 
 	@Override
@@ -87,11 +86,11 @@ public class MotionControl implements SensorEventListener {
 	 */
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (event.sensor != mSensor) {
+		if (event.sensor != this.mSensor) {
 			return;
 		}
 
-		calcAzimuth(event);
+		this.calcAzimuth(event);
 	}
 
 	/**
@@ -103,8 +102,12 @@ public class MotionControl implements SensorEventListener {
 		float aY = event.values[1];
 
 		// Calculate rotation around Z axis.
-		angle = Math.atan2(aX, aY);
+		this.angle = Math.atan2(aX, aY);
 
-		pcs.firePropertyChange(null, 0, 1);
+		this.pcs.firePropertyChange(null, 0, 1);
+	}
+
+	public void unregisterSensorListener() {
+		this.mSensorManager.unregisterListener(this);
 	}
 }
