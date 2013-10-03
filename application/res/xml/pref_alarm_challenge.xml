@@ -20,6 +20,6 @@
 
     <PreferenceCategory
         android:key="pref_challenge_category"
-        android:title="@string/time_category_title" />
+        android:title="@string/challenge_category_title_plural" />
 
 </PreferenceScreen>

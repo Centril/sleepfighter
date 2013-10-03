@@ -36,10 +36,16 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.pref_alarm_challenge);
+		
+		// Programmatically add Preference entries for all challenges defined in enum
 		PreferenceCategory pc = (PreferenceCategory) findPreference("pref_challenge_category");
 		ChallengeType[] types = ChallengeType.values();
 		for (final ChallengeType type : types) {
 			final CheckBoxPreference p = new CheckBoxPreference(this);
+			
+			// TODO set checked status from model
+			p.setChecked(false);
+			
 			p.setPersistent(false);
 			p.setTitle(type.name());
 			p.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
@@ -50,6 +56,8 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 					Toast.makeText(ChallengeSettingsActivity.this,
 							type.name() + " " + checked, Toast.LENGTH_SHORT)
 							.show();
+
+					// TODO set challenge enable state in model
 
 					return true;
 				}
