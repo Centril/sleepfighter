@@ -1,8 +1,8 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.challenge.SnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.TestChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.SnakeChallenge;
 import android.app.Activity;
 import android.os.Bundle;
 
