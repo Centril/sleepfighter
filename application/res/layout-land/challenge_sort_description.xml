@@ -17,7 +17,7 @@
   You should have received a copy of the GNU General Public License
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-<se.chalmers.dat255.sleepfighter.android_component.textview.FontFitTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<se.chalmers.dat255.sleepfighter.android.component.textview.FontFitTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"

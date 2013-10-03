@@ -19,7 +19,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.utils.android.ActivityUtils;
+import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.content.Intent;
 import android.os.Bundle;
