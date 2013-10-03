@@ -22,6 +22,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.preference.InitializableRingtonePreference;
 import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
+import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -29,6 +30,7 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -316,11 +318,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.updateSummary();
 	}
 
+	
 	@Override
 	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
 		if ( resultCode == Activity.RESULT_OK ) {
 			Log.d( TAG, data.toString() );
-
+	
 			ID[] ids = ID.values();
 			if ( requestCode < ids.length ) {
 				switch( ids[requestCode] ) {
@@ -338,6 +341,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 			} else {
 				super.onActivityResult( requestCode, resultCode, data );
 			}
+		} else {
+			if(ID.MUSIC_PICKER.ordinal() == requestCode) {
+				// TODO: localize message.
+				DialogUtils.showMessageDialog("Please install Google Play Music", this);
+			}
+		
 		}
 	}
 

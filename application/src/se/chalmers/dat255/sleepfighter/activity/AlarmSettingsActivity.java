@@ -109,6 +109,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			} );
 		}
 	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {

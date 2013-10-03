@@ -72,4 +72,12 @@ public class DialogUtils {
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
+
+	public static void showMessageDialog(String message, Context context) {
+		String okString = context.getResources().getString(android.R.string.ok);
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(context).setMessage(message).setPositiveButton(okString, null);
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
 }
