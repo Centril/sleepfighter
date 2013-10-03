@@ -21,38 +21,67 @@ package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
 import android.graphics.Paint;
 
+/**
+ * A simple entity
+ * 
+ * @author Hassel
+ *
+ */
 abstract class Entity {
 	private float x;
 	private float y;
 	
 	private Paint paint;
 	
+	/**
+	 * @param x x-coordinate of the entity
+	 * @param y y-coordinate of the entity
+	 * @param paint color of the entity
+	 */
 	public Entity(float x, float y, Paint paint) {
 		this.x = x;
 		this.y = y;
 		this.paint = new Paint(paint);
 	}
 	
+	/**
+	 * @return x-coordinate of the entity
+	 */
 	public float getX() {
 		return x;
 	}
 	
+	/**
+	 * @param x the x-coordinate of the entity
+	 */
 	public void setX(float x) {
 		this.x = x;
 	}
 	
+	/**
+	 * @return y-coordinate of the entity
+	 */
 	public float getY() {
 		return y;
 	}
 	
+	/**
+	 * @param y the y-coordinate of the entity
+	 */
 	public void setY(float y) {
 		this.y = y;
 	}
 	
+	/**
+	 * @return the color of the entity
+	 */
 	public Paint getPaint() {
 		return paint;
 	}
 	
+	/**
+	 * @param paint the color of the entity
+	 */
 	public void setPaint(Paint paint) {
 		this.paint = paint;
 	}

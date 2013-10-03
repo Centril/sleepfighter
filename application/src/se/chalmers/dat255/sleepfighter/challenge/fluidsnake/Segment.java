@@ -24,14 +24,26 @@ import java.util.List;
 
 import android.graphics.Paint;
 
+/**
+ * Class representing each segment of the snake body.
+ * 
+ * @author Hassel
+ *
+ */
 public class Segment extends CircleEntity {
 	private final List<Float> xList;
 	private final List<Float> yList;
 	
 	private int iter;
 	
-	public Segment(float x, float y, int width, Paint paint) {
-		super(x, y, width, paint);
+	/**
+	 * @param x x-coordinate of the middle of the segment
+	 * @param y y-coordinate of the middle of the segment
+	 * @param radius the radius of the segment
+	 * @param paint the color of the segment
+	 */
+	public Segment(float x, float y, int radius, Paint paint) {
+		super(x, y, radius, paint);
 		
 		iter = 0;
 		
@@ -39,18 +51,30 @@ public class Segment extends CircleEntity {
 		yList = new ArrayList<Float>();
 	}
 
+	/**
+	 * @return list of all x coordinates that this segment has stored
+	 */
 	public List<Float> getXList() {
 		return xList;
 	}
 
+	/**
+	 * @return list of all y coordinates that this segment has stored
+	 */
 	public List<Float> getYList() {
 		return yList;
 	}
 	
+	/**
+	 * Increases the number of iterations by 1
+	 */
 	public void iter() {
 		iter++;
 	}
 	
+	/**
+	 * @return the number of iterations this segment has stored
+	 */
 	public int getIter() {
 		return iter;
 	}

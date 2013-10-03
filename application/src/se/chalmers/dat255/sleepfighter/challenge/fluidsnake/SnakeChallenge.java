@@ -26,6 +26,16 @@ import android.view.View.OnTouchListener;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 
+/**
+ * A fluid snake challenge.
+ * 
+ * Touch on the screen to choose the direction to where the snake is moving.
+ * Eat all red fruits to open an exit which you will need to pass through in order to win.
+ * If you hit a wall or one of the snake segments you will lose and the game will restart.
+ * 
+ * @author Hassel
+ *
+ */
 public class SnakeChallenge implements Challenge, OnTouchListener {
 
 	private Model model;
@@ -97,6 +107,9 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		thread.start();
 	}
 	
+	/**
+	 * Provides the view with a new model
+	 */
 	public void restart() {
 		model = new Model();
 		view.setModel(model);

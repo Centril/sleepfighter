@@ -21,20 +21,39 @@ package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
 import android.graphics.Paint;
 
+/**
+ * Class representing any rectangular entities.
+ * 
+ * @author Hassel
+ *
+ */
 public class RectEntity extends Entity {
 	private float width;
 	private float height;
 	
+	/**
+	 * @param x top left corner
+	 * @param y top left corner
+	 * @param width width of the rectangle
+	 * @param height height of the rectangle
+	 * @param paint color of this rectangle
+	 */
 	public RectEntity(float x, float y, float width, float height, Paint paint) {
 		super(x, y, paint);
 		this.width = width;
 		this.height = height;
 	}
 	
+	/**
+	 * @return the width of this rectangle
+	 */
 	public float getWidth() {
 		return width;
 	}
 	
+	/**
+	 * @return the height of this rectangle
+	 */
 	public float getHeight() {
 		return height;
 	}

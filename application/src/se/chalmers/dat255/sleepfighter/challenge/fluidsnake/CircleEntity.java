@@ -22,20 +22,29 @@ package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 import android.graphics.Paint;
 
 /**
- * A Simple circ
+ * A Simple circular entity.
  * 
  * @author Hassel
  *
  */
-public class CircleEntity extends Entity { // Healthy!!
+public class CircleEntity extends Entity {
 	private int radius;
 	
+	/**
+	 * @param x the middle of the circle
+	 * @param y the middle of the circle
+	 * @param radius the radius of the circle
+	 * @param paint the color of the circle
+	 */
 	public CircleEntity(float x, float y, int radius, Paint paint) {
 		super(x, y, paint);
 		
 		this.radius = radius;
 	}
 
+	/**
+	 * @return the radius
+	 */
 	public float getRadius() {
 		return radius;
 	}

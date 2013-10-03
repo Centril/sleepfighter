@@ -26,10 +26,8 @@ import java.util.Random;
 import android.graphics.Color;
 import android.graphics.Paint;
 
-//All model classes are below here
-
 	/**
-	 * The model of the fluid Snake game.
+	 * Model class representing a fluid snake game.
 	 * 
 	 * @author Hassel
 	 *
@@ -117,14 +115,26 @@ import android.graphics.Paint;
 			won = false;
 		}
 		
+		/**
+		 * @return true if the player has won, false otherwise
+		 */
 		public boolean won() {
 			return won;
 		}
 		
+		/**
+		 * @return true if the player has lost, false otherwise
+		 */
 		public boolean lost() {
 			return lost;
 		}
 
+		/**
+		 * Updates the direction the snake is heading towards
+		 * 
+		 * @param touchX x coordinate of where the snake should head towards (0 <= x <= 1)
+		 * @param touchY y coordinate of where the snake should head towards (0 <= y <= 1)
+		 */
 		public void updateDirection(float touchX, float touchY) {
 			float segX = snakeSegments.get(0).getX();
 			float segY = snakeSegments.get(0).getY();
@@ -145,6 +155,11 @@ import android.graphics.Paint;
 			}
 		}
 		
+		/**
+		 * Updates the model
+		 * 
+		 * @param delta the delay multiplier (targeted update speed divided by actual update speed, i.e 1 would be the normal case)
+		 */
 		public void update(float delta) {
 			if (started) {
 				if (delta >= 5) {
@@ -181,7 +196,7 @@ import android.graphics.Paint;
 			}
 		}
 		
-		public void checkCollision() {
+		private void checkCollision() {
 			Segment head = snakeSegments.get(0);
 			
 			if (snakeSegments.get(snakeSegments.size()-1).getY() + snakeWidth <= 0) {
@@ -227,18 +242,30 @@ import android.graphics.Paint;
 			}
 		}
 		
+		/**
+		 * @return a list containing all sphere fruits
+		 */
 		public List<CircleEntity> getSphereFruits() {
 			return sphereFruits;
 		}
 		
+		/**
+		 * @return a list containing all obstacles
+		 */
 		public List<RectEntity> getObstacles() {
 			return obstacles;
 		}
 		
+		/**
+		 * @return a list containing all snake segments (the first element is the head)
+		 */
 		public List<Segment> getSnakeSegments() {
 			return snakeSegments;
 		}
 		
+		/**
+		 * @return the exit (= the goal)
+		 */
 		public RectEntity getExit() {
 			return exit;
 		}
