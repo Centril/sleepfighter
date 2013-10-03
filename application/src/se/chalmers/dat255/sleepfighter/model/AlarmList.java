@@ -46,7 +46,7 @@ public class AlarmList extends ObservableList<Alarm> {
 	public Alarm getPresetAlarm() {
 		if(this.presetAlarm == null) {
 			// we haven't yet created a preset alarm, so we'll create one.
-			this.presetAlarm = new Alarm(0,0);
+			this.presetAlarm = new Alarm(8,0);
 			this.presetAlarm.setIsPresetAlarm(true);
 			// ensure that it gets added to the database. 
 			Debug.d("created preset alarm");
