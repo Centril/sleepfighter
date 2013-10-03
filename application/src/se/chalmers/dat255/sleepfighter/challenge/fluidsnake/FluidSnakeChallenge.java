@@ -36,7 +36,7 @@ import se.chalmers.dat255.sleepfighter.challenge.Challenge;
  * @author Hassel
  *
  */
-public class SnakeChallenge implements Challenge, OnTouchListener {
+public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 
 	private Model model;
 	private Thread thread;
@@ -116,7 +116,7 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 				}
 				
 				// if we got out of the loop it means the player won, complete the challenge
-				SnakeChallenge.this.activity.complete();
+				FluidSnakeChallenge.this.activity.complete();
 			}
 		};
 		thread.start();
