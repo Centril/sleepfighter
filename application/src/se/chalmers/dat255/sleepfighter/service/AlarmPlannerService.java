@@ -115,7 +115,23 @@ public class AlarmPlannerService extends IntentService {
 	 * @since Sep 26, 2013
 	 */
 	public enum Command {
-		CREATE, CANCEL, SNOOZE
+		/**
+		 * Used with an {@link Alarm} ID to schedule the alarm at its next
+		 * occurrence. This will override any previous scheduled Alarm.<br/>
+		 * 
+		 * At the alarm's time, {@code onRecieve} in {@link AlarmReceiver} will
+		 * be called.
+		 */
+		CREATE,
+		/**
+		 * Used to cancel the scheduled {@link Alarm}.
+		 */
+		CANCEL,
+		/**
+		 * Used with an {@link Alarm} ID to tell the service to reschedule an alarm that
+		 * has gone of, in the amount of minutes from now specified in {@link Alarm}.
+		 */
+		SNOOZE
 	}
 
 	/**
@@ -165,21 +181,12 @@ public class AlarmPlannerService extends IntentService {
 		}
 	}
 
-	private void snooze(int alarmId) {
-		Alarm alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
-		if ( alarm == null ) {
-			throw new IllegalArgumentException( "No alarm was found with given id" );
-		}
-		MutableDateTime dateTime = new MutableDateTime();
-		
-		// TODO get property from alarm
-		int mins = 5;
-		
-		dateTime.addMinutes(mins);
-		schedule(dateTime.getMillis(), alarm);
-		showNotification(alarm, dateTime.toString("HH:mm"));
-	}
-
+	/**
+	 * Schedules an alarm at the next time it should go off.
+	 * 
+	 * @param alarmId
+	 *            the alarm's ID
+	 */
 	private void create( int alarmId ) {
 		// Fetch alarm.
 		Alarm alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
@@ -198,6 +205,14 @@ public class AlarmPlannerService extends IntentService {
 		showNotification(alarm, alarm.getTimeString());
 	}
 
+	/**
+	 * Schedule an alarm to go off at a certain time.
+	 * 
+	 * @param scheduleTime
+	 *            the time, in milliseconds (UTC), when the Alarm should go off
+	 * @param alarm
+	 *            the alarm
+	 */
 	private void schedule(long scheduleTime, Alarm alarm) {
 		PendingIntent pi = this.makePendingIntent( alarm.getId() );
 
@@ -205,7 +220,6 @@ public class AlarmPlannerService extends IntentService {
 
 		Log.d(getClass().getSimpleName(), "Scheduled alarm [" + alarm.toString()
 				+ "] at " + scheduleTime);
-
 	}
 
 	/**
@@ -235,12 +249,41 @@ public class AlarmPlannerService extends IntentService {
 		NotificationHelper.showNotification(this, title, message, mainActPI);
 	}
 
+	/**
+	 * Cancels any scheduled alarm.
+	 */
 	private void cancel() {
 		this.getAlarmManager().cancel( this.makePendingIntent( Alarm.NOT_COMMITTED_ID ) );
 		Log.d( "AlarmPlannerService", "Cancelling!" );
 
 		// Remove app's sticky notification
 		NotificationHelper.removeNotification(this);
+	}
+
+	/**
+	 * Reschedule an {@link Alarm}, that has gone of, to some minutes from now,
+	 * defined by the alarm itself.
+	 * 
+	 * @param alarmId
+	 *            the alarm's id
+	 */
+	private void snooze(int alarmId) {
+		Alarm alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
+		if ( alarm == null ) {
+			throw new IllegalArgumentException( "No alarm was found with given id" );
+		}
+
+		// Determine which time to schedule at by adding offset minutes from alarm to current time
+		MutableDateTime dateTime = MutableDateTime.now();
+		
+		// TODO get property from alarm
+		int mins = 5;
+
+		dateTime.addMinutes(mins);
+
+		long scheduleTime = dateTime.getMillis();
+		schedule(scheduleTime, alarm);
+		showNotification(alarm, dateTime.toString("HH:mm"));
 	}
 
 	private AlarmManager getAlarmManager() {
