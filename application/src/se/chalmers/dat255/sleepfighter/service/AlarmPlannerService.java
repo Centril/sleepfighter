@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.service;
 import net.engio.mbassy.listener.Handler;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
@@ -114,7 +115,7 @@ public class AlarmPlannerService extends IntentService {
 	 * @since Sep 26, 2013
 	 */
 	public enum Command {
-		CREATE, CANCEL
+		CREATE, CANCEL, SNOOZE
 	}
 
 	/**
@@ -155,11 +156,28 @@ public class AlarmPlannerService extends IntentService {
 		case CREATE:
 			this.create( new IntentUtils( intent ).getAlarmId() );
 			break;
-
+		case SNOOZE:
+			this.snooze( new IntentUtils( intent ).getAlarmId() );
+			break;
 		case CANCEL:
 			this.cancel();
 			break;
 		}
+	}
+
+	private void snooze(int alarmId) {
+		Alarm alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
+		if ( alarm == null ) {
+			throw new IllegalArgumentException( "No alarm was found with given id" );
+		}
+		MutableDateTime dateTime = new MutableDateTime();
+		
+		// TODO get property from alarm
+		int mins = 5;
+		
+		dateTime.addMinutes(mins);
+		schedule(dateTime.getMillis(), alarm);
+		showNotification(alarm, dateTime.toString("HH:mm"));
 	}
 
 	private void create( int alarmId ) {
@@ -169,20 +187,25 @@ public class AlarmPlannerService extends IntentService {
 			throw new IllegalArgumentException( "No alarm was found with given id" );
 		}
 
-		PendingIntent pi = this.makePendingIntent( alarm.getId() );
-
 		// Get alarm RTC time, could be null cause of threading, so check!
 		Long scheduleTime = alarm.getNextMillis( new DateTime().getMillis() );
 		if ( scheduleTime == null ) {
 			return;
 		}
+		
+		schedule(scheduleTime, alarm);
+
+		showNotification(alarm, alarm.getTimeString());
+	}
+
+	private void schedule(long scheduleTime, Alarm alarm) {
+		PendingIntent pi = this.makePendingIntent( alarm.getId() );
 
 		this.getAlarmManager().set( AlarmManager.RTC_WAKEUP, scheduleTime, pi );
 
 		Log.d(getClass().getSimpleName(), "Scheduled alarm [" + alarm.toString()
 				+ "] at " + scheduleTime);
 
-		showNotification(alarm);
 	}
 
 	/**
@@ -194,14 +217,13 @@ public class AlarmPlannerService extends IntentService {
 	 * @param alarm
 	 *            the alarm
 	 */
-	private void showNotification(Alarm alarm) {
+	private void showNotification(Alarm alarm, String time) {
 		Intent mainActIntent = new Intent(getApplicationContext(),
 				MainActivity.class);
 		PendingIntent mainActPI = PendingIntent.getActivity(this, 0,
 				mainActIntent, 0);
 
 		String name = MetaTextUtils.printAlarmName(this, alarm);
-		String time = alarm.getTimeString();
 
 		// Localized strings which we inserts current time and name into
 		String titleFormat = getString(R.string.notification_pending_title);
