@@ -37,7 +37,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,12 +90,28 @@ public class AlarmActivity extends Activity {
         
         tvTime = (TextView) findViewById(R.id.tvAlarmTime);
         tvTime.setText(alarm.getTimeString());
+        
+		Button btnChallenge = (Button) findViewById(R.id.btnChallenge);
+		btnChallenge.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startChallenge();
+			}
+		});
+
+		Button btnSnooze = (Button) findViewById(R.id.btnSnooze);
+		btnSnooze.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startSnooze();
+			}
+		});
 	}
 
 	/**
-	 * A Button to start the challenge
+	 * Launch ChallengeActivity to start alarm.
 	 */
-	public void button(View view) {
+	private void startChallenge() {
 		// The vibration stops whenever you start the challenge
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
 
@@ -103,6 +121,24 @@ public class AlarmActivity extends Activity {
 		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, ChallengeType.TEST);
 		
 		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
+	}
+	
+	/**
+	 * Stops alarm temporarily and sends a snooze command to the server.
+	 */
+	private void startSnooze() {		
+		// Should the user complete a challenge before snoozing?
+		
+		stopAudio();
+
+		VibrationManager.getInstance().stopVibrate(getApplicationContext());
+
+		// Remove notification saying alarm is ringing
+		NotificationHelper.removeNotification(this);
+		
+		// Send snooze command to service
+		AlarmPlannerService.call(this, Command.SNOOZE, alarm.getId());
+		finish();
 	}
 	
 	protected void onPause() {
@@ -186,10 +222,8 @@ public class AlarmActivity extends Activity {
 						.show();
 				Debug.d("done with challenge");
 
-				// If completed, shut the alarm and navigate to main
-				stopAlarm();
-				finish();
-				
+				// If completed, stop the alarm
+				stopAlarm();				
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();
@@ -204,7 +238,6 @@ public class AlarmActivity extends Activity {
 	 * Stop the current alarm sound and vibration
 	 */
 	public void stopAlarm() {
-
 		this.stopAudio();
 
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
@@ -213,6 +246,7 @@ public class AlarmActivity extends Activity {
 		NotificationHelper.removeNotification(this);
 
 		this.performRescheduling();
+		finish();
 	}
 
 	private void stopAudio() {
