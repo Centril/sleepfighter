@@ -18,10 +18,9 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
-import se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton;
+import se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.Button;
 
 /**
  * Represents a memory card graphically
@@ -30,7 +29,6 @@ import android.widget.Button;
  * @version 1.0
  * @since Sep 28, 2013
  */
-
 public class MemoryCardView extends FontFitButton {
 
 	// what to show when the memory card is flipped over and hidden.
