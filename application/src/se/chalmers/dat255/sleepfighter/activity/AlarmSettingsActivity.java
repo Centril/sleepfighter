@@ -112,7 +112,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
-		this.getMenuInflater().inflate( R.menu.alarm_settings_menu, menu );
+		this.getMenuInflater().inflate( R.menu.main, menu );
 		return true;
 	}
 
