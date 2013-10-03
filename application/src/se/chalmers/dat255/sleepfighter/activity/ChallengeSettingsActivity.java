@@ -20,35 +20,41 @@ package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.widget.Toast;
 
 public class ChallengeSettingsActivity extends PreferenceActivity {
-	@SuppressWarnings("deprecation")
+
 	@Override
+	// Uses non-fragment based preferences
+	@SuppressWarnings("deprecation")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.pref_alarm_challenge);
 		PreferenceCategory pc = (PreferenceCategory) findPreference("pref_challenge_category");
-
 		ChallengeType[] types = ChallengeType.values();
 		for (final ChallengeType type : types) {
 			final CheckBoxPreference p = new CheckBoxPreference(this);
 			p.setPersistent(false);
 			p.setTitle(type.name());
 			p.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				
 				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					Debug.d(type.name() + " " + p.isChecked());
+				public boolean onPreferenceChange(Preference preference,
+						Object newValue) {
+					boolean checked = (Boolean) newValue;
+					Toast.makeText(ChallengeSettingsActivity.this,
+							type.name() + " " + checked, Toast.LENGTH_SHORT)
+							.show();
+
 					return true;
 				}
 			});
+			pc.addPreference(p);
 		}
 	}
 }
