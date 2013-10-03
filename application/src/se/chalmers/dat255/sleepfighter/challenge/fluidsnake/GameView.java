@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
 import java.util.List;
@@ -88,20 +107,20 @@ import android.view.SurfaceHolder.Callback;
 				CircleEntity f = sphereFruits.get(i);
 
 				c.drawOval(new RectF(
-						f.getX() * scaleX - f.getWidth() * scaleX,
-						f.getY() * scaleY - f.getHeight() * scaleY,
-						f.getX() * scaleX + f.getWidth() * scaleX,
-						f.getY() * scaleY + f.getHeight() * scaleY), f.getPaint());
+						f.getX() * scaleX - f.getRadius() * scaleX,
+						f.getY() * scaleY - f.getRadius() * scaleY,
+						f.getX() * scaleX + f.getRadius() * scaleX,
+						f.getY() * scaleY + f.getRadius() * scaleY), f.getPaint());
 			}
 
 			for (int i = 0; i < snakeSegments.size(); i++) {
 				Segment s = snakeSegments.get(i);
 
 				c.drawOval(new RectF(
-						(s.getX() * scaleX - s.getWidth() * scaleX),
-						(s.getY() * scaleY - s.getHeight() * scaleY),
-						(s.getX() * scaleX + s.getWidth() * scaleX),
-						(s.getY() * scaleY + s.getHeight() * scaleY)), s.getPaint());
+						(s.getX() * scaleX - s.getRadius() * scaleX),
+						(s.getY() * scaleY - s.getRadius() * scaleY),
+						(s.getX() * scaleX + s.getRadius() * scaleX),
+						(s.getY() * scaleY + s.getRadius() * scaleY)), s.getPaint());
 			}
 		}
 	}

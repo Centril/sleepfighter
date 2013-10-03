@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
 import java.util.ArrayList;
@@ -152,9 +171,9 @@ import android.graphics.Paint;
 				if (snakeSegments.size() < maxSegments) {
 					modelTime += delta;
 					
-					if (modelTime >= (snakeSegments.get(0).getWidth()*2)) {
+					if (modelTime >= (snakeSegments.get(0).getRadius()*2)) {
 						snakeSegments.add(new Segment(startX, startY, snakeWidth, snakePaint));
-						modelTime -= snakeSegments.get(0).getWidth()*2;
+						modelTime -= snakeSegments.get(0).getRadius()*2;
 					}
 				}
 				
@@ -170,25 +189,25 @@ import android.graphics.Paint;
 			}
 			
 			for (int i = 1; i < snakeSegments.size(); i++) {
-				if (Math.abs((snakeSegments.get(i).getX() - snakeSegments.get(0).getX())) <= head.getWidth()/2
-						&& Math.abs((snakeSegments.get(i).getY() - snakeSegments.get(0).getY())) <= head.getWidth()/2) {
+				if (Math.abs((snakeSegments.get(i).getX() - snakeSegments.get(0).getX())) <= head.getRadius()/2
+						&& Math.abs((snakeSegments.get(i).getY() - snakeSegments.get(0).getY())) <= head.getRadius()/2) {
 					lost = true;
 					break;
 				}
 			}
 			
 			if (!(exit != null
-					&& 0 < head.getX() - head.getWidth() - exit.getX() 
-					&& 0 < exit.getX() + exit.getWidth() - head.getWidth() - head.getX()
-					&& 0 < head.getY() + head.getHeight() - exit.getY()
-					&& 0 < exit.getY() + exit.getHeight() + head.getHeight() - head.getY())) {
+					&& 0 < head.getX() - head.getRadius() - exit.getX() 
+					&& 0 < exit.getX() + exit.getWidth() - head.getRadius() - head.getX()
+					&& 0 < head.getY() + head.getRadius() - exit.getY()
+					&& 0 < exit.getY() + exit.getHeight() + head.getRadius() - head.getY())) {
 				
 				for (int i = 0; i < obstacles.size(); i++) {
 					RectEntity o = obstacles.get(i);
-					if (obstacleMargin < head.getX() + head.getWidth() - o.getX() 
-							&& obstacleMargin < o.getX() + o.getWidth() + head.getWidth() - head.getX()
-							&& obstacleMargin < head.getY() + head.getHeight() - o.getY()
-							&& obstacleMargin < o.getY() + o.getHeight() + head.getHeight() - head.getY()) {
+					if (obstacleMargin < head.getX() + head.getRadius() - o.getX() 
+							&& obstacleMargin < o.getX() + o.getWidth() + head.getRadius() - head.getX()
+							&& obstacleMargin < head.getY() + head.getRadius() - o.getY()
+							&& obstacleMargin < o.getY() + o.getHeight() + head.getRadius() - head.getY()) {
 						lost = true;
 						break;
 					}
@@ -196,8 +215,8 @@ import android.graphics.Paint;
 			}
 			
 			for (int i = 0; i < sphereFruits.size(); i++) {
-				if (Math.abs(sphereFruits.get(i).getX() - head.getX()) <= head.getWidth()
-						&& Math.abs(sphereFruits.get(i).getY() - head.getY()) <= head.getWidth()) {
+				if (Math.abs(sphereFruits.get(i).getX() - head.getX()) <= head.getRadius()
+						&& Math.abs(sphereFruits.get(i).getY() - head.getY()) <= head.getRadius()) {
 					sphereFruits.remove(i);
 					break;
 				}
