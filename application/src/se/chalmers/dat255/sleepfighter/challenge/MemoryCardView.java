@@ -31,7 +31,7 @@ import android.widget.Button;
  * @since Sep 28, 2013
  */
 
-public class MemoryCardView extends FontFitButton {
+public class MemoryCardView extends Button {
 
 	// what to show when the memory card is flipped over and hidden.
   	private static String HIDDEN =  "";

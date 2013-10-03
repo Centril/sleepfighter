@@ -55,11 +55,11 @@
 
                 <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
                     android:id="@+id/challenge_memory_button_1"
-                    style="@style/MemoryCardButton" />
+                    />
 
                 <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
                     android:id="@+id/challenge_memory_button_2"
-                    style="@style/MemoryCardButton" />
+                  />
 
             </TableRow>
 
@@ -70,11 +70,11 @@
 
                 <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
                     android:id="@+id/challenge_memory_button_3"
-                    style="@style/MemoryCardButton" />
+                    />
 
                 <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
                     android:id="@+id/challenge_memory_button_4"
-                    style="@style/MemoryCardButton" />
+                    />
 
             </TableRow>
 
@@ -85,11 +85,11 @@
 
                 <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
                     android:id="@+id/challenge_memory_button_5"
-                    style="@style/MemoryCardButton" />
+                   />
 
                 <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
                     android:id="@+id/challenge_memory_button_6"
-                    style="@style/MemoryCardButton" />
+                    />
 
             </TableRow>
             
@@ -100,11 +100,11 @@
 
                 <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
                     android:id="@+id/challenge_memory_button_7"
-                    style="@style/MemoryCardButton" />
+                   />
 
                 <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
                     android:id="@+id/challenge_memory_button_8"
-                    style="@style/MemoryCardButton" />
+                    />
 
             </TableRow>
             
