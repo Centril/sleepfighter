@@ -48,7 +48,6 @@ import com.j256.ormlite.table.TableUtils;
  * @since Sep 21, 2013
  */
 public class PersistenceManager {
-	private final static String TAG = PersistenceManager.class.getSimpleName();
 
 	private volatile OrmHelper ormHelper = null;
 

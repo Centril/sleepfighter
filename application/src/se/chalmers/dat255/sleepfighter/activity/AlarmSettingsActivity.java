@@ -60,7 +60,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 public class AlarmSettingsActivity extends PreferenceActivity {
-	private static final String TAG = AlarmSettingsActivity.class.getSimpleName();
 
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 

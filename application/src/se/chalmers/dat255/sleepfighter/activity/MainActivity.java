@@ -56,7 +56,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	private final static String TAG = MainActivity.class.getSimpleName();
 
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
