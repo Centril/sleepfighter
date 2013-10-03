@@ -21,7 +21,6 @@ package se.chalmers.dat255.sleepfighter.utils.motion;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
@@ -29,8 +28,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.view.Display;
-import android.view.WindowManager;
 
 /**
  * A class for handling motion events that can be used all across the app. Some
@@ -42,12 +39,7 @@ public class MotionControl implements SensorEventListener {
 	private Sensor mSensor;
 	private int defaultType = Sensor.TYPE_ACCELEROMETER;
 	private PropertyChangeSupport pcs;
-
 	private double angle = 0d;
-
-	// Create a constant to convert nanoseconds to seconds.
-	private static final float NS2S = 1.0f / 1000000000.0f;
-	private float timestamp;
 
 	/**
 	 * Sets mSensor to {@value defaultType} by default, possible to set to other
@@ -74,7 +66,6 @@ public class MotionControl implements SensorEventListener {
 			mSensor = temp;
 			return true;
 		} else {
-			Debug.d("Sensor of the request type does not exist");
 			return false;
 		}
 	}

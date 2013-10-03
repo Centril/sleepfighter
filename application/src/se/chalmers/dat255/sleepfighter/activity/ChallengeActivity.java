@@ -1,7 +1,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.challenge.MotionChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.gridsnake.MotionChallenge;
 import android.app.Activity;
 import android.os.Bundle;
 

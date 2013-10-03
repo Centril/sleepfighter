@@ -17,13 +17,15 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge;
+package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -37,7 +39,9 @@ public class MotionChallenge implements Challenge, PropertyChangeListener {
 	private MotionControl mc;
 	private Activity activity;
 	private TextView tv;
-	double[] conditions = new double[2];
+	private double[] conditions = new double[2];
+	private double angle;
+	private long timeStamp;
 
 	@Override
 	public void start(ChallengeActivity activity) {
@@ -47,15 +51,20 @@ public class MotionChallenge implements Challenge, PropertyChangeListener {
 		this.activity = activity;
 		activity.setContentView(R.layout.alarm_challenge_motion);
 		tv = (TextView) activity.findViewById(R.id.motionText);
+		timeStamp = System.nanoTime();
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		// If rotation between 0.5 and Math.PI - 0.5, update listeners
-		double angle = mc.getAngle();
-		// if (angle % (Math.PI / 2) >= 0.5
-		// && angle % (Math.PI / 2) <= (Math.PI / 2) - 0.5) {
+
+		angle = Math.abs(mc.getAngle());
+
 		tv.setText(Double.toString(angle));
-		// }
+
+		// If rotation between 0.5 and Math.PI - 0.5, update listeners
+		if ((angle % (Math.PI / 2) >= 0.5 && angle % (Math.PI / 2) <= (Math.PI / 2) - 0.5)) {
+			Debug.d("Woah!");
+		}
+
 	}
 }
