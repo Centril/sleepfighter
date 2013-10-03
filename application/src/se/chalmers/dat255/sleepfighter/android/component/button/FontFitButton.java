@@ -1,11 +1,11 @@
-package se.chalmers.dat255.sleepfighter.android_component.textview;
+package se.chalmers.dat255.sleepfighter.android.component.button;
 
-
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.TextView;
+import android.widget.Button;
 
 /**
  * Copied from http://stackoverflow.com/questions/2617266/how-to-adjust-text-font-size-to-fit-textview
@@ -13,14 +13,14 @@ import android.widget.TextView;
  * @version 1.0
  * @since Oct 2, 2013
  */
-public class FontFitTextView extends TextView {
+public class FontFitButton extends Button {
 
-    public FontFitTextView(Context context) {
+    public FontFitButton(Context context) {
         super(context);
         initialise();
     }
 
-    public FontFitTextView(Context context, AttributeSet attrs) {
+    public FontFitButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         initialise();
     }
@@ -69,6 +69,7 @@ public class FontFitTextView extends TextView {
 
     @Override
     protected void onTextChanged(final CharSequence text, final int start, final int before, final int after) {
+    	Debug.d("text changed");
         refitText(text.toString(), this.getWidth());
     }
 

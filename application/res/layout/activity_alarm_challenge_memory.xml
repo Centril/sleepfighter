@@ -26,7 +26,7 @@
     android:layout_marginRight="30dp"
     android:orientation="vertical" >
     
-<se.chalmers.dat255.sleepfighter.android_component.textview.FontFitTextView
+<se.chalmers.dat255.sleepfighter.android.component.textview.FontFitTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
     android:text="do some memory!"
     android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <se.chalmers.dat255.sleepfighter.android_component.layout.RectangleLayout
+    <se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" >
@@ -109,7 +109,7 @@
             </TableRow>
             
         </TableLayout>
-    </se.chalmers.dat255.sleepfighter.android_component.layout.RectangleLayout>
+    </se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout>
 
 </LinearLayout>
     

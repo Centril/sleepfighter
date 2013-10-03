@@ -1,4 +1,4 @@
-package se.chalmers.dat255.sleepfighter.android_component.layout;
+package se.chalmers.dat255.sleepfighter.android.component.layout;
 
 import android.content.Context;
 import android.util.AttributeSet;
