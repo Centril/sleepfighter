@@ -48,6 +48,7 @@ public class SimpleMathChallenge implements Challenge {
 	private int operation = 0;
 	private int result = 0;
 
+	
 	public void runChallenge() {
 		nextOp();
 		nextInts();
