@@ -19,7 +19,11 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -30,39 +34,109 @@ import android.widget.Toast;
 
 public class ChallengeSettingsActivity extends PreferenceActivity {
 
+	private Alarm alarm;
+	private String[] names;
+	private String[] descriptions;
+
 	@Override
 	// Uses non-fragment based preferences
 	@SuppressWarnings("deprecation")
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Get alarm from intent bundle
+		int bundledAlarmID = new IntentUtils(getIntent()).getAlarmId();
+		AlarmList alarmList = SFApplication.get().getAlarms();
+		this.alarm = alarmList.getById(bundledAlarmID);
+
 		addPreferencesFromResource(R.xml.pref_alarm_challenge);
-		
-		// Programmatically add Preference entries for all challenges defined in enum
+
+		// Programmatically add Preference entries in category for all
+		// challenges defined in enum
 		PreferenceCategory pc = (PreferenceCategory) findPreference("pref_challenge_category");
 		ChallengeType[] types = ChallengeType.values();
 		for (final ChallengeType type : types) {
-			final CheckBoxPreference p = new CheckBoxPreference(this);
-			
-			// TODO set checked status from model
-			p.setChecked(false);
-			
-			p.setPersistent(false);
-			p.setTitle(type.name());
-			p.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference,
-						Object newValue) {
-					boolean checked = (Boolean) newValue;
-					Toast.makeText(ChallengeSettingsActivity.this,
-							type.name() + " " + checked, Toast.LENGTH_SHORT)
-							.show();
-
-					// TODO set challenge enable state in model
-
-					return true;
-				}
-			});
+			Preference p = getChallengePreference(type);
 			pc.addPreference(p);
 		}
+	}
+
+	/**
+	 * Create a Preference for a ChallengeType
+	 * 
+	 * @param type
+	 *            the ChallengeType
+	 * @return a Preference for the ChallengeType
+	 */
+	private Preference getChallengePreference(final ChallengeType type) {
+		final CheckBoxPreference preference = new CheckBoxPreference(this);
+
+		// TODO set checked status from model
+		preference.setChecked(false);
+
+		// Makes sure nothing is stored in SharedPreferences
+		preference.setPersistent(false);
+
+		String name = getName(type);
+		String description = getDescription(type);
+
+		preference.setTitle(name);
+		preference.setSummary(description);
+		preference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference,
+					Object newValue) {
+				boolean checked = (Boolean) newValue;
+				Toast.makeText(ChallengeSettingsActivity.this,
+						type.name() + " " + checked, Toast.LENGTH_SHORT)
+						.show();
+
+				// TODO set challenge enable state in model
+
+				return true;
+			}
+		});
+		return preference;
+	}
+
+	/**
+	 * Gets the localized name for a challenge.
+	 * 
+	 * @param type
+	 *            the ChallengeType
+	 * @return the localized name for the challenge
+	 */
+	private String getName(ChallengeType type) {
+		if (this.names == null) {
+			this.names = getResources().getStringArray(R.array.challenge_names);
+		}
+		int ordinal = type.ordinal();
+		if (ordinal >= this.names.length) {
+			// No name in array!
+			// Return enum name, perhaps should throw exception later
+			return type.name();
+		}
+		return this.names[ordinal];
+	}
+
+	/**
+	 * Gets the localized description for a challenge.
+	 * 
+	 * @param type
+	 *            the ChallengeType
+	 * @return the localized description for the challenge
+	 */
+	private String getDescription(ChallengeType type) {
+		if (this.descriptions == null) {
+			this.descriptions = getResources().getStringArray(
+					R.array.challenge_descriptions);
+		}
+		int ordinal = type.ordinal();
+		if (ordinal >= this.descriptions.length) {
+			// No description in array!
+			// Return empty string, perhaps should throw exception later
+			return "";
+		}
+		return this.descriptions[ordinal];
 	}
 }

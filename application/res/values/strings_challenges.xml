@@ -19,16 +19,16 @@
 -->
 <resources>
 
-    <string-array name="challenge_titles">
+    <string-array name="challenge_names">
         <item>Test</item>
         <item>Math</item>
         <item>Memory</item>
-        <item>Sort</item>
+        <item>Sort numbers</item>
     </string-array>
-    <string-array name="challenge_summaries">
+    <string-array name="challenge_descriptions">
         <item>A test challenge</item>
         <item>An algebraic math challenge</item>
-        <item>An memory challenge</item>
+        <item>A memory challenge</item>
         <item>Challenge where numbers are sorted by size</item>/item>
     </string-array>
 

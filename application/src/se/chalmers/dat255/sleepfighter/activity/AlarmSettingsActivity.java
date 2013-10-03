@@ -200,6 +200,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
+				new IntentUtils(i).setAlarmId(alarm);
 				startActivity(i);
 				return true;
 			}
