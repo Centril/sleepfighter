@@ -18,7 +18,9 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
+import se.chalmers.dat255.sleepfighter.android_component.button.FontFitButton;
 import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.Button;
 
 /**
@@ -29,7 +31,7 @@ import android.widget.Button;
  * @since Sep 28, 2013
  */
 
-public class MemoryCardView extends Button {
+public class MemoryCardView extends FontFitButton {
 
 	// what to show when the memory card is flipped over and hidden.
   	private static String HIDDEN =  "";
@@ -40,10 +42,14 @@ public class MemoryCardView extends Button {
   	
   	private String currentImage;
     
-	
-	public MemoryCardView(Context context) {
-		super(context);
-	}
+  	
+    public MemoryCardView(Context context) {
+        super(context);
+    }
+
+    public MemoryCardView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 	
 	public void hide() {
 		currentImage = HIDDEN;

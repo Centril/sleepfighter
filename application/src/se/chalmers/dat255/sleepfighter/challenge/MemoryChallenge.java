@@ -18,17 +18,16 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.adapter.MemoryAdapter;
 import se.chalmers.dat255.sleepfighter.model.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 import android.widget.Toast;
 
 /**
@@ -39,7 +38,7 @@ import android.widget.Toast;
  * @since Sep 28, 2013
  */
 
-public class MemoryChallenge implements Challenge, OnItemClickListener {
+public class MemoryChallenge implements Challenge, View.OnClickListener {
 
 	private ChallengeActivity act;
 	
@@ -69,7 +68,8 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
         
 	}
 	
-	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	
+	public void onClick(View v) {
        // Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
       
 		Debug.d("button click");
@@ -137,6 +137,35 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
         
         
     }
+
+	// assign the buttons their listeners. 
+	private void setupCards() {
+		List<MemoryCardView> cards = new ArrayList<MemoryCardView>();
+		//R.id.challenge_memory_button_1;
+		
+		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_1));
+		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_2));
+		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_3));
+		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_4));
+		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_5));
+		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_6));
+		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_7));
+		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_8));
+		
+		MemoryCardImageDatabase database = new MemoryCardImageDatabase(mem);
+	
+		int pos = 0;
+		for ( MemoryCardView card : cards ) {
+			card.setOnClickListener( this );
+			
+			card.setPosition(pos);
+	        
+			String image = database.getImage(pos);
+	        card.setImage(image);
+	        
+	        ++pos;
+		}
+	}
 	
 	@Override
 	public void start(final ChallengeActivity act) {
@@ -144,14 +173,12 @@ public class MemoryChallenge implements Challenge, OnItemClickListener {
 	
 		act.setContentView(R.layout.activity_alarm_challenge_memory);
 		
-		GridView gridview = (GridView) act.findViewById(R.id.memory_gridview);
-		
 		mem = new Memory(ROWS, COLS);
 		Debug.d(mem.toString());
-		gridview.setAdapter(new MemoryAdapter(act, mem, this));
 		this.remainingPairs = mem.getNumPairs();
-
-		gridview.setOnItemClickListener(this);
+		
+		
+		setupCards();
 	}
 
 }

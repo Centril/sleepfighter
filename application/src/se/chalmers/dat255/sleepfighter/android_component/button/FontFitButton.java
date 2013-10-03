@@ -1,5 +1,6 @@
 package se.chalmers.dat255.sleepfighter.android_component.button;
 
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -68,6 +69,7 @@ public class FontFitButton extends Button {
 
     @Override
     protected void onTextChanged(final CharSequence text, final int start, final int before, final int after) {
+    	Debug.d("text changed");
         refitText(text.toString(), this.getWidth());
     }
 
