@@ -4,7 +4,7 @@ Unless otherwise specified in a file, ALL files with a copyright notice directin
 have the following copyright holders listed in alphabetic order:
 
 	Danny Lam, <fyll_i@example.com>
-	Eric Arnebäck, <fyll_i@example.com>
+	Eric Arnebäck, <erkastina@hotmail.com>
 	Johan Hasselqvist, <fyll_i@example.com>
 	Laszlo Sall Vesselenyi <fyll_i@example.com>
 	Mazdak Farrokhzad, <twingoow@gmail.com>
