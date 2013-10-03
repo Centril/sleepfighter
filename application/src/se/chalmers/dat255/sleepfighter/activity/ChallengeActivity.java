@@ -46,6 +46,7 @@ public class ChallengeActivity extends Activity {
 		}
 		ChallengeType type = (ChallengeType) bundled;
 		Challenge challenge = ChallengeFactory.getChallenge(type);
+
 		challenge.start(this);
 	}
 
