@@ -43,8 +43,11 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 	private GameView view;
 	private ChallengeActivity activity;
 	
+	// where the user touched on the screen
 	private float touchX;
 	private float touchY;
+	
+	// true if we should call the updateDirection method
 	private boolean updateDir;
 	
 	public final int targetFPS = 60;
@@ -63,11 +66,16 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 			public void run() {
 				long lastTime = 0;
 				
+				// run as long as you havent won
 				while (!model.won()) {
+					
+					// if the player lost, restart the game
 					if (model.lost()) {
 						restart();
 					}
 					
+					// calculate delta in order to make the game run smoothly even if
+					// the target FPS isn't reached (or if it is actually higher than supposed)
 					long now = System.currentTimeMillis();
 					float delta = (lastTime > 0 ? now - lastTime : 1000/targetFPS)/(1000f/targetFPS);
 					lastTime = now;
@@ -78,19 +86,24 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 						try {
 							c = view.getHolder().lockCanvas();
 							
+							// update the direction of the snake only when needed
 							if (updateDir) {
 								model.updateDirection(touchX/c.getWidth(), touchY/c.getHeight());
 								updateDir = false;
 							}
+							
+							// update the snake model, with the provided delta (actually a multiplier and not really a delta)
 							model.update(delta);
 							
 							synchronized(view.getHolder()) {
 								
+								// draw on the canvas
 								view.render(c);
 							}
 						}
 						finally {
 							if (c != null) {
+								// update the view with the new canvas
 								view.getHolder().unlockCanvasAndPost(c);
 							}
 						}
@@ -101,6 +114,8 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 						e.printStackTrace();
 					}
 				}
+				
+				// if we got out of the loop it means the player won, complete the challenge
 				SnakeChallenge.this.activity.complete();
 			}
 		};
@@ -120,6 +135,7 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		touchX = event.getX();
 		touchY = event.getY();
 		
+		// update the direction in the next game loop
 		updateDir = true;
 		
 		return true;

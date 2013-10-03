@@ -40,6 +40,7 @@ public class GameView extends SurfaceView implements Callback {
 	private boolean isSurfaceCreated;
 	private Model model;
 
+	// paint which should be used to clear the canvas
 	Paint clearPaint = new Paint();
 
 	private GameView(Context context) {
@@ -95,8 +96,10 @@ public class GameView extends SurfaceView implements Callback {
 	 * @param c the canvas to draw on
 	 */
 	public void render(Canvas c) {
+		// clear the canvas
 		c.drawRect(0, 0, c.getWidth(), c.getHeight(), clearPaint);
 
+		// Fetch entities from the model
 		List<RectEntity> obstacles = model.getObstacles();
 		RectEntity exit = model.getExit();
 		List<CircleEntity> sphereFruits = model.getSphereFruits();
@@ -105,6 +108,7 @@ public class GameView extends SurfaceView implements Callback {
 		float scaleX = c.getWidth() * 1f / model.boardWidth;
 		float scaleY = c.getHeight() * 1f / model.boardHeight;
 
+		// draw obstacles
 		for (int i = 0; i < obstacles.size(); i++) {
 			RectEntity o = obstacles.get(i);
 
@@ -113,12 +117,14 @@ public class GameView extends SurfaceView implements Callback {
 					* scaleY, o.getPaint());
 		}
 
+		// draw exit over obstacles
 		if (exit != null) {
 			c.drawRect(exit.getX() * scaleX, exit.getY() * scaleY, exit.getX()
 					* scaleX + exit.getWidth() * scaleX, exit.getY() * scaleY
 					+ exit.getHeight() * scaleY, exit.getPaint());
 		}
 
+		// draw the spherical fruits
 		for (int i = 0; i < sphereFruits.size(); i++) {
 			CircleEntity f = sphereFruits.get(i);
 
@@ -129,6 +135,7 @@ public class GameView extends SurfaceView implements Callback {
 							* scaleY + f.getRadius() * scaleY), f.getPaint());
 		}
 
+		// draw the snake above everything
 		for (int i = 0; i < snakeSegments.size(); i++) {
 			Segment s = snakeSegments.get(i);
 
