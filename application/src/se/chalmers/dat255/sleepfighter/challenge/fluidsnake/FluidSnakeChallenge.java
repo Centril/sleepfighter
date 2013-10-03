@@ -116,10 +116,20 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 				}
 				
 				// if we got out of the loop it means the player won, complete the challenge
-				FluidSnakeChallenge.this.activity.complete();
+				exitChallenge();
 			}
 		};
 		thread.start();
+	}
+	
+	private void exitChallenge() {
+		// Run on UI thread since things can get messy if trying to execute them on other threads
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				activity.complete();
+			}
+		});
 	}
 	
 	/**
