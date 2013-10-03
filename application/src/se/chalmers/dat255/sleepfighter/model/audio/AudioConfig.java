@@ -34,7 +34,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class AudioConfig implements IdProvider {
 	public static final String ID_COLUMN = "id";
 
-	@DatabaseField(generatedId = true)
+	@DatabaseField(generatedId = true, columnName = ID_COLUMN)
 	private int id;
 
 	// TODO: REMOVE when real fields are added, NEEDED 'cause SQLite crashes otherwise.
