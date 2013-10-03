@@ -38,7 +38,7 @@
     android:text="do some memory!"
     android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <se.chalmers.dat255.sleepfighter.android_component.layout.RectangleLayout
+    <se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" >
@@ -109,7 +109,7 @@
             </TableRow>
             
         </TableLayout>
-    </se.chalmers.dat255.sleepfighter.android_component.layout.RectangleLayout>
+    </se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout>
 
 </LinearLayout>
     
