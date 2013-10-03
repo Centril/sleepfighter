@@ -18,7 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
-import se.chalmers.dat255.sleepfighter.challenge.MemoryChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.memory.MemoryChallenge;
 import android.os.Bundle;
 
 public class MemoryActivity extends ChallengeActivity {

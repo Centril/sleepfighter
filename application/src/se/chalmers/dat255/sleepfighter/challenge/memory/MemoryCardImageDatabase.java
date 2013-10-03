@@ -1,4 +1,4 @@
-package se.chalmers.dat255.sleepfighter.challenge;
+package se.chalmers.dat255.sleepfighter.challenge.memory;
 
 import java.util.Random;
 

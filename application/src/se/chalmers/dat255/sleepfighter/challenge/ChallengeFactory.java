@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
+import se.chalmers.dat255.sleepfighter.challenge.memory.MemoryChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
 
 /**

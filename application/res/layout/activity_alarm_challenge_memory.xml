@@ -35,7 +35,7 @@
     android:layout_marginRight="10dp"
     android:gravity="center"
     android:paddingBottom="30dp"
-    android:text="do some memory!"
+    android:text="@string/memory_chal_act"
     android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout
@@ -53,11 +53,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
 
-                <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_1"
                     style="@style/MemoryCardButton" />
 
-                <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_2"
                     style="@style/MemoryCardButton" />
 
@@ -68,11 +68,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
 
-                <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_3"
                     style="@style/MemoryCardButton" />
 
-                <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_4"
                     style="@style/MemoryCardButton" />
 
@@ -83,11 +83,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
 
-                <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_5"
                     style="@style/MemoryCardButton" />
 
-                <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_6"
                     style="@style/MemoryCardButton" />
 
@@ -98,11 +98,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
 
-                <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_7"
                     style="@style/MemoryCardButton" />
 
-                <se.chalmers.dat255.sleepfighter.challenge.MemoryCardView
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_8"
                     style="@style/MemoryCardButton" />
 
