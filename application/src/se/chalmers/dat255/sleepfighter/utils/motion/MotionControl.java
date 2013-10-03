@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
 package se.chalmers.dat255.sleepfighter.utils.motion;
 
 import java.beans.PropertyChangeListener;
@@ -22,16 +41,13 @@ public class MotionControl implements SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private int defaultType = Sensor.TYPE_ACCELEROMETER;
-	private float[] orientation = new float[3];
 	private PropertyChangeSupport pcs;
-	private WindowManager mWindowManager;
 
 	private double angle = 0d;
 
 	// Create a constant to convert nanoseconds to seconds.
 	private static final float NS2S = 1.0f / 1000000000.0f;
 	private float timestamp;
-	private Display mDisplay;
 
 	/**
 	 * Sets mSensor to {@value defaultType} by default, possible to set to other
@@ -45,12 +61,7 @@ public class MotionControl implements SensorEventListener {
 				.getSystemService(Activity.SENSOR_SERVICE);
 		setSensor(defaultType);
 		mSensorManager.registerListener(this, mSensor,
-				SensorManager.SENSOR_DELAY_GAME);
-
-		// Get an instance of the WindowManager
-		mWindowManager = (WindowManager) activity
-				.getSystemService(Activity.WINDOW_SERVICE);
-		mDisplay = mWindowManager.getDefaultDisplay();
+				SensorManager.SENSOR_DELAY_FASTEST);
 
 		pcs = new PropertyChangeSupport(this);
 	}
@@ -66,14 +77,6 @@ public class MotionControl implements SensorEventListener {
 			Debug.d("Sensor of the request type does not exist");
 			return false;
 		}
-	}
-
-	public ArrayList<Float> getFloatList() {
-		ArrayList<Float> floatList = new ArrayList<Float>(orientation.length);
-		for (int i = 0; i < orientation.length; i++) {
-			floatList.add(i, orientation[i]);
-		}
-		return floatList;
 	}
 
 	public double getAngle() {
@@ -93,20 +96,24 @@ public class MotionControl implements SensorEventListener {
 	 */
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (event.sensor != mSensor)
+		if (event.sensor != mSensor) {
 			return;
+		}
 
+		calcAzimuth(event);
+	}
+
+	/**
+	 * Calculates rotation around the Z axis (azimuth) of the device. Partially
+	 * copied from http://stackoverflow.com/a/12098469
+	 */
+	private void calcAzimuth(SensorEvent event) {
 		float aX = event.values[0];
 		float aY = event.values[1];
-		// float aZ = event.values[2];
 
-		// Calculate rotation on Z axis.
+		// Calculate rotation around Z axis.
 		angle = Math.atan2(aX, aY);
 
-		// If rotation between 0.5 and Math.PI - 0.5, update listeners
-		if (angle % (Math.PI / 2) >= 0.5
-				&& angle % (Math.PI / 2) <= (Math.PI / 2) - 0.5) {
-			pcs.firePropertyChange(null, 0, 1);
-		}
+		pcs.firePropertyChange(null, 0, 1);
 	}
 }
