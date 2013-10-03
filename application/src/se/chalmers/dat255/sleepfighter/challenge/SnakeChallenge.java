@@ -2,6 +2,7 @@ package se.chalmers.dat255.sleepfighter.challenge;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -21,42 +22,52 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 	private Model model;
 	private Thread thread;
 	private GameView view;
+	private ChallengeActivity activity;
 	
 	private float touchX;
 	private float touchY;
 	private boolean updateDir;
 	
+	public final int targetFPS = 60;
+	
 	@Override
-	public void start(final ChallengeActivity activity) {
+	public void start(ChallengeActivity activity) {
+		this.activity = activity;
 		model = new Model();
 		view = new GameView(activity, model);
+		
 		view.setOnTouchListener(this);
 		activity.setContentView(view);
 		
 		thread = new Thread() {
 			@Override
 			public void run() {
-				while (!model.won) {
-					if (model.lost) {
-						model = new Model();
+				long lastTime = 0;
+				
+				while (!model.won()) {
+					if (model.lost()) {
+						restart();
 					}
+					
+					long now = System.currentTimeMillis();
+					float delta = (lastTime > 0 ? now - lastTime : 1000/targetFPS)/(1000f/targetFPS);
+					lastTime = now;
 					
 					if (view.isSurfaceCreated()) {
 						Canvas c = null;
-						
+
 						try {
 							c = view.getHolder().lockCanvas();
 							
+							if (updateDir) {
+								model.updateDirection(touchX/c.getWidth(), touchY/c.getHeight());
+								updateDir = false;
+							}
+							model.update(delta);
+							
 							synchronized(view.getHolder()) {
 								
-								if (c != null) {
-									if (updateDir) {
-										model.updateDirection(touchX/c.getWidth(), touchY/c.getHeight());
-										updateDir = false;
-									}
-									model.update();
-									view.render(c);
-								}
+								view.render(c);
 							}
 						}
 						finally {
@@ -65,11 +76,21 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 							}
 						}
 					}
+					try {
+						Thread.sleep(1000/targetFPS);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-				activity.complete();
+				SnakeChallenge.this.activity.complete();
 			}
 		};
 		thread.start();
+	}
+	
+	public void restart() {
+		model = new Model();
+		view.setModel(model);
 	}
 	
 	@Override
@@ -82,6 +103,7 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		return true;
 	}
 	
+	// The view that will be render the Graphics
 	private class GameView extends SurfaceView implements Callback {
 
 		private boolean isSurfaceCreated;
@@ -91,6 +113,10 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		
 		private GameView(Context context) {
 			super(context);
+		}
+		
+		public void setModel(Model model) {
+			this.model = model;
 		}
 		
 		public GameView(Context context, Model model) {
@@ -129,7 +155,7 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 			Paint obstaclePaint = model.obstaclePaint;
 			RectEntity exit = model.getExit();
 			Paint exitPaint = model.exitPaint;
-			List<SphereFruit> sphereFruits = model.getSphereFruits();
+			List<CircleEntity> sphereFruits = model.getSphereFruits();
 			Paint sphereFruitPaint = model.sphereFruitPaint;
 			List<Segment> snakeSegments = model.getSnakeSegments();
 			Paint snakePaint = model.snakePaint;
@@ -156,7 +182,7 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 			}
 
 			for (int i = 0; i < sphereFruits.size(); i++) {
-				SphereFruit f = sphereFruits.get(i);
+				CircleEntity f = sphereFruits.get(i);
 
 				c.drawOval(new RectF(
 						f.getX() * scaleX - f.getWidth() * scaleX,
@@ -182,18 +208,35 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		}
 	}
 	
+	// All model classes are below here
+	
+	/**
+	 * The model of the fluid Snake game.
+	 * 
+	 * @author Hassel
+	 *
+	 */
 	private class Model {
 		public final int boardWidth = 200;
 		public final int boardHeight = 400;
 		
+		public final float speedFactor = 2;
+		
+		// Snake length
 		public final int maxSegments = 6;
+		public final int snakeWidth = 15;
 		
 		public final int obstacleWidth = 15;
+		// 
 		public final int obstacleMargin = 8;
+		
+		public final int sphereFruitWidth = 10;
+		
+		public final int nbrOfSphereFruits = 3;
 		
 		private List<Segment> snakeSegments;
 		private List<RectEntity> obstacles;
-		private List<SphereFruit> sphereFruits;
+		private List<CircleEntity> sphereFruits;
 		
 		private float startX;
 		private float startY;
@@ -212,6 +255,8 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		private float dx;
 		private float dy;
 		
+		private float modelTime;
+		
 		public Model() {
 			snakePaint = new Paint();
 			snakePaint.setColor(Color.rgb(255, 255, 0));
@@ -228,8 +273,10 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 			startX = boardWidth/2f;
 			startY = 300;
 			
+			modelTime = 0;
+			
 			snakeSegments = new ArrayList<Segment>();
-			snakeSegments.add(new Segment(startX, startY));
+			snakeSegments.add(new Segment(startX, startY, snakeWidth));
 			
 			obstacles = new ArrayList<RectEntity>();
 			obstacles.add(new RectEntity(0, 0, boardWidth, obstacleWidth));
@@ -237,13 +284,29 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 			obstacles.add(new RectEntity(boardWidth - obstacleWidth, 0, obstacleWidth, boardHeight));
 			obstacles.add(new RectEntity(0, boardHeight - obstacleWidth, boardWidth, obstacleWidth));
 			
-			sphereFruits = new ArrayList<SphereFruit>();
-			sphereFruits.add(new SphereFruit(40, 40));
+			sphereFruits = new ArrayList<CircleEntity>();
+			Random rand = new Random();
 			
+			for (int i = 0; i < nbrOfSphereFruits; i++) {
+				sphereFruits.add(new CircleEntity(
+						rand.nextInt(boardWidth - 2*(obstacleWidth + sphereFruitWidth)) + obstacleWidth + sphereFruitWidth,
+						rand.nextInt(boardHeight - 2*(obstacleWidth + sphereFruitWidth)) + obstacleWidth + sphereFruitWidth,
+						sphereFruitWidth));
+			}
+			
+			started = false;
 			lost = false;
 			won = false;
 		}
 		
+		public boolean won() {
+			return won;
+		}
+		
+		public boolean lost() {
+			return lost;
+		}
+
 		public void updateDirection(float touchX, float touchY) {
 			float segX = snakeSegments.get(0).getX();
 			float segY = snakeSegments.get(0).getY();
@@ -264,10 +327,15 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 			}
 		}
 		
-		public void update() {
+		public void update(float delta) {
 			if (started) {
-				snakeSegments.get(0).setX(snakeSegments.get(0).getX() + dx);
-				snakeSegments.get(0).setY(snakeSegments.get(0).getY() + dy);
+				if (delta >= 5) {
+					delta = 5;
+				}
+				delta *= speedFactor;
+				
+				snakeSegments.get(0).setX(snakeSegments.get(0).getX() + dx*delta);
+				snakeSegments.get(0).setY(snakeSegments.get(0).getY() + dy*delta);
 				
 				snakeSegments.get(0).getXList().add(snakeSegments.get(0).getX());
 				snakeSegments.get(0).getYList().add(snakeSegments.get(0).getY());
@@ -282,8 +350,13 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 				
 				snakeSegments.get(0).iter++;
 				
-				if (snakeSegments.size() < maxSegments && snakeSegments.get(0).iter % (snakeSegments.get(0).getWidth()*2) == 0) {
-					snakeSegments.add(new Segment(startX, startY));
+				if (snakeSegments.size() < maxSegments) {
+					modelTime += delta;
+					
+					if (modelTime >= (snakeSegments.get(0).getWidth()*2)) {
+						snakeSegments.add(new Segment(startX, startY, snakeWidth));
+						modelTime -= snakeSegments.get(0).getWidth()*2;
+					}
 				}
 				
 				checkCollision();
@@ -293,7 +366,7 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		public void checkCollision() {
 			Segment head = snakeSegments.get(0);
 			
-			if (snakeSegments.get(snakeSegments.size()-1).getY() <= 0) {
+			if (snakeSegments.get(snakeSegments.size()-1).getY() + snakeWidth <= 0) {
 				won = true;
 			}
 			
@@ -336,7 +409,7 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 			}
 		}
 		
-		public List<SphereFruit> getSphereFruits() {
+		public List<CircleEntity> getSphereFruits() {
 			return sphereFruits;
 		}
 		
@@ -353,27 +426,15 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		}
 	}
 
-	private class SphereFruit { // Healthy!!
-		private float x;
-		private float y;
+	private class CircleEntity extends Entity { // Healthy!!
+		private int width;
 		
-		private float width;
-		
-		public SphereFruit(float x, float y) {
-			this.x = x;
-			this.y = y;
+		public CircleEntity(float x, float y, int width) {
+			super(x, y);
 			
-			this.width = 10;
+			this.width = width;
 		}
-		
-		public float getX() {
-			return x;
-		}
-		
-		public float getY() {
-			return y;
-		}
-		
+
 		public float getWidth() {
 			return width;
 		}
@@ -383,25 +444,14 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		}
 	}
 	
-	private class RectEntity {
-		private float x;
-		private float y;
+	private class RectEntity extends Entity {
 		private float width;
 		private float height;
 		
 		public RectEntity(float x, float y, float width, float height) {
-			this.x = x;
-			this.y = y;
+			super(x, y);
 			this.width = width;
 			this.height = height;
-		}
-		
-		public float getX() {
-			return x;
-		}
-		
-		public float getY() {
-			return y;
 		}
 		
 		public float getWidth() {
@@ -413,27 +463,37 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		}
 	}
 	
-	private class Segment {
-		private float x;
-		private float y;
-		
+	private class Segment extends CircleEntity {
 		private final List<Float> xList;
 		private final List<Float> yList;
 		
 		private int iter;
 		
-		private float width;
-		
-		public Segment(float x, float y) {
-			this.x = x;
-			this.y = y;
+		public Segment(float x, float y, int width) {
+			super(x, y, width);
 			
 			iter = 0;
 			
 			xList = new ArrayList<Float>();
 			yList = new ArrayList<Float>();
-			
-			this.width = 15;
+		}
+
+		public List<Float> getXList() {
+			return xList;
+		}
+
+		public List<Float> getYList() {
+			return yList;
+		}
+	}
+	
+	private abstract class Entity {
+		private float x;
+		private float y;
+		
+		public Entity(float x, float y) {
+			this.x = x;
+			this.y = y;
 		}
 		
 		public float getX() {
@@ -450,22 +510,6 @@ public class SnakeChallenge implements Challenge, OnTouchListener {
 		
 		public void setY(float y) {
 			this.y = y;
-		}
-		
-		public List<Float> getXList() {
-			return xList;
-		}
-
-		public List<Float> getYList() {
-			return yList;
-		}
-		
-		public float getWidth() {
-			return width;
-		}
-		
-		public float getHeight() {
-			return width;
 		}
 	}
 }
