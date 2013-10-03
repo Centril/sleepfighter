@@ -8,4 +8,4 @@ have the following copyright holders listed in alphabetic order:
 	Johan Hasselqvist, <fyll_i@example.com>
 	Laszlo Sall Vesselenyi <fyll_i@example.com>
 	Mazdak Farrokhzad, <twingoow@gmail.com>
-	Niklas Helmertz, <fyll_i@example.com>
+	Niklas Helmertz, <niklas.helmertz@gmail.com>
