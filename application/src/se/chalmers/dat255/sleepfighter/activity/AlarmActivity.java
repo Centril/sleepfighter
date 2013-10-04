@@ -290,33 +290,30 @@ public class AlarmActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 		timer = new Timer("SleepFighter");
-		Calendar cal = Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance();
 
+		// Get the current time
 		final Runnable updateTask = new Runnable() {
 			public void run() {
+				// Set the current time on the text view
 				tvTime.setText(getThisTime());
 			}
 		};
+
+		// TODO: update view?
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		timer.cancel();
-		timer.purge();
-		timer = null;
-
-	}
-
-	public String getTime() {
-		return null;
-		// Calendar calendar = Calendar.getInstance();
-
+		// TODO: Stop the clock?
 	}
 
 	public String getThisTime() {
-		return null;
-		// Calendar calendar = Calendar.getInstance();
-
+		Calendar calendar = Calendar.getInstance();
+		// TODO: hour/minute
+		int hour = 00;
+		int minute = 00;
+		return String.format("%02d:%02d", hour, minute);
 	}
 }
