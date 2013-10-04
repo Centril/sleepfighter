@@ -97,10 +97,10 @@ public class AlarmActivity extends Activity {
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
-        tvName.setText(alarm.getName());
-        
-        tvTime = (TextView) findViewById(R.id.tvAlarmTime);
-        
+		tvName.setText(alarm.getName());
+
+		tvTime = (TextView) findViewById(R.id.tvAlarmTime);
+
 		Button btnChallenge = (Button) findViewById(R.id.btnChallenge);
 		btnChallenge.setOnClickListener(new OnClickListener() {
 			@Override
@@ -120,7 +120,7 @@ public class AlarmActivity extends Activity {
 
 	private void onStopClick() {
 		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
-		if(challengeEnabled) {
+		if (challengeEnabled) {
 			startChallenge();
 		} else {
 			stopAlarm();
@@ -153,25 +153,25 @@ public class AlarmActivity extends Activity {
 
 		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
 	}
-	
+
 	/**
 	 * Stops alarm temporarily and sends a snooze command to the server.
 	 */
-	private void startSnooze() {		
+	private void startSnooze() {
 		// Should the user complete a challenge before snoozing?
-		
+
 		stopAudio();
 
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
 
 		// Remove notification saying alarm is ringing
 		NotificationHelper.removeNotification(this);
-		
+
 		// Send snooze command to service
 		AlarmPlannerService.call(this, Command.SNOOZE, alarm.getId());
 		finish();
 	}
-	
+
 	protected void onPause() {
 		super.onPause();
 
@@ -254,7 +254,7 @@ public class AlarmActivity extends Activity {
 				Debug.d("done with challenge");
 
 				// If completed, stop the alarm
-				stopAlarm();				
+				stopAlarm();
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();
@@ -283,41 +283,40 @@ public class AlarmActivity extends Activity {
 	private void stopAudio() {
 		SFApplication.get().setAudioDriver(null);
 	}
-	
-	
-// TODO: onStart(), onStop(), getTime(), getThisTime();
-	
+
+	// TODO: onStart(), onStop(), getTime(), getThisTime();
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-		
+		timer = new Timer("SleepFighter");
+		Calendar cal = Calendar.getInstance();
+
 		final Runnable updateTask = new Runnable() {
 			public void run() {
-				// TODO
+				tvTime.setText(getThisTime());
 			}
 		};
-
-		// update the UI
-		// TODO
-			
 	}
 
 	@Override
 	protected void onStop() {
-		// super.onStop();
+		super.onStop();
 		timer.cancel();
-		
+		timer.purge();
+		timer = null;
+
 	}
 
 	public String getTime() {
 		return null;
-		//Calendar calendar = Calendar.getInstance();
-		
+		// Calendar calendar = Calendar.getInstance();
+
 	}
 
 	public String getThisTime() {
-		return null ;
-		//Calendar calendar = Calendar.getInstance();
-		
+		return null;
+		// Calendar calendar = Calendar.getInstance();
+
 	}
 }
