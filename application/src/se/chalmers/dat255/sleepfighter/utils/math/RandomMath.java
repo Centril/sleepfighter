@@ -41,6 +41,7 @@ public class RandomMath {
 		while ( (r = nextRandomRanged( rng, min, max )) % 10 == 0 );
 		return r;
 	}
+	
 
 	/**
 	 * Calculates random number in range [min, max]

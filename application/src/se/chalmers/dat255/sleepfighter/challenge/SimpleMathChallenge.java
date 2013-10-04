@@ -22,10 +22,12 @@ import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.challenge.math.DifferentiationProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.MatrixProblem;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Build;
 import android.view.KeyEvent;
 import android.view.View;
@@ -64,7 +66,7 @@ public class SimpleMathChallenge implements Challenge {
 	public void start(final ChallengeActivity activity) {
 		
 		// TODO: randomize math challenge
-		problem = new MatrixProblem();
+		problem = new DifferentiationProblem();
 		
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();
@@ -85,11 +87,11 @@ public class SimpleMathChallenge implements Challenge {
 				return handled;
 			}
 		});
-/*
+
 		// make the keyboard appear.
 		InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-	*/
+	
 		setupWebview(activity);
 		renderMathProblem(activity);
 		
