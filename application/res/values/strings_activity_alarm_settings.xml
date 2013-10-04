@@ -62,5 +62,7 @@
     <string name="pref_challenge_select">Select challenges</string>
     <string name="alarm_settings_action_remove">Delete</string>
     <string name="alarm_settings_action_toggle">Toggle</string>
+    <string name="pref_alarm_snooze_enabled">Enable snooze</string>
+    <string name="pref_alarm_snooze_time">Snooze length</string>
 
 </resources>

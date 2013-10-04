@@ -84,6 +84,18 @@
             android:key="pref_alarm_vibration"
             android:defaultValue="true" />
         
+        <CheckBoxPreference
+            android:title="@string/pref_alarm_snooze_enabled"
+            android:key="pref_alarm_snooze_enabled"
+            android:defaultValue="true" />
+        
+        <EditTextPreference
+            android:title="@string/pref_alarm_snooze_time"
+            android:key="pref_alarm_snooze_time"
+            android:defaultValue="9"
+            android:maxLength="2"
+            android:inputType="number" />
+        
         <Preference
             android:id="@+id/pref_delete_alarm"
             android:title="@string/pref_delete_alarm"

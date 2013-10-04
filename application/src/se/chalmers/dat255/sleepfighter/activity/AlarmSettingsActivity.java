@@ -35,7 +35,6 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
@@ -60,6 +59,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+/**
+ * Contains preferences for specific alarms.
+ * 
+ * @author Hassel
+ *
+ */
 public class AlarmSettingsActivity extends PreferenceActivity {
 
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
@@ -74,6 +79,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private static final String CHALLENGE_ENABLED = "pref_challenge_enable";
 	private static final String CHALLENGE_SELECT = "pref_challenge_select";
 	private static final String VOLUME = "pref_volume";
+	private static final String ENABLE_SNOOZE = "pref_alarm_snooze_enabled";
+	private static final String SNOOZE_TIME = "pref_alarm_snooze_time";
 	
 	private Preference ringerPreference;
 
@@ -210,6 +217,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(VOLUME));
 		bindPreferenceSummaryToValue(findPreference(CHALLENGE_ENABLED));
 		bindPreferenceSummaryToValue(findPreference(CHALLENGE_SELECT));
+		bindPreferenceSummaryToValue(findPreference(ENABLE_SNOOZE));
+		bindPreferenceSummaryToValue(findPreference(SNOOZE_TIME));
 
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
@@ -316,7 +325,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			}
 			else if (REPEAT.equals(preference.getKey())) {
 				alarm.setRepeat(("true".equals(stringValue)) ? true : false);
-				Debug.d("setting repeat: " + alarm.isRepeating() );
 				
 			}
 			else if (VIBRATION.equals(preference.getKey())) {
@@ -330,6 +338,17 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				boolean enabled = (Boolean) value;
 				AlarmSettingsActivity.this.alarm.getChallengeSet().setEnabled(
 						enabled);
+			}
+			else if (ENABLE_SNOOZE.equals(preference.getKey())) {
+				// this.alarm.getSnoozeConfig().setSnoozeEnabled
+				//	("true".equals(stringValue)) ? true : false);
+			}
+			else if (SNOOZE_TIME.equals(preference.getKey())) {
+				if (stringValue == "" || stringValue == "0") {
+					stringValue = preference.getSummary().toString();
+				}
+				//this.alarm.getSnoozeConfig().setSnoozeTime(Integer.parseInt(stringValue));
+				preference.setSummary(stringValue);
 			}
 			return true;
 		}
@@ -364,6 +383,18 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
 			boolean enabled = this.alarm.getChallengeSet().isEnabled();
 			((CheckBoxPreference) preference).setChecked(enabled);
+		}
+		else if (ENABLE_SNOOZE.equals(preference.getKey())) {
+			// TODO
+			//boolean enabled = this.alarm.getSnoozeConfig().isSnoozeEnabled();
+			//((CheckBoxPreference) preference).setChecked(enabled);
+		}
+		else if (SNOOZE_TIME.equals(preference.getKey())) {
+			//TODO
+			// int time = this.alarm.getSnoozeConfig().getSnoozeTime();
+			EditTextPreference pref = ((EditTextPreference) preference);
+			// pref.setSummary(time + "");
+			// pref.setValue(time + "");
 		}
 
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
