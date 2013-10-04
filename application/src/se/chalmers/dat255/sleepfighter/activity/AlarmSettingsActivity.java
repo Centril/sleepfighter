@@ -18,8 +18,6 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
-import java.util.ArrayList;
-
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
