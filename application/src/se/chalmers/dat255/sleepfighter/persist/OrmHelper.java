@@ -165,6 +165,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	public PersistenceExceptionDao<Alarm, Integer> getAlarmDao() throws PersistenceException {
 		if ( this.alarmDao == null ) {
 			this.alarmDao = this.getExceptionDao( Alarm.class );
+			this.alarmDao.setObjectCache( true );
 		}
 		return this.alarmDao;
 	}
