@@ -124,6 +124,16 @@ public class PersistenceManager {
 	}
 
 	/**
+	 * Handles a change in {@link AudioConfig}
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleAudioConfigChange( AudioConfig.ChangeEvent evt ) {
+		this.updateAudioConfig( evt );
+	}
+
+	/**
 	 * Constructs the PersistenceManager.
 	 *
 	 * @param context android context.
@@ -384,14 +394,6 @@ public class PersistenceManager {
 			updateAlarmTable = this.updateAudioSource( alarm.getAudioSource(), (AudioSource) evt.getOldValue() );
 			break;
 
-		/*
-		 * TODO: Will AudioConfig really be directly set via Alarm#setAudioConfig?
-		 * It can never be null so... Maybe use own event?
-		 */
-		case AUDIO_CONFIG:
-			helper.getAudioConfigDao().update( alarm.getAudioConfig() );
-			break;
-
 		default:
 			updateAlarmTable = true;
 			break;
@@ -402,7 +404,19 @@ public class PersistenceManager {
 		}
 	}
 
+	/**
+	 * Updates an Audio Config to database.
+	 *
+	 * @param ac the AudioConfig to update
+	 * @param evt ChangeEvent that occurred, required to update foreign fields.
+	 * @throws PersistenceException if some SQL error happens.
+	 */
+	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) throws PersistenceException {
+		OrmHelper helper = this.getHelper();
 
+		helper.getAudioConfigDao().update( evt.getAudioConfig() );
+	}
+	
 	/**
 	 * Updates the audio source.
 	 *
