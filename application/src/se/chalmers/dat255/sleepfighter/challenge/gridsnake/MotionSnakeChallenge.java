@@ -53,7 +53,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.motionControl.addListener(this);
 		this.textView = (TextView) activity.findViewById(R.id.motionText);
 
-		// this.snakeController = new SnakeController();
+		this.snakeController = new SnakeController();
 
 	}
 
@@ -73,21 +73,13 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 		// User controls for the Challenge
 		if (withinMargin(Direction.WEST)) {
-			this.textView.setText(Direction.WEST.toString()
-					+ Double.toString(this.angle));
-			// this.snakeController.update(Direction.WEST);
+			this.snakeController.update(Direction.WEST);
 		} else if (withinMargin(Direction.NORTH)) {
-			this.textView.setText(Direction.NORTH.toString()
-					+ Double.toString(this.angle));
-			// this.snakeController.update(Direction.NORTH);
+			this.snakeController.update(Direction.NORTH);
 		} else if (withinMargin(Direction.EAST)) {
-			this.textView.setText(Direction.EAST.toString()
-					+ Double.toString(this.angle));
-			// this.snakeController.update(Direction.EAST);
+			this.snakeController.update(Direction.EAST);
 		} else if (withinMargin(Direction.SOUTH)) {
-			this.textView.setText(Direction.SOUTH.toString()
-					+ Double.toString(this.angle));
-			// this.snakeController.update(Direction.SOUTH);
+			this.snakeController.update(Direction.SOUTH);
 		}
 	}
 
@@ -110,8 +102,10 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 					&& this.angle >= -Math.PI / 2 + this.margin;
 			break;
 		case SOUTH:
-			within = this.angle <= -Math.PI / 2 + this.margin && this.angle >= -Math.PI / 2
-					|| this.angle >= -Math.PI / 2 - this.margin && this.angle <= -Math.PI / 2;
+			within = this.angle <= -Math.PI / 2 + this.margin
+					&& this.angle >= -Math.PI / 2
+					|| this.angle >= -Math.PI / 2 - this.margin
+					&& this.angle <= -Math.PI / 2;
 			break;
 		default:
 			break;

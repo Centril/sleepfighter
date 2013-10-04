@@ -49,13 +49,15 @@ public class SnakeController {
 	 * Constructs the controller.
 	 */
 	public SnakeController() {
-		this.init();
-
 		this.rng = new Random();
 
+		this.pcs = new PropertyChangeSupport(this);
+		
+		this.thread = new SnakeThread();
+		
 		this.view = new SnakeView();
 
-		this.thread = new SnakeThread();
+		this.init();
 	}
 
 	public SnakeController(MotionSnakeChallenge challenge) {
@@ -70,7 +72,7 @@ public class SnakeController {
 
 	protected void init() {
 		this.model = new SnakeModel(SnakeConstants.getGameSize(),
-				Direction.getRandom(new Random()), this.rng);
+				Direction.getRandom(this.rng), this.rng);
 		thread.start();
 	}
 

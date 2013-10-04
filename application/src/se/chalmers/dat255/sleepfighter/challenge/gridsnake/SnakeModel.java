@@ -33,8 +33,7 @@ import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Position;
 
 /**
- * Snake game.
- * Original author Mazdak, modified by Laszlo for SleepFighter.
+ * Snake game. Original author Mazdak, modified by Laszlo for SleepFighter.
  */
 public class SnakeModel {
 	/*
@@ -60,14 +59,13 @@ public class SnakeModel {
 	private int score;
 
 	/** The size of the board. */
-	private Dimension boardSize; 
-	
-	/**Notifies listeners.*/
+	private Dimension boardSize;
+
+	/** Notifies listeners. */
 	private PropertyChangeSupport pcs;
 
 	/*
-	 * --------------------------------
-	 * Getters.
+	 * -------------------------------- Getters.
 	 * --------------------------------
 	 */
 	/**
@@ -96,13 +94,13 @@ public class SnakeModel {
 	public List<Position> getEmptyPositions() {
 		return Collections.unmodifiableList(this.emptyPos);
 	}
-	
+
 	/**
 	 * Returns the size of the game board as a Dimension object.
 	 * 
 	 * @return Size of the game board.
 	 */
-	public Dimension getBoardSize(){
+	public Dimension getBoardSize() {
 		return boardSize;
 	}
 
@@ -133,6 +131,12 @@ public class SnakeModel {
 
 		// Set start direction.
 		this.direction = startDirection;
+
+		// Set board size.
+		this.boardSize = size;
+
+		// Set pcs.
+		this.pcs = new PropertyChangeSupport(this);
 
 		// Blank out the whole gameboard.
 		this.emptyPos = new ArrayList<Position>(size.getWidth()
