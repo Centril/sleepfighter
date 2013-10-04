@@ -390,6 +390,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		else if (SNOOZE_TIME.equals(preference.getKey())) {
 			int time = this.alarm.getSnoozeConfig().getSnoozeTime();
 			EditTextPreference pref = ((EditTextPreference) preference);
+			pref.setText(time + "");
 			pref.setSummary(time + "");
 		}
 

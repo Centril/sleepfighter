@@ -92,7 +92,7 @@
         <EditTextPreference
             android:title="@string/pref_alarm_snooze_time"
             android:key="pref_alarm_snooze_time"
-            android:defaultValue="9"
+            android:selectAllOnFocus="true"
             android:maxLength="2"
             android:inputType="number" />
         
