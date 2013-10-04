@@ -231,6 +231,9 @@ public class Alarm implements Cloneable, IdProvider {
 	@DatabaseField(foreign = true, canBeNull = false)
 	private AudioConfig audioConfig;
 
+	@DatabaseField(foreign = true, canBeNull = false)
+	private SnoozeConfig snoozeConfig;
+
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
@@ -238,8 +241,6 @@ public class Alarm implements Cloneable, IdProvider {
 	private ChallengeConfigSet challenges;
 
 	private MessageBus<Message> bus;
-
-	private SnoozeConfig snoozeConfig;
 
 	/* --------------------------------
 	 * Constructors.
@@ -337,6 +338,7 @@ public class Alarm implements Cloneable, IdProvider {
 		// Pass it on!
 		this.challenges.setMessageBus( bus );
 		this.audioConfig.setMessageBus(bus);
+		this.snoozeConfig.setMessageBus(bus);
 	}
 
 	/**

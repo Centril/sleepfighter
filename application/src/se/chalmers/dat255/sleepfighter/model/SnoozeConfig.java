@@ -4,10 +4,12 @@ import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * The snooze configuration for an alarm.
  */
+@DatabaseTable(tableName = "snooze_config")
 public class SnoozeConfig implements IdProvider {
 
 	/**
