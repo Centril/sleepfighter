@@ -75,6 +75,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	private Alarm alarm;
 	private AlarmList alarmList;
+
+	private SFApplication app() {
+		return SFApplication.get();
+	}
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -140,15 +144,11 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		alarmList = ((SFApplication) getApplication()).getAlarms();
-		((SFApplication) getApplication()).getBus().subscribe(this);
-		
-		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm()) {
-			alarm = alarmList.getPresetAlarm();
-		}else{
-			final int id = new IntentUtils( this.getIntent() ).getAlarmId();
-			alarm = alarmList.getById(id);
-		}
+		alarmList = app().getAlarms();
+		app().getBus().subscribe(this);
+
+		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
+		alarm = intentUtils.isSettingPresetAlarm() ? app().getFromPresetFactory().getPreset() : alarmList.getById( intentUtils.getAlarmId() );
 			
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
@@ -225,7 +225,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	}
 
 	private void updateRingerSummary() {
-		AudioDriverFactory factory = SFApplication.get().getAudioDriverFactory();
+		AudioDriverFactory factory = app().getAudioDriverFactory();
 		AudioDriver driver = factory.produce( this, this.alarm.getAudioSource() );
 		this.ringerPreference.setSummary( driver.printSourceName() );
 	}
@@ -239,12 +239,14 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	private void startRingerEdit() {
 		Intent intent = new Intent(this, RingerSettingsActivity.class );
-		
 
-		if(this.alarm.isPresetAlarm()) {
-			new IntentUtils( intent ).setSettingPresetAlarm(true);
-		} else
-			new IntentUtils( intent ).setAlarmId( alarm );
+		IntentUtils intentUtils = new IntentUtils( intent );
+
+		if ( this.alarm.isPresetAlarm() ) {
+			intentUtils.setSettingPresetAlarm( true );
+		} else {
+			intentUtils.setAlarmId( alarm );
+		}
 	
 		
 		this.startActivity( intent );

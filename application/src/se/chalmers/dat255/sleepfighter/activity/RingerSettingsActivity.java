@@ -361,16 +361,10 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	private void fetchAlarm() {
 		SFApplication app = SFApplication.get();
-		
-		
-		
-		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm()) {
-			alarm = app.getAlarms().getPresetAlarm();
-		}else{
-			final int id = new IntentUtils( this.getIntent() ).getAlarmId();
-			alarm = app.getAlarms().getById(id);
-		}
-		
+
+		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
+		alarm = intentUtils.isSettingPresetAlarm() ? app.getFromPresetFactory().getPreset() : app.getAlarms().getById( intentUtils.getAlarmId() );
+
 		if (this.alarm == null) {
 			// TODO: Better handling for final product
 			Toast.makeText(this, "Alarm is null (ID: " + alarm.getId() + ")", Toast.LENGTH_SHORT).show();

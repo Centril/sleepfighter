@@ -18,9 +18,15 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter;
 
+import java.util.Iterator;
+import java.util.List;
+
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
+import se.chalmers.dat255.sleepfighter.factory.FromPresetAlarmFactory;
+import se.chalmers.dat255.sleepfighter.factory.PresetAlarmFactory;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
@@ -48,6 +54,8 @@ public class SFApplication extends Application {
 
 	private AudioDriver audioDriver;
 	private AudioDriverFactory audioDriverFactory;
+
+	private FromPresetAlarmFactory fromPresetFactory;
 
 	@Override
 	public void onCreate() {
@@ -82,6 +90,51 @@ public class SFApplication extends Application {
 	}
 
 	/**
+	 * Returns the factory that creates alarms from preset.<br/>
+	 * If factory does not exist, neither does preset,<br/>
+	 * so one is made via {@link PresetAlarmFactory}.
+	 *
+	 * @return the factory that creates alarms from preset.
+	 */
+	public synchronized FromPresetAlarmFactory getFromPresetFactory() {
+		// Make sure we have pulled a list from database or this won't work.
+		if ( this.alarmList == null ) {
+			this.getAlarms();
+		}
+
+		if ( this.fromPresetFactory == null ) {
+			// Make preset alarm, add to database and finally store in factory.
+			Alarm preset = new PresetAlarmFactory().createAlarm();
+			preset.setMessageBus( this.getBus() );
+
+			this.getPersister().addAlarm( preset );
+
+			this.fromPresetFactory = new FromPresetAlarmFactory( preset );
+		}
+
+		return this.fromPresetFactory;
+	}
+
+	/**
+	 * Filters out preset alarm and stores it in SFApplication for later use.<br/>
+	 * If no preset was found, preset is not stored.
+	 *
+	 * @param alarms the list of alarms to filter.
+	 */
+	private void filterPresetAlarm( List<Alarm> alarms ) {
+		Iterator<Alarm> iter = alarms.iterator();
+		while ( iter.hasNext() ) {
+			Alarm alarm = iter.next();
+			if ( alarm.isPresetAlarm() ) {
+				// Take the opportunity to store preset in a factory.
+				this.fromPresetFactory = new FromPresetAlarmFactory( alarm );
+				iter.remove();
+				break;
+			}
+		}
+	}
+
+	/**
 	 * Returns the AlarmList for the application.<br/>
 	 * It is lazy loaded.
 	 * 
@@ -93,7 +146,10 @@ public class SFApplication extends Application {
 				this.persistenceManager.cleanStart();
 			}
 
-			this.alarmList = this.getPersister().fetchAlarms();
+			List<Alarm> alarms = this.getPersister().fetchAlarms();
+			this.filterPresetAlarm( alarms );
+
+			this.alarmList = new AlarmList( alarms );
 			this.alarmList.setMessageBus(this.getBus());
 
 			this.registerAlarmPlanner();
