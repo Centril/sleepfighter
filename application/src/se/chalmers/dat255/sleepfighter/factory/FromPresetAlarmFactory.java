@@ -47,4 +47,13 @@ public class FromPresetAlarmFactory implements AlarmFactory {
 	public Alarm createAlarm() {
 		return new Alarm( this.preset );
 	}
+
+	/**
+	 * Returns the preset if need be.
+	 *
+	 * @return the preset.
+	 */
+	public Alarm getPreset() {
+		return this.preset;
+	}
 }
