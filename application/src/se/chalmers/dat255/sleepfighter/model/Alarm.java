@@ -28,13 +28,11 @@ import org.joda.time.ReadableDateTime;
 
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
-import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
-import android.provider.Settings;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -194,7 +192,7 @@ public class Alarm implements Cloneable, IdProvider {
 	public static final int NOT_COMMITTED_ID = -1;
 
 	@DatabaseField
-	private boolean isActivated = false;
+	private boolean isActivated;
 
 	@DatabaseField
 	private String name;
@@ -213,7 +211,7 @@ public class Alarm implements Cloneable, IdProvider {
 
 	/** The weekdays that this alarm can ring. */
 	@DatabaseField(width = 7)
-	private boolean[] enabledDays = { true, true, true, true, true, true, true };
+	private boolean[] enabledDays;
 	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
 
@@ -231,11 +229,10 @@ public class Alarm implements Cloneable, IdProvider {
 	private boolean vibrationEnabled = true;
 	
 	@DatabaseField(foreign = true, canBeNull = true)
-	private AudioSource audioSource = new AudioSource(AudioSourceType.RINGTONE, Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
+	private AudioSource audioSource;
 
-	// TODO: initialized here for now, remove.
 	@DatabaseField(foreign = true, canBeNull = false)
-	private AudioConfig audioConfig = new AudioConfig();
+	private AudioConfig audioConfig;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
