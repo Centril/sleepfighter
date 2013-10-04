@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.reciever;
+package se.chalmers.dat255.sleepfighter.receiver;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;

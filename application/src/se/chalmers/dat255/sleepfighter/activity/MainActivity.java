@@ -34,7 +34,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver;
+import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;

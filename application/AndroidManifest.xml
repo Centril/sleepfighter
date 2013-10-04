@@ -89,7 +89,7 @@
 
         <!-- END: Alarm settings related activities -->
 
-        <receiver android:name="se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver" >
+        <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver" >
         </receiver>
 
         <activity
@@ -100,7 +100,7 @@
 
         <service android:name="se.chalmers.dat255.sleepfighter.service.AlarmPlannerService"></service>
 
-        <receiver android:name="se.chalmers.dat255.sleepfighter.reciever.AlarmRebootSetter">
+        <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.AlarmRebootSetter">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
