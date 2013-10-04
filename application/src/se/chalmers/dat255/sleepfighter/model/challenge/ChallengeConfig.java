@@ -70,13 +70,26 @@ public class ChallengeConfig implements IdProvider {
 	}
 
 	/**
-	 * Constructs the config object with given parameters and whether or not to enable it.
+	 * Constructs the config object with type.
 	 *
-	 * @param params the initial parameters to use for config.
+	 * @param type the type of the config.
 	 * @param enabled true if challenge is to be enabled. See {@link #setEnabled(boolean)}
 	 */
-	public ChallengeConfig( Map<String, String> params, boolean enabled ) {
+	public ChallengeConfig( ChallengeType type, boolean enabled ) {
+		this( type, enabled, null );
+	}
+
+	/**
+	 * Constructs the config object with given its type, parameters and whether or not to enable it.
+	 *
+	 * @param type the type of the config.
+	 * @param enabled true if challenge is to be enabled. See {@link #setEnabled(boolean)}
+	 * @param params the initial parameters to use for config.
+	 */
+	public ChallengeConfig( ChallengeType type, boolean enabled, Map<String, String> params ) {
+		this.type = type;
 		this.params = params;
+		this.enabled = enabled;
 	}
 
 	/* --------------------------------
