@@ -1,3 +1,21 @@
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <resources>
 
     <string name="title_activity_alarm_settings">Alarm</string>
@@ -10,36 +28,41 @@
     <string name="pref_alarm_time">Time</string>
     <string name="pref_alarm_name">Name</string>
     <string name="pref_alarm_default_name">Untitled Alarm</string>
-    
     <string name="pref_alarm_enabled_days">Days</string>
-    
     <string name="time_category_title">Time</string>
     <string name="misc_category_title">Miscellaneous</string>
     <string name="ringer_category_title">Ring tone settings</string>
-    
-    
+
     <string-array name="week_days">
         <item>Monday</item>
         <item>Tuesday</item>
-        <item>Wednesday</item>       
-        <item>Thursday</item>      
+        <item>Wednesday</item>
+        <item>Thursday</item>
         <item>Friday</item>
         <item>Saturday</item>
         <item>Sunday</item>
     </string-array>
-    
     <string-array name="default_week_days">
         <item>true</item>
         <item>true</item>
-        <item>true</item>       
-        <item>true</item>      
+        <item>true</item>
+        <item>true</item>
         <item>true</item>
         <item>true</item>
         <item>true</item>
     </string-array>
-    
+
     <string name="pref_alarm_repeat">Repeat</string>
     <string name="pref_delete_alarm">Delete this alarm</string>
+    <string name="perf_alarm_ringtone">Ring tone</string>
+    <string name="pref_alarm_vibration">Vibration</string>
+    <string name="challenge_category_title">Challenge</string>
+    <string name="challenge_category_title_plural">Challenges</string>
+    <string name="pref_challenge_enabled">Enable challenges</string>
+    <string name="pref_challenge_select">Select challenges</string>
+    <string name="alarm_settings_action_remove">Delete</string>
+    <string name="alarm_settings_action_toggle">Toggle</string>
+    <string name="pref_alarm_snooze_enabled">Enable snooze</string>
+    <string name="pref_alarm_snooze_time">Snooze length</string>
 
-	<string name="perf_alarm_ringtone">Ring tone</string>
 </resources>

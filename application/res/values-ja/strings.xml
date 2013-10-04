@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <resources>
 
    <string name="app_name">スリープファイター</string>
     
-   
     <string name="action_settings">設定</string>
     <string name="add">追加</string>
     <string name="alarm_unnamed_format">アラーム %1$d</string>
@@ -12,10 +29,8 @@
     <string name="confirm_delete">このアラームを削除してもよろしいですか</string>
 
     <string-array name="earliest_time_formats">
-        <!-- TODO: I think this sounds a bit unnatural. Find better translation. x -->
-        <item>つけられたアラームがありません</item>
-        <item>&lt; 一分で</item>
-        <!--TODO: should it really be で? -->
+        <item>つけたアラームがありません</item>
+        <item>&lt; 1分で</item>
         <item>%1$sで</item>
         <item>%1$s %2$sで</item>
         <item>%1$s %2$s %3$sで</item>
@@ -25,16 +40,26 @@
         <item>%2$d時間</item>
         <item>%3$d分</item>
     </string-array>
+    	
+    <string-array name="exact_time_formats">
+        <item>本日 %1$s</item>
+        <item>明日 %1$s</item>
+        <item>%2$s %1$s</item> <!-- %2$s = [Monday, ...]  -->
+    </string-array>
+    
     <string-array name="main_list_context_menu">
         <item>編集</item>
         <item>削除</item>
-
-        <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
-        <item>start vibration</item>
-        <item>stop vibration</item>
         <item>コピー</item>
     </string-array>
 
+    <!--  challenge -->
+    <string name="pre_chal_act">チャレンジ!</string>
+    
+    <string name="math_chal_act">数学の問題を解く</string>
+    <string name="btn_answer">解答</string>
+    <string name="memory_chal_act">神経衰弱</string>
+   
+    <string name="start_challenge">チャレンジ</string>
+    
 </resources>

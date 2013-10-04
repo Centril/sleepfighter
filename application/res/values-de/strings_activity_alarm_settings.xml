@@ -1,0 +1,68 @@
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <string name="title_activity_alarm_settings">Alarm</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_alarm_header_general">Allgemeine</string>
+    <string name="pref_alarm_time">Zeit</string>
+    <string name="pref_alarm_name">Name</string>
+    <string name="pref_alarm_default_name">Namenloser Alarm</string>
+
+    <string name="pref_alarm_enabled_days">Tage</string>
+    
+    <string name="time_category_title">Zeit</string>
+    <string name="misc_category_title">Übrige</string>
+    
+    <string name="ringer_category_title">Klingelton Einstellungen</string>
+    
+ 
+    
+    <string-array name="week_days">
+        <item>Montag</item>
+        <item>Dienstag</item>
+        <item>Mittwoch</item>       
+        <item>Donnerstag</item>      
+        <item>Freitag</item>
+        <item>Samstag</item>
+        <item>Sonntag</item>
+    </string-array>
+    
+    
+    <string-array name="default_week_days">
+        <item>true</item>
+        <item>true</item>
+        <item>true</item>       
+        <item>true</item>      
+        <item>true</item>
+        <item>true</item>
+        <item>true</item>
+    </string-array>
+  
+  
+    
+    <string name="pref_alarm_repeat">Wiederholen</string>
+    <string name="pref_delete_alarm">Alarm löschen</string>
+    
+    <string name="perf_alarm_ringtone">Klingelton</string>
+	
+</resources>

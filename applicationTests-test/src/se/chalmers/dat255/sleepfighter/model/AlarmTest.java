@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model;
 
 import java.util.Arrays;
@@ -10,8 +28,10 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
-import se.chalmers.dat255.sleepfighter.model.Alarm.DateChangeEvent;
+
+import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
@@ -88,11 +108,19 @@ public class AlarmTest extends TestCase {
 	public class Subscriber3 {
 		
 		public boolean passed = false;
-		public Alarm alarm = new Alarm(1,2);
+		public Alarm alarm = new Alarm(1,2, 3);
 		
 		@Handler
-		public void handleMetaChange( DateChangeEvent evt ) {
+		public void handleMetaChange( ScheduleChangeEvent evt ) {
 			passed = (evt.getModifiedField() == Alarm.Field.TIME) && (alarm == evt.getAlarm());
+			// test failed
+			if(!passed) 
+				return;
+			
+			// else we will aslo test for old value
+			int[] old = (int[])evt.getOldValue();
+				
+			passed = 1 == old[0] && 2 == old[1] && 3 == old[2];
 		}
 		
 	}
@@ -104,7 +132,7 @@ public class AlarmTest extends TestCase {
 		bus.subscribe( sub );
 
 		sub.alarm.setMessageBus(bus);
-		sub.alarm.setTime(8, 2);
+		sub.alarm.setTime(8, 7, 4);
 		assertTrue(sub.passed);
 	}
 	
@@ -224,9 +252,10 @@ public class AlarmTest extends TestCase {
 		
 		@Handler
 		public void handleMetaChange( MetaChangeEvent evt ) {
-			passed = (evt.getModifiedField() == Alarm.Field.ID) && (alarm == evt.getAlarm());
+			passed = (evt.getModifiedField() == Alarm.Field.ID) && (alarm == evt.getAlarm()) &&
+					alarm.getId() == 2 &&
+					(Integer)evt.getOldValue() == 3;
 		}
-		
 	}
 	
 	public void testSetId() {
@@ -236,6 +265,7 @@ public class AlarmTest extends TestCase {
 		bus.subscribe( sub );
 
 		sub.alarm.setMessageBus(bus);
+		sub.alarm.setId(3);
 		sub.alarm.setId(2);
 		assertTrue(sub.passed);
 	}	
@@ -247,7 +277,9 @@ public class AlarmTest extends TestCase {
 		
 		@Handler
 		public void handleMetaChange( MetaChangeEvent evt ) {
-			passed = (evt.getModifiedField() == Alarm.Field.NAME) && (alarm == evt.getAlarm());
+			passed = evt.getModifiedField() == Alarm.Field.NAME && 
+					alarm == evt.getAlarm() &&
+					alarm.getName().equals("hell world") && evt.getOldValue().equals("name");
 		}
 		
 	}
@@ -259,8 +291,17 @@ public class AlarmTest extends TestCase {
 		bus.subscribe( sub );
 
 		sub.alarm.setMessageBus(bus);
+		
+		sub.alarm.setName("name");
 		sub.alarm.setName("hell world");
 		assertTrue(sub.passed);
+		
+		// a named alarm cannot be unnamed
+		try {
+			sub.alarm.setName(null);
+			Assert.fail("Should have thrown IllegalArgumentException");
+		} catch (IllegalArgumentException e) {
+		}
 	}	
 	
 	public class Subscriber4 {
@@ -269,8 +310,9 @@ public class AlarmTest extends TestCase {
 		public Alarm alarm = new Alarm(1,2);
 		
 		@Handler
-		public void handleMetaChange( DateChangeEvent evt ) {
-			passed = (evt.getModifiedField() == Alarm.Field.ACTIVATED) && (alarm == evt.getAlarm());
+		public void handleMetaChange( ScheduleChangeEvent evt ) {
+			passed = (evt.getModifiedField() == Alarm.Field.ACTIVATED) && (alarm == evt.getAlarm()
+					&& alarm.isActivated() == false && (Boolean)evt.getOldValue() == true);
 		}
 		
 	}
@@ -282,7 +324,9 @@ public class AlarmTest extends TestCase {
 		bus.subscribe( sub );
 
 		sub.alarm.setMessageBus(bus);
+		
 		sub.alarm.setActivated(true);
+		sub.alarm.setActivated(false);
 		assertTrue(sub.passed);
 	}	
 
@@ -292,8 +336,28 @@ public class AlarmTest extends TestCase {
 		public Alarm alarm = new Alarm(1,2);
 		
 		@Handler
-		public void handleMetaChange( DateChangeEvent evt ) {
+		public void handleMetaChange( ScheduleChangeEvent evt ) {
 			passed = (evt.getModifiedField() == Alarm.Field.ENABLED_DAYS) && (alarm == evt.getAlarm());
+			if(!passed)
+				return;
+			
+			// now test the days. 
+			
+	
+			boolean[] old = { true, true, true, true, true, true, true };
+			boolean[] newdays = { true, true, false, true, true, true, true };
+	
+			Debug.d("old: " + Arrays.toString(old));
+			Debug.d("newdays: " + Arrays.toString(newdays));
+			
+			
+			
+			passed = (Arrays.equals(old, (boolean[])evt.getOldValue()));
+	    	if(!passed)
+	    		return;
+	    	
+	    	passed = (Arrays.equals(newdays, alarm.getEnabledDays()));
+	    	
 		}
 		
 	}
@@ -305,7 +369,7 @@ public class AlarmTest extends TestCase {
 		bus.subscribe( sub );
 
 		sub.alarm.setMessageBus(bus);
-		boolean[] enabledDays = { true, true, true, true, true, true, true };
+		boolean[] enabledDays = { true, true, false, true, true, true, true };
 		
 		sub.alarm.setEnabledDays(enabledDays);
 		assertTrue(sub.passed);
@@ -365,10 +429,32 @@ public class AlarmTest extends TestCase {
 		alarm.setUnnamedPlacement(3);
 		assertEquals(3, alarm.getUnnamedPlacement());
 	}
+
+	public class Subscriber6 {
+
+		public boolean passed = false;
+		public Alarm alarm = new Alarm(1, 2);
+
+		@Handler
+		public void handleMetaChange(ScheduleChangeEvent evt) {
+			passed = (evt.getModifiedField() == Alarm.Field.REPEATING)
+					&& (alarm == evt.getAlarm()) && alarm.isRepeating() == true
+					&& (Boolean) evt.getOldValue() == false;
+		}
+	}
 	
 	public void testSetRepeat() {
-		Alarm alarm = new Alarm();
-		alarm.setRepeat(true);
-		assertTrue(alarm.isRepeating());
+		Subscriber6 sub = new Subscriber6();
+		
+		MessageBus<Message> bus = new MessageBus<Message>();
+		bus.subscribe( sub );
+		sub.alarm.setMessageBus(bus);
+
+		// now test message.
+		sub.alarm.setRepeat(false);
+		sub.alarm.setRepeat(true);
+		
+		assertTrue(sub.passed);
+		
 	}
 }

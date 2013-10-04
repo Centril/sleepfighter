@@ -1,14 +1,38 @@
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <resources>
 
     <string name="title_activity_global_settings">Inställningar</string>
 
     <string name="pref_alarm_turn_screen_on">Sätt på skärmen</string>
-    <string name="pref_alarm_turn_screen_on_summary">Skärmen sätts på automatiskt när alarmet ringer</string>    
+    <string name="pref_alarm_turn_screen_on_summary">Skärmen sätts på automatiskt när alarmet ringer</string>
 
     <string name="pref_alarm_bypass_lock_screen">Förbigå skärmlås</string>
-    <string name="pref_alarm_bypass_lock_screen_summary">Skärmlåset låses upp automatiskt när alarmet ringer</string>    
+    <string name="pref_alarm_bypass_lock_screen_summary">Skärmlåset låses upp automatiskt när alarmet ringer</string>
+
+    <string name="display_when_next_alarm_rings">Visa tid för nästa alarm</string>
+    <string name="display_when_next_alarm_rings_summary">Tiden för nästa alarm visas istället för hur lång tid det är kvar</string>
 
     <string name="pref_about">Om</string>
     <string name="pref_version">Version</string>
+
+    
+    <string name="pref_global_preset_alarm">Förvalt Alarm</string>
     
 </resources>

@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <resources>
 
     <string name="app_name">SleepFighter</string>
@@ -7,13 +25,13 @@
 
     <string name="alarm_unnamed_format">Alarm %1$d</string>
     <string name="yes">Yes</string>
-    <string name="no">Nej</string>
+    <string name="no">No</string>
     <string name="confirm_delete">Do you really want to delete this alarm?"</string>
     <string name="pre_chal_act">A wild challenge appears!</string>
     <string name="math_chal_act">Do some MATH!</string>
+    <string name="memory_chal_act">Memory</string>
+    <string name="snooze">Snooze</string>
 
-    <string name="ringtone_none">None</string>
-    
     <string-array name="earliest_time_formats">
         <item>No alarm active</item>
         <item>In &lt; 1 minute</item>
@@ -26,15 +44,16 @@
         <item>%2$dh</item>
         <item>%3$dm</item>
     </string-array>
+
+    <string-array name="exact_time_formats">
+        <item>Today %1$s</item>
+        <item>Tomorrow %1$s</item>
+        <item>%2$s %1$s</item> <!-- %2$s = [Monday, ...]  -->
+    </string-array>
+
     <string-array name="main_list_context_menu">
         <item>Edit alarm</item>
         <item>Delete alarm</item>
-
-        <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
-        <item>start vibration</item>
-        <item>stop vibration</item>
         <item>Copy Alarm</item>
     </string-array>
 
@@ -49,6 +68,6 @@
 
     <!-- Alarm name & time, these should be overwritten -->
     <string name="alarm_name">Alarm name</string>
-    <string name="alarm_time">13:37</string>
+    <string name="alarm_time">00:00</string>
 
 </resources>

@@ -1,20 +1,51 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.android.preference.InitializableRingtonePreference;
+import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
+import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
-import se.chalmers.dat255.sleepfighter.preference.InitializableRingtonePreference;
+import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +57,19 @@ import android.widget.Toast;
  * @since Sep 27, 2013
  */
 public class RingerSettingsActivity extends PreferenceActivity {
-	private static final CharSequence RINGTONE_PICKER = "pref_ringtone_picker";
+	private final static String TAG = RingerSettingsActivity.class.getSimpleName();
+
+	public enum ID {
+		RINGTONE_PICKER( "pref_ringtone_picker" ),
+		MUSIC_PICKER( "pref_local_content_uri_picker" ),
+		PLAYLIST_PICKER( "pref_playlist_picker" );
+
+		public final String id;
+
+		ID( String id ) {
+			this.id = id;
+		}
+	}
 
 	private Alarm alarm;
 
@@ -50,11 +93,59 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		// Setup factory & make driver from current source.
 		this.setupDriver();
 
+		// Setup action bar.
+		this.setupActionBar();
+
 		// Setup summary.
 		this.setupSummary();
 
 		// Setup pickers, etc.
 		this.setupRingtonePicker();
+		this.setupMusicPicker();
+		this.setupPlaylistPicker();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu( Menu menu ) {
+		this.getMenuInflater().inflate( R.menu.ringer_menu, menu );
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected( MenuItem item ) {
+		switch ( item.getItemId() ) {
+		case R.id.ringer_action_cancel:
+			// Stop any playback
+			if(this.driver != null && this.driver.isPlaying()) {
+				this.driver.stop();
+			}
+			this.setAudioSource( null );
+			return true;
+		case R.id.ringer_action_test:
+			this.testRinger();
+			return true;
+		case android.R.id.home:
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected( item );
+		}	
+	}
+
+	/**
+	 * Tests the ringer via set AudioDevice.
+	 */
+	private void testRinger() {
+		this.driver.toggle( this.alarm.getAudioConfig() );
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if (Build.VERSION.SDK_INT >= 11) {
+			ActionBar actionBar = this.getActionBar();
+			actionBar.setTitle(MetaTextUtils.printAlarmName(this, alarm));
+			ActivityUtils.setupStandardActionBar(this);
+		}
 	}
 
 	/**
@@ -67,20 +158,32 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.updateSummary();
 	}
 
+	/**
+	 * Updates the summary in the top.
+	 */
 	private void updateSummary() {
-		this.summaryName.setText( this.driver.printSourceName() );
+		String name = this.driver.printSourceName();
+		this.summaryName.setText( name );
+		setActionBarSubtitle(name);
 
 		// Make and set typeText.
 		String typeText;
 		AudioSource source = this.driver.getSource();
-		if ( source == null ) {
-			typeText = this.getString( R.string.alarm_audiosource_summary_type_none );
-		} else {
-			Resources res = this.getResources();
-			typeText = res.getStringArray( R.array.alarm_audiosource_summary_type )[source.getType().ordinal()];
-		}
+
+		Resources res = this.getResources();
+		typeText = source == null
+				 ? this.getString( R.string.alarm_audiosource_summary_type_none )
+				 : res.getStringArray( R.array.alarm_audiosource_summary_type )[source.getType().ordinal()];
 
 		this.summaryType.setText( typeText );
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setActionBarSubtitle(String subtitle) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionbar = getActionBar();
+			actionbar.setSubtitle(subtitle);
+		}
 	}
 
 	/**
@@ -88,9 +191,8 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	private void setupDriver() {
 		// Setup factory & make driver from current source.
-		// TODO make source from Alarm.
-		AudioSource source = null;
-		this.factory = new AudioDriverFactory();
+		AudioSource source = this.alarm.getAudioSource();
+		this.factory = SFApplication.get().getAudioDriverFactory();
 		this.driver = this.factory.produce( this, source );
 	}
 
@@ -99,7 +201,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	@SuppressWarnings( "deprecation" )
 	private void setupRingtonePicker() {
-		InitializableRingtonePreference pref = (InitializableRingtonePreference) this.findPreference( RINGTONE_PICKER );
+		InitializableRingtonePreference pref = (InitializableRingtonePreference) this.findPreference( ID.RINGTONE_PICKER.id );
 
 		AudioSource as = this.driver.getSource();
 		if ( as != null ) {
@@ -118,20 +220,139 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	/**
 	 * Sets the AudioSource to a ringtone.
 	 *
-	 * @param uri 
+	 * @param uri the URI to set.
 	 */
-	protected void setRingtone( String uri ) {
-		AudioSource source = null;
+	private void setRingtone( String uri ) {
+		AudioSource source = uri.equals( "" ) ? null : new AudioSource( AudioSourceType.RINGTONE, uri );
+		this.setAudioSource( source );
+	}
 
-		if ( !uri.equals( "" ) ) {
-			source = new AudioSource( AudioSourceType.RINGTONE, uri );
+	/**
+	 * Sets up the music picker.
+	 */
+	private void setupMusicPicker() {
+		this.preferenceBind( ID.MUSIC_PICKER, new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick( Preference preference ) {
+				launchMusicPicker();
+				return false;
+			}
+		} );
+	}
+
+	/**
+	 * Launches the music picker.
+	 */
+	private void launchMusicPicker() {
+		Log.d( this.getClass().getSimpleName(), "launchMusicPicker#1" );
+		Intent i = new Intent( Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI );
+		this.startActivityForResult( i, ID.MUSIC_PICKER.ordinal() );
+	}
+
+	/**
+	 * Sets the AudioSource to a music file.
+	 *
+	 * @param data the intent data that contains music URI.
+	 */
+	private void setMusic( Intent data ) {
+		this.setAudioSource( AudioSourceType.LOCAL_CONTENT_URI, data );
+	}
+
+	/**
+	 * Sets up the playlist picker.
+	 */
+	private void setupPlaylistPicker() {
+		this.preferenceBind( ID.PLAYLIST_PICKER, new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick( Preference preference ) {
+				launchPlaylistPicker();
+				return false;
+			}
+		} );
+	}
+
+	/**
+	 * Launches the playlist picker.
+	 */
+	private void launchPlaylistPicker() {
+		Intent intent = new Intent( this, PlaylistSelectActivity.class );
+
+		AudioSource source = this.alarm.getAudioSource();
+		if ( source != null && source.getType() == AudioSourceType.PLAYLIST ) {
+			intent.putExtra( "selected_uri", source.getUri() );
 		}
 
-		this.driver = factory.produce( this, source );
+		this.startActivityForResult( intent, ID.PLAYLIST_PICKER.ordinal() );
+	}
 
+	/**
+	 * Sets the AudioSource to a playlist.
+	 *
+	 * @param data the intent data that contains playlist URI.
+	 */
+	private void setPlaylist( Intent data ) {
+		this.setAudioSource( AudioSourceType.PLAYLIST, data );
+	}
+
+	/**
+	 * Sets & stores the current audio source using an intent for data.
+	 *
+	 * @param type the type of AudioSource.
+	 * @param data the intent data.
+	 */
+	private void setAudioSource( AudioSourceType type, Intent data ) {
+		String uri = data.getDataString();
+		AudioSource source = uri == null ? null : new AudioSource( type, uri );
+		this.setAudioSource( source );
+	}
+
+	/**
+	 * Sets & stores the current audio source.
+	 *
+	 * @param source the audio source.
+	 */
+	private void setAudioSource( AudioSource source ) {
+		this.driver = this.factory.produce( this, source );
+		this.alarm.setAudioSource( source );
 		this.updateSummary();
+	}
 
-		// TODO save source somewhere.
+	
+	@Override
+	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+		if ( resultCode == Activity.RESULT_OK ) {
+			Log.d( TAG, data.toString() );
+	
+			ID[] ids = ID.values();
+			if ( requestCode < ids.length ) {
+				switch( ids[requestCode] ) {
+				case MUSIC_PICKER:
+					this.setMusic( data );
+					break;
+
+				case PLAYLIST_PICKER:
+					this.setPlaylist( data );
+					break;
+
+				default:
+					throw new AssertionError( "Shouldn't happen!" );
+				}
+			} else {
+				super.onActivityResult( requestCode, resultCode, data );
+			}
+		} else {
+			if(ID.MUSIC_PICKER.ordinal() == requestCode) {
+				// TODO: localize message.
+				DialogUtils.showMessageDialog("Please install Google Play Music", this);
+			}
+		
+		}
+	}
+
+	@SuppressWarnings( "deprecation" )
+	private void preferenceBind( ID id, OnPreferenceClickListener listener ) {
+		Preference pref = (Preference) this.findPreference( id.id );
+		pref.setOnPreferenceClickListener( listener );
 	}
 
 	/**
@@ -140,14 +361,16 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	private void fetchAlarm() {
 		SFApplication app = SFApplication.get();
 
-		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
-		this.alarm = app.getAlarms().getById(id);
+		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
+		alarm = intentUtils.isSettingPresetAlarm() ? app.getFromPresetFactory().getPreset() : app.getAlarms().getById( intentUtils.getAlarmId() );
 
-		if (alarm == null) {
+		if (this.alarm == null) {
 			// TODO: Better handling for final product
-			Toast.makeText(this, "Alarm is null (ID: " + id + ")", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Alarm is null (ID: " + alarm.getId() + ")", Toast.LENGTH_SHORT).show();
 			this.finish();
 		}
+
+		Log.d( "RingerSettingsActivity", "fetchAlarm, " + this.alarm );
 	}
 
 	/**
@@ -157,5 +380,14 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	public Alarm getAlarm() {
 		return this.alarm;
+	}
+	
+	@Override
+	protected void onPause() {
+		// Stop any playback
+		if (this.driver != null && this.driver.isPlaying()) {
+			this.driver.stop();
+		}
+		super.onPause();
 	}
 }

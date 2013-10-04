@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    <string name="title_alarm_ringer_settings">Csengőbeállitások</string>
+
+    <string name="audio_source_category_title">Hang</string>
+
+    <string name="perf_ringtone_picker">Csengőhang</string>
+    <string name="perf_ringtone_picker_summary">Válassz egy csengőhangot a telefonodbol</string>
+    <string name="alarm_audiosource_summary_name_title">Választott:</string>
+    <string name="alarm_audiosource_summary_type_label">Forrás:</string>
+    <string name="alarm_audiosource_summary_name_none">Semmi</string>
+    
+    <string name="alarm_audiosource_summary_type_none">N/A</string>
+
+    <string-array name="alarm_audiosource_summary_type">
+        <item>Csengőhang</item>
+        <item>Helybeli media</item>
+        <item>Playlist</item>
+        <item>Internet stream</item>
+        <item>Spotify</item>
+    </string-array>
+    
+</resources>

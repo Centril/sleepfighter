@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <resources>
+
     <string name="title_alarm_ringer_settings">Ring tone settings</string>
 
+    <string name="ringer_action_test">Test</string>
+    <string name="ringer_action_cancel">Cancel</string>
+ 
     <string name="audio_source_category_title">Audio Source</string>
-
     <string name="perf_ringtone_picker">Ring tone</string>
     <string name="perf_ringtone_picker_summary">Select a ring tone from your phone</string>
     <string name="alarm_audiosource_summary_name_title">Selected:</string>
@@ -18,5 +39,11 @@
         <item>Internet stream</item>
         <item>Spotify</item>
     </string-array>
-    
+
+    <string name="pref_local_content_uri_picker">Music</string>
+    <string name="pref_local_content_uri_picker_summary">Select an audio file from your device</string>
+
+    <string name="pref_playlist_picker">Playlist</string>
+    <string name="pref_playlist_picker_summary">Select a playlist from your device</string>
+
 </resources>

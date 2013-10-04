@@ -1,16 +1,41 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model;
+
+import java.util.Arrays;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 
+import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
+import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
+import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -23,7 +48,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 16, 2013
  */	
 @DatabaseTable(tableName = "alarm")
-public class Alarm implements Cloneable {
+public class Alarm implements Cloneable, IdProvider {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -32,8 +57,13 @@ public class Alarm implements Cloneable {
 	 * @since Sep 19, 2013
 	 */
 	public static enum Field {
-		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID
+		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID, REPEATING, AUDIO_SOURCE, AUDIO_CONFIG
 	}
+
+	/* --------------------------------
+	 * Defined Events.
+	 * --------------------------------
+	 */
 
 	/**
 	 * All events fired by {@link Alarm} extends this interface.
@@ -50,7 +80,19 @@ public class Alarm implements Cloneable {
 		 */
 		public Alarm getAlarm();
 
+		/**
+		 * Returns the Field that was modified in the alarm.
+		 *
+		 * @return the modified field.
+		 */
 		public Field getModifiedField();
+
+		/**
+		 * Returns the old value.
+		 *
+		 * @return the old value.
+		 */
+		public Object getOldValue();
 	}
 
 	/**
@@ -63,28 +105,30 @@ public class Alarm implements Cloneable {
 	public static abstract class BaseAlarmEvent implements AlarmEvent {
 		private Field field;
 		private Alarm alarm;
+		private Object oldValue;
 
-		private BaseAlarmEvent(Alarm alarm, Field field) {
+		private BaseAlarmEvent(Alarm alarm, Field field, Object oldValue ) {
 			this.alarm = alarm;
 			this.field = field;
+			this.oldValue = oldValue;
 		}
 
 		public Alarm getAlarm() {
 			return this.alarm;
 		}
 
-		/**
-		 * Returns the modified field in Alarm.
-		 *
-		 * @return the modified field.
-		 */
 		public Field getModifiedField() {
 			return this.field;
+		}
+
+		@Override
+		public Object getOldValue() {
+			return this.oldValue;
 		}
 	}
 
 	/**
-	 * DateChangeEvent occurs when a date-time related constraint is modified, these are:<br/>
+	 * ScheduleChangeEvent occurs when a scheduling related constraint is modified, these are:<br/>
 	 * <ul>
 	 * 	<li>{@link Field#TIME}</li>
 	 * 	<li>{@link Field#ACTIVATED}</li>
@@ -95,14 +139,14 @@ public class Alarm implements Cloneable {
 	 * @version 1.0
 	 * @since Sep 19, 2013
 	 */
-	public static class DateChangeEvent extends BaseAlarmEvent {
-		private DateChangeEvent(Alarm alarm, Field field) {
-			super(alarm, field);
+	public static class ScheduleChangeEvent extends BaseAlarmEvent {
+		private ScheduleChangeEvent(Alarm alarm, Field field, Object oldValue ) {
+			super(alarm, field, oldValue);
 		}
 	}
 
 	/**
-	 * DateChangeEvent occurs when a date-time related constraint is modified, these are:<br/>
+	 * MetaChangeEvent occurs when a name related constraint is modified, these are:<br/>
 	 * <ul>
 	 * 	<li>{@link Field#NAME}</li>
 	 * 	<li>{@link Field#ID}</li>
@@ -113,10 +157,33 @@ public class Alarm implements Cloneable {
 	 * @since Sep 19, 2013
 	 */
 	public static class MetaChangeEvent extends BaseAlarmEvent {
-		private MetaChangeEvent(Alarm alarm, Field field) {
-			super(alarm, field);
+		private MetaChangeEvent(Alarm alarm, Field field, Object oldValue ) {
+			super(alarm, field, oldValue);
 		}
 	}
+
+	/**
+	 * AudioChangeEvent occurs when a audio related constraint is modified, these are:<br/>
+	 * <ul>
+	 * 	<li>{@link Field#AUDIO_SOURCE}</li>
+	 * 	<li>{@link Field#AUDIO_CONFIG}</li>
+	 * </ul>
+	 * 
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Sep 27, 2013
+	 */
+	public static class AudioChangeEvent extends BaseAlarmEvent {
+		private AudioChangeEvent(Alarm alarm, Field field, Object oldValue ) {
+			super(alarm, field, oldValue);
+		}
+	}
+
+	/* --------------------------------
+	 * Fields.
+	 * --------------------------------
+	 */
 
 	@DatabaseField(generatedId = true)
 	private int id = NOT_COMMITTED_ID;
@@ -125,7 +192,7 @@ public class Alarm implements Cloneable {
 	public static final int NOT_COMMITTED_ID = -1;
 
 	@DatabaseField
-	private boolean isActivated = false;
+	private boolean isActivated;
 
 	@DatabaseField
 	private String name;
@@ -144,7 +211,7 @@ public class Alarm implements Cloneable {
 
 	/** The weekdays that this alarm can ring. */
 	@DatabaseField(width = 7)
-	private boolean[] enabledDays = { true, true, true, true, true, true, true };
+	private boolean[] enabledDays;
 	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
 
@@ -153,29 +220,32 @@ public class Alarm implements Cloneable {
 	
 	@DatabaseField
 	private boolean isRepeating = false;
+	
+	// whether this alarm is the preset alarm(the default alarm)
+	@DatabaseField
+	private boolean isPresetAlarm = false;
+	
+	@DatabaseField(foreign = true, canBeNull = true)
+	private AudioSource audioSource;
+
+	@DatabaseField(foreign = true, canBeNull = false)
+	private AudioConfig audioConfig;
+
+	@DatabaseField(foreign = true, canBeNull = false)
+	private SnoozeConfig snoozeConfig;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
+	@DatabaseField(foreign = true, canBeNull = false)
+	private ChallengeConfigSet challenges;
+
 	private MessageBus<Message> bus;
 
-	/**
-	 * Sets the message bus, if not set, no events will be received.
-	 *
-	 * @param bus the buss that receives events.
+	/* --------------------------------
+	 * Constructors.
+	 * --------------------------------
 	 */
-	public void setMessageBus( MessageBus<Message> bus ) {
-		this.bus = bus;
-	}
-
-	/**
-	 * Returns the message bus, or null if not set.
-	 *
-	 * @return the message bus.
-	 */
-	public MessageBus<Message> getMessageBus() {
-		return this.bus;
-	}
 
 	/**
 	 * Constructs an alarm to current time.
@@ -199,12 +269,19 @@ public class Alarm implements Cloneable {
 		this.second = rhs.second;
 		this.isActivated = rhs.isActivated;
 		this.enabledDays = rhs.enabledDays;
-		this.name = rhs.name;
+		this.name = rhs.name == null ? null : new String( rhs.name );
+		this.isRepeating = rhs.isRepeating;
 
 		this.unnamedPlacement = 0;
 
 		// Copy dependencies.
 		this.bus = rhs.bus;
+		
+		this.audioSource = new AudioSource( rhs.audioSource );
+		this.audioConfig = new AudioConfig( rhs.audioConfig );
+		this.snoozeConfig = new SnoozeConfig( rhs.snoozeConfig );
+
+		this.challenges = new ChallengeConfigSet( rhs.challenges );
 	}
 
 	/**
@@ -246,6 +323,34 @@ public class Alarm implements Cloneable {
 		this.setTime(time);
 	}
 
+	/* --------------------------------
+	 * Public methods.
+	 * --------------------------------
+	 */
+
+	/**
+	 * Sets the message bus, if not set, no events will be received.
+	 *
+	 * @param bus the buss that receives events.
+	 */
+	public void setMessageBus( MessageBus<Message> bus ) {
+		this.bus = bus;
+
+		// Pass it on!
+		this.challenges.setMessageBus( bus );
+		this.audioConfig.setMessageBus(bus);
+		this.snoozeConfig.setMessageBus(bus);
+	}
+
+	/**
+	 * Returns the message bus, or null if not set.
+	 *
+	 * @return the message bus.
+	 */
+	public MessageBus<Message> getMessageBus() {
+		return this.bus;
+	}
+
 	/**
 	 * Returns the ID of the alarm.
 	 *
@@ -266,8 +371,9 @@ public class Alarm implements Cloneable {
 			return;
 		}
 
+		int old = this.id;
 		this.id = id;
-		this.publish( new MetaChangeEvent( this, Field.ID ) );
+		this.publish( new MetaChangeEvent( this, Field.ID, old ) );
 	}
 
 	/**
@@ -285,17 +391,22 @@ public class Alarm implements Cloneable {
 	 * @param name the name of the Alarm to set.
 	 */
 	public void setName( String name ) {
-		if ( this.name == name ) {
+		if (this.name != null && this.name.equals(name)) {
 			return;
 		}
 
 		if ( name == null ) {
+			if ( this.name == null ) {
+				return;
+			}
+
 			throw new IllegalArgumentException( "A named Alarm can not be unnamed." );
 		}
 
+		String old = this.name;
 		this.name = name;
 		this.unnamedPlacement = 0;
-		this.publish( new MetaChangeEvent( this, Field.NAME ) );
+		this.publish( new MetaChangeEvent( this, Field.NAME, old ) );
 	}
 
 	/**
@@ -324,11 +435,14 @@ public class Alarm implements Cloneable {
 		if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59 ) {
 			throw new IllegalArgumentException();
 		}
+
+		int[] old = new int[] { hour, minute, second };
+
 		this.hour = hour;
 		this.minute = minute;
 		this.second = second;
 
-		this.publish( new DateChangeEvent( this, Field.TIME ) );
+		this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
 	}
 
 	/**
@@ -368,16 +482,13 @@ public class Alarm implements Cloneable {
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
 		Preconditions.checkNotNull( enabledDays );
 
-		if ( Objects.equal( this.enabledDays, enabledDays ) ) {
-			return;
-		}
-
 		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
 
+		boolean[] old = this.enabledDays;
 		this.enabledDays = enabledDays.clone();
-		this.publish( new DateChangeEvent( this, Field.ENABLED_DAYS ) );
+		this.publish( new ScheduleChangeEvent( this, Field.ENABLED_DAYS, old ) );
 	}
 
 	/**
@@ -486,8 +597,9 @@ public class Alarm implements Cloneable {
 			return;
 		}
 
+		boolean old = this.isActivated;
 		this.isActivated = isActivated;
-		this.publish( new DateChangeEvent( this, Field.ACTIVATED ) );
+		this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, old ) );
 	}
 
 	/**
@@ -543,7 +655,17 @@ public class Alarm implements Cloneable {
 
 	@Override
 	public String toString() {
-		return DateTextUtils.joinTime( this.hour, this.minute, this.second ) + " is" + (this.isActivated ? " " : " NOT ") + "activated.";
+		final Map<String, String> prop = Maps.newHashMap();
+		prop.put( "id", Integer.toString( this.getId() ) );
+		prop.put( "name", this.getName() );
+		prop.put( "time", DateTextUtils.joinTime( this.hour, this.minute, this.second ) );
+		prop.put( "weekdays", Arrays.toString( this.enabledDays ) );
+		prop.put( "activated", Boolean.toString( this.isActivated() ) );
+		prop.put( "repeating", Boolean.toString( this.isRepeating() ) );
+		prop.put( "audio_source", this.getAudioSource() == null ? null : this.getAudioSource().toString() );
+		prop.put( "audio_config", this.getAudioConfig().toString() );
+
+		return "Alarm[" + StringUtils.PROPERTY_MAP_JOINER.join( prop ) + "]";
 	}
 
 	/**
@@ -552,7 +674,7 @@ public class Alarm implements Cloneable {
 	 * @return the formatted time.
 	 */
 	public String getTimeString() {
-		return String.format("%02d", this.getHour()) + ":" + String.format("%02d", this.getMinute());
+		return DateTextUtils.joinTime( this.getHour(), this.getMinute() );
 	}
 
 	/**
@@ -578,7 +700,6 @@ public class Alarm implements Cloneable {
 			return false;
 		}
 
-		// TODO uncomment when working unique ID
 		Alarm rhs = (Alarm) obj;
 		return this.id == rhs.id;
 	}
@@ -596,7 +717,13 @@ public class Alarm implements Cloneable {
 	 * @param isRepeating true if it is repeating.
 	 */
 	public void setRepeat(boolean isRepeating) {
+		if ( this.isRepeating == isRepeating ) {
+			return;
+		}
+	
+		boolean old = this.isRepeating;
 		this.isRepeating = isRepeating;
+		this.publish( new ScheduleChangeEvent( this, Field.REPEATING, old ) );
 	}
 
 	/**
@@ -607,6 +734,140 @@ public class Alarm implements Cloneable {
 	public boolean isRepeating() {
 		return this.isRepeating;
 	}
+
+	/**
+	 * Sets the audio source for this alarm.
+	 *
+	 * @param source the audio source to set.
+	 */
+	public void setAudioSource( AudioSource source ) {
+		if ( this.audioSource == source ) {
+			return;
+		}
+
+		AudioSource old = this.audioSource;
+		this.audioSource = source;
+		this.publish( new AudioChangeEvent( this, Field.AUDIO_SOURCE, old ) );
+	}
+
+	/**
+	 * Returns the audio source of this Alarm.
+	 *
+	 * @return the audio source.
+	 */
+	public AudioSource getAudioSource() {
+		return this.audioSource;
+	}
+
+	/**
+	 * Returns the audio configuration for this alarm.
+	 *
+	 * @return the audio configuration.
+	 */
+	public AudioConfig getAudioConfig() {
+		return this.audioConfig;
+	}
+
+	/**
+	 * Returns the snooze configuration for the alarm.
+	 * 
+	 * @return the snooze configuration
+	 */
+	public SnoozeConfig getSnoozeConfig() {
+		return this.snoozeConfig;
+	}
+
+	/**
+	 * Returns the ChallengeConfigSet for this alarm.<br/>
+	 * Modifications may be done directly to the returned set<br/>
+	 * as it is a well isolated module/unit.
+	 *
+	 * @return the ChallengeConfigSet object.
+	 */
+	public ChallengeConfigSet getChallengeSet() {
+		return this.challenges;
+	}
+
+	/* --------------------------------
+	 * PERSISTENCE ONLY METHODS.
+	 * --------------------------------
+	 */
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link AudioConfig}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param config the {@link AudioConfig} to set.
+	 */
+	public void setFetched( AudioConfig config ) {
+		this.audioConfig = config;
+	}
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link AudioSource}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param source the {@link AudioSource} to set.
+	 */
+	public void setFetched( AudioSource source ) {
+		this.audioSource = source;
+	}
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link SnoozeConfig}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param source the {@link SnoozeConfig} to set.
+	 */
+	public void setFetched(SnoozeConfig config) {
+		this.snoozeConfig = config;
+	}
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes and factorization.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link ChallengeConfigSet}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param challenges the {@link ChallengeConfigSet} to set.
+	 */
+	public void setChallenges( ChallengeConfigSet challenges ) {
+		this.challenges = challenges;
+		this.challenges.setMessageBus( this.getMessageBus() );
+	}
+
+	/**
+	 * Sets whether or not this is a preset alarm.
+	 *
+	 * @param isPresetAlarm true if it is a preset alarm, otherwise false.
+	 */
+	public void setIsPresetAlarm(boolean isPresetAlarm) {
+		this.isPresetAlarm = isPresetAlarm;
+	}
+
+	/**
+	 * Returns whether or not this is a preset alarm.
+	 *
+	 * @return true if it is a preset alarm, otherwise false.
+	 */
+	public boolean isPresetAlarm() {
+		return this.isPresetAlarm;
+	}
+
+	/* --------------------------------
+	 * Private Methods.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Publishes an event to event bus.
