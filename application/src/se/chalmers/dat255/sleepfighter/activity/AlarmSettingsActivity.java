@@ -64,7 +64,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
-	private final String VOLUME = "pref_volume";
 	private static final String NAME = "pref_alarm_name";
 	private static final String TIME = "pref_alarm_time";
 	private static final String DAYS = "pref_enabled_days";
@@ -74,7 +73,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private static final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
 	private static final String CHALLENGE_ENABLED = "pref_challenge_enable";
 	private static final String CHALLENGE_SELECT = "pref_challenge_select";
-
+	private static final String VOLUME = "pref_volume";
+	
 	private Preference ringerPreference;
 
 	private Alarm alarm;
