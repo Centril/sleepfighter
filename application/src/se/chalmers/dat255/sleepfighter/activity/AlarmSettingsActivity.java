@@ -340,14 +340,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 						enabled);
 			}
 			else if (ENABLE_SNOOZE.equals(preference.getKey())) {
-				// this.alarm.getSnoozeConfig().setSnoozeEnabled
-				//	("true".equals(stringValue)) ? true : false);
+				alarm.getSnoozeConfig().setSnoozeEnabled("true".equals(stringValue) ? true : false);
 			}
 			else if (SNOOZE_TIME.equals(preference.getKey())) {
 				if (stringValue == "" || stringValue == "0") {
 					stringValue = preference.getSummary().toString();
 				}
-				//this.alarm.getSnoozeConfig().setSnoozeTime(Integer.parseInt(stringValue));
+				alarm.getSnoozeConfig().setSnoozeTime(Integer.parseInt(stringValue));
 				preference.setSummary(stringValue);
 			}
 			return true;
@@ -385,16 +384,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			((CheckBoxPreference) preference).setChecked(enabled);
 		}
 		else if (ENABLE_SNOOZE.equals(preference.getKey())) {
-			// TODO
-			//boolean enabled = this.alarm.getSnoozeConfig().isSnoozeEnabled();
-			//((CheckBoxPreference) preference).setChecked(enabled);
+			boolean enabled = this.alarm.getSnoozeConfig().isSnoozeEnabled();
+			((CheckBoxPreference) preference).setChecked(enabled);
 		}
 		else if (SNOOZE_TIME.equals(preference.getKey())) {
-			//TODO
-			// int time = this.alarm.getSnoozeConfig().getSnoozeTime();
+			int time = this.alarm.getSnoozeConfig().getSnoozeTime();
 			EditTextPreference pref = ((EditTextPreference) preference);
-			// pref.setSummary(time + "");
-			// pref.setValue(time + "");
+			pref.setSummary(time + "");
 		}
 
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
