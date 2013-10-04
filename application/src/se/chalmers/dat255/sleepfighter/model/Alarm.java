@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model;
 
 import java.util.Arrays;
@@ -10,12 +28,12 @@ import org.joda.time.ReadableDateTime;
 
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DatabaseField;
@@ -174,7 +192,7 @@ public class Alarm implements Cloneable, IdProvider {
 	public static final int NOT_COMMITTED_ID = -1;
 
 	@DatabaseField
-	private boolean isActivated = false;
+	private boolean isActivated;
 
 	@DatabaseField
 	private String name;
@@ -193,7 +211,7 @@ public class Alarm implements Cloneable, IdProvider {
 
 	/** The weekdays that this alarm can ring. */
 	@DatabaseField(width = 7)
-	private boolean[] enabledDays = { true, true, true, true, true, true, true };
+	private boolean[] enabledDays;
 	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
 
@@ -202,16 +220,25 @@ public class Alarm implements Cloneable, IdProvider {
 	
 	@DatabaseField
 	private boolean isRepeating = false;
-
+	
+	// whether this alarm is the preset alarm(the default alarm)
+	@DatabaseField
+	private boolean isPresetAlarm = false;
+	
 	@DatabaseField(foreign = true, canBeNull = true)
 	private AudioSource audioSource;
 
-	// TODO: initialized here for now, remove.
 	@DatabaseField(foreign = true, canBeNull = false)
-	private AudioConfig audioConfig = new AudioConfig();
+	private AudioConfig audioConfig;
+
+	@DatabaseField(foreign = true, canBeNull = false)
+	private SnoozeConfig snoozeConfig;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
+
+	@DatabaseField(foreign = true, canBeNull = false)
+	private ChallengeConfigSet challenges;
 
 	private MessageBus<Message> bus;
 
@@ -242,12 +269,19 @@ public class Alarm implements Cloneable, IdProvider {
 		this.second = rhs.second;
 		this.isActivated = rhs.isActivated;
 		this.enabledDays = rhs.enabledDays;
-		this.name = rhs.name;
+		this.name = rhs.name == null ? null : new String( rhs.name );
+		this.isRepeating = rhs.isRepeating;
 
 		this.unnamedPlacement = 0;
 
 		// Copy dependencies.
 		this.bus = rhs.bus;
+		
+		this.audioSource = new AudioSource( rhs.audioSource );
+		this.audioConfig = new AudioConfig( rhs.audioConfig );
+		this.snoozeConfig = new SnoozeConfig( rhs.snoozeConfig );
+
+		this.challenges = new ChallengeConfigSet( rhs.challenges );
 	}
 
 	/**
@@ -301,6 +335,11 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public void setMessageBus( MessageBus<Message> bus ) {
 		this.bus = bus;
+
+		// Pass it on!
+		this.challenges.setMessageBus( bus );
+		this.audioConfig.setMessageBus(bus);
+		this.snoozeConfig.setMessageBus(bus);
 	}
 
 	/**
@@ -352,11 +391,15 @@ public class Alarm implements Cloneable, IdProvider {
 	 * @param name the name of the Alarm to set.
 	 */
 	public void setName( String name ) {
-		if ( this.name == name ) {
+		if (this.name != null && this.name.equals(name)) {
 			return;
 		}
 
 		if ( name == null ) {
+			if ( this.name == null ) {
+				return;
+			}
+
 			throw new IllegalArgumentException( "A named Alarm can not be unnamed." );
 		}
 
@@ -438,10 +481,6 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
 		Preconditions.checkNotNull( enabledDays );
-
-		if ( Objects.equal( this.enabledDays, enabledDays ) ) {
-			return;
-		}
 
 		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
@@ -661,7 +700,6 @@ public class Alarm implements Cloneable, IdProvider {
 			return false;
 		}
 
-		// TODO uncomment when working unique ID
 		Alarm rhs = (Alarm) obj;
 		return this.id == rhs.id;
 	}
@@ -722,27 +760,32 @@ public class Alarm implements Cloneable, IdProvider {
 	}
 
 	/**
-	 * Sets the audio configuration for this alarm.
-	 *
-	 * @param source the audio config to set.
-	 */
-	public void setAudioConfig( AudioConfig config ) {
-		if ( this.audioConfig == Preconditions.checkNotNull( config ) ) {
-			return;
-		}
-
-		AudioConfig old = this.audioConfig;
-		this.audioConfig = config;
-		this.publish( new AudioChangeEvent( this, Field.AUDIO_CONFIG, old ) );
-	}
-
-	/**
 	 * Returns the audio configuration for this alarm.
 	 *
 	 * @return the audio configuration.
 	 */
 	public AudioConfig getAudioConfig() {
 		return this.audioConfig;
+	}
+
+	/**
+	 * Returns the snooze configuration for the alarm.
+	 * 
+	 * @return the snooze configuration
+	 */
+	public SnoozeConfig getSnoozeConfig() {
+		return this.snoozeConfig;
+	}
+
+	/**
+	 * Returns the ChallengeConfigSet for this alarm.<br/>
+	 * Modifications may be done directly to the returned set<br/>
+	 * as it is a well isolated module/unit.
+	 *
+	 * @return the ChallengeConfigSet object.
+	 */
+	public ChallengeConfigSet getChallengeSet() {
+		return this.challenges;
 	}
 
 	/* --------------------------------
@@ -774,6 +817,51 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public void setFetched( AudioSource source ) {
 		this.audioSource = source;
+	}
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link SnoozeConfig}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param source the {@link SnoozeConfig} to set.
+	 */
+	public void setFetched(SnoozeConfig config) {
+		this.snoozeConfig = config;
+	}
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes and factorization.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link ChallengeConfigSet}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param challenges the {@link ChallengeConfigSet} to set.
+	 */
+	public void setChallenges( ChallengeConfigSet challenges ) {
+		this.challenges = challenges;
+		this.challenges.setMessageBus( this.getMessageBus() );
+	}
+
+	/**
+	 * Sets whether or not this is a preset alarm.
+	 *
+	 * @param isPresetAlarm true if it is a preset alarm, otherwise false.
+	 */
+	public void setIsPresetAlarm(boolean isPresetAlarm) {
+		this.isPresetAlarm = isPresetAlarm;
+	}
+
+	/**
+	 * Returns whether or not this is a preset alarm.
+	 *
+	 * @return true if it is a preset alarm, otherwise false.
+	 */
+	public boolean isPresetAlarm() {
+		return this.isPresetAlarm;
 	}
 
 	/* --------------------------------

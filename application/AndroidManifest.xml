@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="se.chalmers.dat255.sleepfighter"
-    android:versionCode="2"
-    android:versionName="@string/version_name" >
+    android:versionCode="3"
+    android:versionName="0.3" >
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -56,13 +74,22 @@
         </activity>
 
         <activity
+            android:name="se.chalmers.dat255.sleepfighter.activity.ChallengeSettingsActivity"
+            android:label="@string/title_alarm_challenge_settings"
+            android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.AlarmSettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="se.chalmers.dat255.sleepfighter.activity.AlarmSettingsActivity" />
+        </activity>
+
+        <activity
             android:name="se.chalmers.dat255.sleepfighter.activity.PlaylistSelectActivity"
             android:label="@string/title_activity_playlist_select" >
         </activity>
 
         <!-- END: Alarm settings related activities -->
 
-        <receiver android:name="se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver" >
+        <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver" >
         </receiver>
 
         <activity
@@ -73,7 +100,7 @@
 
         <service android:name="se.chalmers.dat255.sleepfighter.service.AlarmPlannerService"></service>
 
-        <receiver android:name="se.chalmers.dat255.sleepfighter.reciever.AlarmRebootSetter">
+        <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.AlarmRebootSetter">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -83,14 +110,15 @@
             android:name="se.chalmers.dat255.sleepfighter.activity.ChallengeActivity"
             android:label="@string/pre_chal_act" >
         </activity>
-        <activity
-            android:name="se.chalmers.dat255.sleepfighter.activity.SimpleMathActivity"
-            android:label="@string/math_chal_act" >
-        </activity>        
-        <activity
-            android:name="se.chalmers.dat255.sleepfighter.activity.MemoryActivity"
-            android:label="memory" >
-        </activity>
+       
+        <service
+            android:name="se.chalmers.dat255.sleepfighter.audio.AudioService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY" />
+                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.STOP" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

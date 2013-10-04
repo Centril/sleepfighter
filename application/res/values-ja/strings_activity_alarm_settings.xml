@@ -1,3 +1,21 @@
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <resources>
 
     <string name="title_activity_alarm_settings">アラーム</string>
@@ -16,7 +34,7 @@
     
     <string name="misc_category_title">その他</string>
     
-    <string name="ringer_category_title">着信音設定</string>
+    <string name="ringer_category_title">アラーム音</string>
     
     <string-array name="week_days">
         <item>月曜日</item>
@@ -43,5 +61,8 @@
     <string name="pref_delete_alarm">削除</string>
     
 	<string name="perf_alarm_ringtone">着信音</string>
+	
+	
+	  <string name="pref_alarm_vibration">バイブレーション</string>
 	
 </resources>

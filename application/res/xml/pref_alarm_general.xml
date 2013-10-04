@@ -1,12 +1,30 @@
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/time_category_title" >
-        <se.chalmers.dat255.sleepfighter.preference.TimepickerPreference
+        <se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference
             android:defaultValue="00:00"
             android:key="pref_alarm_time"
             android:title="@string/pref_alarm_time" />
 
-        <se.chalmers.dat255.sleepfighter.preference.MultiSelectListPreference
+        <se.chalmers.dat255.sleepfighter.android.preference.MultiSelectListPreference
             android:defaultValue="@array/default_week_days"
             android:entries="@array/week_days"
             android:entryValues="@array/week_days"
@@ -22,9 +40,26 @@
             android:key="perf_alarm_ringtone"
             android:persistent="false" />
 
+        <se.chalmers.dat255.sleepfighter.android.preference.VolumePreference 
+            android:title="Volume"
+            android:key="pref_volume" />
+        
     </PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/misc_category_title" >
+	<PreferenceCategory android:title="@string/challenge_category_title" >
+
+	    <CheckBoxPreference 
+	        android:key="pref_challenge_enable"
+	        android:title="@string/pref_challenge_enabled" />
+	    
+	    <Preference 
+	        android:key="pref_challenge_select"
+	        android:title="@string/pref_challenge_select" />
+
+	</PreferenceCategory>
+    
+	<PreferenceCategory android:title="@string/misc_category_title" 
+	    android:key="pref_category_misc"  >
 
         <!-- NOTE: EditTextPreference accepts EditText attributes. -->
         <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
@@ -43,8 +78,26 @@
             android:title="@string/pref_alarm_repeat"
             android:key="pref_alarm_repeat"
             android:defaultValue="false" />
+   
+        <CheckBoxPreference
+            android:title="@string/pref_alarm_vibration"
+            android:key="pref_alarm_vibration"
+            android:defaultValue="true" />
+        
+        <CheckBoxPreference
+            android:title="@string/pref_alarm_snooze_enabled"
+            android:key="pref_alarm_snooze_enabled"
+            android:defaultValue="true" />
+        
+        <EditTextPreference
+            android:title="@string/pref_alarm_snooze_time"
+            android:key="pref_alarm_snooze_time"
+            android:selectAllOnFocus="true"
+            android:maxLength="2"
+            android:inputType="number" />
         
         <Preference
+            android:id="@+id/pref_delete_alarm"
             android:title="@string/pref_delete_alarm"
             android:key="pref_delete_alarm" />
     </PreferenceCategory>

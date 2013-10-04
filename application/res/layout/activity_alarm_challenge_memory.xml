@@ -1,13 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridView xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/memory_gridview"
-    android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"
-    android:columnWidth="90dp"
-    android:numColumns="auto_fit"
-    android:verticalSpacing="10dp"
-    android:horizontalSpacing="10dp"
-    android:stretchMode="columnWidth"
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:orientation="vertical" >
+    
+<se.chalmers.dat255.sleepfighter.android.component.textview.FontFitTextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     android:gravity="center"
-/>
+    android:paddingBottom="30dp"
+    android:text="@string/memory_chal_act"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" >
+
+        <TableLayout
+            android:id="@+id/challenge_memory_button_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
+                    android:id="@+id/challenge_memory_button_1"
+                    style="@style/MemoryCardButton" />
+
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
+                    android:id="@+id/challenge_memory_button_2"
+                    style="@style/MemoryCardButton" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
+                    android:id="@+id/challenge_memory_button_3"
+                    style="@style/MemoryCardButton" />
+
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
+                    android:id="@+id/challenge_memory_button_4"
+                    style="@style/MemoryCardButton" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
+                    android:id="@+id/challenge_memory_button_5"
+                    style="@style/MemoryCardButton" />
+
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
+                    android:id="@+id/challenge_memory_button_6"
+                    style="@style/MemoryCardButton" />
+
+            </TableRow>
+            
+                        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
+                    android:id="@+id/challenge_memory_button_7"
+                    style="@style/MemoryCardButton" />
+
+                <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
+                    android:id="@+id/challenge_memory_button_8"
+                    style="@style/MemoryCardButton" />
+
+            </TableRow>
+            
+        </TableLayout>
+    </se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout>
+
+</LinearLayout>
     

@@ -1,13 +1,33 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.android.preference.InitializableRingtonePreference;
+import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
+import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
-import se.chalmers.dat255.sleepfighter.preference.InitializableRingtonePreference;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.annotation.TargetApi;
@@ -26,7 +46,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +78,6 @@ public class RingerSettingsActivity extends PreferenceActivity {
 
 	private TextView summaryName;
 	private TextView summaryType;
-
-	private TextView actionBarSummary;
 
 	@SuppressWarnings( "deprecation" )
 	@Override
@@ -98,13 +115,18 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	public boolean onOptionsItemSelected( MenuItem item ) {
 		switch ( item.getItemId() ) {
 		case R.id.ringer_action_cancel:
+			// Stop any playback
+			if(this.driver != null && this.driver.isPlaying()) {
+				this.driver.stop();
+			}
 			this.setAudioSource( null );
 			return true;
-
 		case R.id.ringer_action_test:
 			this.testRinger();
 			return true;
-
+		case android.R.id.home:
+			finish();
+			return true;
 		default:
 			return super.onOptionsItemSelected( item );
 		}	
@@ -120,19 +142,9 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= 11) {
-			// Add the custom view to the action bar.
 			ActionBar actionBar = this.getActionBar();
-			actionBar.setCustomView( R.layout.pref_alarm_ringer_actionbar );
-
-			View customView = actionBar.getCustomView();
-
-			TextView titleField = (TextView) customView.findViewById( R.id.alarm_actionbar_title_field );
-			titleField.setText( MetaTextUtils.printAlarmName( this, alarm ) );
-
-			this.actionBarSummary = (TextView) customView.findViewById( R.id.alarm_actionbar_audiosource_summary );
-			actionBarSummary.setText( MetaTextUtils.printAlarmName( this, alarm ) );
-
-			actionBar.setDisplayOptions( ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM );
+			actionBar.setTitle(MetaTextUtils.printAlarmName(this, alarm));
+			ActivityUtils.setupStandardActionBar(this);
 		}
 	}
 
@@ -152,9 +164,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	private void updateSummary() {
 		String name = this.driver.printSourceName();
 		this.summaryName.setText( name );
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			this.actionBarSummary.setText(name);
-		}
+		setActionBarSubtitle(name);
 
 		// Make and set typeText.
 		String typeText;
@@ -166,6 +176,14 @@ public class RingerSettingsActivity extends PreferenceActivity {
 				 : res.getStringArray( R.array.alarm_audiosource_summary_type )[source.getType().ordinal()];
 
 		this.summaryType.setText( typeText );
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setActionBarSubtitle(String subtitle) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			ActionBar actionbar = getActionBar();
+			actionbar.setSubtitle(subtitle);
+		}
 	}
 
 	/**
@@ -299,11 +317,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.updateSummary();
 	}
 
+	
 	@Override
 	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
 		if ( resultCode == Activity.RESULT_OK ) {
 			Log.d( TAG, data.toString() );
-
+	
 			ID[] ids = ID.values();
 			if ( requestCode < ids.length ) {
 				switch( ids[requestCode] ) {
@@ -321,6 +340,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 			} else {
 				super.onActivityResult( requestCode, resultCode, data );
 			}
+		} else {
+			if(ID.MUSIC_PICKER.ordinal() == requestCode) {
+				// TODO: localize message.
+				DialogUtils.showMessageDialog("Please install Google Play Music", this);
+			}
+		
 		}
 	}
 
@@ -336,12 +361,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	private void fetchAlarm() {
 		SFApplication app = SFApplication.get();
 
-		final int id = new IntentUtils( this.getIntent() ).getAlarmId();
-		this.alarm = app.getAlarms().getById(id);
+		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
+		alarm = intentUtils.isSettingPresetAlarm() ? app.getFromPresetFactory().getPreset() : app.getAlarms().getById( intentUtils.getAlarmId() );
 
 		if (this.alarm == null) {
 			// TODO: Better handling for final product
-			Toast.makeText(this, "Alarm is null (ID: " + id + ")", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Alarm is null (ID: " + alarm.getId() + ")", Toast.LENGTH_SHORT).show();
 			this.finish();
 		}
 
@@ -355,5 +380,14 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	public Alarm getAlarm() {
 		return this.alarm;
+	}
+	
+	@Override
+	protected void onPause() {
+		// Stop any playback
+		if (this.driver != null && this.driver.isPlaying()) {
+			this.driver.stop();
+		}
+		super.onPause();
 	}
 }

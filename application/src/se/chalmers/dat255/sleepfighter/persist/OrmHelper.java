@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.persist;
 
 import java.sql.SQLException;
@@ -5,8 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.SnoozeConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfig;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,7 +52,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 10;
+	private static final int DATABASE_VERSION = 15;
 
 	// Dao for Alarm.
 	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;
@@ -40,6 +62,18 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 	// Dao for AudioConfig.
 	private PersistenceExceptionDao<AudioConfig, Integer> audioConfigDao = null;
+
+	// Dao for ChallengeConfigSet.
+	private PersistenceExceptionDao<ChallengeConfigSet, Integer> challengeConfigSetDao = null;
+
+	// Dao for ChallengeConfig.
+	private PersistenceExceptionDao<ChallengeConfig, Integer> challengeConfigDao = null;
+
+	// Dao for ChallengeParam.
+	private PersistenceExceptionDao<ChallengeParam, Integer> challengeParamDao = null;
+
+	// Dao for SnoozeConfig.
+	private PersistenceExceptionDao<SnoozeConfig, Integer> snoozeConfigDao = null;
 
 	/**
 	 * Constructs the helper from a given context.
@@ -59,11 +93,15 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
 		try {
-			Log.i( OrmHelper.class.getName(), "onCreate" );
-
 			TableUtils.createTable( connectionSource, Alarm.class );
+
 			TableUtils.createTable( connectionSource, AudioSource.class );
 			TableUtils.createTable( connectionSource, AudioConfig.class );
+
+			TableUtils.createTable( connectionSource, ChallengeConfigSet.class );
+			TableUtils.createTable( connectionSource, ChallengeConfig.class );
+			TableUtils.createTable( connectionSource, ChallengeParam.class );
+			TableUtils.createTable(connectionSource, SnoozeConfig.class);
 		} catch ( SQLException e ) {
 			Log.e( OrmHelper.class.getName(), "Can't create database", e );
 			throw new PersistenceException( e );
@@ -82,12 +120,16 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		try {
-			// Drop DB & create new ones.
-			Log.i(OrmHelper.class.getName(), "onUpgrade");
-
 			TableUtils.dropTable( connectionSource, Alarm.class, true );
+
 			TableUtils.dropTable( connectionSource, AudioSource.class, true );
 			TableUtils.dropTable( connectionSource, AudioConfig.class, true );
+
+			TableUtils.dropTable( connectionSource, ChallengeConfigSet.class, true );
+			TableUtils.dropTable( connectionSource, ChallengeConfig.class, true );
+			TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
+
+			TableUtils.dropTable( connectionSource, SnoozeConfig.class, true );
 
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -100,8 +142,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 * Rebuilds all data-structures. Any data is lost.
 	 */
 	public void rebuild() {
-		Log.d(OrmHelper.class.getName(), "onRestart");
-
 		// Drop all tables.
 		List<String> tables = new ArrayList<String>();
 		Cursor cursor = this.getReadableDatabase().rawQuery("SELECT * FROM sqlite_master WHERE type='table';", null );
@@ -132,6 +172,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	public PersistenceExceptionDao<Alarm, Integer> getAlarmDao() throws PersistenceException {
 		if ( this.alarmDao == null ) {
 			this.alarmDao = this.getExceptionDao( Alarm.class );
+			this.alarmDao.setObjectCache( true );
 		}
 		return this.alarmDao;
 	}
@@ -160,6 +201,58 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			this.audioConfigDao = this.getExceptionDao( AudioConfig.class );
 		}
 		return this.audioConfigDao;
+	}
+
+	/**
+	 * Returns DAO for ChallengeConfigSet model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for ChallengeConfigSet model.
+	 */
+	public PersistenceExceptionDao<ChallengeConfigSet, Integer> getChallengeConfigSetDao() {
+		if ( this.challengeConfigSetDao == null ) {
+			this.challengeConfigSetDao = this.getExceptionDao( ChallengeConfigSet.class );
+		}
+		return this.challengeConfigSetDao;
+	}
+
+	/**
+	 * Returns DAO for ChallengeConfig model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for ChallengeConfig model.
+	 */
+	public PersistenceExceptionDao<ChallengeConfig, Integer> getChallengeConfigDao() {
+		if ( this.challengeConfigDao == null ) {
+			this.challengeConfigDao = this.getExceptionDao( ChallengeConfig.class );
+		}
+		return this.challengeConfigDao;
+	}
+
+	/**
+	 * Returns DAO for ChallengeParam model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for ChallengeParam model.
+	 */
+	public PersistenceExceptionDao<ChallengeParam, Integer> getChallengeParamDao() {
+		if ( this.challengeParamDao == null ) {
+			this.challengeParamDao = this.getExceptionDao( ChallengeParam.class );
+		}
+		return this.challengeParamDao;
+	}
+
+	/**
+	 * Returns DAO for SnoozeConfig model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for SnoozeConfig model.
+	 */
+	public PersistenceExceptionDao<SnoozeConfig, Integer> getSnoozeConfigDao() {
+		if (this.snoozeConfigDao == null) {
+			this.snoozeConfigDao = this.getExceptionDao(SnoozeConfig.class);
+		}
+		return this.snoozeConfigDao;
 	}
 
 	/**

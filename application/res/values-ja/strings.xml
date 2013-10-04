@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
 <resources>
 
    <string name="app_name">スリープファイター</string>
@@ -32,13 +50,16 @@
     <string-array name="main_list_context_menu">
         <item>編集</item>
         <item>削除</item>
-
-        <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
-        <item>start vibration</item>
-        <item>stop vibration</item>
         <item>コピー</item>
     </string-array>
 
+    <!--  challenge -->
+    <string name="pre_chal_act">チャレンジ!</string>
+    
+    <string name="math_chal_act">数学の問題を解く</string>
+    <string name="btn_answer">解答</string>
+    <string name="memory_chal_act">神経衰弱</string>
+   
+    <string name="start_challenge">チャレンジ</string>
+    
 </resources>

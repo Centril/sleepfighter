@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.Locale;
@@ -9,19 +27,23 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.AlarmAdapter;
-import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
+import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
+import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -33,7 +55,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	private final static String TAG = MainActivity.class.getSimpleName();
 
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
@@ -64,12 +85,6 @@ public class MainActivity extends Activity {
 		this.setupListView();
 
 		this.updateEarliestText();
-
-		VibrationManager.getInstance().setup(this);
-		
-		// TODO: Remove this when merging back
-		Intent intent = new Intent(this, ChallengeActivity.class);
-		startActivity(intent);
 	}
 
 	@Override
@@ -109,6 +124,9 @@ public class MainActivity extends Activity {
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
+			// temporarily add an extra context menu item for starting an alarm
+			// TODO remove
+			menu.add(0, menuItems.length, menuItems.length, "Start alarm");
 		}
 	}
 
@@ -117,7 +135,6 @@ public class MainActivity extends Activity {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		Alarm selectedAlarm = (alarmAdapter.getItem(info.position));
 
-		// TODO perhaps use something other than order
 		switch (item.getOrder()) {
 			case 0:
 				startAlarmEdit(selectedAlarm, false);
@@ -126,15 +143,12 @@ public class MainActivity extends Activity {
 				deleteAlarm(selectedAlarm);
 				return true;
 			case 2:
-				VibrationManager.getInstance().startVibrate();
-				return true;
-			case 3:
-				VibrationManager.getInstance().stopVibrate();	
-				return true;
-			case 4:
 				copyAlarm(selectedAlarm);
 				return true;
-
+			case 3:
+				// TODO remove case
+				startAlarm(selectedAlarm);
+				return true;
 			default:
 				return false;
 
@@ -150,13 +164,27 @@ public class MainActivity extends Activity {
 		startActivity( intent );
 	}
 
+	private void startAlarm(Alarm alarm) {
+		// Send intent directly to receiver
+		Intent intent = new Intent(this, AlarmReceiver.class);
+		new IntentUtils(intent).setAlarmId(alarm.getId());
+		sendBroadcast(intent);
+	}
+
 	private void startGlobalSettings( ) {
 		Intent intent = new Intent(this, GlobalSettingsActivity.class );
 		startActivity( intent );
 	}
 
-	private void deleteAlarm( Alarm alarm ) {
-		this.manager.remove( alarm );
+	private void deleteAlarm(final Alarm alarm) {
+		String message = getString(R.string.confirm_delete);
+		DialogUtils.showConfirmationDialog(message, this,
+				new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				MainActivity.this.manager.remove(alarm);
+			}
+		});
 	}
 
 	private void copyAlarm( Alarm alarm ) {
@@ -164,12 +192,12 @@ public class MainActivity extends Activity {
 	}
 
 	private void addAlarm() {
-		this.newAlarm( new Alarm(), true );
+		this.newAlarm( app().getFromPresetFactory().createAlarm(), true );
 	}
 
 	private void newAlarm( Alarm alarm, boolean isAdded ) {
 		if ( alarm.isUnnamed() ) {
-			alarm.setUnnamedPlacement( this.manager.findLowestUnnamedPlacement() );
+			alarm.setUnnamedPlacement(  this.manager.findLowestUnnamedPlacement() );
 		}
 
 		this.manager.add( alarm );
@@ -191,7 +219,7 @@ public class MainActivity extends Activity {
 		// Refresh the list items
 		this.alarmAdapter.notifyDataSetChanged();
 	}
-	
+
 	/**
 	 * Handles a change in time related data in any alarm.
 	 * 
@@ -237,8 +265,6 @@ public class MainActivity extends Activity {
 		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
 
-		Log.d( TAG, Boolean.toString( this.app().getPrefs().displayPeriodOrTime() ) );
-
 		Resources res = this.getResources();
 		String text = this.app().getPrefs().displayPeriodOrTime()
 					? DateTextUtils.getTime( res, now, stamp, Locale.getDefault() )
@@ -264,8 +290,54 @@ public class MainActivity extends Activity {
 		case R.id.action_settings:
 			this.startGlobalSettings();
 			return true;
+		case R.id.action_start_challenge:
+			startDebugChallenge();
+			return true;
 		default:
 			return super.onOptionsItemSelected( item );
 		}	
+	}
+	/*
+	public void startAlarm(View view) {
+		// Create intent & re-put extras.
+		Intent activityIntent;
+		activityIntent = new Intent( this, AlarmActivity.class );
+		activityIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+	//	activityIntent.putExtras( null );
+		
+		
+		// Start activity!
+		this.startActivity( activityIntent );
+	}*/
+
+	/**
+	 * Debug method for launching dialog where any challenge defined in {@link ChallengeType} can be
+	 * started.
+	 */
+	private void startDebugChallenge() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final ChallengeType[] types = ChallengeType.values();
+
+		// Making string array "copy" of types for use with standard dialog
+		String[] items = new String[types.length];
+		for(int i = 0; i < types.length; i++) {
+			items[i] = types[i].name();
+		}
+
+		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// The clicked challenge type
+				ChallengeType type = types[which];
+				
+				// Start the selected challenge
+				Intent i = new Intent(MainActivity.this, ChallengeActivity.class);
+				i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
+				startActivity(i);
+			}
+		};
+		builder.setItems(items, listener);
+		AlertDialog dialog = builder.create();
+		dialog.show();
 	}
 }
