@@ -37,6 +37,9 @@ public class AudioConfig implements IdProvider {
 	@DatabaseField(generatedId = true, columnName = ID_COLUMN)
 	private int id;
 
+	@DatabaseField
+	private int volume;
+	
 	// TODO: REMOVE when real fields are added, NEEDED 'cause SQLite crashes otherwise.
 	@DatabaseField
 	private String temp;
@@ -47,6 +50,15 @@ public class AudioConfig implements IdProvider {
 	public AudioConfig() {
 	}
 
+	/**
+	 * Constructs an AudioConfig
+	 * 
+	 * @param volume the volume (0-100)
+	 */
+	public AudioConfig(int volume) {
+		this.volume = volume;
+	}
+	
 	/**
 	 * Copy constructor.
 	 *
@@ -64,5 +76,22 @@ public class AudioConfig implements IdProvider {
 	 */
 	public int getId() {
 		return this.id;
+	}
+	
+	/**
+	 * @return the volume of this AudioConfig (0-100)
+	 */
+	public int getVolume() {
+		return volume;
+	}
+	
+	/**
+	 * @param volume the volume of this AudioConfig (0-100)
+	 */
+	public void setVolume(int volume) {
+		if (volume < 0 || volume > 100) {
+			throw new IllegalArgumentException();
+		}
+		this.volume = volume;
 	}
 }
