@@ -329,7 +329,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			preference.setSummary(alarm.getTimeString());
 		}
 		else if(DAYS.equals(preference.getKey())) {
-			initiateWeekdayPicker((MultiSelectListPreference) preference);
+			((MultiSelectListPreference) preference).setEntryChecked(alarm.getEnabledDays());;
 			preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 		}
 		else if (REPEAT.equals(preference.getKey())) {
@@ -354,9 +354,5 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private void initiateTimePicker(TimepickerPreference tp) {
 		tp.setHour(alarm.getHour());
 		tp.setMinute(alarm.getMinute());
-	}
-	
-	private void initiateWeekdayPicker(MultiSelectListPreference preference) {
-		preference.setEntryChecked(alarm.getEnabledDays());
 	}
 }
