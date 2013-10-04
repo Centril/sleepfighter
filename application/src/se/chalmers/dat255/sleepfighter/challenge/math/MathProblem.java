@@ -13,7 +13,5 @@ public interface MathProblem {
 	// generate a new problem of this type. The return values of render() of solution() will change after
 	// you call this method.
 	public void newProblem();
-	
-	
-	public String description();
+
 }

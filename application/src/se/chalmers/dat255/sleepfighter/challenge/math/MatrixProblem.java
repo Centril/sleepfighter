@@ -29,10 +29,6 @@ private static final int MAX_INT = 7;
 		return this.renderedString;
 	}
 	
-	public String description() {
-		return "compute determinant";
-	}
-	
 	public int solution() {
 		Debug.d("solution is " + solution);
 		return this.solution;
@@ -75,8 +71,12 @@ private static final int MAX_INT = 7;
 	}
 	
 	private void doRender(RealMatrix m1, RealMatrix m2) {
-		this.renderedString = renderMatrix(m1);
+		this.renderedString = "$A =";
+		this.renderedString += renderMatrix(m1);
 		this.renderedString += renderMatrix(m2);
+		this.renderedString += "$";
+		this.renderedString += "<br> compute the determinant of $A$";
+		
 	}
 	
 	private String renderMatrix(RealMatrix m) {

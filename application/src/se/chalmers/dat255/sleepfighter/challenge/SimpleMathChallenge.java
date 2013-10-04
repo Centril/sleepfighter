@@ -18,27 +18,19 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
-import java.util.Random;
-
-import org.apache.commons.math3.linear.MatrixUtils;
-import org.apache.commons.math3.linear.RealMatrix;
-
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.MatrixProblem;
-import se.chalmers.dat255.sleepfighter.challenge.math.SimpleProblem;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.webkit.WebSettings.RenderPriority;
-import android.widget.Button;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -130,14 +122,9 @@ public static String close_html = "</html>";
 	public void renderMathProblem(final ChallengeActivity activity) {
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
 		
-		String problem = "$" + this.problem.render() + "$";
-		String description = this.problem.description();
-		if(description !=  "") {
-			// the description should be one line below the problem
-			description = "<br>" + description;
-		}
+		String problem = this.problem.render();
 		
-		String html = new StringBuilder().append(open_html).append(problem).append(description).append(close_html).toString();
+		String html = new StringBuilder().append(open_html).append(problem).append(close_html).toString();
 		
 		w.loadDataWithBaseURL("file:///android_asset", html, "text/html", "utf-8", "");	
 	}

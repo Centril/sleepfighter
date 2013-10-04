@@ -14,20 +14,20 @@ public class SimpleProblem implements MathProblem {
 	public SimpleProblem() {
 	}
 
-	public String description() {
-		return "";
-	}
-
 	public String render() {
+		String rendered = "$";
 		if (operation == 0) {
-			return operand1 + " + " + operand2;
+			rendered += operand1 + " + " + operand2;
 		} else if (operation == 1) {
-			return operand1 + " - " + operand2;
+			rendered += operand1 + " - " + operand2;
 		} else if (operation == 2) {
-			return operand1 + " * " + operand2;
+			rendered += operand1 + " * " + operand2;
 		} else {
-			return operand1 + " / " + operand2;
+			rendered += operand1 + " / " + operand2;
 		}
+		
+		rendered += "$";
+		return rendered;
 	}
 
 	public int solution() {
