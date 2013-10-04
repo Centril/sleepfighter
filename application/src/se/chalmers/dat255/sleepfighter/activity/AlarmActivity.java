@@ -19,9 +19,12 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.joda.time.DateTime;
 
@@ -75,6 +78,7 @@ public class AlarmActivity extends Activity {
 	private TextView tvName;
 	private TextView tvTime;
 	private Alarm alarm;
+	public Timer timer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +100,6 @@ public class AlarmActivity extends Activity {
         tvName.setText(alarm.getName());
         
         tvTime = (TextView) findViewById(R.id.tvAlarmTime);
-        tvTime.setText(alarm.getTimeString());
         
 		Button btnChallenge = (Button) findViewById(R.id.btnChallenge);
 		btnChallenge.setOnClickListener(new OnClickListener() {
@@ -279,5 +282,42 @@ public class AlarmActivity extends Activity {
 
 	private void stopAudio() {
 		SFApplication.get().setAudioDriver(null);
+	}
+	
+	
+// TODO: onStart(), onStop(), getTime(), getThisTime();
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		final Runnable updateTask = new Runnable() {
+			public void run() {
+				// TODO
+			}
+		};
+
+		// update the UI
+		// TODO
+			
+	}
+
+	@Override
+	protected void onStop() {
+		// super.onStop();
+		timer.cancel();
+		
+	}
+
+	public String getTime() {
+		return null;
+		//Calendar calendar = Calendar.getInstance();
+		
+	}
+
+	public String getThisTime() {
+		return null ;
+		//Calendar calendar = Calendar.getInstance();
+		
 	}
 }

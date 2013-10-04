@@ -68,6 +68,6 @@
 
     <!-- Alarm name & time, these should be overwritten -->
     <string name="alarm_name">Alarm name</string>
-    <string name="alarm_time">13:37</string>
+    <string name="alarm_time">00:00</string>
 
 </resources>
