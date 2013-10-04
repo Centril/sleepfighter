@@ -25,6 +25,9 @@ import org.apache.commons.math3.linear.RealMatrix;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.challenge.math.MathProblem;
+import se.chalmers.dat255.sleepfighter.challenge.math.SimpleProblem;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.KeyEvent;
@@ -47,73 +50,12 @@ import android.widget.Toast;
  */
 
 public class SimpleMathChallenge implements Challenge {
-
-	private Random random = new Random();
-	private int operand1 = 0;
-	private int operand2 = 0;
-	private int operation = 0;
-	private int result = 0;
-
 	
+	MathProblem problem;
+	
+
 	public void runChallenge() {
-		nextOp();
-		nextInts();
-	}
-
-	/**
-	 * The random interval of the operands 
-	 * case 0: addition 
-	 * case 1: subtraction
-	 * case 2: multiplication 
-	 * case 3: division
-	 */
-
-	private void nextInts() {
-		switch (operation) {
-		case 0:
-			operand1 = random.nextInt(99) + 1;
-			operand2 = random.nextInt(99) + 1;
-			result = operand1 + operand2;
-			break;
-		case 1:
-			operand1 = random.nextInt(99) + 1;
-			operand2 = random.nextInt(99) + 1;
-			result = operand1 - operand2;
-			break;
-		case 2:
-			operand1 = random.nextInt(8) + 2;
-			operand2 = random.nextInt(8) + 2;
-			result = operand1 * operand2;
-			break;
-		case 3:
-			result = random.nextInt(8) + 2;
-			operand2 = random.nextInt(8) + 2;
-			operand1 = result * operand2;
-			break;
-		}
-	}
-
-	// What the next operation will be, add/sub/mul/div
-	private void nextOp() {
-		operation = random.nextInt(4);
-	}
-
-	// Get the result
-	public int getResult() {
-		return result;
-	}
-
-	// Get the calculation between the operands in strings
-	public String getCalculation() {
-		if (operation == 0) {
-			return operand1 + " + " + operand2;
-		} else if (operation == 1) {
-			return operand1 + " - " + operand2;
-		} else if (operation == 2) {
-			return operand1 + " * " + operand2;
-		} else {
-			return operand1 + " / " + operand2;
-		}
+		this.problem.newProblem();
 	}
 
 	/**
@@ -124,15 +66,16 @@ public class SimpleMathChallenge implements Challenge {
 	
 	@Override
 	public void start(final ChallengeActivity activity) {
+		
+		// TODO: randomize math challenge
+		problem = new SimpleProblem();
+		
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();
 
-		final TextView userText = (TextView) activity
+		/*final TextView userText = (TextView) activity
 				.findViewById(R.id.questionField);
-
-		userText.setText(getCalculation());
-
-		
+		*/
 		final EditText editText = (EditText) activity
 				.findViewById(R.id.answerField);
 		
@@ -143,7 +86,7 @@ public class SimpleMathChallenge implements Challenge {
 					KeyEvent event) {
 				boolean handled = false;
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					handleAnswer(editText, activity, userText);
+					handleAnswer(editText, activity);
 					handled = true;
 				}
 				return handled;
@@ -154,7 +97,7 @@ public class SimpleMathChallenge implements Challenge {
 		answerButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handleAnswer(editText, activity, userText);
+				handleAnswer(editText, activity);
 			}
 		});
 		
@@ -163,7 +106,7 @@ public class SimpleMathChallenge implements Challenge {
 		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 	*/
 		setupWebview(activity);
-		
+		renderMathProblem(activity);
 	}
 	
 	public static String open_html =
@@ -181,8 +124,12 @@ public static String close_html = "</html>";
 		
 		if(Build.VERSION.SDK_INT >= 11)
 			w.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+	}
 	
-		String problem = "$x={-b±√{b^2-4ac}}/{2a}$";
+	public void renderMathProblem(final ChallengeActivity activity) {
+		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
+		
+		String problem = "$" + this.problem.render() + "$";
 		
 		String html = new StringBuilder().append(open_html).append(problem).append(close_html).toString();
 		
@@ -192,15 +139,21 @@ public static String close_html = "</html>";
 		RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 	}
 	
+	
 	/**
 	 * Handles what will happen when you answer
 	 */
 
 	private void handleAnswer(final EditText editText,
-			final ChallengeActivity activity, final TextView userText) {
+			final ChallengeActivity activity) {
 		boolean correctAnswer = false;
 		try {
-			if (Integer.parseInt(editText.getText().toString()) == getResult()) {
+			int guess = Integer.parseInt(editText.getText().toString());
+			int solution = this.problem.solution();
+			Debug.d(guess + "");
+			Debug.d(solution + "");
+			
+			if (guess == solution) {
 				activity.complete();
 				correctAnswer = true;
 				Toast.makeText(activity.getBaseContext(), "Alarm deactivated!",
@@ -210,10 +163,12 @@ public static String close_html = "</html>";
 			// Handles exception when the user answer with empty strings
 		}
 		if (!correctAnswer) {
+			// somehow reload here. 
 			Toast.makeText(activity.getBaseContext(), "Wrong answer!",
 					Toast.LENGTH_SHORT).show();
 			runChallenge();
-			userText.setText(getCalculation());
+		
+			renderMathProblem(activity);
 			editText.setText("");
 		}
 	}
