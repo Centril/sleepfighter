@@ -26,6 +26,7 @@ import org.apache.commons.math3.linear.RealMatrix;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathProblem;
+import se.chalmers.dat255.sleepfighter.challenge.math.MatrixProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.SimpleProblem;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
@@ -68,7 +69,7 @@ public class SimpleMathChallenge implements Challenge {
 	public void start(final ChallengeActivity activity) {
 		
 		// TODO: randomize math challenge
-		problem = new SimpleProblem();
+		problem = new MatrixProblem();
 		
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();
@@ -93,13 +94,13 @@ public class SimpleMathChallenge implements Challenge {
 			}
 		});
 
-		Button answerButton = (Button) activity.findViewById(R.id.btnAnswer);
+		/*Button answerButton = (Button) activity.findViewById(R.id.btnAnswer);
 		answerButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				handleAnswer(editText, activity);
 			}
-		});
+		});*/
 		
 		// make the keyboard appear.
 	/*	InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
