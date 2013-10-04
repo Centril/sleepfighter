@@ -22,6 +22,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.preference.InitializableRingtonePreference;
 import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
+import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -316,11 +317,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.updateSummary();
 	}
 
+	
 	@Override
 	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
 		if ( resultCode == Activity.RESULT_OK ) {
 			Log.d( TAG, data.toString() );
-
+	
 			ID[] ids = ID.values();
 			if ( requestCode < ids.length ) {
 				switch( ids[requestCode] ) {
@@ -338,6 +340,12 @@ public class RingerSettingsActivity extends PreferenceActivity {
 			} else {
 				super.onActivityResult( requestCode, resultCode, data );
 			}
+		} else {
+			if(ID.MUSIC_PICKER.ordinal() == requestCode) {
+				// TODO: localize message.
+				DialogUtils.showMessageDialog("Please install Google Play Music", this);
+			}
+		
 		}
 	}
 
@@ -352,16 +360,10 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	private void fetchAlarm() {
 		SFApplication app = SFApplication.get();
-		
-		
-		
-		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm()) {
-			alarm = app.getAlarms().getPresetAlarm();
-		}else{
-			final int id = new IntentUtils( this.getIntent() ).getAlarmId();
-			alarm = app.getAlarms().getById(id);
-		}
-		
+
+		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
+		alarm = intentUtils.isSettingPresetAlarm() ? app.getFromPresetFactory().getPreset() : app.getAlarms().getById( intentUtils.getAlarmId() );
+
 		if (this.alarm == null) {
 			// TODO: Better handling for final product
 			Toast.makeText(this, "Alarm is null (ID: " + alarm.getId() + ")", Toast.LENGTH_SHORT).show();

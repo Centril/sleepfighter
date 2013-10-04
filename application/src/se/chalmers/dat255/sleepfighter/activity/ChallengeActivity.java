@@ -20,7 +20,7 @@ package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -46,6 +46,7 @@ public class ChallengeActivity extends Activity {
 		}
 		ChallengeType type = (ChallengeType) bundled;
 		Challenge challenge = ChallengeFactory.getChallenge(type);
+
 		challenge.start(this);
 	}
 

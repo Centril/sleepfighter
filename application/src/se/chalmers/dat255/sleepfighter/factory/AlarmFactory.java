@@ -16,53 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.model.audio;
+package se.chalmers.dat255.sleepfighter.factory;
 
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
 
 /**
- * AudioConfig models data per Alarm such as volume, etc.
+ * AlarmFactory is the factory interface for creating Alarm:s.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Sep 27, 2013
+ * @since Oct 4, 2013
  */
-@DatabaseTable(tableName = "audio_config")
-public class AudioConfig implements IdProvider {
-	public static final String ID_COLUMN = "id";
-
-	@DatabaseField(generatedId = true, columnName = ID_COLUMN)
-	private int id;
-
-	// TODO: REMOVE when real fields are added, NEEDED 'cause SQLite crashes otherwise.
-	@DatabaseField
-	private String temp;
-
+public interface AlarmFactory {
 	/**
-	 * Constructs an AudioConfig, for DB purposes only.
-	 */
-	public AudioConfig() {
-	}
-
-	/**
-	 * Copy constructor.
+	 * Creates an Alarm from factory and returns it.
 	 *
-	 * @param audioConfig the config to copy from.
+	 * @return the created alarm.
 	 */
-	public AudioConfig( AudioConfig audioConfig ) {
-		// TODO
-	}
-
-
-	/**
-	 * Returns the id of the AudioConfig (in DB).
-	 *
-	 * @return the id.
-	 */
-	public int getId() {
-		return this.id;
-	}
+	public Alarm createAlarm();
 }

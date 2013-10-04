@@ -28,16 +28,15 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.AlarmAdapter;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.reciever.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -193,19 +192,8 @@ public class MainActivity extends Activity {
 	}
 
 	private void addAlarm() {
-		Alarm copy = null;
-		try {
-			copy = this.manager.getPresetAlarm().clone();
-			Debug.d("repeat: " + copy.isRepeating() );
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		
-		// it hasn't yet been assigned an ID by the database. 
-		copy.setId(Alarm.NOT_COMMITTED_ID);
-		this.newAlarm(copy, true );
+		this.newAlarm( app().getFromPresetFactory().createAlarm(), true );
 	}
-	
 
 	private void newAlarm( Alarm alarm, boolean isAdded ) {
 		if ( alarm.isUnnamed() ) {
@@ -215,7 +203,7 @@ public class MainActivity extends Activity {
 		this.manager.add( alarm );
 		this.startAlarmEdit( alarm, isAdded );
 	}
-	
+
 	/**
 	 * Handles a change to an alarm's name by refreshing the list.
 	 * 
@@ -231,7 +219,7 @@ public class MainActivity extends Activity {
 		// Refresh the list items
 		this.alarmAdapter.notifyDataSetChanged();
 	}
-	
+
 	/**
 	 * Handles a change in time related data in any alarm.
 	 * 

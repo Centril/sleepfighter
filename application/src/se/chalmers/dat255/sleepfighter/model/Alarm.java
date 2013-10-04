@@ -28,12 +28,11 @@ import org.joda.time.ReadableDateTime;
 
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
-import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
-import android.provider.Settings;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -193,7 +192,7 @@ public class Alarm implements Cloneable, IdProvider {
 	public static final int NOT_COMMITTED_ID = -1;
 
 	@DatabaseField
-	private boolean isActivated = false;
+	private boolean isActivated;
 
 	@DatabaseField
 	private String name;
@@ -212,7 +211,7 @@ public class Alarm implements Cloneable, IdProvider {
 
 	/** The weekdays that this alarm can ring. */
 	@DatabaseField(width = 7)
-	private boolean[] enabledDays = { true, true, true, true, true, true, true };
+	private boolean[] enabledDays;
 	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
 
@@ -230,17 +229,18 @@ public class Alarm implements Cloneable, IdProvider {
 	private boolean vibrationEnabled = true;
 	
 	@DatabaseField(foreign = true, canBeNull = true)
-	private AudioSource audioSource = new AudioSource(AudioSourceType.RINGTONE, Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
+	private AudioSource audioSource;
 
-	// TODO: initialized here for now, remove.
 	@DatabaseField(foreign = true, canBeNull = false)
-	private AudioConfig audioConfig = new AudioConfig();
+	private AudioConfig audioConfig;
 
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
+	@DatabaseField(foreign = true, canBeNull = false)
+	private ChallengeConfigSet challenges;
+
 	private MessageBus<Message> bus;
-	
 
 	/* --------------------------------
 	 * Constructors.
@@ -254,7 +254,6 @@ public class Alarm implements Cloneable, IdProvider {
 		this( new DateTime() );
 	}
 
-	
 	/**
 	 * Copy constructor
 	 *
@@ -270,7 +269,8 @@ public class Alarm implements Cloneable, IdProvider {
 		this.second = rhs.second;
 		this.isActivated = rhs.isActivated;
 		this.enabledDays = rhs.enabledDays;
-		this.name = rhs.name;
+		this.name = rhs.name == null ? null : new String( rhs.name );
+		this.isRepeating = rhs.isRepeating;
 
 		this.unnamedPlacement = 0;
 
@@ -278,10 +278,11 @@ public class Alarm implements Cloneable, IdProvider {
 		this.bus = rhs.bus;
 		
 		this.vibrationEnabled = rhs.vibrationEnabled;
-		this.isRepeating = rhs.isRepeating;
 		
-		this.audioSource = rhs.audioSource;
-		this.audioConfig = rhs.audioConfig;
+		this.audioSource = new AudioSource( rhs.audioSource );
+		this.audioConfig = new AudioConfig( rhs.audioConfig );
+
+		this.challenges = new ChallengeConfigSet( rhs.challenges );
 	}
 
 	/**
@@ -335,6 +336,9 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public void setMessageBus( MessageBus<Message> bus ) {
 		this.bus = bus;
+
+		// Pass it on!
+		this.challenges.setMessageBus( bus );
 	}
 
 	/**
@@ -391,6 +395,10 @@ public class Alarm implements Cloneable, IdProvider {
 		}
 
 		if ( name == null ) {
+			if ( this.name == null ) {
+				return;
+			}
+
 			throw new IllegalArgumentException( "A named Alarm can not be unnamed." );
 		}
 
@@ -774,16 +782,26 @@ public class Alarm implements Cloneable, IdProvider {
 		return this.audioConfig;
 	}
 
+	/**
+	 * Returns the ChallengeConfigSet for this alarm.<br/>
+	 * Modifications may be done directly to the returned set<br/>
+	 * as it is a well isolated module/unit.
+	 *
+	 * @return the ChallengeConfigSet object.
+	 */
+	public ChallengeConfigSet getChallengeSet() {
+		return this.challenges;
+	}
+
 	/* --------------------------------
 	 * PERSISTENCE ONLY METHODS.
 	 * --------------------------------
 	 */
-	
+
 	public boolean getVibrationEnabled() {
 		return this.vibrationEnabled;
 	}
-	
-	
+
 	public void setVibrationEnabled(boolean vibrationEnabled) {
 		this.vibrationEnabled = vibrationEnabled;
 	}
@@ -813,11 +831,35 @@ public class Alarm implements Cloneable, IdProvider {
 	public void setFetched( AudioSource source ) {
 		this.audioSource = source;
 	}
-	
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes and factorization.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link ChallengeConfigSet}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param challenges the {@link ChallengeConfigSet} to set.
+	 */
+	public void setChallenges( ChallengeConfigSet challenges ) {
+		this.challenges = challenges;
+		this.challenges.setMessageBus( this.getMessageBus() );
+	}
+
+	/**
+	 * Sets whether or not this is a preset alarm.
+	 *
+	 * @param isPresetAlarm true if it is a preset alarm, otherwise false.
+	 */
 	public void setIsPresetAlarm(boolean isPresetAlarm) {
 		this.isPresetAlarm = isPresetAlarm;
 	}
-	
+
+	/**
+	 * Returns whether or not this is a preset alarm.
+	 *
+	 * @return true if it is a preset alarm, otherwise false.
+	 */
 	public boolean isPresetAlarm() {
 		return this.isPresetAlarm;
 	}
