@@ -19,6 +19,7 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
+import android.content.pm.ActivityInfo;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -54,6 +55,9 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	@Override
 	public void start(ChallengeActivity activity) {
 		this.activity = activity;
+		
+		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
 		model = new Model();
 		view = new GameView(activity, model);
 		
