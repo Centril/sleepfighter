@@ -22,6 +22,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.os.Bundle;
@@ -30,7 +31,6 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.widget.Toast;
 
 public class ChallengeSettingsActivity extends PreferenceActivity {
 
@@ -71,8 +71,8 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	private Preference getChallengePreference(final ChallengeType type) {
 		final CheckBoxPreference preference = new CheckBoxPreference(this);
 
-		// TODO set checked status from model
-		preference.setChecked(false);
+		boolean enabled = this.alarm.getChallengeSet().getConfig(type).isEnabled();
+		preference.setChecked(enabled);
 
 		// Makes sure nothing is stored in SharedPreferences
 		preference.setPersistent(false);
@@ -87,12 +87,10 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {
 				boolean checked = (Boolean) newValue;
-				Toast.makeText(ChallengeSettingsActivity.this,
-						type.name() + " " + checked, Toast.LENGTH_SHORT)
-						.show();
-
-				// TODO set challenge enable state in model
-
+				
+				ChallengeConfigSet set = ChallengeSettingsActivity.this.alarm.getChallengeSet();
+				set.setEnabled(type, checked);
+				
 				return true;
 			}
 		});

@@ -302,7 +302,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				alarm.setVibrationEnabled(("true".equals(stringValue)) ? true : false);
 			}
 			else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
-				// TODO set alarm property
+				boolean enabled = (Boolean) value;
+				AlarmSettingsActivity.this.alarm.getChallengeSet().setEnabled(
+						enabled);
 			}
 			return true;
 		}
@@ -331,8 +333,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			((CheckBoxPreference) preference).setChecked(alarm.getVibrationEnabled());
 		}
 		else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
-			// TODO get from alarm propery
-			((CheckBoxPreference) preference).setChecked(false);
+			boolean enabled = this.alarm.getChallengeSet().isEnabled();
+			((CheckBoxPreference) preference).setChecked(enabled);
 		}
 
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
