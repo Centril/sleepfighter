@@ -30,6 +30,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.AlarmEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.model.SnoozeConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfig;
@@ -132,6 +133,16 @@ public class PersistenceManager {
 	public void handleAudioConfigChange( AudioConfig.ChangeEvent evt ) {
 		this.updateAudioConfig( evt );
 	}
+	
+	/**
+	 * Handles a change in {@link SnoozeConfig}
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleSnoozeConfigChange( SnoozeConfig.ChangeEvent evt ) {
+		this.updateSnoozeConfig( evt );
+	}
 
 	/**
 	 * Constructs the PersistenceManager.
@@ -172,6 +183,8 @@ public class PersistenceManager {
 		this.clearTable( ChallengeConfigSet.class );
 		this.clearTable( ChallengeConfig.class );
 		this.clearTable( ChallengeParam.class );
+
+		this.clearTable(SnoozeConfig.class);
 	}
 
 	/**
@@ -262,6 +275,7 @@ public class PersistenceManager {
 		 */
 		Map<Integer, Integer> audioSourceLookup = Maps.newHashMap();
 		Map<Integer, Integer> audioConfigLookup = Maps.newHashMap();
+		Map<Integer, Integer> snoozeConfigLookup = Maps.newHashMap();
 		BiMap<Integer, Integer> challengeSetLookup = HashBiMap.create();
 
 		for ( int i = 0; i < alarms.size(); ++i ) {
@@ -276,6 +290,9 @@ public class PersistenceManager {
 			// Audio Config.
 			audioConfigLookup.put( alarm.getAudioConfig().getId(), i );
 
+			// Snooze config
+			snoozeConfigLookup.put( alarm.getSnoozeConfig().getId(), i );
+
 			// Challenge related.
 			challengeSetLookup.put( alarm.getChallengeSet().getId(), i );
 		}
@@ -285,6 +302,7 @@ public class PersistenceManager {
 		 */
 		List<AudioSource> audioSourceList = this.queryInIds( helper.getAudioSourceDao(), AudioSource.ID_COLUMN, audioSourceLookup );
 		List<AudioConfig> audioConfigSetList = this.queryInIds( helper.getAudioConfigDao(), AudioConfig.ID_COLUMN, audioConfigLookup );
+		List<SnoozeConfig> snoozeConfigSetList = this.queryInIds( helper.getSnoozeConfigDao(), SnoozeConfig.ID_COLUMN, snoozeConfigLookup );
 
 		/*
 		 * Set all to respective Alarm object.
@@ -299,6 +317,11 @@ public class PersistenceManager {
 		// Set AudioConfig to each alarm.
 		for ( AudioConfig config : audioConfigSetList ) {
 			int alarmIndex = audioConfigLookup.get( config.getId() );
+			alarms.get( alarmIndex ).setFetched( config );
+		}
+
+		for ( SnoozeConfig config : snoozeConfigSetList ) {
+			int alarmIndex = snoozeConfigLookup.get( config.getId() );
 			alarms.get( alarmIndex ).setFetched( config );
 		}
 
@@ -416,7 +439,20 @@ public class PersistenceManager {
 
 		helper.getAudioConfigDao().update( evt.getAudioConfig() );
 	}
-	
+
+	/**
+	 * Updates a SnoozeConfig to database.
+	 *
+	 * @param ac the SnoozeConfig to update
+	 * @param evt SnoozeConfig that occurred, required to update foreign fields.
+	 * @throws PersistenceException if some SQL error happens.
+	 */
+	public void updateSnoozeConfig( SnoozeConfig.ChangeEvent evt ) throws PersistenceException {
+		OrmHelper helper = this.getHelper();
+
+		helper.getSnoozeConfigDao().update( evt.getSnoozeConfig() );
+	}
+
 	/**
 	 * Updates the audio source.
 	 *
@@ -495,6 +531,10 @@ public class PersistenceManager {
 		AudioConfig audioConfig = alarm.getAudioConfig();
 		helper.getAudioConfigDao().create( audioConfig );
 
+		// Handle snooze config foreign object.
+		SnoozeConfig snoozeConfig = alarm.getSnoozeConfig();
+		helper.getSnoozeConfigDao().create( snoozeConfig );
+
 		this.addChallengeSet( alarm );
 
 		// Finally persist alarm itself to DB.
@@ -548,6 +588,10 @@ public class PersistenceManager {
 		// Handle audio config foreign object.
 		AudioConfig audioConfig = alarm.getAudioConfig();
 		helper.getAudioConfigDao().delete( audioConfig );
+
+		// Handle snooze config foreign object.
+		SnoozeConfig snoozeConfig = alarm.getSnoozeConfig();
+		helper.getSnoozeConfigDao().delete(snoozeConfig);
 
 		// Handle challenge config set foreign object.
 		this.removeChallengeSet( alarm );

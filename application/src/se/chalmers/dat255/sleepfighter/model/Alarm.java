@@ -239,6 +239,8 @@ public class Alarm implements Cloneable, IdProvider {
 
 	private MessageBus<Message> bus;
 
+	private SnoozeConfig snoozeConfig;
+
 	/* --------------------------------
 	 * Constructors.
 	 * --------------------------------
@@ -755,27 +757,21 @@ public class Alarm implements Cloneable, IdProvider {
 	}
 
 	/**
-	 * Sets the audio configuration for this alarm.
-	 *
-	 * @param source the audio config to set.
-	 */
-	public void setAudioConfig( AudioConfig config ) {
-		if ( this.audioConfig == Preconditions.checkNotNull( config ) ) {
-			return;
-		}
-
-		AudioConfig old = this.audioConfig;
-		this.audioConfig = config;
-		this.publish( new AudioChangeEvent( this, Field.AUDIO_CONFIG, old ) );
-	}
-
-	/**
 	 * Returns the audio configuration for this alarm.
 	 *
 	 * @return the audio configuration.
 	 */
 	public AudioConfig getAudioConfig() {
 		return this.audioConfig;
+	}
+
+	/**
+	 * Returns the snooze configuration for the alarm.
+	 * 
+	 * @return the snooze configuration
+	 */
+	public SnoozeConfig getSnoozeConfig() {
+		return this.snoozeConfig;
 	}
 
 	/**
@@ -818,6 +814,19 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public void setFetched( AudioSource source ) {
 		this.audioSource = source;
+	}
+
+	/**
+	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>
+	 * This method is motivated and needed due to OrmLite not supporting results from joins.<br/>
+	 * This is also a better method than reflection which is particularly expensive on android.</p>
+	 *
+	 * <p>Sets the {@link SnoozeConfig}, bypassing any and all checks, and does not send any event to bus.</p>
+	 *
+	 * @param source the {@link SnoozeConfig} to set.
+	 */
+	public void setFetched(SnoozeConfig config) {
+		this.snoozeConfig = config;
 	}
 
 	/**

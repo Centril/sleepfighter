@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.factory;
 import java.util.Arrays;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.SnoozeConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
@@ -85,6 +86,12 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 
 	protected AudioConfig createAudioConfig() {
 		return new AudioConfig(100, createVibrationFlag());
+	}
+	
+
+	@Override
+	protected SnoozeConfig createSnoozeConfig() {
+		return new SnoozeConfig(true, 9);
 	}
 
 	@Override

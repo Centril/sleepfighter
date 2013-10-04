@@ -19,6 +19,7 @@
 package se.chalmers.dat255.sleepfighter.factory;
 
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.model.SnoozeConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
@@ -47,8 +48,9 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 
 		// Set foreign objects.
 		alarm.setAudioSource( this.createAudioSource() );
-		alarm.setAudioConfig( this.createAudioConfig() );
+		alarm.setFetched( this.createAudioConfig() );
 		alarm.setChallenges( this.createChallenges() );
+		alarm.setFetched(createSnoozeConfig());
 
 		return alarm;
 	}
@@ -70,6 +72,8 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 	protected abstract AudioSource createAudioSource();
 
 	protected abstract AudioConfig createAudioConfig();
+
+	protected abstract SnoozeConfig createSnoozeConfig();
 
 	protected abstract boolean createVibrationFlag();
 
