@@ -64,15 +64,17 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
-	private final String NAME = "pref_alarm_name";
-	private final String TIME = "pref_alarm_time";
-	private final String DAYS = "pref_enabled_days";
-	private final String REPEAT = "pref_alarm_repeat";
-	private final String DELETE = "pref_delete_alarm";
-	private final String VIBRATION = "pref_alarm_vibration";
 	private final String VOLUME = "pref_volume";
-	
-	private final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
+	private static final String NAME = "pref_alarm_name";
+	private static final String TIME = "pref_alarm_time";
+	private static final String DAYS = "pref_enabled_days";
+	private static final String REPEAT = "pref_alarm_repeat";
+	private static final String DELETE = "pref_delete_alarm";
+	private static final String VIBRATION = "pref_alarm_vibration";	
+	private static final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
+	private static final String CHALLENGE_ENABLED = "pref_challenge_enable";
+	private static final String CHALLENGE_SELECT = "pref_challenge_select";
+
 	private Preference ringerPreference;
 
 	private Alarm alarm;
@@ -188,11 +190,22 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(REPEAT));
 		bindPreferenceSummaryToValue(findPreference(VIBRATION));
 		bindPreferenceSummaryToValue(findPreference(VOLUME));
-		
+		bindPreferenceSummaryToValue(findPreference(CHALLENGE_ENABLED));
+		bindPreferenceSummaryToValue(findPreference(CHALLENGE_SELECT));
+
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				deleteAlarm();
+				return true;
+			}
+		});
+		findPreference(CHALLENGE_SELECT).setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
+				new IntentUtils(i).setAlarmId(alarm);
+				startActivity(i);
 				return true;
 			}
 		});
@@ -295,7 +308,11 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				// TODO: insert in model
 				preference.setSummary(stringValue + "%");
 			}
-			
+			else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
+				boolean enabled = (Boolean) value;
+				AlarmSettingsActivity.this.alarm.getChallengeSet().setEnabled(
+						enabled);
+			}
 			return true;
 		}
 	};
@@ -326,7 +343,11 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			((VolumePreference) preference).setVolume(0);
 			preference.setSummary(0 + "%");
 		}
-		
+		else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
+			boolean enabled = this.alarm.getChallengeSet().isEnabled();
+			((CheckBoxPreference) preference).setChecked(enabled);
+		}
+
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 	}
 	

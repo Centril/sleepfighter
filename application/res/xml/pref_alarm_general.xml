@@ -46,6 +46,18 @@
         
     </PreferenceCategory>
 
+	<PreferenceCategory android:title="@string/challenge_category_title" >
+
+	    <CheckBoxPreference 
+	        android:key="pref_challenge_enable"
+	        android:title="@string/pref_challenge_enabled" />
+	    
+	    <Preference 
+	        android:key="pref_challenge_select"
+	        android:title="@string/pref_challenge_select" />
+
+	</PreferenceCategory>
+    
 	<PreferenceCategory android:title="@string/misc_category_title" 
 	    android:key="pref_category_misc"  >
 
@@ -73,8 +85,7 @@
             android:defaultValue="true" />
         
         <Preference
-       
-                    android:id="@+id/pref_delete_alarm"
+            android:id="@+id/pref_delete_alarm"
             android:title="@string/pref_delete_alarm"
             android:key="pref_delete_alarm" />
     </PreferenceCategory>
