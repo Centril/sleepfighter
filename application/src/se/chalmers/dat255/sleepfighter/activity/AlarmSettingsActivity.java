@@ -23,6 +23,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.preference.MultiSelectListPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference;
+import se.chalmers.dat255.sleepfighter.android.preference.VolumePreference;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
@@ -290,6 +291,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			else if (VIBRATION.equals(preference.getKey())) {
 				alarm.setVibrationEnabled(("true".equals(stringValue)) ? true : false);
 			}
+			else if (VOLUME.equals(preference.getKey())) {
+				// TODO: insert in model
+				preference.setSummary(stringValue + "%");
+			}
 			
 			return true;
 		}
@@ -311,11 +316,15 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			preference.setSummary(DateTextUtils.makeEnabledDaysText(alarm));	
 		}
 		else if (REPEAT.equals(preference.getKey())) {
-			
 			((CheckBoxPreference) preference).setChecked(alarm.isRepeating());
 		}
 		else if (VIBRATION.equals(preference.getKey())) {
 			((CheckBoxPreference) preference).setChecked(alarm.getVibrationEnabled());
+		}
+		else if (VOLUME.equals(preference.getKey())) {
+			// TODO: fetch from model
+			((VolumePreference) preference).setVolume(0);
+			preference.setSummary(0 + "%");
 		}
 		
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
