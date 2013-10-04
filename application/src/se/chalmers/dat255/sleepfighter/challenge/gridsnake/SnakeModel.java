@@ -28,9 +28,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import se.chalmers.dat255.sleepfighter.challenge.gridsnake.geometry.Dimension;
-import se.chalmers.dat255.sleepfighter.challenge.gridsnake.geometry.Direction;
-import se.chalmers.dat255.sleepfighter.challenge.gridsnake.geometry.Position;
+import se.chalmers.dat255.sleepfighter.utils.geometry.Dimension;
+import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
+import se.chalmers.dat255.sleepfighter.utils.geometry.Position;
 
 /**
  * Snake game.
