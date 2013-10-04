@@ -48,6 +48,16 @@ public class AudioConfig implements IdProvider {
 	}
 
 	/**
+	 * Copy constructor.
+	 *
+	 * @param audioConfig the config to copy from.
+	 */
+	public AudioConfig( AudioConfig audioConfig ) {
+		// TODO
+	}
+
+
+	/**
 	 * Returns the id of the AudioConfig (in DB).
 	 *
 	 * @return the id.

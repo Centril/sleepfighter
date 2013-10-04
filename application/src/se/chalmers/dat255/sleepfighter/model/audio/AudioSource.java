@@ -69,6 +69,17 @@ public class AudioSource implements IdProvider {
 	}
 
 	/**
+	 * Copy constructor.
+	 *
+	 * @param rhs the source to copy from.
+	 */
+	public AudioSource( AudioSource rhs ) {
+		this.type = rhs.type;
+		this.uri = new String( rhs.uri );
+	}
+
+
+	/**
 	 * Returns the type of this audio source.
 	 *
 	 * @return the type.
