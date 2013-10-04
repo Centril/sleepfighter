@@ -18,6 +18,8 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
+import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
+
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathProblem;
@@ -28,6 +30,7 @@ import android.os.Build;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
@@ -66,9 +69,6 @@ public class SimpleMathChallenge implements Challenge {
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();
 
-		/*final TextView userText = (TextView) activity
-				.findViewById(R.id.questionField);
-		*/
 		final EditText editText = (EditText) activity
 				.findViewById(R.id.answerField);
 		
@@ -85,21 +85,25 @@ public class SimpleMathChallenge implements Challenge {
 				return handled;
 			}
 		});
-
-		/*Button answerButton = (Button) activity.findViewById(R.id.btnAnswer);
-		answerButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				handleAnswer(editText, activity);
-			}
-		});*/
-		
+/*
 		// make the keyboard appear.
-	/*	InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+		InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 	*/
 		setupWebview(activity);
 		renderMathProblem(activity);
+		
+		// Function of 1 variable, keep track of 3 derivatives with respect to that variable,
+		// use 2.5 as the current value.  Basically, the identity function.
+		DerivativeStructure x = new DerivativeStructure(1, 3, 0, 2.5);
+		// Basically, x --> x^2.
+		DerivativeStructure x2 = x.pow(2);
+		//Linear combination: y = 4x^2 + 2x
+		DerivativeStructure y = new DerivativeStructure(4.0, x2, 2.0, x);
+		System.out.println("y    = " + y.getValue());
+		System.out.println("y'   = " + y.getPartialDerivative(1));
+		System.out.println("y''  = " + y.getPartialDerivative(2));
+		System.out.println("y''' = " + y.getPartialDerivative(3));
 	}
 	
 	public static String open_html =
