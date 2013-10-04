@@ -289,20 +289,32 @@ public class AlarmActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		timer = new Timer("SleepFighter");
+		timer = new Timer("SFTimer");
 		Calendar calendar = Calendar.getInstance();
 
 		// Get the current time
 		final Runnable updateTask = new Runnable() {
 			public void run() {
 				// Set the current time on the text view
-				tvTime.setText(getThisTime());
+				tvTime.setText(getCurrentTime());
 			}
 		};
 
-		// TODO: update view?
+		// Update the user interface
+		int msec = 999 - calendar.get(Calendar.MILLISECOND);
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				runOnUiThread(updateTask);
+			}
+		}, msec, 1000);
 	}
 
+	/*
+	 * Use to stop the timer
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -311,10 +323,11 @@ public class AlarmActivity extends Activity {
 		timer = null;
 	}
 
-	public String getThisTime() {
-		Calendar calendar = Calendar.getInstance();
-		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-		int minute = calendar.get(Calendar.MINUTE);
+	// Get the current time with the Calendar
+	public String getCurrentTime() {
+		Calendar cal = Calendar.getInstance();
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int minute = cal.get(Calendar.MINUTE);
 		return String.format("%02d:%02d", hour, minute);
 	}
 }
