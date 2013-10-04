@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -36,6 +37,7 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet.ChallengeParamEvent;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet.Event;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.util.Log;
@@ -44,6 +46,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DataPersisterManager;
@@ -316,7 +319,8 @@ public class PersistenceManager {
 
 		// 2) Read all challenge config:s and set to each set.
 		Map<Integer, ChallengeConfig> challengeConfigLookup = Maps.newHashMap();
-		List<ChallengeConfig> challengeConfigList = this.queryInIds( helper.getChallengeConfigDao(), ChallengeConfig.SET_FOREIGN_COLUMN, challengeSetLookup );
+		PersistenceExceptionDao<ChallengeConfig, Integer> configDao = helper.getChallengeConfigDao();
+		List<ChallengeConfig> challengeConfigList = this.queryInIds( configDao, ChallengeConfig.SET_FOREIGN_COLUMN, challengeSetLookup );
 		for ( ChallengeConfig challengeConfig : challengeConfigList ) {
 			// Bind challenge config to set.
 			int alarmIndex = challengeSetLookup.get( challengeConfig.getSetId() );
@@ -324,6 +328,20 @@ public class PersistenceManager {
 
 			// Add to challenge config lookup.
 			challengeConfigLookup.put( challengeConfig.getId(), challengeConfig );
+		}
+
+		// 3) Sanity fix. Find any missing ChallengeType:s and add them.
+		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
+			Set<ChallengeType> missingTypes = Sets.complementOf( challengeSet.getDefinedTypes() );
+
+			for ( ChallengeType type : missingTypes ) {
+				ChallengeConfig config =  new ChallengeConfig( type, false );
+				config.setFetchedSetId( challengeSet.getId() );
+
+				configDao.create( config );
+
+				challengeSet.putChallenge( config );
+			}
 		}
 
 		// 3) Finally read all parameters and set to each config.

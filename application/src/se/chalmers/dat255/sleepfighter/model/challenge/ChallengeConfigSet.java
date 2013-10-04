@@ -20,16 +20,16 @@ package se.chalmers.dat255.sleepfighter.model.challenge;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -371,8 +371,8 @@ public class ChallengeConfigSet implements IdProvider {
 	 *
 	 * @return the enabled challenge types.
 	 */
-	public List<ChallengeType> getEnabledTypes() {
-		List<ChallengeType> types = Lists.newArrayList();
+	public Set<ChallengeType> getEnabledTypes() {
+		Set<ChallengeType> types = Sets.newHashSet();
 
 		for ( Entry<ChallengeType, ChallengeConfig> entry : this.challenges.entrySet() ) {
 			if ( entry.getValue().isEnabled() ) {
@@ -381,6 +381,15 @@ public class ChallengeConfigSet implements IdProvider {
 		}
 
 		return types;
+	}
+
+	/**
+	 * Returns the set of defined types for the set.
+	 *
+	 * @return the set of defined types.
+	 */
+	public Set<ChallengeType> getDefinedTypes() {
+		return this.challenges.keySet();
 	}
 
 	/**
