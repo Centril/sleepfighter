@@ -306,14 +306,15 @@ public class AlarmActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		// TODO: Stop the clock?
+		timer.cancel();
+		timer.purge();
+		timer = null;
 	}
 
 	public String getThisTime() {
 		Calendar calendar = Calendar.getInstance();
-		// TODO: hour/minute
-		int hour = 00;
-		int minute = 00;
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int minute = calendar.get(Calendar.MINUTE);
 		return String.format("%02d:%02d", hour, minute);
 	}
 }
