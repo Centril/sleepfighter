@@ -18,6 +18,8 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
+import java.util.ArrayList;
+
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
@@ -93,6 +95,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		    View customView = actionBar.getCustomView();
 
+		    getActionBar().getCustomView().findViewById(R.id.global_alarm_hidden_title).setVisibility(View.INVISIBLE);
 		    EditText edit_title_field = (EditText) customView.findViewById(R.id.alarm_edit_title_field);
 		    edit_title_field.setText(MetaTextUtils.printAlarmName(this, alarm));
 		    edit_title_field.setOnEditorActionListener(new OnEditorActionListener() {
@@ -144,6 +147,21 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		category.removePreference(pref);		
 	}
 	
+	private void removeEditName() {
+		Preference pref = (Preference) findPreference(NAME);
+		PreferenceCategory cat = (PreferenceCategory) findPreference("pref_category_misc");
+		cat.removePreference(pref);
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void removeEditTitle() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().getCustomView().findViewById(R.id.alarm_edit_title_field).setVisibility(View.INVISIBLE);
+			
+			getActionBar().getCustomView().findViewById(R.id.global_alarm_hidden_title).setVisibility(View.VISIBLE);
+		}
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -161,7 +179,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		
 		if(alarm.isPresetAlarm()) {
 			// having a delete button for the presets alarm makes no sense, so remove it. 
-			removeDeleteButton();			
+			removeDeleteButton();
+			removeEditName();
+			removeEditTitle();
 		}
 	}
 

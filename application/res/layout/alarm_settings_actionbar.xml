@@ -23,9 +23,6 @@
     android:focusable="true"
     android:focusableInTouchMode="true" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
 
         <EditText
             android:id="@+id/alarm_edit_title_field"
@@ -35,7 +32,16 @@
             android:maxLength="100"
             android:maxLines="1"
             android:selectAllOnFocus="true" />
-
+        
+        <TextView
+            android:id="@+id/global_alarm_hidden_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/pref_global_preset_alarm"
+            android:textColor="@color/group_button_dialog_pressed_holo_light"
+            android:textSize="17sp" />
+        
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -49,6 +55,5 @@
                 layout="@layout/switch_component" />
 
         </LinearLayout>
-    </LinearLayout>
 
 </RelativeLayout>
