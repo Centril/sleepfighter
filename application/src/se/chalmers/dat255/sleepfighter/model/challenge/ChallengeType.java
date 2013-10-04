@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.challenge;
+package se.chalmers.dat255.sleepfighter.model.challenge;
 
 /**
  * The different types of challenges available.
