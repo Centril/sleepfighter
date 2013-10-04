@@ -22,8 +22,6 @@ package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 import java.beans.PropertyChangeSupport;
 import java.util.Random;
 
-import android.graphics.Canvas;
-
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 
@@ -52,9 +50,9 @@ public class SnakeController {
 		this.rng = new Random();
 
 		this.pcs = new PropertyChangeSupport(this);
-		
+
 		this.thread = new SnakeThread();
-		
+
 		this.view = new SnakeView();
 
 		this.init();
@@ -87,8 +85,9 @@ public class SnakeController {
 	}
 
 	private void stopGame(int score) {
+		Debug.d(Integer.toString(score));
 		if (score >= SnakeConstants.getVictoryCondition()) {
-			pcs.firePropertyChange(null, null, null);
+			pcs.firePropertyChange(Integer.toString(score), null, null);
 		}
 	}
 

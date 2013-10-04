@@ -23,6 +23,7 @@ package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
  * Thrown by some Challenges at termination. The exception contains information
  * about how many points the player got.
  */
+@SuppressWarnings("serial")
 public class GameOverException extends Exception {
 
 	private int score;

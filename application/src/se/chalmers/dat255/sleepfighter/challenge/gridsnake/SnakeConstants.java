@@ -19,8 +19,8 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
-import android.graphics.Color;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Dimension;
+import android.graphics.Color;
 
 /**
  * Configuration constants for the game Snake. Original author Centril, modified

@@ -25,7 +25,6 @@ import java.beans.PropertyChangeListener;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import android.content.pm.ActivityInfo;
@@ -37,10 +36,10 @@ import android.widget.TextView;
 public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 	private MotionControl motionControl;
-	private TextView textView;
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
+	private TextView tv;
 
 	@Override
 	public void start(ChallengeActivity activity) {
@@ -49,9 +48,10 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		this.activity.setContentView(R.layout.alarm_challenge_motion);
 
+		this.tv = (TextView) activity.findViewById(R.id.motionText);
+		
 		this.motionControl = new MotionControl(activity);
 		this.motionControl.addListener(this);
-		this.textView = (TextView) activity.findViewById(R.id.motionText);
 
 		this.snakeController = new SnakeController();
 
@@ -63,6 +63,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		if (source.equals(this.motionControl)) {
 			this.handleRotation();
 		} else if (source.equals(snakeController)) {
+			tv.setText(event.getPropertyName());
 			this.complete();
 		}
 
@@ -85,7 +86,6 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 	public boolean withinMargin(Direction dir) {
 		boolean within = false;
-		Debug.d("withinMargin" + dir.toString());
 		switch (dir) {
 		case WEST:
 			within = this.angle <= this.margin && this.angle >= 0
