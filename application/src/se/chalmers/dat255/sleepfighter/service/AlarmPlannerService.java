@@ -276,8 +276,7 @@ public class AlarmPlannerService extends IntentService {
 		// Determine which time to schedule at by adding offset minutes from alarm to current time
 		MutableDateTime dateTime = MutableDateTime.now();
 		
-		// TODO get property from alarm
-		int mins = 5;
+		int mins = alarm.getSnoozeConfig().getSnoozeTime();
 
 		dateTime.addMinutes(mins);
 
