@@ -45,7 +45,10 @@ public class FromPresetAlarmFactory implements AlarmFactory {
 
 	@Override
 	public Alarm createAlarm() {
-		return new Alarm( this.preset );
+		Alarm alarm = new Alarm( this.preset );
+		alarm.setIsPresetAlarm( false );
+
+		return alarm;
 	}
 
 	/**
