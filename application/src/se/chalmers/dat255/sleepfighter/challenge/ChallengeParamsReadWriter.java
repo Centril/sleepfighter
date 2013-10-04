@@ -101,58 +101,80 @@ public class ChallengeParamsReadWriter {
 	 * @param key the key.
 	 * @return the value as a String.
 	 */
-	public String getString( String key ) {
+	public String getRaw( String key ) {
 		return this.getConfig().getParam( key );
+	}
+
+	/**
+	 * Returns the parameter value for key as a String.
+	 *
+	 * @param key the key.
+	 * @param defaultValue default value to use instead of null.
+	 * @return the value as a String.
+	 */
+	public String getString( String key, String defaultValue ) {
+		String val = this.getRaw( key );
+		return val == null ? defaultValue : val;
 	}
 
 	/**
 	 * Returns the parameter value for key as an integer.
 	 *
 	 * @param key the key.
+	 * @param defaultValue default value to use instead of null.
 	 * @return the value as an integer.
 	 */
-	public int getInt( String key ) {
-		return Integer.parseInt( this.getString( key ) );
+	public int getInt( String key, int defaultValue ) {
+		String val = this.getRaw( key );
+		return val == null ? defaultValue : Integer.parseInt( val );
 	}
 
 	/**
 	 * Returns the parameter value for key as a float.
 	 *
 	 * @param key the key.
+	 * @param defaultValue default value to use instead of null.
 	 * @return the value as a float.
 	 */
-	public float getFloat( String key ) {
-		return Float.parseFloat( this.getString( key ) );
+	public float getFloat( String key, float defaultValue ) {
+		String val = this.getRaw( key );
+		return val == null ? defaultValue : Float.parseFloat( val );
 	}
 
 	/**
 	 * Returns the parameter value for key as a double.
 	 *
 	 * @param key the key.
+	 * @param defaultValue default value to use instead of null.
 	 * @return the value as a double.
 	 */
-	public double getDouble( String key ) {
-		return Double.parseDouble( this.getString( key ) );
+	public double getDouble( String key, double defaultValue ) {
+		String val = this.getRaw( key );
+		return val == null ? defaultValue : Double.parseDouble( val );
 	}
 
 	/**
 	 * Returns the parameter value for key as a boolean.
 	 *
 	 * @param key the key.
+	 * @param defaultValue default value to use instead of null.
 	 * @return the value as a boolean.
 	 */
-	public boolean getBoolean( String key ) {
-		return Boolean.parseBoolean( this.getString( key ) );
+	public boolean getBoolean( String key, boolean defaultValue ) {
+		String val = this.getRaw( key );
+		return val == null ? defaultValue : Boolean.parseBoolean( val );
 	}
 
 	/**
 	 * Returns the parameter value for key as a long.
 	 *
 	 * @param key the key.
+	 * @param defaultValue default value to use instead of null.
 	 * @return the value as a long.
 	 */
-	public long getLong( String key ) {
-		return Long.parseLong( this.getString( key ) );
+	public long getLong( String key, long defaultValue ) {
+		String val = this.getRaw( key );
+		return val == null ? defaultValue : Long.parseLong( val );
 	}
 
 	/* --------------------------------
@@ -176,7 +198,7 @@ public class ChallengeParamsReadWriter {
 	 * @param key the key.
 	 * @param value the value as an integer.
 	 */
-	protected void setInt( String key, int value ) {
+	public void setInt( String key, int value ) {
 		this.setString( key, Integer.toString( value ) );
 	}
 
@@ -186,7 +208,7 @@ public class ChallengeParamsReadWriter {
 	 * @param key the key.
 	 * @param value the value as a float.
 	 */
-	protected void setFloat( String key, float value ) {
+	public void setFloat( String key, float value ) {
 		this.setString( key, Float.toString( value ) );
 	}
 
@@ -196,7 +218,7 @@ public class ChallengeParamsReadWriter {
 	 * @param key the key.
 	 * @param value the value as a double.
 	 */
-	protected void setDouble( String key, double value ) {
+	public void setDouble( String key, double value ) {
 		this.setString( key, Double.toString( value ) );
 	}
 
@@ -206,7 +228,7 @@ public class ChallengeParamsReadWriter {
 	 * @param key the key.
 	 * @param value the value as a boolean.
 	 */
-	protected void setBoolean( String key, boolean value ) {
+	public void setBoolean( String key, boolean value ) {
 		this.setString( key, Boolean.toString( value ) );
 	}
 
@@ -216,7 +238,7 @@ public class ChallengeParamsReadWriter {
 	 * @param key the key.
 	 * @param value the value as a long.
 	 */
-	protected void setLong( String key, long value ) {
+	public void setLong( String key, long value ) {
 		this.setString( key, Long.toString( value ) );
 	}
 
@@ -225,7 +247,7 @@ public class ChallengeParamsReadWriter {
 	 *
 	 * @return the ChallengeConfig. 
 	 */
-	private ChallengeConfig getConfig() {
+	public ChallengeConfig getConfig() {
 		return this.challengeSet.getConfig( this.challengeType );
 	}
 }
