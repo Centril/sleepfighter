@@ -20,6 +20,9 @@ package se.chalmers.dat255.sleepfighter.challenge;
 
 import java.util.Random;
 
+import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.RealMatrix;
+
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import android.annotation.SuppressLint;
@@ -184,6 +187,9 @@ public static String close_html = "</html>";
 		String html = new StringBuilder().append(open_html).append(problem).append(close_html).toString();
 		
 		w.loadDataWithBaseURL("file:///android_asset", html, "text/html", "utf-8", "");
+		
+		double[][] matrixData = { {1d,2d,3d}, {2d,5d,3d}};
+		RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
 	}
 	
 	/**
