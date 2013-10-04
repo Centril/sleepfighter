@@ -19,6 +19,7 @@
 package se.chalmers.dat255.sleepfighter.model.audio;
 
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -40,6 +41,9 @@ public class AudioConfig implements IdProvider {
 	@DatabaseField
 	private int volume;
 	
+	@DatabaseField
+	private boolean vibrationEnabled;
+	
 	// TODO: REMOVE when real fields are added, NEEDED 'cause SQLite crashes otherwise.
 	@DatabaseField
 	private String temp;
@@ -55,8 +59,11 @@ public class AudioConfig implements IdProvider {
 	 * 
 	 * @param volume the volume (0-100)
 	 */
-	public AudioConfig(int volume) {
+	public AudioConfig(int volume, boolean vibrationEnabled) {
+		Debug.d("AudioConfig created! vibration = " + vibrationEnabled);
+		
 		this.volume = volume;
+		this.vibrationEnabled = vibrationEnabled;
 	}
 	
 	/**
@@ -64,8 +71,9 @@ public class AudioConfig implements IdProvider {
 	 *
 	 * @param audioConfig the config to copy from.
 	 */
-	public AudioConfig( AudioConfig audioConfig ) {
-		// TODO
+	public AudioConfig( AudioConfig rhs ) {
+		this.volume = rhs.getVolume();
+		this.vibrationEnabled = rhs.getVibrationEnabled();
 	}
 
 
@@ -94,4 +102,13 @@ public class AudioConfig implements IdProvider {
 		}
 		this.volume = volume;
 	}
+	
+	public boolean getVibrationEnabled() {
+		return this.vibrationEnabled;
+	}
+
+	public void setVibrationEnabled(boolean vibrationEnabled) {
+		this.vibrationEnabled = vibrationEnabled;
+	}
+
 }

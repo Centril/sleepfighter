@@ -225,9 +225,6 @@ public class Alarm implements Cloneable, IdProvider {
 	@DatabaseField
 	private boolean isPresetAlarm = false;
 	
-	@DatabaseField
-	private boolean vibrationEnabled = true;
-	
 	@DatabaseField(foreign = true, canBeNull = true)
 	private AudioSource audioSource;
 
@@ -276,8 +273,6 @@ public class Alarm implements Cloneable, IdProvider {
 
 		// Copy dependencies.
 		this.bus = rhs.bus;
-		
-		this.vibrationEnabled = rhs.vibrationEnabled;
 		
 		this.audioSource = new AudioSource( rhs.audioSource );
 		this.audioConfig = new AudioConfig( rhs.audioConfig );
@@ -797,14 +792,6 @@ public class Alarm implements Cloneable, IdProvider {
 	 * PERSISTENCE ONLY METHODS.
 	 * --------------------------------
 	 */
-
-	public boolean getVibrationEnabled() {
-		return this.vibrationEnabled;
-	}
-
-	public void setVibrationEnabled(boolean vibrationEnabled) {
-		this.vibrationEnabled = vibrationEnabled;
-	}
 
 	/**
 	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes.<br/>

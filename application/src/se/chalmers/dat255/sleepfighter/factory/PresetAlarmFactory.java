@@ -84,7 +84,7 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 	}
 
 	protected AudioConfig createAudioConfig() {
-		return new AudioConfig(100);
+		return new AudioConfig(100, createVibrationFlag());
 	}
 
 	@Override

@@ -302,7 +302,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				
 			}
 			else if (VIBRATION.equals(preference.getKey())) {
-				alarm.setVibrationEnabled(("true".equals(stringValue)) ? true : false);
+				alarm.getAudioConfig().setVibrationEnabled(("true".equals(stringValue)) ? true : false);
 			}
 			else if (VOLUME.equals(preference.getKey())) {
 				// TODO: insert in model
@@ -336,7 +336,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			((CheckBoxPreference) preference).setChecked(alarm.isRepeating());
 		}
 		else if (VIBRATION.equals(preference.getKey())) {
-			((CheckBoxPreference) preference).setChecked(alarm.getVibrationEnabled());
+			((CheckBoxPreference) preference).setChecked(alarm.getAudioConfig().getVibrationEnabled());
 		}
 		else if (VOLUME.equals(preference.getKey())) {
 			// TODO: fetch from model

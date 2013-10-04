@@ -49,7 +49,6 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 		alarm.setAudioSource( this.createAudioSource() );
 		alarm.setAudioConfig( this.createAudioConfig() );
 		alarm.setChallenges( this.createChallenges() );
-		alarm.setVibrationEnabled( this.createVibrationFlag() ); // TODO: MOVE TO audio config.
 
 		return alarm;
 	}

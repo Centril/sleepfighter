@@ -93,7 +93,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		startAudio(alarm);
 
 		// start vibration.
-		if (alarm.getVibrationEnabled()) {
+		if (alarm.getAudioConfig().getVibrationEnabled()) {
 			VibrationManager.getInstance().startVibrate(context.getApplicationContext());
 		}
 
