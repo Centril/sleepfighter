@@ -40,6 +40,10 @@
             android:key="perf_alarm_ringtone"
             android:persistent="false" />
 
+        <se.chalmers.dat255.sleepfighter.android.preference.VolumePreference 
+            android:title="Volume"
+            android:key="pref_volume" />
+        
     </PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/misc_category_title" 

@@ -69,6 +69,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private final String REPEAT = "pref_alarm_repeat";
 	private final String DELETE = "pref_delete_alarm";
 	private final String VIBRATION = "pref_alarm_vibration";
+	private final String VOLUME = "pref_volume";
 	
 	private final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
 	private Preference ringerPreference;
@@ -185,6 +186,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(DAYS));
 		bindPreferenceSummaryToValue(findPreference(REPEAT));
 		bindPreferenceSummaryToValue(findPreference(VIBRATION));
+		bindPreferenceSummaryToValue(findPreference(VOLUME));
 		
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
