@@ -305,7 +305,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				alarm.getAudioConfig().setVibrationEnabled(("true".equals(stringValue)) ? true : false);
 			}
 			else if (VOLUME.equals(preference.getKey())) {
-				// TODO: insert in model
+				alarm.getAudioConfig().setVolume(Integer.parseInt(stringValue));
 				preference.setSummary(stringValue + "%");
 			}
 			else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
@@ -339,9 +339,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			((CheckBoxPreference) preference).setChecked(alarm.getAudioConfig().getVibrationEnabled());
 		}
 		else if (VOLUME.equals(preference.getKey())) {
-			// TODO: fetch from model
-			((VolumePreference) preference).setVolume(0);
-			preference.setSummary(0 + "%");
+			int vol = alarm.getAudioConfig().getVolume();
+			((VolumePreference) preference).setVolume(vol);
+			preference.setSummary(vol + "%");
 		}
 		else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
 			boolean enabled = this.alarm.getChallengeSet().isEnabled();

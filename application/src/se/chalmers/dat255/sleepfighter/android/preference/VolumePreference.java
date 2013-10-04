@@ -5,9 +5,8 @@ import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class VolumePreference extends DialogPreference implements OnSeekBarChangeListener {
+public class VolumePreference extends DialogPreference {
 
 	SeekBar slider;
 	private int volume;
@@ -20,7 +19,6 @@ public class VolumePreference extends DialogPreference implements OnSeekBarChang
 	public View onCreateDialogView() {
 		slider = new SeekBar(getContext());
 		slider.setMax(7);
-		slider.setOnSeekBarChangeListener(this);
 		
 		slider.setProgress(volume);
 		
@@ -31,8 +29,12 @@ public class VolumePreference extends DialogPreference implements OnSeekBarChang
 	protected void onDialogClosed(boolean positiveResult) {
 		super.onDialogClosed(positiveResult);
 		
-		if (positiveResult && callChangeListener(100*volume/slider.getMax())) {
-			persistInt(volume);
+		if (positiveResult) {
+			volume = slider.getProgress();
+			
+			if (callChangeListener(100*volume/slider.getMax())) {
+				persistInt(volume);
+			}
 		}
 	}
 	
@@ -42,19 +44,5 @@ public class VolumePreference extends DialogPreference implements OnSeekBarChang
 	
 	public int getVolume() {
 		return volume;
-	}
-
-	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress,
-			boolean fromUser) {
-	}
-
-	@Override
-	public void onStartTrackingTouch(SeekBar seekBar) {
-	}
-
-	@Override
-	public void onStopTrackingTouch(SeekBar seekBar) {
-		this.volume = seekBar.getProgress();
 	}
 }
