@@ -38,6 +38,7 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet.Event;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
+import android.util.Log;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -58,6 +59,7 @@ import com.j256.ormlite.table.TableUtils;
  * @since Sep 21, 2013
  */
 public class PersistenceManager {
+	private static final String TAG = PersistenceManager.class.getSimpleName();
 
 	private volatile OrmHelper ormHelper = null;
 
@@ -113,6 +115,7 @@ public class PersistenceManager {
 	 *
 	 * @param evt the event.
 	 */
+	@Handler
 	public void handleChallengeChange( ChallengeConfigSet.Event evt ) {
 		this.updateChallenges( evt );
 	}
@@ -300,7 +303,7 @@ public class PersistenceManager {
 	 * @param alarms list of alarms.
 	 * @param challengeSetLookup the lookup challenge set id -> index in list of alarms.
 	 */
-	private void fetchJoinChallenge( List<Alarm> alarms, BiMap<Integer, Integer> challengeSetLookup ) {
+	private void fetchJoinChallenge( List<Alarm> alarms, Map<Integer, Integer> challengeSetLookup ) {
 		OrmHelper helper = this.getHelper();
 
 		// 1) Read all sets and set them.
@@ -413,6 +416,8 @@ public class PersistenceManager {
 	 * @param evt the event.
 	 */
 	private void updateChallenges( Event evt ) {
+		Log.d( TAG, evt.toString() );
+
 		OrmHelper helper = this.getHelper();
 		ChallengeConfigSet set = evt.getSet();
 
@@ -438,7 +443,7 @@ public class PersistenceManager {
 			}
 		}
 
-		throw new AssertionError( "Do you something we don't?" );
+		throw new AssertionError( "Do you know something we don't?" );
 	}
 
 	/**
