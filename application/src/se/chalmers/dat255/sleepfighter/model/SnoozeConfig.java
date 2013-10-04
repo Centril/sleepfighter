@@ -79,6 +79,11 @@ public class SnoozeConfig implements IdProvider {
 		this.snoozeTime = snoozeTime;
 	}
 
+	public SnoozeConfig(SnoozeConfig snoozeConfig) {
+		this.snoozeEnabled = snoozeConfig.isSnoozeEnabled();
+		this.snoozeTime = snoozeConfig.getSnoozeTime();
+	}
+
 	@Override
 	public int getId() {
 		return this.id;

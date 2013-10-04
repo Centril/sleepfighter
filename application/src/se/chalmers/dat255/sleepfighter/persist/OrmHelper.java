@@ -52,7 +52,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 14;
+	private static final int DATABASE_VERSION = 15;
 
 	// Dao for Alarm.
 	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;

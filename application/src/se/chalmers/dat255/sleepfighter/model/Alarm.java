@@ -279,6 +279,7 @@ public class Alarm implements Cloneable, IdProvider {
 		
 		this.audioSource = new AudioSource( rhs.audioSource );
 		this.audioConfig = new AudioConfig( rhs.audioConfig );
+		this.snoozeConfig = new SnoozeConfig( rhs.snoozeConfig );
 
 		this.challenges = new ChallengeConfigSet( rhs.challenges );
 	}
