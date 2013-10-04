@@ -277,6 +277,20 @@ public class ChallengeConfigSet implements IdProvider {
 		this.enabled = enabled;
 	}
 
+	/**
+	 * Copy constructor.
+	 *
+	 * @param rhs the set to copy from.
+	 */
+	public ChallengeConfigSet( ChallengeConfigSet rhs ) {
+		this( rhs.enabled );
+		this.setMessageBus( rhs.messageBus );
+
+		for ( ChallengeConfig config : rhs.challenges.values() ) {
+			this.putChallenge( new ChallengeConfig( config ) );
+		}
+	}
+
 	/* --------------------------------
 	 * Public Interface.
 	 * --------------------------------

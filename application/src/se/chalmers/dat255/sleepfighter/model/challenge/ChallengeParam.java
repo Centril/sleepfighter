@@ -19,8 +19,10 @@
 package se.chalmers.dat255.sleepfighter.model.challenge;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.persist.ChallengeParamDao;
 
 /**
  * ChallengeParam models one parameter for a ChallengeConfig<br/>
@@ -31,17 +33,24 @@ import se.chalmers.dat255.sleepfighter.model.IdProvider;
  * @version 1.0
  * @since Oct 3, 2013
  */
+@DatabaseTable(tableName = "challenge_params", daoClass = ChallengeParamDao.class)
 public class ChallengeParam implements IdProvider {
 	public static final String CHALLENGE_ID_COLUMN = "challenge_id";
 
-	@DatabaseField(id = true, columnName = CHALLENGE_ID_COLUMN)
+	@DatabaseField(columnName = CHALLENGE_ID_COLUMN, uniqueCombo = true, index = true)
 	private int challengeId;
 
-	@DatabaseField
+	@DatabaseField(uniqueCombo = true, index = true)
 	private String key;
 
 	@DatabaseField
 	private String value;
+
+	/**
+	 * Constructs the parameter with no given values.
+	 */
+	public ChallengeParam() {
+	}
 
 	/**
 	 * Constructs the parameter with given challenge ID, key and value.

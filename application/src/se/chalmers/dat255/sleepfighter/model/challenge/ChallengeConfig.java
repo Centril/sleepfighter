@@ -19,7 +19,9 @@
 package se.chalmers.dat255.sleepfighter.model.challenge;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
 
@@ -88,8 +90,22 @@ public class ChallengeConfig implements IdProvider {
 	 */
 	public ChallengeConfig( ChallengeType type, boolean enabled, Map<String, String> params ) {
 		this.type = type;
-		this.params = params;
 		this.enabled = enabled;
+
+		this.params = this.params == null ? new HashMap<String, String>() : params;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param rhs the config to copy from.
+	 */
+	public ChallengeConfig( ChallengeConfig rhs ) {
+		this( rhs.type, rhs.enabled, null );
+
+		for ( Entry<String, String> entry : rhs.params.entrySet() ) {
+			this.params.put( entry.getKey(), entry.getValue() );
+		}
 	}
 
 	/* --------------------------------
@@ -181,7 +197,7 @@ public class ChallengeConfig implements IdProvider {
 	 * @return the old value, or null if not set before.
 	 */
 	protected String setParam( String key, String value ) {
-		return this.params.put( key, value == null ? "" : null );
+		return this.params.put( key, value );
 	}
 
 	/* --------------------------------
