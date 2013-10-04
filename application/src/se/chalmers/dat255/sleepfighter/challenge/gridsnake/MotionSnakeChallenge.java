@@ -26,6 +26,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import android.content.pm.ActivityInfo;
 import android.widget.TextView;
@@ -33,11 +34,11 @@ import android.widget.TextView;
 /**
  * A challenge that requires the player to move and rotate the device.
  */
-public class MotionChallenge implements Challenge, PropertyChangeListener {
+public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 	private MotionControl motionControl;
 	private TextView textView;
-	private double angle;
+	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
 
@@ -45,15 +46,15 @@ public class MotionChallenge implements Challenge, PropertyChangeListener {
 	public void start(ChallengeActivity activity) {
 		this.activity = activity;
 		this.activity
-				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		this.activity.setContentView(R.layout.alarm_challenge_motion);
 
 		this.motionControl = new MotionControl(activity);
 		this.motionControl.addListener(this);
 		this.textView = (TextView) activity.findViewById(R.id.motionText);
-		
-		this.snakeController = new SnakeController();
-		
+
+		// this.snakeController = new SnakeController();
+
 	}
 
 	@Override
@@ -68,16 +69,54 @@ public class MotionChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	private void handleRotation() {
-		this.angle = Math.abs(this.motionControl.getAngle());
+		this.angle = this.motionControl.getAngle();
 
-		// For debugging, like most of this method for now.
-		this.textView.setText(Double.toString(this.angle));
-
-		// If rotation between 0.5 and Math.PI - 0.5, update listeners
-		// For debugging
-		if ((this.angle % (Math.PI / 2) >= 0.5 && this.angle % (Math.PI / 2) <= (Math.PI / 2) - 0.5)) {
-			Debug.d("Woah!");
+		// User controls for the Challenge
+		if (withinMargin(Direction.WEST)) {
+			this.textView.setText(Direction.WEST.toString()
+					+ Double.toString(this.angle));
+			// this.snakeController.update(Direction.WEST);
+		} else if (withinMargin(Direction.NORTH)) {
+			this.textView.setText(Direction.NORTH.toString()
+					+ Double.toString(this.angle));
+			// this.snakeController.update(Direction.NORTH);
+		} else if (withinMargin(Direction.EAST)) {
+			this.textView.setText(Direction.EAST.toString()
+					+ Double.toString(this.angle));
+			// this.snakeController.update(Direction.EAST);
+		} else if (withinMargin(Direction.SOUTH)) {
+			this.textView.setText(Direction.SOUTH.toString()
+					+ Double.toString(this.angle));
+			// this.snakeController.update(Direction.SOUTH);
 		}
+	}
+
+	public boolean withinMargin(Direction dir) {
+		boolean within = false;
+		Debug.d("withinMargin" + dir.toString());
+		switch (dir) {
+		case WEST:
+			within = this.angle <= this.margin && this.angle >= 0
+					|| this.angle >= -this.margin && this.angle <= 0;
+			break;
+		case NORTH:
+			within = this.angle <= Math.PI / 2 + this.margin && this.angle >= 0
+					|| this.angle >= Math.PI / 2 - this.margin
+					&& this.angle <= Math.PI / 2;
+			break;
+		case EAST:
+			within = this.angle >= Math.PI - this.margin
+					|| this.angle <= -Math.PI + this.margin
+					&& this.angle >= -Math.PI / 2 + this.margin;
+			break;
+		case SOUTH:
+			within = this.angle <= -Math.PI / 2 + this.margin && this.angle >= -Math.PI / 2
+					|| this.angle >= -Math.PI / 2 - this.margin && this.angle <= -Math.PI / 2;
+			break;
+		default:
+			break;
+		}
+		return within;
 	}
 
 	public void complete() {

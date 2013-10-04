@@ -108,10 +108,23 @@ public enum Direction {
 	/**
 	 * Returns random non-NONE Direction with the specified Random object.
 	 * 
-	 * @param random A Random object to generate the Direction.
+	 * @param random
+	 *            A Random object to generate the Direction.
 	 * @return A random non-NONE Direction.
 	 */
 	public static Direction getRandom(Random random) {
-		return values()[random.nextInt(8)];
+		int dir = random.nextInt(3);
+		switch (dir) {
+		case 0:
+			return EAST;
+		case 1:
+			return SOUTH;
+		case 2:
+			return WEST;
+		case 3:
+			return NORTH;
+		default:
+			return EAST;
+		}
 	}
 }

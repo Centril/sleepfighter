@@ -58,7 +58,7 @@ public class SnakeController {
 		this.thread = new SnakeThread();
 	}
 
-	public SnakeController(MotionChallenge challenge) {
+	public SnakeController(MotionSnakeChallenge challenge) {
 		this();
 
 		this.pcs.addPropertyChangeListener(challenge);
@@ -70,7 +70,7 @@ public class SnakeController {
 
 	protected void init() {
 		this.model = new SnakeModel(SnakeConstants.getGameSize(),
-				Direction.getRandom(this.rng), this.rng);
+				Direction.getRandom(new Random()), this.rng);
 		thread.start();
 	}
 

@@ -1,7 +1,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.challenge.gridsnake.MotionChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.gridsnake.MotionSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.TestChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.SnakeChallenge;
 import android.app.Activity;
@@ -20,7 +20,7 @@ public class ChallengeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		// TODO do something else to get an instance of Challenge and call
 		// challenge.start(this)
-		Challenge challenge = new MotionChallenge();
+		Challenge challenge = new MotionSnakeChallenge();
 		challenge.start(this);
 	}
 
