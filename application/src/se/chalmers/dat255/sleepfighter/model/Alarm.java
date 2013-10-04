@@ -334,6 +334,7 @@ public class Alarm implements Cloneable, IdProvider {
 
 		// Pass it on!
 		this.challenges.setMessageBus( bus );
+		this.audioConfig.setMessageBus(bus);
 	}
 
 	/**
