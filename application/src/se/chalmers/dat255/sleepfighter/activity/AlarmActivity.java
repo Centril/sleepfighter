@@ -110,12 +110,16 @@ public class AlarmActivity extends Activity {
 		});
 
 		Button btnSnooze = (Button) findViewById(R.id.btnSnooze);
-		btnSnooze.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startSnooze();
-			}
-		});
+		if(alarm.getSnoozeConfig().isSnoozeEnabled()) {
+			btnSnooze.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startSnooze();
+				}
+			});
+		} else {
+			btnSnooze.setVisibility(View.GONE);
+		}
 	}
 
 	private void onStopClick() {
