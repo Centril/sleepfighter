@@ -131,13 +131,15 @@ public static String close_html = "</html>";
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
 		
 		String problem = "$" + this.problem.render() + "$";
+		String description = this.problem.description();
+		if(description !=  "") {
+			// the description should be one line below the problem
+			description = "<br>" + description;
+		}
 		
-		String html = new StringBuilder().append(open_html).append(problem).append(close_html).toString();
+		String html = new StringBuilder().append(open_html).append(problem).append(description).append(close_html).toString();
 		
-		w.loadDataWithBaseURL("file:///android_asset", html, "text/html", "utf-8", "");
-		
-		double[][] matrixData = { {1d,2d,3d}, {2d,5d,3d}};
-		RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+		w.loadDataWithBaseURL("file:///android_asset", html, "text/html", "utf-8", "");	
 	}
 	
 	

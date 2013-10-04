@@ -14,6 +14,10 @@ public class SimpleProblem implements MathProblem {
 	public SimpleProblem() {
 	}
 
+	public String description() {
+		return "";
+	}
+
 	public String render() {
 		if (operation == 0) {
 			return operand1 + " + " + operand2;

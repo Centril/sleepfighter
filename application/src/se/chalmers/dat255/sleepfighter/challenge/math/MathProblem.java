@@ -14,4 +14,6 @@ public interface MathProblem {
 	// you call this method.
 	public void newProblem();
 	
+	
+	public String description();
 }
