@@ -23,8 +23,10 @@ import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.math.DifferentiationProblem;
+import se.chalmers.dat255.sleepfighter.challenge.math.IntegrationProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.MatrixProblem;
+import se.chalmers.dat255.sleepfighter.challenge.math.PrimeFactorizationProblem;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -66,7 +68,7 @@ public class SimpleMathChallenge implements Challenge {
 	public void start(final ChallengeActivity activity) {
 		
 		// TODO: randomize math challenge
-		problem = new DifferentiationProblem();
+		problem = new PrimeFactorizationProblem();
 		
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();
