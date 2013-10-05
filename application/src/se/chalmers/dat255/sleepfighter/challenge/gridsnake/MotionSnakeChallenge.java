@@ -22,9 +22,9 @@ package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControlException;
@@ -45,12 +45,10 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 	@Override
 	public void start(ChallengeActivity activity) {
+		Debug.d("In MotionSnakeActivity");
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		this.activity.setContentView(R.layout.alarm_challenge_motion);
-
-		this.tv = (TextView) activity.findViewById(R.id.motionText);
 
 		try {
 			this.motionControl = new MotionControl(activity);
@@ -66,7 +64,8 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		if (this.exception != null) {
 			this.motionControl.addListener(this);
 
-			this.snakeController = new SnakeController();
+			this.snakeController = new SnakeController(this.activity.getBaseContext());
+			this.activity.setContentView(snakeController.getView());
 		}
 	}
 

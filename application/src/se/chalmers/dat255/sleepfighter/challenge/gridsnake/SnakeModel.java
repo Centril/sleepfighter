@@ -19,6 +19,7 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,6 +76,15 @@ public class SnakeModel {
 	 */
 	public Position getFoodPosition() {
 		return this.currFoodPos;
+	}
+
+	/**
+	 * Checks if food exists on the board.
+	 * 
+	 * @return True, if there is food.
+	 */
+	public boolean hasFood() {
+		return currFoodPos != null;
 	}
 
 	/**
@@ -277,5 +287,9 @@ public class SnakeModel {
 	 */
 	private Position getNextSnakePos() {
 		return this.snakePos.getFirst().moveDirection(this.direction);
+	}
+
+	public void addListener(PropertyChangeListener pcl) {
+		pcs.addPropertyChangeListener(pcl);
 	}
 }

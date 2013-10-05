@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import se.chalmers.dat255.sleepfighter.challenge.snake.CircleEntity;
+import se.chalmers.dat255.sleepfighter.challenge.snake.RectEntity;
+import se.chalmers.dat255.sleepfighter.challenge.snake.Segment;
+
 import android.graphics.Color;
 import android.graphics.Paint;
 

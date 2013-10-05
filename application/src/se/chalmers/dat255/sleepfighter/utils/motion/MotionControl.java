@@ -57,7 +57,7 @@ public class MotionControl implements SensorEventListener {
 		setSensor(defaultSensorType);
 
 		this.mSensorManager.registerListener(this, mSensor,
-				SensorManager.SENSOR_DELAY_FASTEST);
+				SensorManager.SENSOR_DELAY_NORMAL);
 
 		this.pcs = new PropertyChangeSupport(this);
 	}

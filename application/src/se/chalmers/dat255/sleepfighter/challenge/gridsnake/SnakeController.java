@@ -19,17 +19,20 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
+import android.content.Context;
 
 /**
  * Controller class for Snake. Original author Mazdak, modified by Laszlo for
  * SleepFighter.
  */
-public class SnakeController {
+public class SnakeController implements PropertyChangeListener {
 	/** Random Number Generator (RNG) */
 	private final Random rng;
 
@@ -43,23 +46,26 @@ public class SnakeController {
 
 	private SnakeThread thread;
 
+	// Needed to pass forward.
+	private Context context;
+
 	/**
 	 * Constructs the controller.
 	 */
-	public SnakeController() {
+	public SnakeController(Context context) {
 		this.rng = new Random();
 
 		this.pcs = new PropertyChangeSupport(this);
 
 		this.thread = new SnakeThread();
-
-		this.view = new SnakeView();
+		
+		this.context = context;
 
 		this.init();
 	}
 
-	public SnakeController(MotionSnakeChallenge challenge) {
-		this();
+	public SnakeController(MotionSnakeChallenge challenge, Context context) {
+		this(context);
 
 		this.pcs.addPropertyChangeListener(challenge);
 	}
@@ -71,6 +77,8 @@ public class SnakeController {
 	protected void init() {
 		this.model = new SnakeModel(SnakeConstants.getGameSize(),
 				Direction.getRandom(this.rng), this.rng);
+		this.model.addListener(this);
+		this.view = new SnakeView(this.context, this.model);
 		thread.start();
 	}
 
@@ -119,10 +127,15 @@ public class SnakeController {
 
 				try {
 					Thread.sleep(updateSpeed());
-				} catch (InterruptedException ex) {
+				} catch (InterruptedException e) {
 					Debug.d("GameThread (SnakeChallenge) sleep interrupted!");
 				}
 			}
 		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+
 	}
 }
