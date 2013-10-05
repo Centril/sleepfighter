@@ -83,7 +83,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	private void handleRotation() {
-		this.angle = this.motionControl.getAzimuthRotation();
+		this.angle = this.motionControl.getAzimuth();
 
 		// User controls for the Challenge
 		if (withinMargin(Direction.WEST)) {
