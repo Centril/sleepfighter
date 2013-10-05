@@ -27,6 +27,7 @@ import se.chalmers.dat255.sleepfighter.challenge.math.GCDProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.MatrixProblem;
 import se.chalmers.dat255.sleepfighter.challenge.math.PrimeFactorizationProblem;
+import se.chalmers.dat255.sleepfighter.challenge.math.SimpleProblem;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -68,7 +69,7 @@ public class SimpleMathChallenge implements Challenge {
 	public void start(final ChallengeActivity activity) {
 		
 		// TODO: randomize math challenge
-		problem = new GCDProblem();
+		problem = new MatrixProblem();
 		
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();
@@ -110,12 +111,12 @@ public class SimpleMathChallenge implements Challenge {
 		System.out.println("y''' = " + y.getPartialDerivative(3));
 	}
 	
-	public static String open_html =
+	private static String open_html =
 "<!DOCTYPE html><html lang=\"en\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\"><head><meta charset=\"utf-8\"><link rel=\"stylesheet\" href=\"file:///android_asset/jqmath-0.4.0.css\"><script src=\"file:///android_asset/jquery-1.4.3.min.js\"></script><script src=\"file:///android_asset/jqmath-etc-0.4.0.min.js\"></script></head><html>";
-public static String close_html = "</html>";
+private static String close_html = "</html>";
 	
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi", "InlinedApi" })
-	public void setupWebview(final ChallengeActivity activity) {
+	private void setupWebview(final ChallengeActivity activity) {
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
 		w.getSettings().setJavaScriptEnabled(true);
 		
@@ -127,14 +128,23 @@ public static String close_html = "</html>";
 			w.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 	}
 	
-	public void renderMathProblem(final ChallengeActivity activity) {
+	private String getStyleSheet() {
+		return 
+				"<style type=\"text/css\">" +
+		"body {color: white;}" +
+		"div {text-align: center; font-size: 1000%;}" +
+		"</style>";
+	}
+	
+	private void renderMathProblem(final ChallengeActivity activity) {
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
 		
-		String problem = this.problem.render();
+		String problem = "<p style=\"text-align: center;\">" + this.problem.render() + "</p>";
 		
-		String html = new StringBuilder().append(open_html).append(problem).append(close_html).toString();
+		String html = new StringBuilder().append(open_html).append(this.getStyleSheet()).append(problem).append(close_html).toString();
 		
 		w.loadDataWithBaseURL("file:///android_asset", html, "text/html", "utf-8", "");	
+		w.setBackgroundColor(0x00000000);
 	}
 	
 	
