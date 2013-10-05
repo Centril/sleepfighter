@@ -66,5 +66,9 @@
     <string name="perf_alarm_ringtone">Ringsignal</string>
     
 	  <string name="pref_alarm_vibration">Vibration</string>
+	  
+	      <string name="pref_alarm_snooze_enabled">Sätt på snooze</string>
+    <string name="pref_alarm_snooze_time">Snoozelängd</string>
+	  
 	
 </resources>

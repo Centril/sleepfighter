@@ -64,5 +64,9 @@
 	
 	
 	  <string name="pref_alarm_vibration">バイブレーション</string>
+	  
+	  <string name="pref_alarm_snooze_enabled">スヌーズをオンにする</string>
+    <string name="pref_alarm_snooze_time">スヌーズの長さ</string>
+	
 	
 </resources>
