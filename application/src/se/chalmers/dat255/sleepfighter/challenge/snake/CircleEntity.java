@@ -17,72 +17,35 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
+package se.chalmers.dat255.sleepfighter.challenge.snake;
 
 import android.graphics.Paint;
 
 /**
- * A simple entity
+ * A Simple circular entity.
  * 
  * @author Hassel
  *
  */
-abstract class Entity {
-	private float x;
-	private float y;
-	
-	private Paint paint;
+public class CircleEntity extends Entity {
+	private int radius;
 	
 	/**
-	 * @param x x-coordinate of the entity
-	 * @param y y-coordinate of the entity
-	 * @param paint color of the entity
+	 * @param x the middle of the circle
+	 * @param y the middle of the circle
+	 * @param radius the radius of the circle
+	 * @param paint the color of the circle
 	 */
-	public Entity(float x, float y, Paint paint) {
-		this.x = x;
-		this.y = y;
-		this.paint = new Paint(paint);
+	public CircleEntity(float x, float y, int radius, Paint paint) {
+		super(x, y, paint);
+		
+		this.radius = radius;
 	}
-	
+
 	/**
-	 * @return x-coordinate of the entity
+	 * @return the radius
 	 */
-	public float getX() {
-		return x;
-	}
-	
-	/**
-	 * @param x the x-coordinate of the entity
-	 */
-	public void setX(float x) {
-		this.x = x;
-	}
-	
-	/**
-	 * @return y-coordinate of the entity
-	 */
-	public float getY() {
-		return y;
-	}
-	
-	/**
-	 * @param y the y-coordinate of the entity
-	 */
-	public void setY(float y) {
-		this.y = y;
-	}
-	
-	/**
-	 * @return the color of the entity
-	 */
-	public Paint getPaint() {
-		return paint;
-	}
-	
-	/**
-	 * @param paint the color of the entity
-	 */
-	public void setPaint(Paint paint) {
-		this.paint = paint;
+	public float getRadius() {
+		return radius;
 	}
 }
