@@ -29,6 +29,8 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfig;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
+import se.chalmers.dat255.sleepfighter.model.gps.ExcludeArea;
+import se.chalmers.dat255.sleepfighter.model.gps.ExcludeAreaAlarm;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -52,7 +54,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 15;
+	private static final int DATABASE_VERSION = 16;
 
 	// Dao for Alarm.
 	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;
@@ -74,6 +76,12 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 	// Dao for SnoozeConfig.
 	private PersistenceExceptionDao<SnoozeConfig, Integer> snoozeConfigDao = null;
+
+	// Dao for ExcludeArea.
+	private PersistenceExceptionDao<ExcludeArea, Integer> excludeAreaDao;
+
+	// Dao for ExcludeAreaAlarm.
+	private PersistenceExceptionDao<ExcludeAreaAlarm, Integer> excludeAreaAlarmDao;
 
 	/**
 	 * Constructs the helper from a given context.
@@ -97,11 +105,14 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 			TableUtils.createTable( connectionSource, AudioSource.class );
 			TableUtils.createTable( connectionSource, AudioConfig.class );
+			TableUtils.createTable(connectionSource, SnoozeConfig.class);
 
 			TableUtils.createTable( connectionSource, ChallengeConfigSet.class );
 			TableUtils.createTable( connectionSource, ChallengeConfig.class );
 			TableUtils.createTable( connectionSource, ChallengeParam.class );
-			TableUtils.createTable(connectionSource, SnoozeConfig.class);
+
+			TableUtils.createTable(connectionSource, ExcludeArea.class);
+			TableUtils.createTable(connectionSource, ExcludeAreaAlarm.class);
 		} catch ( SQLException e ) {
 			Log.e( OrmHelper.class.getName(), "Can't create database", e );
 			throw new PersistenceException( e );
@@ -124,12 +135,14 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 			TableUtils.dropTable( connectionSource, AudioSource.class, true );
 			TableUtils.dropTable( connectionSource, AudioConfig.class, true );
+			TableUtils.dropTable( connectionSource, SnoozeConfig.class, true );
 
 			TableUtils.dropTable( connectionSource, ChallengeConfigSet.class, true );
 			TableUtils.dropTable( connectionSource, ChallengeConfig.class, true );
 			TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
 
-			TableUtils.dropTable( connectionSource, SnoozeConfig.class, true );
+			TableUtils.dropTable(connectionSource, ExcludeArea.class, true );
+			TableUtils.dropTable(connectionSource, ExcludeAreaAlarm.class, true );
 
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -256,6 +269,32 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
+	 * Returns DAO for ExcludeArea model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for ExcludeArea model.
+	 */
+	public PersistenceExceptionDao<ExcludeArea, Integer> getExcludeAreaDao() {
+		if (this.excludeAreaDao == null) {
+			this.excludeAreaDao = this.getExceptionDao(ExcludeArea.class);
+		}
+		return this.excludeAreaDao;
+	}
+
+	/**
+	 * Returns DAO for ExcludeAreaAlarm model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for ExcludeAreaAlarm model.
+	 */
+	public PersistenceExceptionDao<ExcludeAreaAlarm, Integer> getExcludeAreaAlarmDao() {
+		if (this.excludeAreaAlarmDao == null) {
+			this.excludeAreaAlarmDao = this.getExceptionDao(ExcludeAreaAlarm.class);
+		}
+		return this.excludeAreaAlarmDao;
+	}
+
+	/**
 	 * Get a PersistenceExceptionDao for given class. This uses the {@link DaoManager} to cache the DAO for future gets.
 	 *
 	 * @param clazz the class object to get Dao for.
@@ -280,4 +319,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 		this.alarmDao = null;
 	}
+
+
 }

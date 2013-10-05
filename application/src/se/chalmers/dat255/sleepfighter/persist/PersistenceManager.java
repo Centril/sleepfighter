@@ -39,6 +39,8 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet.Challe
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet.Event;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
+import se.chalmers.dat255.sleepfighter.model.gps.ExcludeArea;
+import se.chalmers.dat255.sleepfighter.model.gps.ExcludeAreaAlarm;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.util.Log;
@@ -51,7 +53,9 @@ import com.google.common.collect.Sets;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DataPersisterManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.TableUtils;
 
 /**
@@ -185,6 +189,8 @@ public class PersistenceManager {
 		this.clearTable( ChallengeParam.class );
 
 		this.clearTable(SnoozeConfig.class);
+
+		this.clearTable( ExcludeAreaAlarm.class );
 	}
 
 	/**
@@ -569,7 +575,6 @@ public class PersistenceManager {
 		}
 	}
 
-
 	/**
 	 * Removes an alarm from database.
 	 *
@@ -595,6 +600,9 @@ public class PersistenceManager {
 
 		// Handle challenge config set foreign object.
 		this.removeChallengeSet( alarm );
+
+		// Remove from ExludeArea junction table.
+		this.deleteExcludeAreaJunction( ExcludeAreaAlarm.ALARM_ID_FIELD, alarm.getId() );
 
 		// Finally delete alarm itself from DB.
 		helper.getAlarmDao().delete( alarm );
@@ -626,6 +634,89 @@ public class PersistenceManager {
 		helper.getChallengeConfigSetDao().delete( set );
 	}
 
+	/**
+	 * Fetches all available ExcludeArea:s.
+	 *
+	 * @return the list of ExcludeArea:s.
+	 */
+	public List<ExcludeArea> fetchExcludeAreas() {
+		OrmHelper helper = this.getHelper();
+		return helper.getExcludeAreaDao().queryForAll();
+	}
+
+	/**
+	 * Stores/updates an ExcludeArea in database.
+	 *
+	 * @param area the ExcludeArea to store/update.
+	 */
+	public void setExcludeArea( ExcludeArea area ) {
+		OrmHelper helper = this.getHelper();
+		helper.getExcludeAreaDao().createOrUpdate( area );
+	}
+
+	/**
+	 * Deletes an ExcludeArea from database. 
+	 *
+	 * @param area the area.
+	 */
+	public void deleteExcludeArea( ExcludeArea area ) {
+		OrmHelper helper = this.getHelper();
+
+		this.deleteExcludeAreaJunction( ExcludeAreaAlarm.EXCLUDE_AREA_ID_FIELD, area.getId() );
+
+		helper.getExcludeAreaDao().delete( area );
+	}
+
+	/**
+	 * Binds a ExcludeArea to an Alarm.
+	 *
+	 * @param alarm the alarm.
+	 * @param area the area.
+	 */
+	public void bindExcludeArea( Alarm alarm, ExcludeArea area ) {
+		OrmHelper helper = this.getHelper();
+		helper.getExcludeAreaAlarmDao().create( new ExcludeAreaAlarm( alarm, area ) );
+	}
+
+	/**
+	 * Unbinds an ExcludeArea from an alarm.
+	 *
+	 * @param alarm the alarm.
+	 * @param area the area.
+	 */
+	public void unbindExcludeArea( Alarm alarm, ExcludeArea area ) {
+		OrmHelper helper = this.getHelper();
+		try {
+			DeleteBuilder<ExcludeAreaAlarm, Integer> builder = helper.getExcludeAreaAlarmDao().deleteBuilder();
+			Where<ExcludeAreaAlarm, Integer> where = builder.where()
+				.eq( ExcludeAreaAlarm.ALARM_ID_FIELD, alarm.getId() ).and()
+				.eq( ExcludeAreaAlarm.EXCLUDE_AREA_ID_FIELD, area.getId() );
+
+			builder.setWhere( where );
+			builder.delete();
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
+	}
+
+	/**
+	 * Removes a junction row for Alarm:ExcludeArea relation.
+	 *
+	 * @param column the column that has the ID field of either Alarm or ExcludeArea.
+	 * @param id the ID of Alarm or Alarm:ExcludeArea
+	 */
+	private void deleteExcludeAreaJunction( String column, int id ) {
+		OrmHelper helper = this.getHelper();
+		try {
+			DeleteBuilder<ExcludeAreaAlarm, Integer> builder = helper.getExcludeAreaAlarmDao().deleteBuilder();
+			Where<ExcludeAreaAlarm, Integer> where = builder.where().eq( column, id );
+
+			builder.setWhere( where );
+			builder.delete();
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
+	}
 
 	/**
 	 * Releases any resources held such as the OrmHelper.
