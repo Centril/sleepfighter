@@ -24,7 +24,7 @@ import java.util.List;
 import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
 
 /**
- * ExclusionAreaSet defines a set of ExclusionArea:s that an alarm has.<br/>
+ * ExcludeAreaSet defines a set of ExclusionArea:s that an alarm has.<br/>
  * It is really a list, but a list of conceptually unique elements.<br/>
  * It is your responsibility to keep it so.
  *
@@ -32,11 +32,11 @@ import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
  * @version 1.0
  * @since Oct 5, 2013
  */
-public class ExclusionAreaSet extends ObservableList<ExcludeArea> {
+public class ExcludeAreaSet extends ObservableList<ExcludeArea> {
 	/**
 	 * Default constructor.
 	 */
-	public ExclusionAreaSet() {
+	public ExcludeAreaSet() {
 		this( new ArrayList<ExcludeArea>() );
 	}
 
@@ -45,7 +45,7 @@ public class ExclusionAreaSet extends ObservableList<ExcludeArea> {
 	 *
 	 * @param areas the areas.
 	 */
-	public ExclusionAreaSet( List<ExcludeArea> areas ) {
+	public ExcludeAreaSet( List<ExcludeArea> areas ) {
 		this.setDelegate( areas );
 	}
 
