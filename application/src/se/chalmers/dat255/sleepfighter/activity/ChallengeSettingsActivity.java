@@ -19,18 +19,19 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class ChallengeSettingsActivity extends PreferenceActivity {
 
@@ -44,10 +45,7 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Get alarm from intent bundle
-		int bundledAlarmID = new IntentUtils(getIntent()).getAlarmId();
-		AlarmList alarmList = SFApplication.get().getAlarms();
-		this.alarm = alarmList.getById(bundledAlarmID);
+		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 
 		addPreferencesFromResource(R.xml.pref_alarm_challenge);
 
@@ -69,13 +67,21 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	 * @return a Preference for the ChallengeType
 	 */
 	private Preference getChallengePreference(final ChallengeType type) {
-		final CheckBoxPreference preference = new CheckBoxPreference(this);
+		final EnablePlusSettingsPreference preference = new EnablePlusSettingsPreference(this);
 
 		boolean enabled = this.alarm.getChallengeSet().getConfig(type).isEnabled();
 		preference.setChecked(enabled);
 
 		// Makes sure nothing is stored in SharedPreferences
 		preference.setPersistent(false);
+
+		preference.setTitleColor( this.getResources().getColor( R.color.holo_red_light ) );
+		preference.setOnButtonClickListener( new OnClickListener() {
+			@Override
+			public void onClick( View v ) {
+				gotoPreferencesSettings( (Button) v );
+			}
+		} );
 
 		String name = getName(type);
 		String description = getDescription(type);
@@ -86,6 +92,7 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 			@Override
 			public boolean onPreferenceChange(Preference preference,
 					Object newValue) {
+				Log.d("abc", "hey" );
 				boolean checked = (Boolean) newValue;
 				
 				ChallengeConfigSet set = ChallengeSettingsActivity.this.alarm.getChallengeSet();
@@ -95,6 +102,11 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 			}
 		});
 		return preference;
+	}
+
+	protected void gotoPreferencesSettings( Button v ) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**

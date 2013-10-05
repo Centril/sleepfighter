@@ -29,7 +29,6 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -358,10 +357,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 * Fetch the alarm from list or {@link #finish()} if not found.
 	 */
 	private void fetchAlarm() {
-		SFApplication app = SFApplication.get();
-
-		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
-		alarm = intentUtils.isSettingPresetAlarm() ? app.getFromPresetFactory().getPreset() : app.getAlarms().getById( intentUtils.getAlarmId() );
+		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 
 		if (this.alarm == null) {
 			// TODO: Better handling for final product
