@@ -39,7 +39,6 @@ public class MotionControl implements SensorEventListener {
 	private Sensor mSensor;
 	private int defaultSensorType = Sensor.TYPE_ACCELEROMETER;
 	private PropertyChangeSupport pcs;
-	private double azimuthRotation = 0d;
 	private float[] orientation = new float[3];
 
 	/**
@@ -98,7 +97,7 @@ public class MotionControl implements SensorEventListener {
 	public void addListener(PropertyChangeListener pcl) {
 		this.pcs.addPropertyChangeListener(pcl);
 	}
-	
+
 	/**
 	 * Partially copied from http://stackoverflow.com/a/12098469
 	 */
@@ -119,11 +118,25 @@ public class MotionControl implements SensorEventListener {
 	}
 
 	/**
-	 * Calculates rotation around the Z axis (azimuth) of the device.
+	 * Calculates rotation around the Z axis (azimuth) of the device (and
+	 * returns it).
 	 */
-	public double getAzimuthRotation() {
-		return this.azimuthRotation = Math.atan2(this.orientation[0],
-				this.orientation[1]);
+	public double getAzimuth() {
+		return Math.atan2(this.orientation[0], this.orientation[1]);
+	}
+
+	/**
+	 * Calculates rotation around Y axis (pitch) of the device (and returns it).
+	 */
+	public double getPitch() {
+		return Math.atan2(this.orientation[2], this.orientation[0]);
+	}
+
+	/**
+	 * Calculates rotation around X axis (roll) of the device (and returns it).
+	 */
+	public double getRoll() {
+		return Math.atan2(this.orientation[1], this.orientation[2]);
 	}
 
 	@Override
