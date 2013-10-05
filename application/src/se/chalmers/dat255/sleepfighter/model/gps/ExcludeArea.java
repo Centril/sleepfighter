@@ -52,6 +52,30 @@ public class ExcludeArea implements IdProvider {
 	public ExcludeArea() {
 	}
 
+	/**
+	 * Constructs an ExcludeArea with name & enabled/disabled.<br/>
+	 * The polygon will be null.
+	 *
+	 * @param name the user defined name of area.
+	 * @param enabled whether or not the area is enabled.
+	 */
+	public ExcludeArea( String name, boolean enabled ) {
+		this( name, enabled, null );
+	}
+
+	/**
+	 * Constructs an ExcludeArea with name, enabled/disabled and a polygon.
+	 *
+	 * @param name the user defined name of area.
+	 * @param enabled whether or not the area is enabled.
+	 * @param poly the polygon to use.
+	 */
+	public ExcludeArea( String name, boolean enabled, ExcludePolygon poly ) {
+		this.setName( name );
+		this.setEnabled( enabled );
+		this.setPolygon( poly );
+	}
+
 	@Override
 	public int getId() {
 		return this.id;
