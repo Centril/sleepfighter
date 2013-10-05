@@ -18,22 +18,35 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.gps;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
+
 /**
- * ExclusionAreaSet defines a set of ExclusionArea:s that an alarm has.
+ * ExclusionAreaSet defines a set of ExclusionArea:s that an alarm has.<br/>
+ * It is really a list, but a list of conceptually unique elements.<br/>
+ * It is your responsibility to keep it so.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Oct 5, 2013
  */
-public class ExclusionAreaSet {
-	private List<ExcludeArea> areas;
-
+public class ExclusionAreaSet extends ObservableList<ExcludeArea> {
 	/**
 	 * Default constructor.
 	 */
 	public ExclusionAreaSet() {
+		this( new ArrayList<ExcludeArea>() );
+	}
+
+	/**
+	 * Constructs the set given a list of areas to exclude.
+	 *
+	 * @param areas the areas.
+	 */
+	public ExclusionAreaSet( List<ExcludeArea> areas ) {
+		this.setDelegate( areas );
 	}
 
 	/**
@@ -44,8 +57,8 @@ public class ExclusionAreaSet {
 	 * @return true if the set contains the point.
 	 */
 	public boolean contains( LatLng point ) {
-		for ( ExcludeArea area : this.areas ) {
-			if ( area.getPolygon().contains( point ) ) {
+		for ( ExcludeArea area : this.delegate() ) {
+			if ( area.isEnabled() && area.getPolygon().contains( point ) ) {
 				return true;
 			}
 		}

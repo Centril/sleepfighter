@@ -40,6 +40,9 @@ public class ExcludeArea implements IdProvider {
 	@DatabaseField
 	private String name;
 
+	@DatabaseField
+	private boolean enabled;
+
 	@DatabaseField(dataType = DataType.SERIALIZABLE)
 	private ExcludePolygon poly;
 
@@ -48,7 +51,6 @@ public class ExcludeArea implements IdProvider {
 	 */
 	public ExcludeArea() {
 	}
-
 
 	@Override
 	public int getId() {
@@ -71,5 +73,41 @@ public class ExcludeArea implements IdProvider {
 	 */
 	public ExcludePolygon getPolygon() {
 		return this.poly;
+	}
+
+	/**
+	 * Returns whether or not the area is enabled.
+	 *
+	 * @return true if it is enabled.
+	 */
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+
+	/**
+	 * Sets the name of the area.
+	 *
+	 * @param name the name.
+	 */
+	public void setName( String name ) {
+		this.name = name;
+	}
+
+	/**
+	 * Sets whether or not the area is enabled.
+	 *
+	 * @param enabled true if it should be enabled, false otherwise.
+	 */
+	public void setEnabled( boolean enabled ) {
+		this.enabled = enabled;
+	}
+
+	/**
+	 * Sets the ExcludePolygon of this area.
+	 *
+	 * @param poly the polygon.
+	 */
+	public void setPolygon( ExcludePolygon poly ) {
+		this.poly = poly;
 	}
 }
