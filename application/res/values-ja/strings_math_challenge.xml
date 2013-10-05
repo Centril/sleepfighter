@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+   
+    <string name="matrix_challenge_desc">%sの行列式を求めよ</string>
+   
+    <string name="differentiation_challenge_desc">最も近い整数に丸めた%sを求めよ</string>
+      
+      <string name="gdc_challenge_desc">%1$sと%2$sの最大公約数を求めよ</string>
+  
+         <string name="prime_factor_challenge_desc">%sの最大な素因数を求めよ</string>
+ 
+</resources>

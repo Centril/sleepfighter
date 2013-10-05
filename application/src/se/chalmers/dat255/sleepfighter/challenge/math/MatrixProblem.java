@@ -23,6 +23,9 @@ import java.util.Random;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
+import android.content.Context;
+
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.MatrixUtil;
 
@@ -31,8 +34,9 @@ import se.chalmers.dat255.sleepfighter.utils.math.MatrixUtil;
  */
 public class MatrixProblem implements MathProblem {
 	
+	private final Context context;
 	
-private static final int MAX_INT = 7;
+	private static final int MAX_INT = 7;
 	
 	// we use 3x3 matrices.
 	private static final int MATRIX_SIZE = 3;
@@ -93,8 +97,9 @@ private static final int MAX_INT = 7;
 		this.renderedString += renderMatrix(m1);
 		this.renderedString += renderMatrix(m2);
 		this.renderedString += "$";
-		this.renderedString += "<br> compute the determinant of $A$";
-		
+		String format = context.getResources().getString(R.string.matrix_challenge_desc);
+		this.renderedString += "<br>" + String.format(format, "$A$");
+	
 	}
 	
 	private String renderMatrix(RealMatrix m) {
@@ -125,8 +130,8 @@ private static final int MAX_INT = 7;
 		return str;		
 	}
 	
-	public MatrixProblem() {
-		
+	public MatrixProblem(final Context context) {
+		this.context = context;
 	}
 	
 }

@@ -70,17 +70,16 @@ public class MathChallenge implements Challenge {
 		int type =  new Random().nextInt(5);
 		
 		if(type == 0) {
-			problem = new DifferentiationProblem();			
+			problem = new DifferentiationProblem(activity);			
 		} if(type == 1) {
-			problem = new GCDProblem();			
+			problem = new GCDProblem(activity);			
 		}if(type == 2) {
-			problem = new PrimeFactorizationProblem();			
+			problem = new PrimeFactorizationProblem(activity);			
 		}if(type == 3) {
 			problem = new SimpleProblem();			
 		}if(type == 4) {
-			problem = new MatrixProblem();			
+			problem = new MatrixProblem(activity);			
 		}
-		
 		
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();

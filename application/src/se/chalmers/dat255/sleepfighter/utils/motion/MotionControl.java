@@ -1,4 +1,4 @@
-package se.chalmers.dat255.sleepfighter.utils.motion;
+	package se.chalmers.dat255.sleepfighter.utils.motion;
 
 import android.app.Activity;
 import android.hardware.Sensor;
