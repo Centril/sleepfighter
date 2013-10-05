@@ -31,6 +31,7 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -200,5 +201,16 @@ private static String close_html = "</html>";
 			renderMathProblem(activity);
 			editText.setText("");
 		}
+	}
+
+	@Override
+	public void start( ChallengeActivity activity, Bundle state ) {
+		Toast.makeText( activity, "TODO: IMPLEMENT START FROM SAVED STATE", Toast.LENGTH_LONG ).show();
+		this.start( activity );
+	}
+
+	@Override
+	public Bundle savedState() {
+		return null;
 	}
 }

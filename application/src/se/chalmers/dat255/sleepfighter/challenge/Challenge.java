@@ -19,7 +19,7 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-
+import android.os.Bundle;
 
 /**
  * Interface implemented by challenges.
@@ -31,13 +31,30 @@ import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
  */
 public interface Challenge {
 	/**
-	 * Method called from the outside when the challenge is to be started.
+	 * <p>Called from the outside when the challenge is to be started from scratch.</p>
 	 * 
-	 * Here should at least {@code setContentView()},
-	 * or similar method in ChallengeActivity, be called.
+	 * <p>Here should at least {@code setContentView()},<br/>
+	 * or similar method in ChallengeActivity, be called.</p>
 	 * 
-	 * @param activity
-	 *            the ChallengeActivity that the Challenge modifies
+	 * @param activity the ChallengeActivity that the Challenge modifies
 	 */
-	void start(ChallengeActivity activity);
+	public void start(ChallengeActivity activity);
+
+	/**
+	 * <p>Called from the outside when the challenge is to be started again.</p>
+	 * 
+	 * <p>Here should at least {@code setContentView()},<br/>
+	 * or similar method in ChallengeActivity, be called.</p>
+	 * 
+	 * @param activity the ChallengeActivity that the Challenge modifies
+	 * @param state the state that was saved by Challenge before.
+	 */
+	public void start(ChallengeActivity activity, Bundle state);
+
+	/**
+	 * Called when challenge must save its state.
+	 *
+	 * @return a Parcelable to save.
+	 */
+	public Bundle savedState();
 }

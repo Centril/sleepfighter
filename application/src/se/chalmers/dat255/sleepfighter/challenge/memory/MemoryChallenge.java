@@ -29,6 +29,7 @@ import se.chalmers.dat255.sleepfighter.model.Memory;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.pm.ActivityInfo;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -198,5 +199,14 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		setupCards();
 	}
 
-}
+	@Override
+	public void start( ChallengeActivity activity, Bundle state ) {
+		Toast.makeText( activity, "TODO: IMPLEMENT START FROM SAVED STATE", Toast.LENGTH_LONG ).show();
+		this.start( activity );
+	}
 
+	@Override
+	public Bundle savedState() {
+		return null;
+	}
+}

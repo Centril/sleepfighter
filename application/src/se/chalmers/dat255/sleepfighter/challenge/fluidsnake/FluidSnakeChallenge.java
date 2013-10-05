@@ -24,9 +24,11 @@ import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import android.content.pm.ActivityInfo;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Toast;
 
 /**
  * A fluid snake challenge.
@@ -148,5 +150,16 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 		updateDir = true;
 		
 		return true;
+	}
+
+	@Override
+	public void start( ChallengeActivity activity, Bundle state ) {
+		Toast.makeText( activity, "TODO: IMPLEMENT START FROM SAVED STATE", Toast.LENGTH_LONG ).show();
+		this.start( activity );
+	}
+
+	@Override
+	public Bundle savedState() {
+		return null;
 	}
 }

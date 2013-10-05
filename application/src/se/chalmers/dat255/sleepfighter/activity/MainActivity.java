@@ -332,6 +332,7 @@ public class MainActivity extends Activity {
 				
 				// Start the selected challenge
 				Intent i = new Intent(MainActivity.this, ChallengeActivity.class);
+				new IntentUtils( i ).setAlarmId( SFApplication.get().getFromPresetFactory().getPreset() ).setSettingPresetAlarm( true );
 				i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
 				startActivity(i);
 			}
