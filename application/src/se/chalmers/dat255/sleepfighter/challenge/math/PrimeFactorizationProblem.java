@@ -3,6 +3,7 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 
 /*
  * Challenge: Compute the largest prime factor of a number. 
@@ -10,7 +11,7 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 public class PrimeFactorizationProblem implements MathProblem {
 	
 	// we'll use these primes in the creation of the number.
-	private static final int[] PRIMES = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101};
+	private static final int[] PRIMES = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59};
 
 	
 	private int solution;
@@ -29,9 +30,9 @@ public class PrimeFactorizationProblem implements MathProblem {
 	}
 	
 	// create the number to be prime factorized by the user.
-	public int createNumber() {
+	private int createNumber() {
 		int n = 1;
-		int primeFactors = rng.nextInt(6);
+		int primeFactors = RandomMath.nextRandomRanged(rng, 2, 3); 
 		this.solution = 1;
 		
 		for(int i = 0; i < primeFactors; ++i) {
