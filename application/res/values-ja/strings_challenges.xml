@@ -21,17 +21,17 @@
 
     <string-array name="challenge_names">
         <item>Test</item>
-        <item>Matte</item>
-        <item>Memory</item>
-        <item>Sortera nummer</item>
-        <item>Flytande snake</item>
+        <item>数学</item>
+        <item>神経衰弱</item>
+        <item>数字をソート</item>
+        <item>ヘビのゲーム</item>
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>Testutmaning</item>
-        <item>Lös ett matteproblem</item>
-        <item>Memoryutmaning där man ska matcha bokstäver</item>
-        <item>Utmaning där nummer sorteras baserat på storlek</item>
-        <item>Version av snake där ormen ej är bunden till ett rutnät</item>
+        <item>A test challenge</item>
+        <item>数学の問題を解く</item>
+        <item>文字のカードを組む神経衰弱</item>
+        <item>大きさで数字をソートするチャレンジ</item>
+        <item>フリーフォームへびのゲーム</item>
     </string-array>
 
 </resources>

@@ -71,6 +71,10 @@
     <string name="pref_challenge_select">チャンレジを選択</string>
   
      <string name="pref_volume">音量</string>
+     
+    <string name="challenge_category_title">チャレンジ</string>
+    <string name="challenge_category_title_plural">チャレンジ</string>
    
+    
 	
 </resources>
