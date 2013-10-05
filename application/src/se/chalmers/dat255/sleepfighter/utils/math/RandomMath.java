@@ -55,6 +55,24 @@ public class RandomMath {
 		// Maybe use nextGaussian here instead?
 		return min + (int) (rng.nextDouble() * ((max - min) + 1));
 	}
+	
+	/**
+	 * Calculates random number in range [min, max], but the value exclude is never 
+	 * returned by this function 
+	 *
+	 * @param rng the random number generator.
+	 * @param min the minimum number, inclusive.
+	 * @param max the maximum number, inclusive.
+	 * @param exclude this value will never be returned by this function
+	 * @return the randomly generated number.
+	 */
+	public static int nextRandomRanged( Random rng, int min, int max, int exclude ) {
+		int n;
+		do {
+			n = min + (int) (rng.nextDouble() * ((max - min) + 1));
+		}while(n == exclude);
+		return n;
+	}
 
 	/**
 	 * <p>Returns a random generated gaussian / normal distributed<br/>

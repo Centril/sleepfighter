@@ -69,7 +69,7 @@ public class SimpleMathChallenge implements Challenge {
 	public void start(final ChallengeActivity activity) {
 		
 		// TODO: randomize math challenge
-		problem = new MatrixProblem();
+		problem = new DifferentiationProblem();
 		
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();
