@@ -174,9 +174,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		alarmList = app().getAlarms();
 		app().getBus().subscribe(this);
 
-		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
-		alarm = intentUtils.isSettingPresetAlarm() ? app().getFromPresetFactory().getPreset() : alarmList.getById( intentUtils.getAlarmId() );
-			
+		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
+
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
 		setupActionBar();
