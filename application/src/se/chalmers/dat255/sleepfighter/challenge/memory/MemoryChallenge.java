@@ -24,7 +24,9 @@ import java.util.List;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.model.Memory;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.pm.ActivityInfo;
 import android.os.Handler;
@@ -41,6 +43,15 @@ import android.widget.Toast;
  */
 
 public class MemoryChallenge implements Challenge, View.OnClickListener {
+	/**
+	 * PrototypeDefinition for MemoryChallenge.
+	 *
+	 * @version 1.0
+	 * @since Oct 5, 2013
+	 */
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.MEMORY );
+	}}
 
 	private ChallengeActivity act;
 	

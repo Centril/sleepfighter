@@ -19,12 +19,14 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
+import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import android.content.pm.ActivityInfo;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 
 /**
  * A fluid snake challenge.
@@ -37,6 +39,15 @@ import se.chalmers.dat255.sleepfighter.challenge.Challenge;
  *
  */
 public class FluidSnakeChallenge implements Challenge, OnTouchListener {
+	/**
+	 * PrototypeDefinition for FluidSnakeChallenge.
+	 *
+	 * @version 1.0
+	 * @since Oct 5, 2013
+	 */
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.FLUID_SNAKE );
+	}}
 
 	private Model model;
 	private Thread thread;

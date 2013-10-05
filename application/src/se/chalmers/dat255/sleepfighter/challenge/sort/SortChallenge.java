@@ -25,7 +25,9 @@ import java.util.Random;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortModel.Order;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.graphics.Color;
 import android.view.MotionEvent;
@@ -38,6 +40,17 @@ import android.widget.TextView;
 import com.google.common.collect.Lists;
 
 public class SortChallenge implements Challenge {
+	/**
+	 * PrototypeDefinition for SortChallenge.
+	 *
+	 * @version 1.0
+	 * @since Oct 5, 2013
+	 */
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.SORT );
+		add( "color_confusion", PrimitiveValueType.BOOLEAN, true );
+	}}
+
 	private static final int HSV_MAX_HUE = 360;
 	private static final int HSV_MIN_HUE = 0;
 	private static final float HSV_SATURATION = 0.20f;

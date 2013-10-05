@@ -25,6 +25,8 @@ import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -48,7 +50,16 @@ import android.widget.Toast;
  */
 
 public class MathChallenge implements Challenge {
-	
+	/**
+	 * PrototypeDefinition for MathChallenge.
+	 *
+	 * @version 1.0
+	 * @since Oct 5, 2013
+	 */
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.MATH );
+	}}
+
 	MathProblem problem;
 	
 

@@ -85,6 +85,15 @@
         </activity>
 
         <activity
+            android:name="se.chalmers.dat255.sleepfighter.activity.ChallengeParamsSettingsActivity"
+            android:label="@string/title_alarm_challenge_settings"
+            android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.ChallengeSettingsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="se.chalmers.dat255.sleepfighter.activity.ChallengeSettingsActivity" />
+        </activity>
+
+        <activity
             android:name="se.chalmers.dat255.sleepfighter.activity.PlaylistSelectActivity"
             android:label="@string/title_activity_playlist_select" >
         </activity>
