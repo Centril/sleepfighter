@@ -17,25 +17,22 @@
   You should have received a copy of the GNU General Public License
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="pre_chal_act">Herausforderung annehmen?!</string>
-    <string name="math_chal_act">Löse die Aufgabe!</string>
     <string name="app_name">SleepFighter</string>
     <string name="action_settings">Einstellungen</string>
     <string name="add">Hinzufügen</string>
+    <string name="pre_chal_act">Herausforderung annehmen?!</string>
     <string name="alarm_unnamed_format">Alarm %1$d</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
     <string name="confirm_delete">Sind Sie sicher, dass Sie den Alarm löschen möchte?"</string>
 
     <!-- Challenges -->
-
     <string name="btn_complete">Gelungen!</string>
     <string name="btn_fail">Misslungen!</string>
     <string name="start_challenge">Den Wahnsinn beendenen!</string>
     <string name="btn_answer">Beantworten</string>
-    <string name="challengeBtn">Herausforderung</string>
 
     <string-array name="earliest_time_formats">
         <item>Kein Alarm aktiv</item>
@@ -52,12 +49,6 @@
     <string-array name="main_list_context_menu">
         <item>Alarm redigieren</item>
         <item>Alarm löschen</item>
-
-        <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
-        <item>start vibration</item>
-        <item>stop vibration</item>
         <item>Kopiera alarm</item>
     </string-array>
 
