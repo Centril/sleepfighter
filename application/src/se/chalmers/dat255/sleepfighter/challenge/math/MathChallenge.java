@@ -16,18 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.challenge;
+package se.chalmers.dat255.sleepfighter.challenge.math;
+
+import java.util.Random;
 
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.challenge.math.DifferentiationProblem;
-import se.chalmers.dat255.sleepfighter.challenge.math.GCDProblem;
-import se.chalmers.dat255.sleepfighter.challenge.math.MathProblem;
-import se.chalmers.dat255.sleepfighter.challenge.math.MatrixProblem;
-import se.chalmers.dat255.sleepfighter.challenge.math.PrimeFactorizationProblem;
-import se.chalmers.dat255.sleepfighter.challenge.math.SimpleProblem;
+import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -47,10 +44,10 @@ import android.widget.Toast;
 /**
  * A Class for randomly generating simple arithmetic challenges.
  * 
- * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist
+ * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist, Eric Arnebäck
  */
 
-public class SimpleMathChallenge implements Challenge {
+public class MathChallenge implements Challenge {
 	
 	MathProblem problem;
 	
@@ -68,8 +65,22 @@ public class SimpleMathChallenge implements Challenge {
 	@Override
 	public void start(final ChallengeActivity activity) {
 		
-		// TODO: randomize math challenge
-		problem = new DifferentiationProblem();
+		// randomize a math challenge
+		
+		int type =  new Random().nextInt(5);
+		
+		if(type == 0) {
+			problem = new DifferentiationProblem();			
+		} if(type == 1) {
+			problem = new GCDProblem();			
+		}if(type == 2) {
+			problem = new PrimeFactorizationProblem();			
+		}if(type == 3) {
+			problem = new SimpleProblem();			
+		}if(type == 4) {
+			problem = new MatrixProblem();			
+		}
+		
 		
 		activity.setContentView(R.layout.alarm_challenge_math);
 		runChallenge();
