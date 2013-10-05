@@ -16,21 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.activity;
+package se.chalmers.dat255.sleepfighter.factory;
 
-import se.chalmers.dat255.sleepfighter.challenge.memory.MemoryChallenge;
-import android.os.Bundle;
+import se.chalmers.dat255.sleepfighter.model.Alarm;
 
-public class MemoryActivity extends ChallengeActivity {
-
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-		MemoryChallenge challenge = new MemoryChallenge();
-		challenge.start(this);
-		
-
-	}
+/**
+ * AlarmFactory is the factory interface for creating Alarm:s.
+ *
+ * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+ * @version 1.0
+ * @since Oct 4, 2013
+ */
+public interface AlarmFactory {
+	/**
+	 * Creates an Alarm from factory and returns it.
+	 *
+	 * @return the created alarm.
+	 */
+	public Alarm createAlarm();
 }

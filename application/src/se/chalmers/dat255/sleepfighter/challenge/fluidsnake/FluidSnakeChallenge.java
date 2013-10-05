@@ -19,7 +19,7 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
-import android.graphics.Canvas;
+import android.content.pm.ActivityInfo;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -55,6 +55,9 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	@Override
 	public void start(ChallengeActivity activity) {
 		this.activity = activity;
+		
+		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
 		model = new Model();
 		view = new GameView(activity, model);
 		
@@ -80,34 +83,19 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 					float delta = (lastTime > 0 ? now - lastTime : 1000/targetFPS)/(1000f/targetFPS);
 					lastTime = now;
 					
-					if (view.isSurfaceCreated()) {
-						Canvas c = null;
-
-						try {
-							c = view.getHolder().lockCanvas();
-							
-							// update the direction of the snake only when needed
-							if (updateDir) {
-								model.updateDirection(touchX/c.getWidth(), touchY/c.getHeight());
-								updateDir = false;
-							}
-							
-							// update the snake model, with the provided delta (actually a multiplier and not really a delta)
-							model.update(delta);
-							
-							synchronized(view.getHolder()) {
-								
-								// draw on the canvas
-								view.render(c);
-							}
-						}
-						finally {
-							if (c != null) {
-								// update the view with the new canvas
-								view.getHolder().unlockCanvasAndPost(c);
-							}
-						}
+					
+					// update the direction of the snake only when needed
+					if (updateDir) {
+						model.updateDirection(touchX/view.getWidth(), touchY/view.getHeight());
+						updateDir = false;
 					}
+					
+					// update the snake model, with the provided delta (actually a multiplier and not really a delta)
+					model.update(delta);
+					
+					// render the view
+					view.render();
+					
 					try {
 						Thread.sleep(1000/targetFPS);
 					} catch (InterruptedException e) {
@@ -116,10 +104,20 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 				}
 				
 				// if we got out of the loop it means the player won, complete the challenge
-				FluidSnakeChallenge.this.activity.complete();
+				exitChallenge();
 			}
 		};
 		thread.start();
+	}
+	
+	private void exitChallenge() {
+		// Run on UI thread since things can get messy if trying to execute them on other threads
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				activity.complete();
+			}
+		});
 	}
 	
 	/**

@@ -28,13 +28,13 @@ import android.provider.MediaStore.MediaColumns;
 
 public class LocalContentDriver extends BaseAudioDriver {
 
-	private Uri ringtoneUri;
+	private Uri uri;
 	private String name;
 
 	@Override
 	public void setSource(Context context, AudioSource source) {
 		super.setSource(context, source);
-		this.ringtoneUri = Uri.parse(source.getUri());
+		this.uri = Uri.parse(source.getUri());
 	}
 
 	@Override
@@ -43,10 +43,10 @@ public class LocalContentDriver extends BaseAudioDriver {
 			// Query for title
 			String[] projection = { MediaColumns._ID, MediaColumns.TITLE };
 			Cursor cursor = getContext().getContentResolver().query(
-					ringtoneUri, projection, null, null, null);
+					uri, projection, null, null, null);
 
 			if (cursor == null || !cursor.moveToFirst()) {
-				return ringtoneUri.toString();
+				return uri.toString();
 			}
 			this.name = cursor.getString(1);
 		}
@@ -58,7 +58,7 @@ public class LocalContentDriver extends BaseAudioDriver {
 		super.play(config);
 
 		Intent i = new Intent(AudioService.ACTION_PLAY);
-		i.putExtra(AudioService.BUNDLE_URI, ringtoneUri);
+		i.putExtra(AudioService.BUNDLE_URI, uri);
 		getContext().startService(i);
 	}
 

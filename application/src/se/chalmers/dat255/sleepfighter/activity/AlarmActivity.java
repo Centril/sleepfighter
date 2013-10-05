@@ -18,26 +18,38 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +78,7 @@ public class AlarmActivity extends Activity {
 	private TextView tvName;
 	private TextView tvTime;
 	private Alarm alarm;
+	public Timer timer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,27 +97,85 @@ public class AlarmActivity extends Activity {
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
-        tvName.setText(alarm.getName());
-        
-        tvTime = (TextView) findViewById(R.id.tvAlarmTime);
-        tvTime.setText(alarm.getTimeString());
+		tvName.setText(alarm.getName());
+
+		tvTime = (TextView) findViewById(R.id.tvAlarmTime);
+
+		Button btnChallenge = (Button) findViewById(R.id.btnChallenge);
+		btnChallenge.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onStopClick();
+			}
+		});
+
+		Button btnSnooze = (Button) findViewById(R.id.btnSnooze);
+		if(alarm.getSnoozeConfig().isSnoozeEnabled()) {
+			btnSnooze.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startSnooze();
+				}
+			});
+		} else {
+			btnSnooze.setVisibility(View.GONE);
+		}
+	}
+
+	private void onStopClick() {
+		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
+		if (challengeEnabled) {
+			startChallenge();
+		} else {
+			stopAlarm();
+		}
 	}
 
 	/**
-	 * A Button to start the challenge
+	 * Launch ChallengeActivity to start alarm.
 	 */
-	public void button(View view) {
+	private void startChallenge() {
 		// The vibration stops whenever you start the challenge
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
+
+		// Get a random challenge from the alarm's enabled challenges
+		ChallengeConfigSet set = this.alarm.getChallengeSet();
+		Set<ChallengeType> enabledChallenges = set.getEnabledTypes();
+
+		List<ChallengeType> list = new ArrayList<ChallengeType>(
+				enabledChallenges);
+
+		int randPos = RandomMath.nextRandomRanged(new Random(), 0,
+				list.size() - 1);
+
+		ChallengeType type = list.get(randPos);
 
 		Intent i = new Intent(this, ChallengeActivity.class);
 
 		// TODO use property from Alarm
-		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, ChallengeType.TEST);
-		
+		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
+
 		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
 	}
-	
+
+	/**
+	 * Stops alarm temporarily and sends a snooze command to the server.
+	 */
+	private void startSnooze() {
+		// Should the user complete a challenge before snoozing?
+
+		stopAudio();
+
+		VibrationManager.getInstance().stopVibrate(getApplicationContext());
+
+		// Remove notification saying alarm is ringing
+		NotificationHelper.removeNotification(this);
+
+		// Send snooze command to service
+		AlarmPlannerService.call(this, Command.SNOOZE, alarm.getId());
+		finish();
+	}
+
 	protected void onPause() {
 		super.onPause();
 
@@ -186,10 +257,8 @@ public class AlarmActivity extends Activity {
 						.show();
 				Debug.d("done with challenge");
 
-				// If completed, shut the alarm and navigate to main
+				// If completed, stop the alarm
 				stopAlarm();
-				finish();
-				
 			} else {
 				Toast.makeText(this, "Returned from uncompleted challenge",
 						Toast.LENGTH_LONG).show();
@@ -204,7 +273,6 @@ public class AlarmActivity extends Activity {
 	 * Stop the current alarm sound and vibration
 	 */
 	public void stopAlarm() {
-
 		this.stopAudio();
 
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
@@ -213,9 +281,57 @@ public class AlarmActivity extends Activity {
 		NotificationHelper.removeNotification(this);
 
 		this.performRescheduling();
+		finish();
 	}
 
 	private void stopAudio() {
 		SFApplication.get().setAudioDriver(null);
+	}
+
+	// TODO: onStart(), onStop(), getTime(), getThisTime();
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		timer = new Timer("SFTimer");
+		Calendar calendar = Calendar.getInstance();
+
+		// Get the current time
+		final Runnable updateTask = new Runnable() {
+			public void run() {
+				// Set the current time on the text view
+				tvTime.setText(getCurrentTime());
+			}
+		};
+
+		// Update the user interface
+		int msec = 999 - calendar.get(Calendar.MILLISECOND);
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				runOnUiThread(updateTask);
+			}
+		}, msec, 1000);
+	}
+
+	/*
+	 * Use to stop the timer
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		timer.cancel();
+		timer.purge();
+		timer = null;
+	}
+
+	// Get the current time with the Calendar
+	public String getCurrentTime() {
+		Calendar cal = Calendar.getInstance();
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int minute = cal.get(Calendar.MINUTE);
+		return String.format("%02d:%02d", hour, minute);
 	}
 }

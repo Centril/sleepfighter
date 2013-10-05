@@ -30,7 +30,6 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -361,16 +360,10 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 */
 	private void fetchAlarm() {
 		SFApplication app = SFApplication.get();
-		
-		
-		
-		if( new IntentUtils( this.getIntent() ).isSettingPresetAlarm()) {
-			alarm = app.getAlarms().getPresetAlarm();
-		}else{
-			final int id = new IntentUtils( this.getIntent() ).getAlarmId();
-			alarm = app.getAlarms().getById(id);
-		}
-		
+
+		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
+		alarm = intentUtils.isSettingPresetAlarm() ? app.getFromPresetFactory().getPreset() : app.getAlarms().getById( intentUtils.getAlarmId() );
+
 		if (this.alarm == null) {
 			// TODO: Better handling for final product
 			Toast.makeText(this, "Alarm is null (ID: " + alarm.getId() + ")", Toast.LENGTH_SHORT).show();

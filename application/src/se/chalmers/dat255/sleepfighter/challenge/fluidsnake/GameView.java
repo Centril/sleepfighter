@@ -33,7 +33,7 @@ import android.view.SurfaceHolder.Callback;
  * The view that will contain the game graphics.
  * 
  * @author Hassel
- *
+ * 
  */
 public class GameView extends SurfaceView implements Callback {
 
@@ -46,10 +46,11 @@ public class GameView extends SurfaceView implements Callback {
 	private GameView(Context context) {
 		super(context);
 	}
-	
+
 	/**
 	 * @param context
-	 * @param model the model this View should fetch from
+	 * @param model
+	 *            the model this View should fetch from
 	 */
 	public GameView(Context context, Model model) {
 		this(context);
@@ -63,12 +64,13 @@ public class GameView extends SurfaceView implements Callback {
 	}
 
 	/**
-	 * @param model the model this view should fetch from
+	 * @param model
+	 *            the model this view should fetch from
 	 */
 	public void setModel(Model model) {
 		this.model = model;
 	}
-	
+
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -84,65 +86,76 @@ public class GameView extends SurfaceView implements Callback {
 	}
 
 	/**
-	 * @return true if the surface has been created, false otherwise
-	 */
-	public boolean isSurfaceCreated() {
-		return isSurfaceCreated;
-	}
-
-	/**
-	 * Will render the model on the canvas provided
+	 * Will try to render the model on the canvas provided
 	 * 
-	 * @param c the canvas to draw on
 	 */
-	public void render(Canvas c) {
-		// clear the canvas
-		c.drawRect(0, 0, c.getWidth(), c.getHeight(), clearPaint);
+	public void render() {
+		if (isSurfaceCreated) {
+			Canvas c = null;
 
-		// Fetch entities from the model
-		List<RectEntity> obstacles = model.getObstacles();
-		RectEntity exit = model.getExit();
-		List<CircleEntity> sphereFruits = model.getSphereFruits();
-		List<Segment> snakeSegments = model.getSnakeSegments();
+			c = getHolder().lockCanvas();
 
-		float scaleX = c.getWidth() * 1f / model.boardWidth;
-		float scaleY = c.getHeight() * 1f / model.boardHeight;
+			synchronized (getHolder()) {
+				
+				if (c != null) {
+					// clear the canvas
+					c.drawRect(0, 0, c.getWidth(), c.getHeight(), clearPaint);
 
-		// draw obstacles
-		for (int i = 0; i < obstacles.size(); i++) {
-			RectEntity o = obstacles.get(i);
+					// Fetch entities from the model
+					List<RectEntity> obstacles = model.getObstacles();
+					RectEntity exit = model.getExit();
+					List<CircleEntity> sphereFruits = model.getSphereFruits();
+					List<Segment> snakeSegments = model.getSnakeSegments();
 
-			c.drawRect(o.getX() * scaleX, o.getY() * scaleY, o.getX() * scaleX
-					+ o.getWidth() * scaleX, o.getY() * scaleY + o.getHeight()
-					* scaleY, o.getPaint());
-		}
+					float scaleX = c.getWidth() * 1f / model.boardWidth;
+					float scaleY = c.getHeight() * 1f / model.boardHeight;
 
-		// draw exit over obstacles
-		if (exit != null) {
-			c.drawRect(exit.getX() * scaleX, exit.getY() * scaleY, exit.getX()
-					* scaleX + exit.getWidth() * scaleX, exit.getY() * scaleY
-					+ exit.getHeight() * scaleY, exit.getPaint());
-		}
+					// draw obstacles
+					for (int i = 0; i < obstacles.size(); i++) {
+						RectEntity o = obstacles.get(i);
 
-		// draw the spherical fruits
-		for (int i = 0; i < sphereFruits.size(); i++) {
-			CircleEntity f = sphereFruits.get(i);
+						c.drawRect(o.getX() * scaleX, o.getY() * scaleY,
+								o.getX() * scaleX + o.getWidth() * scaleX,
+								o.getY() * scaleY + o.getHeight() * scaleY,
+								o.getPaint());
+					}
 
-			c.drawOval(
-					new RectF(f.getX() * scaleX - f.getRadius() * scaleX, f
-							.getY() * scaleY - f.getRadius() * scaleY, f.getX()
-							* scaleX + f.getRadius() * scaleX, f.getY()
-							* scaleY + f.getRadius() * scaleY), f.getPaint());
-		}
+					// draw exit over obstacles
+					if (exit != null) {
+						c.drawRect(
+								exit.getX() * scaleX,
+								exit.getY() * scaleY,
+								exit.getX() * scaleX + exit.getWidth() * scaleX,
+								exit.getY() * scaleY + exit.getHeight()
+										* scaleY, exit.getPaint());
+					}
 
-		// draw the snake above everything
-		for (int i = 0; i < snakeSegments.size(); i++) {
-			Segment s = snakeSegments.get(i);
+					// draw the spherical fruits
+					for (int i = 0; i < sphereFruits.size(); i++) {
+						CircleEntity f = sphereFruits.get(i);
 
-			c.drawOval(new RectF((s.getX() * scaleX - s.getRadius() * scaleX),
-					(s.getY() * scaleY - s.getRadius() * scaleY), (s.getX()
-							* scaleX + s.getRadius() * scaleX), (s.getY()
-							* scaleY + s.getRadius() * scaleY)), s.getPaint());
+						c.drawOval(new RectF(f.getX() * scaleX - f.getRadius()
+								* scaleX, f.getY() * scaleY - f.getRadius()
+								* scaleY, f.getX() * scaleX + f.getRadius()
+								* scaleX, f.getY() * scaleY + f.getRadius()
+								* scaleY), f.getPaint());
+					}
+
+					// draw the snake above everything
+					for (int i = 0; i < snakeSegments.size(); i++) {
+						Segment s = snakeSegments.get(i);
+
+						c.drawOval(new RectF((s.getX() * scaleX - s.getRadius()
+								* scaleX), (s.getY() * scaleY - s.getRadius()
+								* scaleY), (s.getX() * scaleX + s.getRadius()
+								* scaleX), (s.getY() * scaleY + s.getRadius()
+								* scaleY)), s.getPaint());
+					}
+
+					// update the view with the updated canvas
+					getHolder().unlockCanvasAndPost(c);
+				}
+			}
 		}
 	}
 }

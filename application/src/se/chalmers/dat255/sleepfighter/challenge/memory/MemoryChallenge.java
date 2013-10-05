@@ -26,6 +26,7 @@ import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.model.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -173,6 +174,10 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		this.act = act;
 	
 		act.setContentView(R.layout.activity_alarm_challenge_memory);
+		
+		// Lock to portrait orientation for now
+		// TODO remove if landscape works
+		act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		mem = new Memory(ROWS, COLS);
 		Debug.d(mem.toString());

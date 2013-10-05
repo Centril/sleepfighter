@@ -18,8 +18,11 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
+import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.FluidSnakeChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.math.MathChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.memory.MemoryChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 
 /**
  * A simple factory class for construction of challenges.
@@ -39,11 +42,13 @@ public class ChallengeFactory {
 		case TEST:
 			return new TestChallenge();
 		case MATH:
-			return new SimpleMathChallenge();
+			return new MathChallenge();
 		case MEMORY:
 			return new MemoryChallenge();
 		case SORT:
 			return new SortChallenge();
+		case FLUID_SNAKE:
+			return new FluidSnakeChallenge();
 		default:
 			throw new IllegalArgumentException("Undefined challenge");
 		}

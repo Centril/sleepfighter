@@ -40,8 +40,24 @@
             android:key="perf_alarm_ringtone"
             android:persistent="false" />
 
+        <se.chalmers.dat255.sleepfighter.android.preference.VolumePreference 
+            android:title="Volume"
+            android:key="pref_volume" />
+        
     </PreferenceCategory>
 
+	<PreferenceCategory android:title="@string/challenge_category_title" >
+
+	    <CheckBoxPreference 
+	        android:key="pref_challenge_enable"
+	        android:title="@string/pref_challenge_enabled" />
+	    
+	    <Preference 
+	        android:key="pref_challenge_select"
+	        android:title="@string/pref_challenge_select" />
+
+	</PreferenceCategory>
+    
 	<PreferenceCategory android:title="@string/misc_category_title" 
 	    android:key="pref_category_misc"  >
 
@@ -68,9 +84,20 @@
             android:key="pref_alarm_vibration"
             android:defaultValue="true" />
         
+        <CheckBoxPreference
+            android:title="@string/pref_alarm_snooze_enabled"
+            android:key="pref_alarm_snooze_enabled"
+            android:defaultValue="true" />
+        
+        <EditTextPreference
+            android:title="@string/pref_alarm_snooze_time"
+            android:key="pref_alarm_snooze_time"
+            android:selectAllOnFocus="true"
+            android:maxLength="2"
+            android:inputType="number" />
+        
         <Preference
-       
-                    android:id="@+id/pref_delete_alarm"
+            android:id="@+id/pref_delete_alarm"
             android:title="@string/pref_delete_alarm"
             android:key="pref_delete_alarm" />
     </PreferenceCategory>

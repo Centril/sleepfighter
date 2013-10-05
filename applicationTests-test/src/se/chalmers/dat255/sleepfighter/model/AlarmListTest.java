@@ -154,19 +154,4 @@ public class AlarmListTest extends TestCase {
 		assertTrue( lowest == test );
 		return lowest;
 	}
-	
-	public void setPresetAlarm() {
-		
-		List<Alarm> l = new ArrayList<Alarm>();
-		Alarm a1 = new Alarm();
-		Alarm a2 = new Alarm();
-		Alarm a3 = new Alarm();
-		l.add(a1);
-		l.add(a2);
-		l.add(a3);
-		
-		AlarmList list = new AlarmList(l);
-		
-		assertEquals(a2, list.getPresetAlarm());
-	}
 }

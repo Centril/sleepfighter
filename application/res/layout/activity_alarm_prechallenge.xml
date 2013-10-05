@@ -61,8 +61,16 @@
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:text="@string/start_challenge"
-            android:textSize="20sp"
-            android:onClick="button" />
+            android:textSize="20sp" />
+        
+        <!-- Button to start snooze -->
+        <Button
+            android:id="@+id/btnSnooze"
+            android:layout_width="248dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:text="@string/snooze"
+            android:textSize="20sp" />
 
     </LinearLayout>
 

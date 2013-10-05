@@ -23,6 +23,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 /**
@@ -58,13 +60,30 @@ public class NotificationHelper {
 			String message, PendingIntent intent) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				context);
-		builder.setSmallIcon(R.drawable.ic_launcher);
+		
+		// LargeIcon is shown at the left site of the notification entry,
+		// App's icon is used to make it clear which app the notification is
+		// from
+		Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(),
+				R.drawable.ic_launcher);
+		builder.setLargeIcon(largeIcon);
+
+		// The standard android black/white alarm icon is shown in the status
+		// bar. Android guidelines seems to be fairly strict about the
+		// appearance.
+		builder.setSmallIcon(R.drawable.ic_stat_alarm);
+
 		builder.setContentTitle(title);
 		builder.setContentText(message);
-		// Makes it non-removable from drawer
+
+		// Makes it non-removable from drawer, being able to swipe it away might
+		// make it seem like it disables the alarm
 		builder.setOngoing(true);
+
 		// To prevent showing time notification was created
 		builder.setWhen(0);
+
+		// Sets what will happen when the notification is clicked
 		builder.setContentIntent(intent);
 
 		Notification notification = builder.build();
