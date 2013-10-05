@@ -62,11 +62,15 @@
     
 	<string name="perf_alarm_ringtone">着信音</string>
 	
-	
 	  <string name="pref_alarm_vibration">バイブレーション</string>
 	  
 	  <string name="pref_alarm_snooze_enabled">スヌーズをオンにする</string>
     <string name="pref_alarm_snooze_time">スヌーズの長さ</string>
 	
+    <string name="pref_challenge_enabled">チャレンジをオフにする</string>
+    <string name="pref_challenge_select">チャンレジを選択</string>
+  
+     <string name="pref_volume">音量</string>
+   
 	
 </resources>

@@ -65,4 +65,7 @@
     <string name="pref_alarm_snooze_enabled">Enable snooze</string>
     <string name="pref_alarm_snooze_time">Snooze length</string>
 
+    
+    <string name="pref_volume">Volume</string>
+    
 </resources>
