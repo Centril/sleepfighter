@@ -27,6 +27,7 @@ import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
+import se.chalmers.dat255.sleepfighter.utils.motion.MotionControlException;
 import android.content.pm.ActivityInfo;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
 	private TextView tv;
+	private MotionControlException exception = null;
 
 	@Override
 	public void start(ChallengeActivity activity) {
@@ -49,12 +51,23 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.activity.setContentView(R.layout.alarm_challenge_motion);
 
 		this.tv = (TextView) activity.findViewById(R.id.motionText);
-		
-		this.motionControl = new MotionControl(activity);
-		this.motionControl.addListener(this);
 
-		this.snakeController = new SnakeController();
+		try {
+			this.motionControl = new MotionControl(activity);
+		} catch (MotionControlException e) {
+			// If the Challenge for some reason is selected, despite the device
+			// not having the required Sensor, complete the Challenge so as to
+			// not trap the user.
+			this.activity.complete();
+			this.exception = e;
+		}
 
+		// If there was no MotionControlException, keep running.
+		if (this.exception != null) {
+			this.motionControl.addListener(this);
+
+			this.snakeController = new SnakeController();
+		}
 	}
 
 	@Override
@@ -70,7 +83,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	private void handleRotation() {
-		this.angle = this.motionControl.getAngle();
+		this.angle = this.motionControl.getAzimuthRotation();
 
 		// User controls for the Challenge
 		if (withinMargin(Direction.WEST)) {

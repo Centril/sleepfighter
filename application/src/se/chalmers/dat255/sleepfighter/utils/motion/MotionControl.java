@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.utils.motion;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 
 import android.app.Activity;
 import android.hardware.Sensor;
@@ -36,51 +37,68 @@ public class MotionControl implements SensorEventListener {
 
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
-	private int defaultType = Sensor.TYPE_ACCELEROMETER;
+	private int defaultSensorType = Sensor.TYPE_ACCELEROMETER;
 	private PropertyChangeSupport pcs;
-	private double angle = 0d;
+	private double azimuthRotation = 0d;
+	private float[] orientation = new float[3];
 
 	/**
 	 * Sets mSensor to {@value defaultType} by default, possible to set to other
 	 * Sensors with setSensor.
 	 * 
 	 * @param activity
+	 * @throws MotionControlException
+	 *             If the default Sensor type is unavailable on the device.
 	 */
-	public MotionControl(Activity activity) {
+	public MotionControl(Activity activity) throws MotionControlException {
 		// Get an instance of the SensorManager
 		this.mSensorManager = (SensorManager) activity
 				.getSystemService(Activity.SENSOR_SERVICE);
-		setSensor(defaultType);
+
+		setSensor(defaultSensorType);
+
 		this.mSensorManager.registerListener(this, mSensor,
 				SensorManager.SENSOR_DELAY_FASTEST);
 
 		this.pcs = new PropertyChangeSupport(this);
 	}
 
-	public boolean setSensor(int type) {
+	/**
+	 * Sets the mSensors variable to the default Sensor of the specified type if
+	 * it exists, but also checks for the version of the Sensor recommended on
+	 * the Android Developer website. If it does not exist, a
+	 * MotionControlException is thrown.
+	 * 
+	 * @param type
+	 *            Requested Sensor type.
+	 * @throws MotionControlException
+	 *             Thrown if Sensor type unavailable on the device.
+	 */
+	public void setSensor(int type) throws MotionControlException {
 		Sensor temp = this.mSensorManager.getDefaultSensor(type);
 
-		// Check if Sensor of designated type exists on device
 		if (temp != null) {
+			// If it exists, use the software-based sensor provided by Android
+			// Open Source Project, recommended by
+			// https://developer.android.com/guide/topics/sensors/sensors_motion.html
+			List<Sensor> sensors = mSensorManager.getSensorList(type);
+			for (int i = 0; i < sensors.size(); i++) {
+				if ((sensors.get(i).getVendor().contains("Google Inc."))
+						&& (sensors.get(i).getVersion() == 3)) {
+					// Use the version 3 sensor.
+					temp = sensors.get(i);
+				}
+			}
 			this.mSensor = temp;
-			return true;
 		} else {
-			return false;
+			throw new MotionControlException();
 		}
-	}
-
-	public double getAngle() {
-		return this.angle;
 	}
 
 	public void addListener(PropertyChangeListener pcl) {
 		this.pcs.addPropertyChangeListener(pcl);
 	}
-
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-	}
-
+	
 	/**
 	 * Partially copied from http://stackoverflow.com/a/12098469
 	 */
@@ -90,21 +108,27 @@ public class MotionControl implements SensorEventListener {
 			return;
 		}
 
-		this.calcAzimuth(event);
+		// Movement along X-axis
+		this.orientation[0] = event.values[0];
+		// Movement along Y-axis
+		this.orientation[1] = event.values[1];
+		// Movement along Z-axis
+		this.orientation[2] = event.values[2];
+
+		this.pcs.firePropertyChange(null, 0, 1);
 	}
 
 	/**
-	 * Calculates rotation around the Z axis (azimuth) of the device. Partially
-	 * copied from http://stackoverflow.com/a/12098469
+	 * Calculates rotation around the Z axis (azimuth) of the device.
 	 */
-	private void calcAzimuth(SensorEvent event) {
-		float aX = event.values[0];
-		float aY = event.values[1];
+	public double getAzimuthRotation() {
+		return this.azimuthRotation = Math.atan2(this.orientation[0],
+				this.orientation[1]);
+	}
 
-		// Calculate rotation around Z axis.
-		this.angle = Math.atan2(aX, aY);
-
-		this.pcs.firePropertyChange(null, 0, 1);
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// Not used
 	}
 
 	public void unregisterSensorListener() {
