@@ -60,7 +60,6 @@ public class SnakeController implements PropertyChangeListener {
 		this.thread = new SnakeThread();
 		
 		this.context = context;
-
 		this.init();
 	}
 
@@ -93,7 +92,6 @@ public class SnakeController implements PropertyChangeListener {
 	}
 
 	private void stopGame(int score) {
-		Debug.d(Integer.toString(score));
 		if (score >= SnakeConstants.getVictoryCondition()) {
 			pcs.firePropertyChange(Integer.toString(score), null, null);
 		}

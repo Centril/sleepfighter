@@ -67,6 +67,13 @@ public class SnakeView extends SurfaceView implements Callback {
 		this.headPaint.setColor(SnakeConstants.getSnakeHeadColor());
 		this.foodPaint.setColor(SnakeConstants.getFoodColor());
 
+		
+		isSurfaceCreated = false;
+		this.snakeModel = snakeModel;
+		clearPaint.setARGB(255, 0, 0, 0);
+
+		getHolder().addCallback(this);
+		setFocusable(true);
 	}
 
 	/**

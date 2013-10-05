@@ -24,12 +24,10 @@ import java.beans.PropertyChangeListener;
 
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControlException;
 import android.content.pm.ActivityInfo;
-import android.widget.TextView;
 
 /**
  * A challenge that requires the player to move and rotate the device.
@@ -40,16 +38,13 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
-	private TextView tv;
 	private MotionControlException exception = null;
 
 	@Override
 	public void start(ChallengeActivity activity) {
-		Debug.d("In MotionSnakeActivity");
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
 		try {
 			this.motionControl = new MotionControl(activity);
 		} catch (MotionControlException e) {
@@ -61,10 +56,11 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		}
 
 		// If there was no MotionControlException, keep running.
-		if (this.exception != null) {
+		if (this.exception == null) {
 			this.motionControl.addListener(this);
 
-			this.snakeController = new SnakeController(this.activity.getBaseContext());
+			this.snakeController = new SnakeController(
+					this.activity.getBaseContext());
 			this.activity.setContentView(snakeController.getView());
 		}
 	}
@@ -75,7 +71,6 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		if (source.equals(this.motionControl)) {
 			this.handleRotation();
 		} else if (source.equals(snakeController)) {
-			tv.setText(event.getPropertyName());
 			this.complete();
 		}
 
@@ -96,7 +91,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		}
 	}
 
-	public boolean withinMargin(Direction dir) {
+	private boolean withinMargin(Direction dir) {
 		boolean within = false;
 		switch (dir) {
 		case WEST:
@@ -125,8 +120,8 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		return within;
 	}
 
-	public void complete() {
-		this.motionControl.unregisterSensorListener();
-		this.activity.complete();
+	private void complete() {
+		motionControl.unregisterSensorListener();
+		activity.complete();
 	}
 }

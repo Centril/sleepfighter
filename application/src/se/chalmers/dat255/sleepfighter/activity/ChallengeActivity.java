@@ -42,15 +42,14 @@ public class ChallengeActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Challenge challenge = new MotionSnakeChallenge();
 
-		// Object bundled =
-		// getIntent().getSerializableExtra(BUNDLE_CHALLENGE_TYPE);
-		// if (!(bundled instanceof ChallengeType)) {
-		// throw new IllegalArgumentException("No type sent");
-		// }
-		// ChallengeType type = (ChallengeType) bundled;
-		// Challenge challenge = ChallengeFactory.getChallenge(type);
+		Object bundled = getIntent()
+				.getSerializableExtra(BUNDLE_CHALLENGE_TYPE);
+		if (!(bundled instanceof ChallengeType)) {
+			throw new IllegalArgumentException("No type sent");
+		}
+		ChallengeType type = (ChallengeType) bundled;
+		Challenge challenge = ChallengeFactory.getChallenge(type);
 
 		challenge.start(this);
 	}

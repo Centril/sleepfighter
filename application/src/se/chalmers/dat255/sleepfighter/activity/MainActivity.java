@@ -60,11 +60,16 @@ public class MainActivity extends Activity {
 	private AlarmAdapter alarmAdapter;
 
 	/**
-	 * <p>Returns the SFApplication.</p>
-	 *
-	 * <p>Thank the genius programmers @ google for making<br/>
-	 * {@link #getApplication()} final removing the option of covariant return type.</p>
-	 *
+	 * <p>
+	 * Returns the SFApplication.
+	 * </p>
+	 * 
+	 * <p>
+	 * Thank the genius programmers @ google for making<br/>
+	 * {@link #getApplication()} final removing the option of covariant return
+	 * type.
+	 * </p>
+	 * 
 	 * @return the SFApplication.
 	 */
 	public SFApplication app() {
@@ -109,18 +114,21 @@ public class MainActivity extends Activity {
 
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		@Override
-
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Alarm clickedAlarm = MainActivity.this.alarmAdapter.getItem(position);
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Alarm clickedAlarm = MainActivity.this.alarmAdapter
+					.getItem(position);
 			startAlarmEdit(clickedAlarm, false);
 
 		}
 	};
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.mainAlarmsList) {
-			String[] menuItems = getResources().getStringArray(R.array.main_list_context_menu);
+			String[] menuItems = getResources().getStringArray(
+					R.array.main_list_context_menu);
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
@@ -132,36 +140,37 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
+				.getMenuInfo();
 		Alarm selectedAlarm = (alarmAdapter.getItem(info.position));
 
 		switch (item.getOrder()) {
-			case 0:
-				startAlarmEdit(selectedAlarm, false);
-				return true;
-			case 1:
-				deleteAlarm(selectedAlarm);
-				return true;
-			case 2:
-				copyAlarm(selectedAlarm);
-				return true;
-			case 3:
-				// TODO remove case
-				startAlarm(selectedAlarm);
-				return true;
-			default:
-				return false;
+		case 0:
+			startAlarmEdit(selectedAlarm, false);
+			return true;
+		case 1:
+			deleteAlarm(selectedAlarm);
+			return true;
+		case 2:
+			copyAlarm(selectedAlarm);
+			return true;
+		case 3:
+			// TODO remove case
+			startAlarm(selectedAlarm);
+			return true;
+		default:
+			return false;
 
 		}
 	}
 
-	private void startAlarmEdit( Alarm alarm, boolean isNew ) {
-		Intent intent = new Intent(this, AlarmSettingsActivity.class );
-		new IntentUtils( intent ).setAlarmId( alarm );
+	private void startAlarmEdit(Alarm alarm, boolean isNew) {
+		Intent intent = new Intent(this, AlarmSettingsActivity.class);
+		new IntentUtils(intent).setAlarmId(alarm);
 
-		intent.putExtra( AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew );
+		intent.putExtra(AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew);
 
-		startActivity( intent );
+		startActivity(intent);
 	}
 
 	private void startAlarm(Alarm alarm) {
@@ -171,43 +180,44 @@ public class MainActivity extends Activity {
 		sendBroadcast(intent);
 	}
 
-	private void startGlobalSettings( ) {
-		Intent intent = new Intent(this, GlobalSettingsActivity.class );
-		startActivity( intent );
+	private void startGlobalSettings() {
+		Intent intent = new Intent(this, GlobalSettingsActivity.class);
+		startActivity(intent);
 	}
 
 	private void deleteAlarm(final Alarm alarm) {
 		String message = getString(R.string.confirm_delete);
 		DialogUtils.showConfirmationDialog(message, this,
 				new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				MainActivity.this.manager.remove(alarm);
-			}
-		});
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						MainActivity.this.manager.remove(alarm);
+					}
+				});
 	}
 
-	private void copyAlarm( Alarm alarm ) {
-		this.newAlarm( new Alarm( alarm ), false );
+	private void copyAlarm(Alarm alarm) {
+		this.newAlarm(new Alarm(alarm), false);
 	}
 
 	private void addAlarm() {
-		this.newAlarm( app().getFromPresetFactory().createAlarm(), true );
+		this.newAlarm(app().getFromPresetFactory().createAlarm(), true);
 	}
 
-	private void newAlarm( Alarm alarm, boolean isAdded ) {
-		if ( alarm.isUnnamed() ) {
-			alarm.setUnnamedPlacement(  this.manager.findLowestUnnamedPlacement() );
+	private void newAlarm(Alarm alarm, boolean isAdded) {
+		if (alarm.isUnnamed()) {
+			alarm.setUnnamedPlacement(this.manager.findLowestUnnamedPlacement());
 		}
 
-		this.manager.add( alarm );
-		this.startAlarmEdit( alarm, isAdded );
+		this.manager.add(alarm);
+		this.startAlarmEdit(alarm, isAdded);
 	}
 
 	/**
 	 * Handles a change to an alarm's name by refreshing the list.
 	 * 
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	@Handler
 	public void handleAlarmNameChange(Alarm.MetaChangeEvent event) {
@@ -223,10 +233,11 @@ public class MainActivity extends Activity {
 	/**
 	 * Handles a change in time related data in any alarm.
 	 * 
-	 * @param evt the event.
+	 * @param evt
+	 *            the event.
 	 */
 	@Handler
-	public void handleScheduleChange( ScheduleChangeEvent evt ) {
+	public void handleScheduleChange(ScheduleChangeEvent evt) {
 		final MainActivity self = this;
 		this.runOnUiThread(new Runnable() {
 			@Override
@@ -240,14 +251,16 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Handles a change in the list of alarms (the list itself, deletion, insertion, etc, not edits in an alarm).
-	 *
-	 * @param evt the event.
+	 * Handles a change in the list of alarms (the list itself, deletion,
+	 * insertion, etc, not edits in an alarm).
+	 * 
+	 * @param evt
+	 *            the event.
 	 */
 	@Handler
-	public void handleListChange( AlarmList.Event evt ) {
+	public void handleListChange(AlarmList.Event evt) {
 		final MainActivity self = this;
-		this.runOnUiThread( new Runnable() {
+		this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				self.updateEarliestText();
@@ -262,13 +275,13 @@ public class MainActivity extends Activity {
 	private void updateEarliestText() {
 		long now = this.getNow();
 
-		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
-		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
+		TextView earliestTimeText = (TextView) findViewById(R.id.earliestTimeText);
+		AlarmTimestamp stamp = this.manager.getEarliestAlarm(now);
 
 		Resources res = this.getResources();
-		String text = this.app().getPrefs().displayPeriodOrTime()
-					? DateTextUtils.getTime( res, now, stamp, Locale.getDefault() )
-					: DateTextUtils.getTimeToText( res, now,  stamp);
+		String text = this.app().getPrefs().displayPeriodOrTime() ? DateTextUtils
+				.getTime(res, now, stamp, Locale.getDefault()) : DateTextUtils
+				.getTimeToText(res, now, stamp);
 
 		earliestTimeText.setText(text);
 	}
@@ -281,9 +294,9 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected( MenuItem item ) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-		switch ( item.getItemId() ) {
+		switch (item.getItemId()) {
 		case R.id.action_add:
 			this.addAlarm();
 			return true;
@@ -294,25 +307,23 @@ public class MainActivity extends Activity {
 			startDebugChallenge();
 			return true;
 		default:
-			return super.onOptionsItemSelected( item );
-		}	
+			return super.onOptionsItemSelected(item);
+		}
 	}
+
 	/*
-	public void startAlarm(View view) {
-		// Create intent & re-put extras.
-		Intent activityIntent;
-		activityIntent = new Intent( this, AlarmActivity.class );
-		activityIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-	//	activityIntent.putExtras( null );
-		
-		
-		// Start activity!
-		this.startActivity( activityIntent );
-	}*/
+	 * public void startAlarm(View view) { // Create intent & re-put extras.
+	 * Intent activityIntent; activityIntent = new Intent( this,
+	 * AlarmActivity.class ); activityIntent.addFlags(
+	 * Intent.FLAG_ACTIVITY_NEW_TASK ); // activityIntent.putExtras( null );
+	 * 
+	 * 
+	 * // Start activity! this.startActivity( activityIntent ); }
+	 */
 
 	/**
-	 * Debug method for launching dialog where any challenge defined in {@link ChallengeType} can be
-	 * started.
+	 * Debug method for launching dialog where any challenge defined in
+	 * {@link ChallengeType} can be started.
 	 */
 	private void startDebugChallenge() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -320,7 +331,7 @@ public class MainActivity extends Activity {
 
 		// Making string array "copy" of types for use with standard dialog
 		String[] items = new String[types.length];
-		for(int i = 0; i < types.length; i++) {
+		for (int i = 0; i < types.length; i++) {
 			items[i] = types[i].name();
 		}
 
@@ -329,9 +340,10 @@ public class MainActivity extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				// The clicked challenge type
 				ChallengeType type = types[which];
-				
+
 				// Start the selected challenge
-				Intent i = new Intent(MainActivity.this, ChallengeActivity.class);
+				Intent i = new Intent(MainActivity.this,
+						ChallengeActivity.class);
 				i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
 				startActivity(i);
 			}
