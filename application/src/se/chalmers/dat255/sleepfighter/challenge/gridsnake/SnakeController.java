@@ -19,8 +19,6 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Random;
 
@@ -32,7 +30,7 @@ import android.content.Context;
  * Controller class for Snake. Original author Mazdak, modified by Laszlo for
  * SleepFighter.
  */
-public class SnakeController implements PropertyChangeListener {
+public class SnakeController {
 	/** Random Number Generator (RNG) */
 	private final Random rng;
 
@@ -58,7 +56,7 @@ public class SnakeController implements PropertyChangeListener {
 		this.pcs = new PropertyChangeSupport(this);
 
 		this.thread = new SnakeThread();
-		
+
 		this.context = context;
 		this.init();
 	}
@@ -78,7 +76,7 @@ public class SnakeController implements PropertyChangeListener {
 				Direction.getRandom(this.rng), this.rng);
 
 		this.view = new SnakeView(this.context, this.model);
-		
+
 		thread.start();
 	}
 
@@ -93,9 +91,7 @@ public class SnakeController implements PropertyChangeListener {
 	}
 
 	private void stopGame(int score) {
-		if (score >= SnakeConstants.getVictoryCondition()) {
-			pcs.firePropertyChange(Integer.toString(score), null, null);
-		}
+		pcs.firePropertyChange(null, null, null);
 	}
 
 	public void update(Direction dir) {
@@ -131,10 +127,5 @@ public class SnakeController implements PropertyChangeListener {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-
 	}
 }

@@ -24,6 +24,7 @@ import java.beans.PropertyChangeListener;
 
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControlException;
@@ -59,7 +60,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		if (this.exception == null) {
 			this.motionControl.addListener(this);
 
-			this.snakeController = new SnakeController(
+			this.snakeController = new SnakeController(this,
 					this.activity.getBaseContext());
 			this.activity.setContentView(snakeController.getView());
 		}
@@ -70,15 +71,15 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		Object source = event.getSource();
 		if (source.equals(this.motionControl)) {
 			this.handleRotation();
-		} else if (source.equals(snakeController)) {
+		} else if (source.equals(this.snakeController)) {
 			this.complete();
 		}
 
 	}
 
 	private void handleRotation() {
-		this.angle = this.motionControl.getAzimuth();
-
+		Debug.d("Pitch: " + motionControl.getPitch());
+		
 		// User controls for the Challenge
 		if (withinMargin(Direction.WEST)) {
 			this.snakeController.update(Direction.WEST);
@@ -92,7 +93,10 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	private boolean withinMargin(Direction dir) {
+		this.angle = this.motionControl.getAzimuth();
+		
 		boolean within = false;
+
 		switch (dir) {
 		case WEST:
 			within = this.angle <= this.margin && this.angle >= 0
@@ -121,7 +125,14 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	private void complete() {
-		motionControl.unregisterSensorListener();
-		activity.complete();
+		// Run on UI thread since things can get messy if trying to execute them
+		// on other threads
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				motionControl.unregisterSensorListener();
+				activity.complete();
+			}
+		});
 	}
 }

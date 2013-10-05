@@ -196,7 +196,7 @@ public class SnakeModel {
 		if (!newDirection.isOpposite(this.direction)) {
 			this.direction = newDirection;
 		}
-//		pcs.firePropertyChange(null, null, null);
+		// pcs.firePropertyChange(null, null, null);
 	}
 
 	/*
@@ -277,5 +277,19 @@ public class SnakeModel {
 	 */
 	private Position getNextSnakePos() {
 		return this.snakePos.getFirst().moveDirection(this.direction);
+	}
+
+	private boolean eatsFood(Position newHeadPos) {
+		boolean eats = false;
+		int margin = SnakeConstants.getTileSize() / 2;
+		if (this.currFoodPos.equals(newHeadPos)) {
+			eats = true;
+		} else if (((this.currFoodPos.getX() >= newHeadPos.getX() - margin) && (this.currFoodPos
+				.getX() >= newHeadPos.getX() + margin))
+				&& ((this.currFoodPos.getY() >= newHeadPos.getX() - margin) && (this.currFoodPos
+						.getX() >= newHeadPos.getY() + margin))) {
+			eats = true;
+		}
+		return eats;
 	}
 }
