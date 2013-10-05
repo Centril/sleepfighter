@@ -63,4 +63,6 @@
         <item>Copy Alarm</item>
     </string-array>
 
+    <string name="install_google_play_music_message">Please install Google Play Music</string>
+    
 </resources>

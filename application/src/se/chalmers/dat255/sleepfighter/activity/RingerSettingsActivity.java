@@ -342,8 +342,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 			}
 		} else {
 			if(ID.MUSIC_PICKER.ordinal() == requestCode) {
-				// TODO: localize message.
-				DialogUtils.showMessageDialog("Please install Google Play Music", this);
+				DialogUtils.showMessageDialog(getResources().getString(R.string.install_google_play_music_message), this);
 			}
 		
 		}
