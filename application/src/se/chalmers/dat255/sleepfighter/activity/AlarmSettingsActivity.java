@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.activity;
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.MultiSelectListPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.VolumePreference;
@@ -52,6 +53,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -76,8 +78,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private static final String DELETE = "pref_delete_alarm";
 	private static final String VIBRATION = "pref_alarm_vibration";	
 	private static final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
-	private static final String CHALLENGE_ENABLED = "pref_challenge_enable";
-	private static final String CHALLENGE_SELECT = "pref_challenge_select";
+	private static final String CHALLENGE = "pref_challenge";
 	private static final String VOLUME = "pref_volume";
 	private static final String ENABLE_SNOOZE = "pref_alarm_snooze_enabled";
 	private static final String SNOOZE_TIME = "pref_alarm_snooze_time";
@@ -214,8 +215,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(REPEAT));
 		bindPreferenceSummaryToValue(findPreference(VIBRATION));
 		bindPreferenceSummaryToValue(findPreference(VOLUME));
-		bindPreferenceSummaryToValue(findPreference(CHALLENGE_ENABLED));
-		bindPreferenceSummaryToValue(findPreference(CHALLENGE_SELECT));
+		bindPreferenceSummaryToValue(findPreference(CHALLENGE));
 		bindPreferenceSummaryToValue(findPreference(ENABLE_SNOOZE));
 		bindPreferenceSummaryToValue(findPreference(SNOOZE_TIME));
 
@@ -226,17 +226,21 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				return true;
 			}
 		});
-		findPreference(CHALLENGE_SELECT).setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+		this.bindChallengeAdvancedButton();
+
+		this.setupRingerPreferences();
+	}
+
+	private void bindChallengeAdvancedButton() {
+		((EnablePlusSettingsPreference) findPreference(CHALLENGE)).setOnButtonClickListener(new OnClickListener() {
 			@Override
-			public boolean onPreferenceClick(Preference preference) {
+			public void onClick( View v ) {
 				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
 				new IntentUtils(i).setAlarmId(alarm);
 				startActivity(i);
-				return true;
 			}
 		});
-
-		this.setupRingerPreferences();
 	}
 
 	private void deleteAlarm() {
@@ -333,10 +337,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				alarm.getAudioConfig().setVolume(Integer.parseInt(stringValue));
 				preference.setSummary(stringValue + "%");
 			}
-			else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
+			else if (CHALLENGE.equals(preference.getKey())) {
 				boolean enabled = (Boolean) value;
-				AlarmSettingsActivity.this.alarm.getChallengeSet().setEnabled(
-						enabled);
+				AlarmSettingsActivity.this.alarm.getChallengeSet().setEnabled( enabled );
 			}
 			else if (ENABLE_SNOOZE.equals(preference.getKey())) {
 				alarm.getSnoozeConfig().setSnoozeEnabled("true".equals(stringValue) ? true : false);
@@ -378,7 +381,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			((VolumePreference) preference).setVolume(vol);
 			preference.setSummary(vol + "%");
 		}
-		else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
+		else if (CHALLENGE.equals(preference.getKey())) {
 			boolean enabled = this.alarm.getChallengeSet().isEnabled();
 			((CheckBoxPreference) preference).setChecked(enabled);
 		}
