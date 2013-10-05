@@ -22,5 +22,5 @@ package se.chalmers.dat255.sleepfighter.model.challenge;
  * The different types of challenges available.
  */
 public enum ChallengeType {
-	TEST, MATH, MEMORY, SORT, FLUID_SNAKE
+	TEST, MATH, MEMORY, SORT, FLUID_SNAKE, SHAKE
 }

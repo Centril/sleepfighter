@@ -49,6 +49,8 @@ public class ChallengeFactory {
 			return new SortChallenge();
 		case FLUID_SNAKE:
 			return new FluidSnakeChallenge();
+		case SHAKE:
+			return new ShakeChallenge();
 		default:
 			throw new IllegalArgumentException("Undefined challenge");
 		}
