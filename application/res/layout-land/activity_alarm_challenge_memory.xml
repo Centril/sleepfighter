@@ -26,9 +26,9 @@
     android:layout_marginRight="30dp"
     android:orientation="vertical" >
     
-<!-- se.chalmers.dat255.sleepfighter.android.component.textview.FontFitTextView
+<!--  -e.chalmers.dat255.sleepfighter.android.component.textview.FontFitTextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginLeft="10dp"
@@ -36,11 +36,11 @@
     android:gravity="center"
     android:paddingBottom="30dp"
     android:text="@string/memory_chal_act"
-    android:textAppearance="?android:attr/textAppearanceLarge" /-->
+    android:textAppearance="?android:attr/textAppearanceLarge"  /-->
 
     <se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout
         xmlns:custom="http://schemas.android.com/apk/res/se.chalmers.dat255.sleepfighter"
-        custom:scale="0.5"
+        custom:scale="2.0"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" >
@@ -62,13 +62,6 @@
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_2"
                     style="@style/MemoryCardButton" />
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" >
 
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_3"
@@ -93,13 +86,7 @@
                     android:id="@+id/challenge_memory_button_6"
                     style="@style/MemoryCardButton" />
 
-            </TableRow>
-            
-                        <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" >
-
+    
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
                     android:id="@+id/challenge_memory_button_7"
                     style="@style/MemoryCardButton" />
