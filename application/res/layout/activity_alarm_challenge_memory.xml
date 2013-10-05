@@ -39,6 +39,8 @@
     android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout
+        xmlns:custom="http://schemas.android.com/apk/res/se.chalmers.dat255.sleepfighter"
+        custom:scale="0.5"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" >
