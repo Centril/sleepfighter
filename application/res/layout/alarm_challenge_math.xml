@@ -5,16 +5,18 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    
+    <!-- TextView
         android:id="@+id/questionField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="#00f1ff"
         android:textSize="100sp" >
+    </TextView-->
 
-    </TextView>
-
+    <WebView android:id="@+id/math_webview" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"/>
+    
     <EditText
         android:id="@+id/answerField"
         android:layout_width="match_parent"
@@ -30,13 +32,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-
+<!--  
         <Button
             android:id="@+id/btnAnswer"
             android:layout_width="261dp"
             android:layout_height="80dp"
             android:text="@string/btn_answer"
             android:layout_gravity="center" />
+            -->
 
     </LinearLayout>
 
