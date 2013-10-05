@@ -32,6 +32,7 @@ import android.widget.TextView;
  * @since Oct 5, 2013
  */
 public class EnablePlusSettingsPreference extends CheckBoxPreference {
+	private boolean useButton = true;
 	private Button button;
 	private OnClickListener listener;
 
@@ -62,8 +63,12 @@ public class EnablePlusSettingsPreference extends CheckBoxPreference {
 		this.updateTitleColor();
 
 		this.button = (Button) view.findViewById( R.id.preference_enable_plus_settings_button );
-		if ( this.listener != null ) {
-			this.button.setOnClickListener( this.listener );
+		if ( this.useButton ) {
+			if ( this.listener != null ) {
+				this.button.setOnClickListener( this.listener );
+			}
+		} else {
+			this.hideButton();
 		}
 	}
 
@@ -93,6 +98,27 @@ public class EnablePlusSettingsPreference extends CheckBoxPreference {
 	}
 
 	/**
+	 * Sets whether or not to use button.<br/>
+	 * Default is true.
+	 *
+	 * @param useButton true = use, false = hide.
+	 */
+	public void setUseButton( boolean useButton ) {
+		this.useButton = useButton;
+
+		if ( this.button != null ) {
+			this.hideButton();
+		}
+	}
+
+	/**
+	 * Hides the button.
+	 */
+	private void hideButton() {
+		this.button.setVisibility( View.INVISIBLE );
+	}
+
+	/**
 	 * Sets the listener that receives button clicks.
 	 *
 	 * @param listener the listener to bind to button.
@@ -102,14 +128,5 @@ public class EnablePlusSettingsPreference extends CheckBoxPreference {
 		if ( this.button != null ) {
 			this.button.setOnClickListener( listener  );
 		}
-	}
-
-	/**
-	 * Returns the button, do with it what you wish.
-	 *
-	 * @return the button.
-	 */
-	public Button getButton() {
-		return this.button;
 	}
 }
