@@ -76,8 +76,9 @@ public class SnakeController implements PropertyChangeListener {
 	protected void init() {
 		this.model = new SnakeModel(SnakeConstants.getGameSize(),
 				Direction.getRandom(this.rng), this.rng);
-		this.model.addListener(this);
+
 		this.view = new SnakeView(this.context, this.model);
+		
 		thread.start();
 	}
 
@@ -122,7 +123,7 @@ public class SnakeController implements PropertyChangeListener {
 		public void run() {
 			while (isRunning) {
 				update();
-
+				view.render();
 				try {
 					Thread.sleep(updateSpeed());
 				} catch (InterruptedException e) {

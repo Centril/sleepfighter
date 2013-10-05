@@ -19,8 +19,6 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,9 +59,6 @@ public class SnakeModel {
 
 	/** The size of the board. */
 	private Dimension boardSize;
-
-	/** Notifies listeners. */
-	private PropertyChangeSupport pcs;
 
 	/*
 	 * -------------------------------- Getters.
@@ -145,9 +140,6 @@ public class SnakeModel {
 		// Set board size.
 		this.boardSize = size;
 
-		// Set pcs.
-		this.pcs = new PropertyChangeSupport(this);
-
 		// Blank out the whole gameboard.
 		this.emptyPos = new ArrayList<Position>(size.getWidth()
 				* size.getWidth());
@@ -204,6 +196,7 @@ public class SnakeModel {
 		if (!newDirection.isOpposite(this.direction)) {
 			this.direction = newDirection;
 		}
+//		pcs.firePropertyChange(null, null, null);
 	}
 
 	/*
@@ -245,9 +238,6 @@ public class SnakeModel {
 
 		// Add head at new position.
 		this.snakePos.addFirst(newHeadPos);
-
-		// Notify listeners of update.
-		this.pcs.firePropertyChange(null, null, null);
 	}
 
 	/**
@@ -287,9 +277,5 @@ public class SnakeModel {
 	 */
 	private Position getNextSnakePos() {
 		return this.snakePos.getFirst().moveDirection(this.direction);
-	}
-
-	public void addListener(PropertyChangeListener pcl) {
-		pcs.addPropertyChangeListener(pcl);
 	}
 }

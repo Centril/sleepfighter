@@ -19,10 +19,10 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.challenge.snake.CircleEntity;
-import se.chalmers.dat255.sleepfighter.challenge.snake.RectEntity;
 import se.chalmers.dat255.sleepfighter.challenge.snake.Segment;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Dimension;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Position;
@@ -67,7 +67,6 @@ public class SnakeView extends SurfaceView implements Callback {
 		this.headPaint.setColor(SnakeConstants.getSnakeHeadColor());
 		this.foodPaint.setColor(SnakeConstants.getFoodColor());
 
-		
 		isSurfaceCreated = false;
 		this.snakeModel = snakeModel;
 		clearPaint.setARGB(255, 0, 0, 0);
@@ -238,8 +237,8 @@ public class SnakeView extends SurfaceView implements Callback {
 	}
 
 	private void drawSnake(Canvas c, float scaleX, float scaleY) {
-		List<Position> snakePositions = (List<Position>) snakeModel
-				.getSnakePositions();
+		List<Position> snakePositions = new ArrayList<Position>(snakeModel
+				.getSnakePositions());
 
 		for (Position p : snakePositions) {
 			Segment s = new Segment(p.getX(), p.getY(),

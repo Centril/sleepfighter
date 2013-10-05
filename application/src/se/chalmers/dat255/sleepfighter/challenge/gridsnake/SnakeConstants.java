@@ -34,10 +34,10 @@ public enum SnakeConstants {
 	 * --------------------------------
 	 */
 	/** The size of games, that is how many tiles there is in each axis. */
-	private static final Dimension SIZE = new Dimension(10, 10);
+	private static final Dimension SIZE = new Dimension(200, 400);
 
 	/** The size of each tile in game. */
-	private static final int TILE_SIZE = 20;
+	private static final int TILE_SIZE = 15;
 
 	/** The number of milliseconds (ms) between game updates. */
 	private static final int UPDATE_INTERVAL = 150;
@@ -52,7 +52,7 @@ public enum SnakeConstants {
 	private static final int SNAKE_COLOR = Color.rgb(9, 205, 218);
 
 	/** The color of the snakes head. */
-	private static final int SNAKE_HEAD_COLOR = Color.BLACK;
+	private static final int SNAKE_HEAD_COLOR = Color.GREEN;
 
 	/** Points needed to win. */
 	private static final int VICTORY_CONDITION = 1;
