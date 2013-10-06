@@ -237,7 +237,8 @@ public class SnakeModel {
 
 		// Game Over if snake is out of bounds or if snake went into itself.
 		if (newHeadPos.isOutOfBounds(this.getBoardSize())
-				|| this.snakePos.contains(newHeadPos)) {
+				|| this.snakePos.contains(newHeadPos)
+				|| score == SnakeConstants.getVictoryCondition()) {
 			this.gameOver();
 		}
 
@@ -287,7 +288,8 @@ public class SnakeModel {
 	/**
 	 * @param newHeadPos
 	 * @param otherPos
-	 * @return true if Snake (newHeadPos) collides with another object occupying otherPos
+	 * @return true if Snake (newHeadPos) collides with another object occupying
+	 *         otherPos
 	 */
 	private boolean isCollision(Position newHeadPos, Position otherPos) {
 		boolean eats = false;

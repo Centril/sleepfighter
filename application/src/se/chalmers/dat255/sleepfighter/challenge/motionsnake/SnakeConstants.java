@@ -43,19 +43,19 @@ public enum SnakeConstants {
 	private static final int UPDATE_INTERVAL = 50;
 
 	/** The initial length of snake. */
-	private static final int INITIAL_SNAKE_LENGTH = 2;
+	private static final int INITIAL_SNAKE_LENGTH = 10;
 
 	/** The color of food. */
-	private static final int FOOD_COLOR = Color.rgb(238, 110, 2);
+	private static final int FOOD_COLOR = Color.BLUE;
 
 	/** The color of the snake. */
-	private static final int SNAKE_COLOR = Color.rgb(9, 205, 218);
+	private static final int SNAKE_COLOR = Color.RED;
 
 	/** The color of the snakes head. */
 	private static final int SNAKE_HEAD_COLOR = Color.GREEN;
 
 	/** Points needed to win. */
-	private static final int VICTORY_CONDITION = 1;
+	private static final int VICTORY_CONDITION = 3;
 
 	/*
 	 * -------------------------------- Getters.
