@@ -18,6 +18,8 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.gps;
 
+import com.google.common.base.Objects;
+
 /**
  * GPSLatLng models a (latitude, longitude) vector.
  *
@@ -72,5 +74,22 @@ public class GPSLatLng {
 	 */
 	public double getLat() {
 		return this.lat;
+	}
+
+	public int hashCode() {
+		return Objects.hashCode( this.lat, this.lng );
+	}
+
+	public boolean equals( Object obj ) {
+		if ( this == obj ) {
+			return true;
+		}
+
+		if ( obj == null || this.getClass() != obj.getClass() ) {
+			return false;
+		}
+
+		GPSLatLng rhs = (GPSLatLng) obj;
+		return this.lat == rhs.lat && this.lng == rhs.lng;
 	}
 }

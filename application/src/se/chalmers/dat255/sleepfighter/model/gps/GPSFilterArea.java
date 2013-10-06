@@ -18,12 +18,14 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.gps;
 
+import se.chalmers.dat255.sleepfighter.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.message.Message;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+
 import com.google.common.base.Objects;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
 
 /**
  * GPSFilterArea defines an exclusion area.<br/>
@@ -35,6 +37,76 @@ import se.chalmers.dat255.sleepfighter.model.IdProvider;
  */
 @DatabaseTable(tableName = "gpsfilter_area")
 public class GPSFilterArea implements IdProvider {
+	/* --------------------------------
+	 * Defined Events.
+	 * --------------------------------
+	 */
+
+	/**
+	 * Field enumerates the defined model fields in {@link GPSFilterArea}
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Oct 6, 2013
+	 */
+	public enum Field {
+		NAME, ENABLED, MODE, POLYGON
+	}
+
+	/**
+	 * ChangeEvent is triggered when a model change occurs in a {@link GPSFilterArea}.
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Oct 6, 2013
+	 */
+	public static class ChangeEvent implements Message {
+		private GPSFilterArea area;
+		private Field field;
+		private Object old;
+
+		/**
+		 * Constructs a ChangeEvent.
+		 */
+		public ChangeEvent( GPSFilterArea area, Field modifiedField, Object oldValue ) {
+			this.area = area;
+			this.field = modifiedField;
+			this.old = oldValue;
+		}
+
+		/**
+		 * Returns the GPSFilterArea that triggered event.
+		 *
+		 * @return the area.
+		 */
+		public GPSFilterArea getArea() {
+			return area;
+		}
+
+		/**
+		 * Returns the Field instance describing what field was changed.
+		 *
+		 * @return the modified Field.
+		 */
+		public Field getField() {
+			return field;
+		}
+
+		/**
+		 * Returns the old value.
+		 *
+		 * @return the old value.
+		 */
+		public Object getOld() {
+			return old;
+		}
+	}
+
+	/* --------------------------------
+	 * Fields.
+	 * --------------------------------
+	 */
+
 	@DatabaseField(generatedId = true)
 	private int id;
 
@@ -44,10 +116,18 @@ public class GPSFilterArea implements IdProvider {
 	@DatabaseField
 	private boolean enabled;
 
+	@DatabaseField
 	private GPSFilterMode mode;
 
 	@DatabaseField(dataType = DataType.SERIALIZABLE)
 	private GPSFilterPolygon poly;
+
+	private MessageBus<Message> bus;
+
+	/* --------------------------------
+	 * Constructors.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Default constructor
@@ -79,6 +159,11 @@ public class GPSFilterArea implements IdProvider {
 		this.setMode( mode );
 		this.setPolygon( poly );
 	}
+
+	/* --------------------------------
+	 * Public interface.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Returns Whether or not the polygon contains the given GPSLatLng point.<br/>
@@ -138,7 +223,10 @@ public class GPSFilterArea implements IdProvider {
 			return;
 		}
 
+		String old = name;
 		this.name = name;
+
+		this.publish( new ChangeEvent( this, Field.NAME, old ) );
 	}
 
 	/**
@@ -151,7 +239,10 @@ public class GPSFilterArea implements IdProvider {
 			return;
 		}
 
+		boolean old = this.enabled;
 		this.enabled = enabled;
+
+		this.publish( new ChangeEvent( this, Field.ENABLED, old ) );
 	}
 
 	/**
@@ -165,12 +256,17 @@ public class GPSFilterArea implements IdProvider {
 			return false;
 		}
 
+		GPSFilterMode old = this.mode;
 		this.mode = mode;
+
+		this.publish( new ChangeEvent( this, Field.MODE, old ) );
+
 		return true;
 	}
 
 	/**
-	 * Sets the GPSFilterPolygon of this area.
+	 * Sets the GPSFilterPolygon of this area.<br/>
+	 * Note: Don't modify the GPSFilterPolygon returned by {@link #getPolygon()} if events are to be handled.
 	 *
 	 * @param poly the polygon.
 	 */
@@ -179,6 +275,36 @@ public class GPSFilterArea implements IdProvider {
 			return;
 		}
 
+		GPSFilterPolygon old = this.poly;
 		this.poly = poly;
+
+		this.publish( new ChangeEvent( this, Field.POLYGON, old ) );
+	}
+
+	/**
+	 * Sets the message bus, if not set, no events will be received.
+	 *
+	 * @param messageBus the buss that receives events.
+	 */
+	public void setMessageBus( MessageBus<Message> messageBus ) {
+		this.bus = messageBus;
+	}
+
+	/* --------------------------------
+	 * Private Methods.
+	 * --------------------------------
+	 */
+
+	/**
+	 * Publishes an event to event bus.
+	 *
+	 * @param event the event to publish.
+	 */
+	private void publish( ChangeEvent event ) {
+		if ( this.bus == null ) {
+			return;
+		}
+
+		this.bus.publish( event );
 	}
 }

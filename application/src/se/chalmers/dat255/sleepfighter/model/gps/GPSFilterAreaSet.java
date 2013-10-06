@@ -21,7 +21,10 @@ package se.chalmers.dat255.sleepfighter.model.gps;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
+import se.chalmers.dat255.sleepfighter.utils.message.Message;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
 /**
  * GPSFilterAreaSet defines a set of GPSFilterArea:s that an alarm has.<br/>
@@ -64,5 +67,28 @@ public class GPSFilterAreaSet extends ObservableList<GPSFilterArea> {
 		}
 
 		return false;
+	}
+
+	@Override
+	public void setMessageBus( MessageBus<Message> messageBus ) {
+		super.setMessageBus( messageBus );
+
+		for ( GPSFilterArea area : this ) {
+			area.setMessageBus( messageBus );
+		}
+	}
+
+	@Override
+	protected void fireEvent( Event e ) {
+		// Intercept add/update events and inject message bus.
+		if ( e.operation() == Operation.ADD ) {
+			for ( Object obj : e.elements() ) {
+				((Alarm) obj).setMessageBus( this.getMessageBus() );
+			}
+		} else if ( e.operation() == Operation.UPDATE ) {
+			this.get( e.index() ).setMessageBus( this.getMessageBus() );
+		}
+
+		super.fireEvent( e );
 	}
 }

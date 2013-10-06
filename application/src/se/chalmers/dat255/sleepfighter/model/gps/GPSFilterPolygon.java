@@ -54,15 +54,6 @@ public class GPSFilterPolygon implements Serializable {
 	}
 
 	/**
-	 * Adds a GPSLatLng point to polygon changing its shape.
-	 *
-	 * @param point the point.
-	 */
-	public void addPoint( GPSLatLng point ) {
-		this.poly.add( point );
-	}
-
-	/**
 	 * Sets the list of GPSLatLng points.
 	 *
 	 * @param points the points.
