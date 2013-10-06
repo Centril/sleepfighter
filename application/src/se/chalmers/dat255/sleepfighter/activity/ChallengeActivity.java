@@ -68,8 +68,8 @@ public class ChallengeActivity extends Activity {
 		finish();
 	}
 
-	protected void onStop() {
-		super.onStop();
+	protected void onPause() {
+		super.onPause();
 
 		if (this.challenge instanceof MotionSnakeChallenge
 				&& !((MotionSnakeChallenge) this.challenge).isStopped()) {
