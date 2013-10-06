@@ -73,16 +73,12 @@ public class PrimeFactorizationProblem implements MathProblem {
 	
 	public void newProblem() {
 		
-		
-		
 		int n = createNumber();
 		
 		String format =  context.getResources().getString(R.string.prime_factor_challenge_desc);
 		
 		this.renderedString = String.format(format, "$" + n + "$");
 		Debug.d(solution + "");
-	
-		
 	}
 	
 	public PrimeFactorizationProblem(final Context context) {
