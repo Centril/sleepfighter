@@ -65,8 +65,8 @@ public class MotionControl implements SensorEventListener {
 	/**
 	 * Sets the mSensors variable to the default Sensor of the specified type if
 	 * it exists, but also checks for the version of the Sensor recommended on
-	 * the Android Developer website. If it does not exist, a
-	 * NoSensorException is thrown.
+	 * the Android Developer website. If it does not exist, a NoSensorException
+	 * is thrown.
 	 * 
 	 * @param type
 	 *            Requested Sensor type.
@@ -144,6 +144,10 @@ public class MotionControl implements SensorEventListener {
 		// Not used
 	}
 
+	/**
+	 * Important: Must be called when you want to stop reading data from
+	 * Sensors.
+	 */
 	public void unregisterSensorListener() {
 		this.mSensorManager.unregisterListener(this);
 	}
