@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Dimension;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Position;
@@ -203,7 +202,6 @@ public class SnakeModel {
 		if (!newDirection.isOpposite(this.direction)) {
 			this.direction = newDirection;
 		}
-		// pcs.firePropertyChange(null, null, null);
 	}
 
 	/*
@@ -227,7 +225,6 @@ public class SnakeModel {
 		// and remove head from empty positions.
 		if (isCollision(newHeadPos, this.currFoodPos)) {
 			this.score++;
-			Debug.d("" + this.score);
 			if (this.emptyPos.isEmpty()) {
 				this.gameOver();
 			} else {
@@ -263,7 +260,7 @@ public class SnakeModel {
 	private void addFood() {
 		// Randomly select an empty position to remove and set current food
 		// position to that one.
-		this.currFoodPos = this.emptyPos.remove(this.rng.nextInt(this.emptyPos
+		this.currFoodPos = this.emptyPos.get(this.rng.nextInt(this.emptyPos
 				.size()));
 	}
 
@@ -287,6 +284,11 @@ public class SnakeModel {
 		return this.snakePos.getFirst().moveDirection(this.direction);
 	}
 
+	/**
+	 * @param newHeadPos
+	 * @param otherPos
+	 * @return true if Snake (newHeadPos) collides with another object occupying otherPos
+	 */
 	private boolean isCollision(Position newHeadPos, Position otherPos) {
 		boolean eats = false;
 

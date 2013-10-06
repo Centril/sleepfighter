@@ -24,6 +24,7 @@ import se.chalmers.dat255.sleepfighter.challenge.TestChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.FluidSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 public class ChallengeActivity extends Activity {
 
 	public static final String BUNDLE_CHALLENGE_TYPE = "bundle_challenge_type";
+	private Challenge challenge;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +51,9 @@ public class ChallengeActivity extends Activity {
 			throw new IllegalArgumentException("No type sent");
 		}
 		ChallengeType type = (ChallengeType) bundled;
-		Challenge challenge = ChallengeFactory.getChallenge(type);
+		this.challenge = ChallengeFactory.getChallenge(type);
 
-		challenge.start(this);
+		this.challenge.start(this);
 	}
 
 	public void complete() {
@@ -64,5 +66,23 @@ public class ChallengeActivity extends Activity {
 	public void fail() {
 		setResult(Activity.RESULT_CANCELED);
 		finish();
+	}
+
+	protected void onStop() {
+		super.onStop();
+
+		if (this.challenge instanceof MotionSnakeChallenge
+				&& !((MotionSnakeChallenge) this.challenge).isStopped()) {
+			((MotionSnakeChallenge) challenge).pause();
+		}
+	}
+
+	protected void onResume() {
+		super.onResume();
+
+		if (this.challenge instanceof MotionSnakeChallenge
+				&& ((MotionSnakeChallenge) this.challenge).isStopped()) {
+			((MotionSnakeChallenge) challenge).resume();
+		}
 	}
 }

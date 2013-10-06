@@ -40,6 +40,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
 	private NoSensorException exception = null;
+	private boolean stopped = false;
 
 	@Override
 	public void start(ChallengeActivity activity) {
@@ -47,7 +48,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		try {
-			this.motionControl = new MotionControl(activity);
+			this.motionControl = new MotionControl(this.activity);
 		} catch (NoSensorException e) {
 			// If the Challenge for some reason is selected, despite the device
 			// not having the required Sensor, complete the Challenge so as to
@@ -78,8 +79,10 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	private void handleRotation() {
-//		Debug.d("Pitch: " + motionControl.getPitch());
-		
+		Debug.d("Azimuth: " + motionControl.getAzimuth());
+		Debug.d("Pitch: " + motionControl.getPitch());
+		Debug.d("Roll: " + motionControl.getRoll());
+
 		// User controls for the Challenge
 		if (withinMargin(Direction.WEST)) {
 			this.snakeController.update(Direction.WEST);
@@ -94,7 +97,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 	private boolean withinMargin(Direction dir) {
 		this.angle = this.motionControl.getAzimuth();
-		
+
 		boolean within = false;
 
 		switch (dir) {
@@ -134,5 +137,41 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 				activity.complete();
 			}
 		});
+	}
+
+	/**
+	 * Unregisters the MotionControl instance of the Sensors it is listening to.
+	 * Must be called when the Activity pauses, or else the MotionControl will
+	 * continue listening to the Sensors, which is very expensive.
+	 */
+	public void pause() {
+		motionControl.unregisterSensorListener();
+		this.exception = null;
+		this.stopped = true;
+	}
+
+	/**
+	 * 
+	 */
+	public void resume() {
+		Debug.d("Resume");
+		try {
+			this.motionControl = new MotionControl(this.activity);
+		} catch (NoSensorException e) {
+			// If the Challenge for some reason is selected, despite the device
+			// not having the required Sensor, complete the Challenge so as to
+			// not trap the user.
+			this.activity.complete();
+			this.exception = e;
+		}
+
+		if (this.exception == null) {
+			this.motionControl.addListener(this);
+			this.stopped = false;
+		}
+	}
+
+	public boolean isStopped() {
+		return this.stopped;
 	}
 }
