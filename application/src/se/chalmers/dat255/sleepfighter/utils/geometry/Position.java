@@ -63,7 +63,7 @@ public class Position implements Comparable<Position>  {
 			return false;
 		}
 		Position other = (Position) obj;
-		return this.x == other.x && this.y == other.y;
+		return this.x == other.getX() && this.y == other.getY();
 	}
 
 	/** 
@@ -77,8 +77,8 @@ public class Position implements Comparable<Position>  {
      *         0 if the sizes are equal, and a positive integer otherwise.
      */
     public int compareTo( Position pos ) {
-    	int diff = this.getX() - pos.getX();
-		return diff == 0 ? this.getY() - pos.getY() : diff;
+    	int diff = this.x - pos.getX();
+		return diff == 0 ? this.y - pos.getY() : diff;
 	}
 
 	public Position moveDirection( Direction d ) {

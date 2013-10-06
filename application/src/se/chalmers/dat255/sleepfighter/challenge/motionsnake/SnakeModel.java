@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Dimension;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Position;
@@ -144,7 +145,7 @@ public class SnakeModel {
 		this.boardSize = size;
 
 		// Set margin.
-		this.margin = 3 * SnakeConstants.getTileSize() / 4;
+		this.margin = SnakeConstants.getTileSize();
 
 		// Blank out the whole gameboard.
 		this.emptyPos = new ArrayList<Position>(size.getWidth()
@@ -226,6 +227,7 @@ public class SnakeModel {
 		// and remove head from empty positions.
 		if (isCollision(newHeadPos, this.currFoodPos)) {
 			this.score++;
+			Debug.d("" + this.score);
 			if (this.emptyPos.isEmpty()) {
 				this.gameOver();
 			} else {
@@ -290,10 +292,8 @@ public class SnakeModel {
 
 		if (otherPos.equals(newHeadPos)) {
 			eats = true;
-		} else if (((otherPos.getX() >= newHeadPos.getX() - this.margin) && (otherPos
-				.getX() >= newHeadPos.getX() + this.margin))
-				&& ((otherPos.getY() >= newHeadPos.getX() - this.margin) && (otherPos
-						.getX() >= newHeadPos.getY() + this.margin))) {
+		} else if ((Math.abs(otherPos.getX() - newHeadPos.getX()) <= this.margin)
+				&& (Math.abs(otherPos.getY() - newHeadPos.getY()) <= this.margin)) {
 			eats = true;
 		}
 		return eats;

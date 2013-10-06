@@ -78,7 +78,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	private void handleRotation() {
-		Debug.d("Pitch: " + motionControl.getPitch());
+//		Debug.d("Pitch: " + motionControl.getPitch());
 		
 		// User controls for the Challenge
 		if (withinMargin(Direction.WEST)) {
