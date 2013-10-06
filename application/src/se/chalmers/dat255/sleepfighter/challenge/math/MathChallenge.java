@@ -35,7 +35,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
@@ -192,6 +191,10 @@ public class MathChallenge implements Challenge {
 		"</style>";
 	}
 	
+	/*
+	 *We use jqmath to render math formulas. jqmath is a javascript library,
+	 *so therefore we need to use a WebVIew to render the formulas.  
+	 */
 	private void renderMathProblem(final Activity activity) {
 		
 		final String open_html =
