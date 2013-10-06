@@ -17,35 +17,44 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
+package se.chalmers.dat255.sleepfighter.challenge.snake;
 
 import android.graphics.Paint;
 
 /**
- * A Simple circular entity.
+ * Class representing any rectangular entities.
  * 
  * @author Hassel
  *
  */
-public class CircleEntity extends Entity {
-	private int radius;
+public class RectEntity extends Entity {
+	private float width;
+	private float height;
 	
 	/**
-	 * @param x the middle of the circle
-	 * @param y the middle of the circle
-	 * @param radius the radius of the circle
-	 * @param paint the color of the circle
+	 * @param x top left corner
+	 * @param y top left corner
+	 * @param width width of the rectangle
+	 * @param height height of the rectangle
+	 * @param paint color of this rectangle
 	 */
-	public CircleEntity(float x, float y, int radius, Paint paint) {
+	public RectEntity(float x, float y, float width, float height, Paint paint) {
 		super(x, y, paint);
-		
-		this.radius = radius;
+		this.width = width;
+		this.height = height;
 	}
-
+	
 	/**
-	 * @return the radius
+	 * @return the width of this rectangle
 	 */
-	public float getRadius() {
-		return radius;
+	public float getWidth() {
+		return width;
+	}
+	
+	/**
+	 * @return the height of this rectangle
+	 */
+	public float getHeight() {
+		return height;
 	}
 }

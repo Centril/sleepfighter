@@ -16,11 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.model.challenge;
+
+package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
 
 /**
- * The different types of challenges available.
+ * Thrown by some Challenges at termination. The exception contains information
+ * about how many points the player got.
  */
-public enum ChallengeType {
-	TEST, MATH, MEMORY, SORT, FLUID_SNAKE, MOTION_SNAKE
+public class GameOverException extends Exception {
+
+	private static final long serialVersionUID = -7874798661096365460L;
+	
+	private int score;
+
+	public GameOverException(int score) {
+		this.score = score;
+	}
+	
+	public int getScore(){
+		return score;
+	}
+
 }

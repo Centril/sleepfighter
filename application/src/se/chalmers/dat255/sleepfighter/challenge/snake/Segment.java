@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
+package se.chalmers.dat255.sleepfighter.challenge.snake;
 
 import java.util.ArrayList;
 import java.util.List;

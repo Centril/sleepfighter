@@ -23,6 +23,7 @@ import java.util.Map;
 import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.FluidSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.memory.MemoryChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.motionsnake.MotionSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 
@@ -54,6 +55,8 @@ public class ChallengeFactory {
 			return new SortChallenge();
 		case FLUID_SNAKE:
 			return new FluidSnakeChallenge();
+		case MOTION_SNAKE:
+			return new MotionSnakeChallenge();
 		default:
 			throw new IllegalArgumentException("Undefined challenge");
 		}

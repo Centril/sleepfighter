@@ -16,11 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.model.challenge;
+
+package se.chalmers.dat255.sleepfighter.utils.motion;
 
 /**
- * The different types of challenges available.
+ * Used to signal that a certain Sensor is missing on the device.
  */
-public enum ChallengeType {
-	TEST, MATH, MEMORY, SORT, FLUID_SNAKE, MOTION_SNAKE
+public class NoSensorException extends Exception {
+
+	private static final long serialVersionUID = 858451799792946532L;
+
+	public NoSensorException() {
+		super("Required Sensor is not available on the current device.");
+	}
+
 }
