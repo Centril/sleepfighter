@@ -268,8 +268,6 @@ public class AlarmActivity extends Activity {
 		SFApplication.get().setAudioDriver(null);
 	}
 
-	// TODO: onStart(), onStop(), getTime(), getThisTime();
-
 	@Override
 	protected void onStart() {
 		super.onStart();
