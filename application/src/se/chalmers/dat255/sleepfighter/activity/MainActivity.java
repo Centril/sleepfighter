@@ -286,6 +286,14 @@ public class MainActivity extends Activity {
 		earliestTimeText.setText(text);
 	}
 
+	/**
+	 * Sends the user to the activity for editing GPSFilterArea:s.
+	 */
+	private void startGPSFilterAreaEdit() {
+		Intent i = new Intent( this, ManageGPSFilterAreasActivity.class );
+		this.startActivity( i );
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -300,26 +308,23 @@ public class MainActivity extends Activity {
 		case R.id.action_add:
 			this.addAlarm();
 			return true;
+
 		case R.id.action_settings:
 			this.startGlobalSettings();
 			return true;
+
 		case R.id.action_start_challenge:
 			startDebugChallenge();
 			return true;
+
+		case R.id.action_gpsfilter_area_edit:
+			this.startGPSFilterAreaEdit();
+			return true;
+
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	/*
-	 * public void startAlarm(View view) { // Create intent & re-put extras.
-	 * Intent activityIntent; activityIntent = new Intent( this,
-	 * AlarmActivity.class ); activityIntent.addFlags(
-	 * Intent.FLAG_ACTIVITY_NEW_TASK ); // activityIntent.putExtras( null );
-	 * 
-	 * 
-	 * // Start activity! this.startActivity( activityIntent ); }
-	 */
 
 	/**
 	 * Debug method for launching dialog where any challenge defined in
