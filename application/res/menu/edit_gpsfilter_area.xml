@@ -19,25 +19,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
-    <item	
-        android:id="@+id/action_add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:id="@+id/action_edit_gpsfilter_area_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:orderInCategory="10"
         android:showAsAction="ifRoom"
-        android:title="@string/add"/>
-
-    <item	
-        android:id="@+id/action_gpsfilter_area_edit"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        android:showAsAction="always"
-        android:title="@string/action_gpsfilter_area_edit"/>
+        android:title="@string/action_edit_gpsfilter_area_help"/>
 
     <item
-        android:id="@+id/action_start_challenge"
+        android:id="@+id/action_edit_gpsfilter_area_rename"
+        android:orderInCategory="30"
         android:showAsAction="never"
-        android:title="DEBUG: Start challenge"/>
+        android:title="@string/action_edit_gpsfilter_area_rename"/>
+
+    <item
+        android:id="@+id/action_edit_gpsfilter_area_undo"
+        android:orderInCategory="50"
+        android:showAsAction="never"
+        android:title="@string/action_edit_gpsfilter_area_undo"/>
+
+    <item
+        android:id="@+id/action_edit_gpsfilter_area_clear"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_edit_gpsfilter_area_clear"/>
 
 </menu>
