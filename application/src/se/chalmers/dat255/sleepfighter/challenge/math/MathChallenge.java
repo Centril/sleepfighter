@@ -26,6 +26,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.PrimitiveValueType;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
@@ -59,6 +60,8 @@ public class MathChallenge implements Challenge {
 	 */
 	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
 		setType( ChallengeType.MATH );
+		
+		add( "hard_problems", PrimitiveValueType.BOOLEAN, false );
 	}}
 
 	MathProblem problem;
@@ -67,12 +70,6 @@ public class MathChallenge implements Challenge {
 	public void runChallenge() {
 		this.problem.newProblem();
 	}
-
-	/**
-	 * An activity with the math layout; 
-	 * TextView, EditText and an answer-Button.
-	 * 
-	 */
 	
 	@Override
 	public void start(final ChallengeActivity activity) {
@@ -80,6 +77,7 @@ public class MathChallenge implements Challenge {
 		// randomize a math challenge
 		
 		int type =  new Random().nextInt(5);
+		
 		
 		if(type == 0) {
 			problem = new DifferentiationProblem(activity);			

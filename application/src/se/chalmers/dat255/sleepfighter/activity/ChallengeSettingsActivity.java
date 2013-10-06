@@ -118,6 +118,7 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 				public void onClick( View v ) {
 					gotoPreferencesSettings( type );
 				}
+				
 			} );
 		} else {
 			preference.setUseButton( false );

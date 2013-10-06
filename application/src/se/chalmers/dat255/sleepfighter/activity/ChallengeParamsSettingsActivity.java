@@ -183,7 +183,7 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 			this.handlePrimitiveChange( key, paramDef, newValue );
 		}
 	}
-
+	
 	/**
 	 * Creates a preference for primitive value types.
 	 *
