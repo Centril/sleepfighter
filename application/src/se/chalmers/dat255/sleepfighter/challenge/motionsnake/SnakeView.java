@@ -35,7 +35,8 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
 /**
- * The view class responsible for rendering a single position in the game Snake
+ * The view class responsible for rendering a single position in the challenge.
+ * Original author Mazdak, modified by Laszlo for SleepFighter.
  */
 public class SnakeView extends SurfaceView implements Callback {
 
@@ -57,7 +58,7 @@ public class SnakeView extends SurfaceView implements Callback {
 	 * Constructs the SnakeView.
 	 */
 	public SnakeView(Context context, SnakeModel snakeModel) {
-		super(context);
+		this(context);
 
 		// Set size & tile size.
 		this.gameSize = SnakeConstants.getGameSize();
@@ -73,6 +74,10 @@ public class SnakeView extends SurfaceView implements Callback {
 
 		getHolder().addCallback(this);
 		setFocusable(true);
+	}
+
+	private SnakeView(Context context) {
+		super(context);
 	}
 
 	/**
@@ -125,57 +130,6 @@ public class SnakeView extends SurfaceView implements Callback {
 		return this.bodyPaint;
 	}
 
-	// /** Graphical representation of snake-food. */
-	// private static final GameTile FOOD_TILE = new RoundTile( Color.BLACK,
-	// SnakeConstants.getFoodColor(), 2.0 );
-	//
-	// /** Graphical representation of the snake. */
-	// private static final GameTile SNAKE_TILE = new RectangularTile(
-	// SnakeConstants.getSnakeColor() );
-	//
-	// /** Graphical representation of the snakes head. */
-	// private static final GameTile SNAKE_HEAD_TILE = new RectangularTile(
-	// SnakeConstants.getSnakeHeadColor() );
-	//
-	//
-	// /**
-	// * Returns a tile used for the head.
-	// *
-	// * @return A tile used for the head.
-	// */
-	// protected GameTile getHeadTile() {
-	// return this.getHeadColor() == null ? SNAKE_HEAD_TILE : new
-	// RectangularTile( this.getHeadColor() );
-	// }
-	//
-	// /**
-	// * Returns a tile used for the body.
-	// *
-	// * @return A tile used for the body.
-	// */
-	// protected GameTile getBodyTile() {
-	// return this.getBodyColor() == null ? SNAKE_TILE : new RectangularTile(
-	// this.getBodyColor() );
-	// }
-	//
-	// /**
-	// * Do the actual rendering.
-	// *
-	// * @param g Graphics object.
-	// */
-	// protected void render( final Graphics g ) {
-	// SnakeModel model = (SnakeModel) this.getModel();
-	//
-	// // Paint the food.
-	// this.paintTile( g, model.getFoodPosition(), FOOD_TILE );
-	//
-	// // Paint all snake parts.
-	// for ( Position pos : model.getSnakePositions() ) {
-	// this.paintTile( g, pos, this.isAccentedHead() && model.isPositionHead(
-	// pos ) ? this.getHeadTile() : this.getBodyTile() );
-	// }
-	// }
-
 	/**
 	 * Will try to render the model on the canvas provided
 	 */
@@ -191,23 +145,8 @@ public class SnakeView extends SurfaceView implements Callback {
 					// clear the canvas
 					c.drawRect(0, 0, c.getWidth(), c.getHeight(), clearPaint);
 
-					// Fetch entities from the model
-					// RectEntity exit = snakeModel.getExit();
-
-					float scaleX = c.getWidth() * 1f
-							/ snakeModel.getBoardSize().getWidth();
-					float scaleY = c.getHeight() * 1f
-							/ snakeModel.getBoardSize().getHeight();
-
-					// draw exit over obstacles
-					// if (exit != null) {
-					// c.drawRect(
-					// exit.getX() * scaleX,
-					// exit.getY() * scaleY,
-					// exit.getX() * scaleX + exit.getWidth() * scaleX,
-					// exit.getY() * scaleY + exit.getHeight()
-					// * scaleY, exit.getPaint());
-					// }
+					float scaleX = c.getWidth() * 1f / gameSize.getWidth();
+					float scaleY = c.getHeight() * 1f / gameSize.getHeight();
 
 					if (snakeModel.hasFood()) {
 						drawFood(c, scaleX, scaleY);
@@ -227,7 +166,7 @@ public class SnakeView extends SurfaceView implements Callback {
 		Position sphereFood = snakeModel.getFoodPosition();
 
 		CircleEntity f = new CircleEntity(sphereFood.getX(), sphereFood.getY(),
-				SnakeConstants.getTileSize(), foodPaint);
+				tileSize, foodPaint);
 
 		c.drawOval(
 				new RectF(f.getX() * scaleX - f.getRadius() * scaleX, f.getY()
@@ -237,12 +176,11 @@ public class SnakeView extends SurfaceView implements Callback {
 	}
 
 	private void drawSnake(Canvas c, float scaleX, float scaleY) {
-		List<Position> snakePositions = new ArrayList<Position>(snakeModel
-				.getSnakePositions());
+		List<Position> snakePositions = new ArrayList<Position>(
+				snakeModel.getSnakePositions());
 
 		for (Position p : snakePositions) {
-			Segment s = new Segment(p.getX(), p.getY(),
-					SnakeConstants.getTileSize(), bodyPaint);
+			Segment s = new Segment(p.getX(), p.getY(), tileSize, bodyPaint);
 
 			c.drawOval(new RectF((s.getX() * scaleX - s.getRadius() * scaleX),
 					(s.getY() * scaleY - s.getRadius() * scaleY), (s.getX()
