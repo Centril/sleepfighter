@@ -2,7 +2,6 @@ package se.chalmers.dat255.sleepfighter.challenge.memory;
 
 import java.util.Random;
 
-import se.chalmers.dat255.sleepfighter.model.Memory;
 
 // strings are shown on the cards.
 public class MemoryCardImageDatabase {

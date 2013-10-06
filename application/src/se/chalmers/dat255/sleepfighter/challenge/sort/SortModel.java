@@ -36,7 +36,6 @@ import android.os.Parcelable;
  * @since Sep 30, 2013
  */
 public class SortModel implements Parcelable {
-	private static final long serialVersionUID = -3413236746044673616L;
 
 	/**
 	 * Enumeration of sorting orders<br/>
