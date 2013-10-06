@@ -46,10 +46,10 @@ public class MotionControl implements SensorEventListener {
 	 * Sensors with setSensor.
 	 * 
 	 * @param activity
-	 * @throws MotionControlException
+	 * @throws NoSensorException
 	 *             If the default Sensor type is unavailable on the device.
 	 */
-	public MotionControl(Activity activity) throws MotionControlException {
+	public MotionControl(Activity activity) throws NoSensorException {
 		// Get an instance of the SensorManager
 		this.mSensorManager = (SensorManager) activity
 				.getSystemService(Activity.SENSOR_SERVICE);
@@ -66,14 +66,14 @@ public class MotionControl implements SensorEventListener {
 	 * Sets the mSensors variable to the default Sensor of the specified type if
 	 * it exists, but also checks for the version of the Sensor recommended on
 	 * the Android Developer website. If it does not exist, a
-	 * MotionControlException is thrown.
+	 * NoSensorException is thrown.
 	 * 
 	 * @param type
 	 *            Requested Sensor type.
-	 * @throws MotionControlException
+	 * @throws NoSensorException
 	 *             Thrown if Sensor type unavailable on the device.
 	 */
-	public void setSensor(int type) throws MotionControlException {
+	public void setSensor(int type) throws NoSensorException {
 		Sensor temp = this.mSensorManager.getDefaultSensor(type);
 
 		if (temp != null) {
@@ -90,7 +90,7 @@ public class MotionControl implements SensorEventListener {
 			}
 			this.mSensor = temp;
 		} else {
-			throw new MotionControlException();
+			throw new NoSensorException();
 		}
 	}
 

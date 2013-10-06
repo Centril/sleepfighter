@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
+package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
 
 import se.chalmers.dat255.sleepfighter.utils.geometry.Dimension;
 import android.graphics.Color;
@@ -40,7 +40,7 @@ public enum SnakeConstants {
 	private static final int TILE_SIZE = 5;
 
 	/** The number of milliseconds (ms) between game updates. */
-	private static final int UPDATE_INTERVAL = 150;
+	private static final int UPDATE_INTERVAL = 5;
 
 	/** The initial length of snake. */
 	private static final int INITIAL_SNAKE_LENGTH = 2;

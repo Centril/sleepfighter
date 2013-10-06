@@ -19,7 +19,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.challenge.gridsnake.MotionSnakeChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.motionsnake.MotionSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.TestChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.FluidSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;

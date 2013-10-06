@@ -17,14 +17,24 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.utils.motion;
+package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
 
-public class MotionControlException extends Exception {
+/**
+ * Thrown by some Challenges at termination. The exception contains information
+ * about how many points the player got.
+ */
+public class GameOverException extends Exception {
 
-	private static final long serialVersionUID = 858451799792946532L;
+	private static final long serialVersionUID = -7874798661096365460L;
+	
+	private int score;
 
-	public MotionControlException(){
-		super("Required Sensor is not available on the current device.");
+	public GameOverException(int score) {
+		this.score = score;
 	}
 	
+	public int getScore(){
+		return score;
+	}
+
 }

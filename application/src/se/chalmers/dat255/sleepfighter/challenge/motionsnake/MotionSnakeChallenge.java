@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
+package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -27,7 +27,7 @@ import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
-import se.chalmers.dat255.sleepfighter.utils.motion.MotionControlException;
+import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
 import android.content.pm.ActivityInfo;
 
 /**
@@ -39,7 +39,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
-	private MotionControlException exception = null;
+	private NoSensorException exception = null;
 
 	@Override
 	public void start(ChallengeActivity activity) {
@@ -48,7 +48,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		try {
 			this.motionControl = new MotionControl(activity);
-		} catch (MotionControlException e) {
+		} catch (NoSensorException e) {
 			// If the Challenge for some reason is selected, despite the device
 			// not having the required Sensor, complete the Challenge so as to
 			// not trap the user.
@@ -56,7 +56,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 			this.exception = e;
 		}
 
-		// If there was no MotionControlException, keep running.
+		// If there was no NoSensorException, keep running.
 		if (this.exception == null) {
 			this.motionControl.addListener(this);
 

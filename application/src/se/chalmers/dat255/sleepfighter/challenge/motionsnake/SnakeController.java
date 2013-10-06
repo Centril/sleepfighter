@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
+package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
 
 import java.beans.PropertyChangeSupport;
 import java.util.Random;

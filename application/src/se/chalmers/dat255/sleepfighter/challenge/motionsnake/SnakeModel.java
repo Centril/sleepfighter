@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.gridsnake;
+package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,6 +59,9 @@ public class SnakeModel {
 
 	/** The size of the board. */
 	private Dimension boardSize;
+
+	/** The margin for collisions. */
+	private int margin;
 
 	/*
 	 * -------------------------------- Getters.
@@ -140,6 +143,9 @@ public class SnakeModel {
 		// Set board size.
 		this.boardSize = size;
 
+		// Set margin.
+		this.margin = 3 * SnakeConstants.getTileSize() / 4;
+
 		// Blank out the whole gameboard.
 		this.emptyPos = new ArrayList<Position>(size.getWidth()
 				* size.getWidth());
@@ -218,7 +224,7 @@ public class SnakeModel {
 		// possible -> game over).
 		// If not: Transfer the previous snake tail position to empty positions
 		// and remove head from empty positions.
-		if (this.currFoodPos.equals(newHeadPos)) {
+		if (isCollision(newHeadPos, this.currFoodPos)) {
 			this.score++;
 			if (this.emptyPos.isEmpty()) {
 				this.gameOver();
@@ -279,15 +285,15 @@ public class SnakeModel {
 		return this.snakePos.getFirst().moveDirection(this.direction);
 	}
 
-	private boolean eatsFood(Position newHeadPos) {
+	private boolean isCollision(Position newHeadPos, Position otherPos) {
 		boolean eats = false;
-		int margin = SnakeConstants.getTileSize() / 2;
-		if (this.currFoodPos.equals(newHeadPos)) {
+
+		if (otherPos.equals(newHeadPos)) {
 			eats = true;
-		} else if (((this.currFoodPos.getX() >= newHeadPos.getX() - margin) && (this.currFoodPos
-				.getX() >= newHeadPos.getX() + margin))
-				&& ((this.currFoodPos.getY() >= newHeadPos.getX() - margin) && (this.currFoodPos
-						.getX() >= newHeadPos.getY() + margin))) {
+		} else if (((otherPos.getX() >= newHeadPos.getX() - this.margin) && (otherPos
+				.getX() >= newHeadPos.getX() + this.margin))
+				&& ((otherPos.getY() >= newHeadPos.getX() - this.margin) && (otherPos
+						.getX() >= newHeadPos.getY() + this.margin))) {
 			eats = true;
 		}
 		return eats;
