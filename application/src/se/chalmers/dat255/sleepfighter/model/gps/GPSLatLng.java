@@ -18,51 +18,59 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.gps;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
-
 /**
- * ExcludeAreaSet defines a set of ExclusionArea:s that an alarm has.<br/>
- * It is really a list, but a list of conceptually unique elements.<br/>
- * It is your responsibility to keep it so.
+ * GPSLatLng models a (latitude, longitude) vector.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Oct 5, 2013
  */
-public class ExcludeAreaSet extends ObservableList<ExcludeArea> {
+public class GPSLatLng {
+	private double lat;
+	private double lng;
+
 	/**
-	 * Default constructor.
+	 * Default constructor or: (0, 0).
 	 */
-	public ExcludeAreaSet() {
-		this( new ArrayList<ExcludeArea>() );
+	public GPSLatLng() {
+		this( 0, 0 );
 	}
 
 	/**
-	 * Constructs the set given a list of areas to exclude.
+	 * Constructs a GPSLatLng with (lat, lng).
 	 *
-	 * @param areas the areas.
+	 * @param lat the latitude.
+	 * @param lng the longitude.
 	 */
-	public ExcludeAreaSet( List<ExcludeArea> areas ) {
-		this.setDelegate( areas );
+	public GPSLatLng( double lat, double lng ) {
+		this.lat = lat;
+		this.lng = lng;
 	}
 
 	/**
-	 * Returns true if any of the areas bound to Alarm has the given LatLng point.<br/>
-	 * Worst case: O(n).
+	 * Copy constructor.
 	 *
-	 * @param point a LatLng point.
-	 * @return true if the set contains the point.
+	 * @param rhs the GPSLatLng to copy from.
 	 */
-	public boolean contains( LatLng point ) {
-		for ( ExcludeArea area : this.delegate() ) {
-			if ( area.isEnabled() && area.getPolygon().contains( point ) ) {
-				return true;
-			}
-		}
+	public GPSLatLng( GPSLatLng rhs ) {
+		this( rhs.lat, rhs.lng );
+	}
 
-		return false;
+	/**
+	 * Returns the longitude component.
+	 *
+	 * @return the longitude.
+	 */
+	public double getLng() {
+		return this.lng;
+	}
+
+	/**
+	 * Returns the latitude component.
+	 *
+	 * @return the latitude.
+	 */
+	public double getLat() {
+		return this.lat;
 	}
 }

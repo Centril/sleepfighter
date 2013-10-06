@@ -24,17 +24,17 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
- * ExcludeAreaAlarm exists for the sole purpose of having a junction-table<br/>
- * in database between Alarm & ExcludeArea forming a N:M relationship.
+ * GPSFilterAreaAlarm exists for the sole purpose of having a junction-table<br/>
+ * in database between Alarm & GPSFilterArea forming a N:M relationship.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Oct 5, 2013
  */
-@DatabaseTable(tableName = "exclude_area_alarm")
-public class ExcludeAreaAlarm {
+@DatabaseTable(tableName = "gpsfilter_area_alarm")
+public class GPSFilterAreaAlarm {
 	public static final String ALARM_ID_FIELD = "alarm_id";
-	public static final String EXCLUDE_AREA_ID_FIELD = "exclude_area_id";
+	public static final String EXCLUDE_AREA_ID_FIELD = "gpsfilter_area_id";
 
 	@DatabaseField(generatedId = true)
 	private int id;
@@ -43,12 +43,12 @@ public class ExcludeAreaAlarm {
 	private Alarm alarm;
 
 	@DatabaseField(foreign = true, columnName = EXCLUDE_AREA_ID_FIELD)
-	private ExcludeArea area;
+	private GPSFilterArea area;
 
 	/**
 	 * Default constructor.
 	 */
-	public ExcludeAreaAlarm() {
+	public GPSFilterAreaAlarm() {
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class ExcludeAreaAlarm {
 	 * @param alarm the alarm.
 	 * @param area the area.
 	 */
-	public ExcludeAreaAlarm( Alarm alarm, ExcludeArea area ) {
+	public GPSFilterAreaAlarm( Alarm alarm, GPSFilterArea area ) {
 		this.alarm = alarm;
 		this.area = area;
 	}
@@ -72,11 +72,11 @@ public class ExcludeAreaAlarm {
 	}
 
 	/**
-	 * Returns the ExcludeArea of the relationship.
+	 * Returns the GPSFilterArea of the relationship.
 	 *
 	 * @return the area.
 	 */
-	public ExcludeArea getArea() {
+	public GPSFilterArea getArea() {
 		return this.area;
 	}
 }

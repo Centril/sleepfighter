@@ -26,58 +26,58 @@ import nsidc.spheres.Point;
 import nsidc.spheres.SphericalPolygon;
 
 /**
- * ExcludePolygon defines a spherical polygon with (lat, lng) vectors to exclude.<br/>
+ * GPSFilterPolygon defines a spherical polygon with (lat, lng) vectors to filter.<br/>
  * Altitude (or the radius of the sphere) is not relevant.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Oct 5, 2013
  */
-public class ExcludePolygon implements Serializable {
+public class GPSFilterPolygon implements Serializable {
 	private static final long serialVersionUID = -4728521809228656822L;
 
-	private List<LatLng> poly;
+	private List<GPSLatLng> poly;
 
 	/**
 	 * Default constructor.
 	 */
-	public ExcludePolygon() {
+	public GPSFilterPolygon() {
 	}
 
 	/**
-	 * Constructs a ExcludePolygon from a given list of LatLng points.
+	 * Constructs a GPSFilterPolygon from a given list of GPSLatLng points.
 	 *
 	 * @param points the points.
 	 */
-	public ExcludePolygon( List<LatLng> points ) {
+	public GPSFilterPolygon( List<GPSLatLng> points ) {
 		this.setPoints( points );
 	}
 
 	/**
-	 * Adds a LatLng point to polygon changing its shape.
+	 * Adds a GPSLatLng point to polygon changing its shape.
 	 *
 	 * @param point the point.
 	 */
-	public void addPoint( LatLng point ) {
+	public void addPoint( GPSLatLng point ) {
 		this.poly.add( point );
 	}
 
 	/**
-	 * Sets the list of LatLng points.
+	 * Sets the list of GPSLatLng points.
 	 *
 	 * @param points the points.
 	 */
-	public void setPoints( List<LatLng> points ) {
+	public void setPoints( List<GPSLatLng> points ) {
 		this.poly = points;
 	}
 
 	/**
-	 * Whether or not the polygon contains the given LatLng point.
+	 * Whether or not the polygon contains the given GPSLatLng point.
 	 *
 	 * @param point the point to check for.
 	 * @return true if it contains the point, otherwise false.
 	 */
-	public boolean contains( LatLng point ) {
+	public boolean contains( GPSLatLng point ) {
 		SphericalPolygon spherical = this.convertToSpherical();
 		Point p = new Point( point.getLat(), point.getLng() );
 		return spherical.contains( p );
@@ -94,7 +94,7 @@ public class ExcludePolygon implements Serializable {
 		double longitudes[] = new double[this.poly.size()];
 
 		for ( int i = 0; i < this.poly.size(); ++i ) {
-			LatLng point = this.poly.get( i );
+			GPSLatLng point = this.poly.get( i );
 
 			latitudes[i] = point.getLat();
 			longitudes[i] = point.getLng();
@@ -104,11 +104,11 @@ public class ExcludePolygon implements Serializable {
 	}
 
 	/**
-	 * Returns an immutable view of the LatLng points.
+	 * Returns an immutable view of the GPSLatLng points.
 	 *
 	 * @return the list of points that make up this polygon.
 	 */
-	public List<LatLng> getPoints() {
+	public List<GPSLatLng> getPoints() {
 		return Collections.unmodifiableList( this.poly );
 	}
 }

@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.gps;
 
+import com.google.common.base.Objects;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -25,15 +26,15 @@ import com.j256.ormlite.table.DatabaseTable;
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
 
 /**
- * ExcludeArea defines an exclusion area.<br/>
- * It is made up of a {@link ExcludePolygon}, name and id.
+ * GPSFilterArea defines an exclusion area.<br/>
+ * It is made up of a {@link GPSFilterPolygon}, name and id.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Oct 5, 2013
  */
-@DatabaseTable(tableName = "exclude_area")
-public class ExcludeArea implements IdProvider {
+@DatabaseTable(tableName = "gpsfilter_area")
+public class GPSFilterArea implements IdProvider {
 	@DatabaseField(generatedId = true)
 	private int id;
 
@@ -43,37 +44,52 @@ public class ExcludeArea implements IdProvider {
 	@DatabaseField
 	private boolean enabled;
 
+	private GPSFilterMode mode;
+
 	@DatabaseField(dataType = DataType.SERIALIZABLE)
-	private ExcludePolygon poly;
+	private GPSFilterPolygon poly;
 
 	/**
 	 * Default constructor
 	 */
-	public ExcludeArea() {
+	public GPSFilterArea() {
 	}
 
 	/**
-	 * Constructs an ExcludeArea with name & enabled/disabled.<br/>
+	 * Constructs an GPSFilterArea with name & enabled/disabled.<br/>
 	 * The polygon will be null.
 	 *
 	 * @param name the user defined name of area.
 	 * @param enabled whether or not the area is enabled.
 	 */
-	public ExcludeArea( String name, boolean enabled ) {
-		this( name, enabled, null );
+	public GPSFilterArea( String name, boolean enabled, GPSFilterMode mode ) {
+		this( name, enabled, mode, null );
 	}
 
 	/**
-	 * Constructs an ExcludeArea with name, enabled/disabled and a polygon.
+	 * Constructs an GPSFilterArea with name, enabled/disabled and a polygon.
 	 *
 	 * @param name the user defined name of area.
 	 * @param enabled whether or not the area is enabled.
 	 * @param poly the polygon to use.
 	 */
-	public ExcludeArea( String name, boolean enabled, ExcludePolygon poly ) {
+	public GPSFilterArea( String name, boolean enabled, GPSFilterMode mode, GPSFilterPolygon poly ) {
 		this.setName( name );
 		this.setEnabled( enabled );
+		this.setMode( mode );
 		this.setPolygon( poly );
+	}
+
+	/**
+	 * Returns Whether or not the polygon contains the given GPSLatLng point.<br/>
+	 * {@link #getPolygon()} may not return null before a call to {@link #contains(GPSGPSLatLng)}.
+	 *
+	 * @see GPSFilterArea#contains(GPSGPSLatLng)
+	 * @param pos the point to check for.
+	 * @return true if it contains the point, otherwise false.
+	 */
+	public boolean contains( GPSLatLng pos ) {
+		return this.getPolygon().contains( pos );
 	}
 
 	@Override
@@ -90,12 +106,16 @@ public class ExcludeArea implements IdProvider {
 		return this.name;
 	}
 
+	public GPSFilterMode getMode() {
+		return this.mode;
+	}
+
 	/**
 	 * Returns the polygon that defines this area.
 	 *
 	 * @return the polygon, or null if not in memory yet.
 	 */
-	public ExcludePolygon getPolygon() {
+	public GPSFilterPolygon getPolygon() {
 		return this.poly;
 	}
 
@@ -114,6 +134,10 @@ public class ExcludeArea implements IdProvider {
 	 * @param name the name.
 	 */
 	public void setName( String name ) {
+		if ( Objects.equal(  this.name, name ) ) {
+			return;
+		}
+
 		this.name = name;
 	}
 
@@ -123,15 +147,38 @@ public class ExcludeArea implements IdProvider {
 	 * @param enabled true if it should be enabled, false otherwise.
 	 */
 	public void setEnabled( boolean enabled ) {
+		if ( this.enabled == enabled ) {
+			return;
+		}
+
 		this.enabled = enabled;
 	}
 
 	/**
-	 * Sets the ExcludePolygon of this area.
+	 * Changes the GPSMode the area operates with.
+	 *
+	 * @param mode
+	 * @return true if the mode was change, or false.
+	 */
+	public boolean setMode( GPSFilterMode mode ) {
+		if ( this.mode == mode ) {
+			return false;
+		}
+
+		this.mode = mode;
+		return true;
+	}
+
+	/**
+	 * Sets the GPSFilterPolygon of this area.
 	 *
 	 * @param poly the polygon.
 	 */
-	public void setPolygon( ExcludePolygon poly ) {
+	public void setPolygon( GPSFilterPolygon poly ) {
+		if ( Objects.equal( this.poly, poly ) ) {
+			return;
+		}
+
 		this.poly = poly;
 	}
 }
