@@ -37,4 +37,6 @@
 
     <string name="pref_global_preset_alarm">デフォルトアラーム</string>
     
+        <string name="developers_title">開発元</string>
+    
 </resources>
