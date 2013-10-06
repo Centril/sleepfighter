@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model;
 
+import se.chalmers.dat255.sleepfighter.challenge.memory.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import junit.framework.Assert;
 import junit.framework.TestCase;

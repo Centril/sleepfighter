@@ -28,6 +28,7 @@ import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.j256.ormlite.field.DatabaseField;
@@ -424,7 +425,7 @@ public class ChallengeConfigSet implements IdProvider {
 		ChallengeConfig config = this.getConfig( type );
 		String old = config.setParam( key, value );
 
-		if ( old.equals( value ) ) {
+		if ( Objects.equal( old, value ) ) {
 			return;
 		}
 

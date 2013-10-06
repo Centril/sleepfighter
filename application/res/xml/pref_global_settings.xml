@@ -16,7 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-	<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
     
     <CheckBoxPreference
         android:key="pref_alarm_turn_screen_on"
@@ -35,16 +35,24 @@
         android:title="@string/display_when_next_alarm_rings"
         android:summary="@string/display_when_next_alarm_rings_summary"
         android:defaultValue="false" />
-    
+
+    <Preference
+        android:key="perf_global_preset_alarm"
+        android:persistent="false"
+        android:title="@string/pref_global_preset_alarm" />
+
     <PreferenceCategory android:title="@string/pref_about" >
+
         <Preference
             android:title="@string/pref_version"
+                android:selectable="false"
             android:summary="@string/version_name" />
+
+        <Preference
+             android:selectable="false"
+            android:title="@string/developers_title"
+            android:summary="@string/developers_summary" />
+
     </PreferenceCategory>
-          
-    <Preference
-            android:title="@string/pref_global_preset_alarm"
-            android:key="perf_global_preset_alarm"
-            android:persistent="false" />
     
 </PreferenceScreen>

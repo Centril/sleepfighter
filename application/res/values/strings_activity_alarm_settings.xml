@@ -56,13 +56,13 @@
     <string name="pref_delete_alarm">Delete this alarm</string>
     <string name="perf_alarm_ringtone">Ring tone</string>
     <string name="pref_alarm_vibration">Vibration</string>
-    <string name="challenge_category_title">Challenge</string>
-    <string name="challenge_category_title_plural">Challenges</string>
-    <string name="pref_challenge_enabled">Enable challenges</string>
-    <string name="pref_challenge_select">Select challenges</string>
+    <string name="pref_challenge">Challenges</string>
     <string name="alarm_settings_action_remove">Delete</string>
     <string name="alarm_settings_action_toggle">Toggle</string>
     <string name="pref_alarm_snooze_enabled">Enable snooze</string>
     <string name="pref_alarm_snooze_time">Snooze length</string>
 
+    
+    <string name="pref_volume">Volume</string>
+    
 </resources>

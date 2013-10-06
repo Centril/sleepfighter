@@ -29,6 +29,8 @@ import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
 import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+import android.widget.Toast;
 
 /**
  * A challenge that requires the player to move and rotate the device.
@@ -173,5 +175,18 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 	public boolean isStopped() {
 		return this.stopped;
+	}
+
+	@Override
+	public void start(ChallengeActivity activity, Bundle state) {
+		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE",
+				Toast.LENGTH_LONG).show();
+		this.start(activity);
+	}
+
+	@Override
+	public Bundle savedState() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

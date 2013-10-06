@@ -66,5 +66,19 @@
     <string name="perf_alarm_ringtone">Ringsignal</string>
     
 	  <string name="pref_alarm_vibration">Vibration</string>
+	  
+	
+	  <string name="pref_alarm_snooze_enabled">Sätt på snooze</string>
+    <string name="pref_alarm_snooze_time">Snoozelängd</string>
+	  
+      <string name="pref_challenge_enabled">Sätt på utmaningar</string>
+    <string name="pref_challenge_select">Välj utmaningar</string>
+  
+      <string name="pref_volume">Ljudvolym</string>
+      
+      
+    <string name="challenge_category_title">Utmaning</string>
+    <string name="challenge_category_title_plural">Utmaningar</string>
+   
 	
 </resources>

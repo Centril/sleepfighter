@@ -28,7 +28,7 @@
     </string-array>
     <string-array name="challenge_descriptions">
         <item>A test challenge</item>
-        <item>Evaluate an algebraic expression</item>
+        <item>Solve a math problem</item>
         <item>A memory challenge where letters are matched</item>
         <item>Challenge where numbers are sorted by size</item>
         <item>A free-form version of snake</item>

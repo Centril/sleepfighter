@@ -22,14 +22,26 @@ import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
 /**
  * Example implementation of Challenge.
  */
 public class TestChallenge implements Challenge {
+	/**
+	 * PrototypeDefinition for TestChallenge.
+	 *
+	 * @version 1.0
+	 * @since Oct 5, 2013
+	 */
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.TEST );
+	}}
 
 	@Override
 	public void start(final ChallengeActivity activity) {
@@ -60,4 +72,13 @@ public class TestChallenge implements Challenge {
 		});
 	}
 
+	@Override
+	public void start( ChallengeActivity activity, Bundle state ) {
+		this.start( activity );
+	}
+
+	@Override
+	public Bundle savedState() {
+		return null;
+	}
 }

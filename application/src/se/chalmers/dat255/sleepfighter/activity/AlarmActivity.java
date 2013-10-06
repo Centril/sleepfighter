@@ -18,11 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,15 +30,13 @@ import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
-import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -138,23 +132,9 @@ public class AlarmActivity extends Activity {
 		// The vibration stops whenever you start the challenge
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
 
-		// Get a random challenge from the alarm's enabled challenges
-		ChallengeConfigSet set = this.alarm.getChallengeSet();
-		Set<ChallengeType> enabledChallenges = set.getEnabledTypes();
-
-		List<ChallengeType> list = new ArrayList<ChallengeType>(
-				enabledChallenges);
-
-		int randPos = RandomMath.nextRandomRanged(new Random(), 0,
-				list.size() - 1);
-
-		ChallengeType type = list.get(randPos);
-
+		// Send user to ChallengeActivity.
 		Intent i = new Intent(this, ChallengeActivity.class);
-
-		// TODO use property from Alarm
-		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
-
+		new IntentUtils( i ).setAlarmId( this.alarm );
 		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
 	}
 
@@ -328,6 +308,7 @@ public class AlarmActivity extends Activity {
 	}
 
 	// Get the current time with the Calendar
+	@SuppressLint("DefaultLocale")
 	public String getCurrentTime() {
 		Calendar cal = Calendar.getInstance();
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
