@@ -2,24 +2,24 @@ package se.chalmers.dat255.sleepfighter.challenge.memory;
 
 import java.util.Random;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 
 // strings are shown on the cards.
-public class MemoryCardImageDatabase {
+public class MemoryCardImageDatabase implements Parcelable{
 
-	private final Memory mem;
-	
+
 	private String[] memoryCardImages;
 	
 	private Random rng = new Random();
 	
-	public String getImage(int position) {
-		return memoryCardImages[mem.getCard(position)];
+	public String getImage(int cardType) {
+		return memoryCardImages[cardType];
 	}
-
+	
 	// assign each card type an image.
 	public MemoryCardImageDatabase(final Memory mem) {
-		
-		this.mem = mem;
 		
 		memoryCardImages = new String[mem.getNumPairs()];
 		
@@ -60,7 +60,7 @@ public class MemoryCardImageDatabase {
 	}
 	
     // list of all the usable memory cards. 
-    private String[] memoryCardDatabase = {
+    private static String[] memoryCardDatabase = {
     		"a", "b",
     		"c", "d",
     		"e", "f",
@@ -74,5 +74,32 @@ public class MemoryCardImageDatabase {
     		"u", "v",
     		"w", "x",
     		"y", "z",
+    };
+    
+    
+    // Parcelable stuff
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeSerializable(memoryCardImages);
+	}
+	
+ 	public MemoryCardImageDatabase( Parcel in ) {
+ 		this.memoryCardImages = (String[]) in.readSerializable();
+ 	}
+	
+    public static final Parcelable.Creator<MemoryCardImageDatabase> CREATOR = new Parcelable.Creator<MemoryCardImageDatabase>() {
+        public MemoryCardImageDatabase createFromParcel(Parcel in) {
+            return new MemoryCardImageDatabase(in);
+        }
+
+        public MemoryCardImageDatabase[] newArray(int size) {
+            return new MemoryCardImageDatabase[size];
+        }
     };
 }

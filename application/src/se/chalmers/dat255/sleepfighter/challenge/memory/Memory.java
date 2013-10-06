@@ -21,15 +21,21 @@ package se.chalmers.dat255.sleepfighter.challenge.memory;
 import java.util.Arrays;
 import java.util.Random;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 // class for modelling a memory game.
 // the cards are zero-indexed. 
-public class Memory {
+public class Memory implements Parcelable {
 	
 	private final int rows;
 	private final int cols;
 	
-	public final static int UNOCCUPIED = -1;
-	
+	private final static int UNOCCUPIED = -1;
+
+	// how many paris that haven't yet been matched up, and removed. 
+	private int remainingPairs;
+
 	private final static Random rng = new Random();
 	
 	// every pair of cards is assigned an unique integer.
@@ -55,6 +61,8 @@ public class Memory {
 		
 		cards = new int[rows][cols];
 		
+		this.remainingPairs = getNumPairs();
+		
 		placeOutCards();
 	}
 	
@@ -62,6 +70,7 @@ public class Memory {
 		return rows * cols;
 	}
 	
+	// get the initial number of pairs. 
 	public int getNumPairs() {
 		// because the number of cards is guaranteed to be even.
 		return getNumCards() / 2;
@@ -86,6 +95,20 @@ public class Memory {
 		int row = (int)Math.floor(index / cols);
 		int col = index - row * cols;
 		return this.getCard(row, col);
+	}
+	
+	public boolean isUnoccupied(int index) {
+		return getCard(index) == UNOCCUPIED;
+	}
+	
+	private void removeCard(int index) {
+		if(this.getCard(index) == UNOCCUPIED) {
+			throw new IllegalArgumentException("You can't remove and already removed pair");
+		}
+		
+		int row = (int)Math.floor(index / cols);
+		int col = index - row * cols;
+		cards[row][col] = UNOCCUPIED;
 	}
 	
 	private void placeOutCards() {
@@ -127,6 +150,26 @@ public class Memory {
 		return cards[row][col] == UNOCCUPIED;
 	}
 	
+	// if the two cards are the same type them remove the cards.
+	// otherwise, and exception is thrown. 
+	public void matchPair(int card1pos, int card2pos) {
+		if(this.getCard(card1pos) != this.getCard(card2pos)) {
+			throw new IllegalArgumentException("The type of the two cards is different");
+		}
+		if(this.getCard(card1pos) == UNOCCUPIED) {
+			throw new IllegalArgumentException("You can't remove and already removed pair");
+		}
+		
+		removeCard(card1pos);
+		removeCard(card2pos);
+		--this.remainingPairs;
+	}
+	
+	// has the user won the game?
+	public boolean isGameOver() {
+		return this.remainingPairs == 0;
+	}
+	
 	public String toString() {
 		String s = "";
 		s += "{";
@@ -139,4 +182,37 @@ public class Memory {
         
         return s;
 	}
+	
+	// Parcelable stuff. 
+	
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeInt(rows);
+		out.writeInt(cols);
+		out.writeInt(remainingPairs);
+		out.writeSerializable(cards);
+	}
+	
+ 	public Memory( Parcel in ) {
+ 		rows = in.readInt();
+ 		cols = in.readInt();
+ 		remainingPairs = in.readInt();
+ 		cards = (int[][]) in.readSerializable();
+ 	}
+	
+    public static final Parcelable.Creator<Memory> CREATOR = new Parcelable.Creator<Memory>() {
+        public Memory createFromParcel(Parcel in) {
+            return new Memory(in);
+        }
+
+        public Memory[] newArray(int size) {
+            return new Memory[size];
+        }
+    };
+	 
 }

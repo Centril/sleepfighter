@@ -56,11 +56,11 @@
                 android:layout_weight="1" >
 
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
-                    android:id="@+id/challenge_memory_button_1"
+                    android:id="@+id/challenge_memory_button_7"
                     style="@style/MemoryCardButton" />
 
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
-                    android:id="@+id/challenge_memory_button_2"
+                    android:id="@+id/challenge_memory_button_5"
                     style="@style/MemoryCardButton" />
 
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
@@ -68,7 +68,7 @@
                     style="@style/MemoryCardButton" />
 
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
-                    android:id="@+id/challenge_memory_button_4"
+                    android:id="@+id/challenge_memory_button_1"
                     style="@style/MemoryCardButton" />
 
             </TableRow>
@@ -79,7 +79,7 @@
                 android:layout_weight="1" >
 
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
-                    android:id="@+id/challenge_memory_button_5"
+                    android:id="@+id/challenge_memory_button_8"
                     style="@style/MemoryCardButton" />
 
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
@@ -88,11 +88,11 @@
 
     
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
-                    android:id="@+id/challenge_memory_button_7"
+                    android:id="@+id/challenge_memory_button_4"
                     style="@style/MemoryCardButton" />
 
                 <se.chalmers.dat255.sleepfighter.challenge.memory.MemoryCardView
-                    android:id="@+id/challenge_memory_button_8"
+                    android:id="@+id/challenge_memory_button_2"
                     style="@style/MemoryCardButton" />
 
             </TableRow>

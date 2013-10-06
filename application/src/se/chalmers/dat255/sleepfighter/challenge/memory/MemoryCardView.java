@@ -53,11 +53,15 @@ public class MemoryCardView extends Button {
 	public void hide() {
 		currentImage = HIDDEN;
 		super.setText(currentImage);
+		super.setClickable(true);
 	}
 	
 	public void show() {
 		currentImage = SHOWN;
 		super.setText(currentImage);
+		
+		// it should not be clickable when it is flipped. 
+		super.setClickable(false);
 	}
 	
 	public boolean isHidden() {
