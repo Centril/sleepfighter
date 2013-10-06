@@ -101,8 +101,19 @@ public class MathChallenge implements Challenge {
 		
 		this.context = activity;
 		
-		// here we randomize a type. 
-		this.problemType = RandomMath.randomEnum(rng, ProblemType.class);
+		// here we randomize a type.
+		
+		// TODO: read this from the settings instead.
+		boolean hardProblems = true;
+			
+		if(!hardProblems) {
+			this.problemType = ProblemType.simple;
+		} else {
+			// we want a hard challenge
+			do {
+				this.problemType = RandomMath.randomEnum(rng, ProblemType.class);		
+			}while(this.problemType == ProblemType.simple);
+		}
 		
 		// create a new challenge
 		runChallenge();
