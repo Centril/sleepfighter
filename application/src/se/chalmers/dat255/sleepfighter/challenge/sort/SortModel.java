@@ -21,7 +21,6 @@ package se.chalmers.dat255.sleepfighter.challenge.sort;
 import static se.chalmers.dat255.sleepfighter.utils.collect.PrimitiveArrays.reverseOrder;
 import static se.chalmers.dat255.sleepfighter.utils.collect.PrimitiveArrays.shuffle;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -36,7 +35,7 @@ import android.os.Parcelable;
  * @version 1.0
  * @since Sep 30, 2013
  */
-public class SortModel implements Serializable, Parcelable {
+public class SortModel implements Parcelable {
 	private static final long serialVersionUID = -3413236746044673616L;
 
 	/**
