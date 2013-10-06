@@ -31,9 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-         xmlns:custom="http://schemas.android.com/apk/res/se.chalmers.dat255.sleepfighter"
-        custom:scale="1.0"
-         >
+        xmlns:custom="http://schemas.android.com/apk/res/se.chalmers.dat255.sleepfighter"
+        custom:scale="1.0" >
 
         <TableLayout
             android:id="@+id/challenge_sort_button_container"
