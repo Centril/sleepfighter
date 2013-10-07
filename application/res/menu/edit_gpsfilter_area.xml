@@ -19,10 +19,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/action_edit_gpsfilter_area_zoom"
+        android:orderInCategory="5"
+        android:showAsAction="never"
+        android:title="@string/action_edit_gpsfilter_area_zoom"/>
+
+    <item
         android:id="@+id/action_edit_gpsfilter_area_help"
         android:icon="@android:drawable/ic_menu_help"
         android:orderInCategory="10"
-        android:showAsAction="ifRoom"
+        android:showAsAction="never"
         android:title="@string/action_edit_gpsfilter_area_help"/>
 
     <item
@@ -42,5 +48,11 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_edit_gpsfilter_area_clear"/>
+
+    <item
+        android:id="@+id/action_edit_gpsfilter_area_remove"
+        android:orderInCategory="150"
+        android:showAsAction="never"
+        android:title="@string/action_edit_gpsfilter_area_remove"/>
 
 </menu>

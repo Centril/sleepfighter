@@ -18,13 +18,20 @@
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-    <string name="edit_gpsfilter_area_splash_text">Tap the screen to form a polygon area to gpsfilter or include.</string>
+    <string name="edit_gpsfilter_area_splash_text">
+	<![CDATA[
+	<p>Tap at least <b>3 points</b> to form a polygon where you can\'t be <i>(exclude)</i> or must be in <i>(include)</i> for an alarm to ring.</p>
+	<p>You can <b>\"Clear\"</b> or remove the last point with <b>\"Undo\"</b>.</p>
+	]]>
+	</string>
     <string name="edit_gpsfilter_area_unnamed">Unnamed</string>
 
     <string name="action_edit_gpsfilter_area_help">Help</string>
     <string name="action_edit_gpsfilter_area_rename">Rename</string>
     <string name="action_edit_gpsfilter_area_undo">Undo</string>
     <string name="action_edit_gpsfilter_area_clear">Clear</string>
+    <string name="action_edit_gpsfilter_area_remove">Remove</string>
+    <string name="action_edit_gpsfilter_area_zoom">Zoom to markers</string>
 
     <string-array name="action_edit_gpsfilter_area_mode">
         <item>Include</item>

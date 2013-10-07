@@ -20,7 +20,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/edit_gpsfilter_area_frame"
@@ -37,7 +37,7 @@
 	    <LinearLayout
 	        android:id="@+id/edit_gpsfilter_area_splash"
 	        android:layout_width="200dp"
-	        android:layout_height="100dp"
+	        android:layout_height="175dp"
 	        android:layout_gravity="center"
 	        android:background="@color/background_holo_dark"
 	        android:gravity="center"
@@ -48,12 +48,12 @@
 	        android:paddingTop="10dp" >
 
 	        <TextView
+	        	android:id="@+id/edit_gpsfilter_area_splash_text"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
 	            android:layout_gravity="center"
 	            android:paddingBottom="2dp"
 	            android:paddingTop="2dp"
-	            android:text="@string/edit_gpsfilter_area_splash_text"
 	            android:textAppearance="?android:attr/textAppearanceMedium"
 	            android:textColor="@color/white"
 	            android:textSize="17sp" />
@@ -64,23 +64,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_gravity="bottom|left" >
+        android:layout_height="50dp"
+        android:layout_gravity="bottom|left"
+        android:showDividers="middle"
+        android:divider="@android:drawable/divider_horizontal_bright" >
 
         <Spinner
             android:id="@+id/action_edit_gpsfilter_area_mode"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="left|center_vertical"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:entries="@array/action_edit_gpsfilter_area_mode" />
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/action_edit_gpsfilter_area_undo_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="right|center_vertical"
-            android:background="@android:color/transparent"
+            android:background="@color/button_transparent_background"
             android:text="@string/action_edit_gpsfilter_area_undo" />
 
     </LinearLayout>
