@@ -28,6 +28,7 @@ import se.chalmers.dat255.sleepfighter.factory.FromPresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.factory.PresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
@@ -56,6 +57,8 @@ public class SFApplication extends Application {
 	private AudioDriverFactory audioDriverFactory;
 
 	private FromPresetAlarmFactory fromPresetFactory;
+
+	private GPSFilterAreaSet gpsAreaManaged;
 
 	@Override
 	public void onCreate() {
@@ -219,5 +222,27 @@ public class SFApplication extends Application {
 		}
 
 		return this.audioDriverFactory;
+	}
+
+	/**
+	 * Fetches the set of areas and manages it in application.<br/>
+	 * Call {@link #releaseGPSSet()} to release reference to it in application.
+	 */
+	public synchronized GPSFilterAreaSet getGPSSet() {
+		if ( this.gpsAreaManaged == null ) {
+			this.gpsAreaManaged = this.getPersister().fetchGPSFilterAreas();
+			this.gpsAreaManaged.setMessageBus( this.getBus() );
+		}
+
+		return this.gpsAreaManaged;
+	}
+
+	/**
+	 * Clears the reference the application holds to any {@link GPSFilterAreaSet}
+	 * 
+	 * @return the set, or null if no set is managed.
+	 */
+	public synchronized void releaseGPSSet() {
+		this.gpsAreaManaged = null;
 	}
 }
