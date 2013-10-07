@@ -21,7 +21,6 @@ package se.chalmers.dat255.sleepfighter.model.gps;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.utils.collect.ObservableList;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -53,20 +52,20 @@ public class GPSFilterAreaSet extends ObservableList<GPSFilterArea> {
 	}
 
 	/**
-	 * Returns true if any of the areas bound to Alarm has the given GPSLatLng point.<br/>
-	 * Worst case: O(n).
-	 *
-	 * @param point a GPSLatLng point.
-	 * @return true if the set contains the point.
+	 * Returns an the area with the unique id provided.
+	 * 
+	 * @param id the unique id of the area.
+	 * @return the area, if not found it returns null.
 	 */
-	public boolean contains( GPSLatLng point ) {
-		for ( GPSFilterArea area : this.delegate() ) {
-			if ( area.isEnabled() && area.getPolygon().contains( point ) ) {
-				return true;
+	public GPSFilterArea getById( int id ) {
+		for ( int i = 0; i < size(); i++ ) {
+			GPSFilterArea area = this.get( i );
+			if ( area.getId() == id ) {
+				return area;
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	@Override
@@ -83,7 +82,7 @@ public class GPSFilterAreaSet extends ObservableList<GPSFilterArea> {
 		// Intercept add/update events and inject message bus.
 		if ( e.operation() == Operation.ADD ) {
 			for ( Object obj : e.elements() ) {
-				((Alarm) obj).setMessageBus( this.getMessageBus() );
+				((GPSFilterArea) obj).setMessageBus( this.getMessageBus() );
 			}
 		} else if ( e.operation() == Operation.UPDATE ) {
 			this.get( e.index() ).setMessageBus( this.getMessageBus() );

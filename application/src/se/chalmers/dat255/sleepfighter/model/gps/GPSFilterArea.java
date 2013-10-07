@@ -88,7 +88,7 @@ public class GPSFilterArea implements IdProvider {
 		 *
 		 * @return the modified Field.
 		 */
-		public Field getField() {
+		public Field getModifiedField() {
 			return field;
 		}
 
@@ -164,6 +164,15 @@ public class GPSFilterArea implements IdProvider {
 	 * Public interface.
 	 * --------------------------------
 	 */
+
+	/**
+	 * Returns whether or not the area is valid, it is when it has a polygon.
+	 *
+	 * @return true if {@link #getPolygon()} != null.
+	 */
+	public boolean isValid() {
+		return this.poly != null;
+	}
 
 	/**
 	 * Returns Whether or not the polygon contains the given GPSLatLng point.<br/>
