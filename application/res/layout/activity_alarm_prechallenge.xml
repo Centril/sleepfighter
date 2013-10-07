@@ -14,6 +14,12 @@
         android:orientation="vertical" >
     </LinearLayout>
 
+    <TextView 
+        android:id="@+id/challenge_points_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:layout_gravity="center"/>
 
     <!-- Layout in the middle -->
     <LinearLayout

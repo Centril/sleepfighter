@@ -114,6 +114,9 @@ public class AlarmActivity extends Activity {
 		} else {
 			btnSnooze.setVisibility(View.GONE);
 		}
+
+		TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
+		pointText.setText(SFApplication.get().getPrefs().getChallengePoints() + " points");
 	}
 
 	private void onStopClick() {
