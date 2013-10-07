@@ -29,7 +29,7 @@
     <string name="pre_chal_act">A wild challenge appears!</string>
     <string name="memory_chal_act">Memory</string>
     <string name="snooze">Snooze</string>
-
+	
     <!-- Challenges -->
     <string name="start_challenge">Stop the madness!</string>
     <string name="btn_answer">Answer</string>

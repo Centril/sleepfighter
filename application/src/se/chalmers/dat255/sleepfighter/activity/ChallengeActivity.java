@@ -103,9 +103,9 @@ public class ChallengeActivity extends Activity {
 	private void startFromScratch(ChallengeType type) {
 		this.challengeType = type;
 		this.updateChallenge();
-		this.challenge.start(this);
+		this.challenge.start(this, alarm.getChallengeSet());
 	}
-
+	
 	/**
 	 * Sets the challenge using current type.
 	 */

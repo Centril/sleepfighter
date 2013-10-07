@@ -23,7 +23,10 @@ import java.util.Random;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeParamsReadWriter;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.ParameterDefinition;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.*;
@@ -71,9 +74,21 @@ public class MathChallenge implements Challenge {
 	
 	private Context context;
 	
+	private ChallengeConfigSet config;
+	
 	private Random rng = new Random();
 	
+	public boolean getHardProblemsSetting() {
+		ChallengeParamsReadWriter readWriter = new ChallengeParamsReadWriter( this.config, ChallengeType.MATH );
+		ChallengePrototypeDefinition protdef = new MathChallenge.PrototypeDefinition();
+		ParameterDefinition paramDef = protdef.get("hard_problems");
+		
+		// TODO: for some reason it always returns false.
+		return readWriter.getBoolean( paramDef.getKey(), (Boolean) paramDef.getDefaultValue() );
+	}
+	
 	private void runChallenge() {
+		
 		
 		// create challenge object
 		
@@ -97,14 +112,14 @@ public class MathChallenge implements Challenge {
 	}
 	
 	@Override
-	public void start(final ChallengeActivity activity) {
+	public void start(final ChallengeActivity activity,  ChallengeConfigSet config) {
+		this.config = config;
 		
 		this.context = activity;
 		
 		// here we randomize a type.
 		
-		// TODO: read this from the settings instead.
-		boolean hardProblems = true;
+		boolean hardProblems = getHardProblemsSetting();
 			
 		if(!hardProblems) {
 			this.problemType = ProblemType.simple;

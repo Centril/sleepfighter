@@ -24,6 +24,10 @@ import java.beans.PropertyChangeListener;
 
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.PrimitiveValueType;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
@@ -37,15 +41,23 @@ import android.widget.Toast;
  */
 public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.MOTION_SNAKE );
+	}}
+	
 	private MotionControl motionControl;
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
 	private NoSensorException exception = null;
 	private boolean stopped = false;
+	
+	private ChallengeConfigSet config;
+	
+	
 
 	@Override
-	public void start(ChallengeActivity activity) {
+	public void start(ChallengeActivity activity,  ChallengeConfigSet config) {
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -181,7 +193,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	public void start(ChallengeActivity activity, Bundle state) {
 		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE",
 				Toast.LENGTH_LONG).show();
-		this.start(activity);
+		this.start(activity, config);
 	}
 
 	@Override

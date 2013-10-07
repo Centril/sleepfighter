@@ -25,6 +25,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.os.Bundle;
@@ -202,7 +203,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 
 	
 	@Override
-	public void start(final ChallengeActivity act) {
+	public void start(final ChallengeActivity act,  ChallengeConfigSet config) {
 		this.act = act;
 	
 		

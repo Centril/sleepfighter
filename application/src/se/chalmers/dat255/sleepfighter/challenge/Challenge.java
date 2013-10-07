@@ -19,6 +19,7 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import android.os.Bundle;
 
 /**
@@ -38,7 +39,7 @@ public interface Challenge {
 	 * 
 	 * @param activity the ChallengeActivity that the Challenge modifies
 	 */
-	public void start(ChallengeActivity activity);
+	public void start(ChallengeActivity activity, ChallengeConfigSet config);
 
 	/**
 	 * <p>Called from the outside when the challenge is to be started again.</p>

@@ -22,6 +22,7 @@ import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -42,9 +43,12 @@ public class TestChallenge implements Challenge {
 	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
 		setType( ChallengeType.TEST );
 	}}
+	
+	ChallengeConfigSet config;
 
 	@Override
-	public void start(final ChallengeActivity activity) {
+	public void start(final ChallengeActivity activity, ChallengeConfigSet config) {
+		this.config = config;
 		activity.setContentView(R.layout.alarm_challenge_test);
 		Button completeButton = (Button) activity
 				.findViewById(R.id.btn_complete);
@@ -74,7 +78,7 @@ public class TestChallenge implements Challenge {
 
 	@Override
 	public void start( ChallengeActivity activity, Bundle state ) {
-		this.start( activity );
+		this.start( activity, config );
 	}
 
 	@Override

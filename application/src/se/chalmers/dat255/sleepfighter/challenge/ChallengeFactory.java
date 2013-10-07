@@ -90,7 +90,9 @@ public class ChallengeFactory {
 			case FLUID_SNAKE:
 				def = new FluidSnakeChallenge.PrototypeDefinition();
 				break;
-
+			case MOTION_SNAKE:
+				def = new MotionSnakeChallenge.PrototypeDefinition();
+				break;
 			default:
 				throw new IllegalArgumentException( "Undefined challenge" );
 			}
