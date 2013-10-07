@@ -30,5 +30,11 @@
     <string name="challenge_math_hard_problems_title">Use hard math problems</string>
     <string name="challenge_math_hard_problems_summary">Hard.</string>
     
+    <!-- Math challenge setings --> 
+    <string name="challenge_math_settings_title">Math Settings</string>
+ 
+    <string name="challenge_math_hard_problems_title">Give hard math problems</string>
+    <string name="challenge_math_hard_problems_summary">Give more difficult, high-school level math problems.</string>
+    
    
 </resources>

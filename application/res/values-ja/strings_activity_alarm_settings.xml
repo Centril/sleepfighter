@@ -75,6 +75,10 @@
     <string name="challenge_category_title">チャレンジ</string>
     <string name="challenge_category_title_plural">チャレンジ</string>
    
+     
+    <string name="challenge_params_title">設定</string>
     
+     <string name="pref_challenge">チャレンジ</string>
+  
 	
 </resources>
