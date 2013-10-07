@@ -28,4 +28,8 @@
  
       <string name="prime_factor_challenge_desc">"Finn den största primtalsfaktorn av %s</string>
  
+      <string name="challenge_math_hard_problems_title">Svåra mattetal. </string>
+    <string name="challenge_math_hard_problems_summary">Används svårare mattetal på gymnasienivå.</string>
+    
+      
 </resources>

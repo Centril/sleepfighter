@@ -80,5 +80,7 @@
     <string name="challenge_category_title">Utmaning</string>
     <string name="challenge_category_title_plural">Utmaningar</string>
    
+    <string name="challenge_params_title">Inställningar</string>
+    
 	
 </resources>
