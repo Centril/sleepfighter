@@ -29,8 +29,8 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfig;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
-import se.chalmers.dat255.sleepfighter.model.gps.ExcludeArea;
-import se.chalmers.dat255.sleepfighter.model.gps.ExcludeAreaAlarm;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaAlarm;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -77,11 +77,11 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	// Dao for SnoozeConfig.
 	private PersistenceExceptionDao<SnoozeConfig, Integer> snoozeConfigDao = null;
 
-	// Dao for ExcludeArea.
-	private PersistenceExceptionDao<ExcludeArea, Integer> excludeAreaDao;
+	// Dao for GPSFilterArea.
+	private PersistenceExceptionDao<GPSFilterArea, Integer> gpsFilterAreaDao;
 
-	// Dao for ExcludeAreaAlarm.
-	private PersistenceExceptionDao<ExcludeAreaAlarm, Integer> excludeAreaAlarmDao;
+	// Dao for GPSFilterAreaAlarm.
+	private PersistenceExceptionDao<GPSFilterAreaAlarm, Integer> gpsFilterAreaAlarmDao;
 
 	/**
 	 * Constructs the helper from a given context.
@@ -111,8 +111,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable( connectionSource, ChallengeConfig.class );
 			TableUtils.createTable( connectionSource, ChallengeParam.class );
 
-			TableUtils.createTable(connectionSource, ExcludeArea.class);
-			TableUtils.createTable(connectionSource, ExcludeAreaAlarm.class);
+			TableUtils.createTable(connectionSource, GPSFilterArea.class);
+			TableUtils.createTable(connectionSource, GPSFilterAreaAlarm.class);
 		} catch ( SQLException e ) {
 			Log.e( OrmHelper.class.getName(), "Can't create database", e );
 			throw new PersistenceException( e );
@@ -141,8 +141,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable( connectionSource, ChallengeConfig.class, true );
 			TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
 
-			TableUtils.dropTable(connectionSource, ExcludeArea.class, true );
-			TableUtils.dropTable(connectionSource, ExcludeAreaAlarm.class, true );
+			TableUtils.dropTable(connectionSource, GPSFilterArea.class, true );
+			TableUtils.dropTable(connectionSource, GPSFilterAreaAlarm.class, true );
 
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -269,29 +269,29 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Returns DAO for ExcludeArea model.<br/>
+	 * Returns DAO for GPSFilterArea model.<br/>
 	 * It either creates or returns a cached object.
 	 *
-	 * @return the DAO for ExcludeArea model.
+	 * @return the DAO for GPSFilterArea model.
 	 */
-	public PersistenceExceptionDao<ExcludeArea, Integer> getExcludeAreaDao() {
-		if (this.excludeAreaDao == null) {
-			this.excludeAreaDao = this.getExceptionDao(ExcludeArea.class);
+	public PersistenceExceptionDao<GPSFilterArea, Integer> getGPSFilterAreaDao() {
+		if (this.gpsFilterAreaDao == null) {
+			this.gpsFilterAreaDao = this.getExceptionDao(GPSFilterArea.class);
 		}
-		return this.excludeAreaDao;
+		return this.gpsFilterAreaDao;
 	}
 
 	/**
-	 * Returns DAO for ExcludeAreaAlarm model.<br/>
+	 * Returns DAO for GPSFilterAreaAlarm model.<br/>
 	 * It either creates or returns a cached object.
 	 *
-	 * @return the DAO for ExcludeAreaAlarm model.
+	 * @return the DAO for GPSFilterAreaAlarm model.
 	 */
-	public PersistenceExceptionDao<ExcludeAreaAlarm, Integer> getExcludeAreaAlarmDao() {
-		if (this.excludeAreaAlarmDao == null) {
-			this.excludeAreaAlarmDao = this.getExceptionDao(ExcludeAreaAlarm.class);
+	public PersistenceExceptionDao<GPSFilterAreaAlarm, Integer> getGPSFilterAreaAlarmDao() {
+		if (this.gpsFilterAreaAlarmDao == null) {
+			this.gpsFilterAreaAlarmDao = this.getExceptionDao(GPSFilterAreaAlarm.class);
 		}
-		return this.excludeAreaAlarmDao;
+		return this.gpsFilterAreaAlarmDao;
 	}
 
 	/**

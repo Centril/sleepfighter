@@ -39,8 +39,9 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet.Challe
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet.Event;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.model.gps.ExcludeArea;
-import se.chalmers.dat255.sleepfighter.model.gps.ExcludeAreaAlarm;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaAlarm;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.util.Log;
@@ -190,7 +191,7 @@ public class PersistenceManager {
 
 		this.clearTable(SnoozeConfig.class);
 
-		this.clearTable( ExcludeAreaAlarm.class );
+		this.clearTable( GPSFilterAreaAlarm.class );
 	}
 
 	/**
@@ -602,7 +603,7 @@ public class PersistenceManager {
 		this.removeChallengeSet( alarm );
 
 		// Remove from ExludeArea junction table.
-		this.deleteExcludeAreaJunction( ExcludeAreaAlarm.ALARM_ID_FIELD, alarm.getId() );
+		this.deleteGPSFilterAreaJunction( GPSFilterAreaAlarm.ALARM_ID_FIELD, alarm.getId() );
 
 		// Finally delete alarm itself from DB.
 		helper.getAlarmDao().delete( alarm );
@@ -635,62 +636,62 @@ public class PersistenceManager {
 	}
 
 	/**
-	 * Fetches all available ExcludeArea:s.
+	 * Fetches all available GPSFilterArea:s.
 	 *
-	 * @return the list of ExcludeArea:s.
+	 * @return the list of GPSFilterArea:s.
 	 */
-	public List<ExcludeArea> fetchExcludeAreas() {
+	public GPSFilterAreaSet fetchGPSFilterAreas() {
 		OrmHelper helper = this.getHelper();
-		return helper.getExcludeAreaDao().queryForAll();
+		return new GPSFilterAreaSet( helper.getGPSFilterAreaDao().queryForAll() );
 	}
 
 	/**
-	 * Stores/updates an ExcludeArea in database.
+	 * Stores/updates an GPSFilterArea in database.
 	 *
-	 * @param area the ExcludeArea to store/update.
+	 * @param area the GPSFilterArea to store/update.
 	 */
-	public void setExcludeArea( ExcludeArea area ) {
+	public void setGPSFilterArea( GPSFilterArea area ) {
 		OrmHelper helper = this.getHelper();
-		helper.getExcludeAreaDao().createOrUpdate( area );
+		helper.getGPSFilterAreaDao().createOrUpdate( area );
 	}
 
 	/**
-	 * Deletes an ExcludeArea from database. 
+	 * Deletes an GPSFilterArea from database. 
 	 *
 	 * @param area the area.
 	 */
-	public void deleteExcludeArea( ExcludeArea area ) {
+	public void deleteGPSFilterArea( GPSFilterArea area ) {
 		OrmHelper helper = this.getHelper();
 
-		this.deleteExcludeAreaJunction( ExcludeAreaAlarm.EXCLUDE_AREA_ID_FIELD, area.getId() );
+		this.deleteGPSFilterAreaJunction( GPSFilterAreaAlarm.EXCLUDE_AREA_ID_FIELD, area.getId() );
 
-		helper.getExcludeAreaDao().delete( area );
+		helper.getGPSFilterAreaDao().delete( area );
 	}
 
 	/**
-	 * Binds a ExcludeArea to an Alarm.
+	 * Binds a GPSFilterArea to an Alarm.
 	 *
 	 * @param alarm the alarm.
 	 * @param area the area.
 	 */
-	public void bindExcludeArea( Alarm alarm, ExcludeArea area ) {
+	public void bindGPSFilterArea( Alarm alarm, GPSFilterArea area ) {
 		OrmHelper helper = this.getHelper();
-		helper.getExcludeAreaAlarmDao().create( new ExcludeAreaAlarm( alarm, area ) );
+		helper.getGPSFilterAreaAlarmDao().create( new GPSFilterAreaAlarm( alarm, area ) );
 	}
 
 	/**
-	 * Unbinds an ExcludeArea from an alarm.
+	 * Unbinds an GPSFilterArea from an alarm.
 	 *
 	 * @param alarm the alarm.
 	 * @param area the area.
 	 */
-	public void unbindExcludeArea( Alarm alarm, ExcludeArea area ) {
+	public void unbindGPSFilterArea( Alarm alarm, GPSFilterArea area ) {
 		OrmHelper helper = this.getHelper();
 		try {
-			DeleteBuilder<ExcludeAreaAlarm, Integer> builder = helper.getExcludeAreaAlarmDao().deleteBuilder();
-			Where<ExcludeAreaAlarm, Integer> where = builder.where()
-				.eq( ExcludeAreaAlarm.ALARM_ID_FIELD, alarm.getId() ).and()
-				.eq( ExcludeAreaAlarm.EXCLUDE_AREA_ID_FIELD, area.getId() );
+			DeleteBuilder<GPSFilterAreaAlarm, Integer> builder = helper.getGPSFilterAreaAlarmDao().deleteBuilder();
+			Where<GPSFilterAreaAlarm, Integer> where = builder.where()
+				.eq( GPSFilterAreaAlarm.ALARM_ID_FIELD, alarm.getId() ).and()
+				.eq( GPSFilterAreaAlarm.EXCLUDE_AREA_ID_FIELD, area.getId() );
 
 			builder.setWhere( where );
 			builder.delete();
@@ -700,22 +701,30 @@ public class PersistenceManager {
 	}
 
 	/**
-	 * Removes a junction row for Alarm:ExcludeArea relation.
+	 * Removes a junction row for Alarm:GPSFilterArea relation.
 	 *
-	 * @param column the column that has the ID field of either Alarm or ExcludeArea.
-	 * @param id the ID of Alarm or Alarm:ExcludeArea
+	 * @param column the column that has the ID field of either Alarm or GPSFilterArea.
+	 * @param id the ID of Alarm or Alarm:GPSFilterArea
 	 */
-	private void deleteExcludeAreaJunction( String column, int id ) {
+	private void deleteGPSFilterAreaJunction( String column, int id ) {
 		OrmHelper helper = this.getHelper();
 		try {
-			DeleteBuilder<ExcludeAreaAlarm, Integer> builder = helper.getExcludeAreaAlarmDao().deleteBuilder();
-			Where<ExcludeAreaAlarm, Integer> where = builder.where().eq( column, id );
+			DeleteBuilder<GPSFilterAreaAlarm, Integer> builder = helper.getGPSFilterAreaAlarmDao().deleteBuilder();
+			Where<GPSFilterAreaAlarm, Integer> where = builder.where().eq( column, id );
 
 			builder.setWhere( where );
 			builder.delete();
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );
 		}
+	}
+
+	/**
+	 * Removes all gpsfilter areas (& junction table for alarms as a consequence).
+	 */
+	public void clearGPSFilterAreas() {
+		this.clearTable( GPSFilterArea.class );
+		this.clearTable( GPSFilterAreaAlarm.class );
 	}
 
 	/**
