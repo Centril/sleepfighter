@@ -50,9 +50,23 @@
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme" >
 
+    	<!-- START	GPS related stuff -->
     	<!-- START	Google Maps Android API v2 -->
 		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCXipd3PKrLWrVWn9gHl67VaLKjBH5RseY"/>
     	<!-- END	Google Maps Android API v2 -->
+        <activity
+            android:name="se.chalmers.dat255.sleepfighter.activity.ManageGPSFilterAreasActivity"
+            android:label="@string/title_activity_manage_gpsfilter_areas" >
+        </activity>
+        <activity
+            android:name="se.chalmers.dat255.sleepfighter.activity.EditGPSFilterAreaActivity"
+            android:label="@string/title_activity_manage_gpsfilter_areas"
+            android:parentActivityName="se.chalmers.dat255.sleepfighter.activity.EditGPSFilterAreaActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="se.chalmers.dat255.sleepfighter.activity.EditGPSFilterAreaActivity" />
+        </activity>
+    	<!-- END	GPS related stuff -->
 
         <activity
             android:name="se.chalmers.dat255.sleepfighter.activity.MainActivity"
