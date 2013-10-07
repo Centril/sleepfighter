@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -45,6 +46,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -99,10 +101,11 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	private static final int POLYGON_EXCLUDE_FILL_COLOR = R.color.gpsfilter_polygon_fill_exclude;
 	private static final int POLYGON_INCLUDE_FILL_COLOR = R.color.gpsfilter_polygon_fill_include;
 	private static final int POLYGON_STROKE_COLOR = R.color.shadow;
-	private static final boolean POLYGON_GEODESIC = true; // The earth is a sphere, so bend it?
+	private static final boolean POLYGON_GEODESIC = true; // The earth is a sphere, so bend polygon?
 
 	private static final float MAP_MY_LOCATION_ZOOM = 13f;
-	private static final int CAMERA_MOVE_BOUNDS_PADDING = 200;
+	private static final float CAMERA_MOVE_BOUNDS_PADDING = 0.2f; // padding as a % of lowest of screen width/height.
+
 	private static final long MAX_LOCATION_FIX_AGE = 5 * 60 * 1000; // 5 minutes.
 
 	private static final long SPLASH_FADE_DELAY = 150;
@@ -401,8 +404,32 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	 * @param builder the builder containing to use for making bounds.
 	 */
 	private void moveCameraToPolygon( LatLngBounds.Builder builder, boolean animate ) {
-		CameraUpdate update = CameraUpdateFactory.newLatLngBounds( builder.build(), CAMERA_MOVE_BOUNDS_PADDING );
+		CameraUpdate update = CameraUpdateFactory.newLatLngBounds( builder.build(), this.computeMoveCameraPadding() );
 		this.cameraAnimateOrMove( update, animate );
+	}
+
+	/**
+	 * Computes the padding to use when moving camera to polygon.
+	 *
+	 * @return the padding.
+	 */
+	private int computeMoveCameraPadding() {
+		Point dim = this.getScreenDim();
+		int min = Math.min( dim.x, dim.y );
+		return (int) (CAMERA_MOVE_BOUNDS_PADDING * min);
+	}
+
+	/**
+	 * Returns the screen dimensions as a Point.
+	 *
+	 * @return the screen dimensions.
+	 */
+	private Point getScreenDim() {
+		Display display = this.getWindowManager().getDefaultDisplay();
+
+		@SuppressWarnings( "deprecation" )
+		Point size = new Point( display.getWidth(), display.getHeight() );
+		return size;
 	}
 
 	/**

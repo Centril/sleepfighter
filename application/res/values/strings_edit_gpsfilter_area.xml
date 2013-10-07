@@ -20,7 +20,7 @@
 <resources>
     <string name="edit_gpsfilter_area_splash_text">
 	<![CDATA[
-	<p>Tap at least <b>3 points</b> to form a polygon where you can\'t be <i>(exclude)</i> or must be in <i>(include)</i> for an alarm to ring.</p>
+	<p>Tap at least <b>3 points</b> to form a polygon where you must be in <i><font color=\"#00ddff\">(include)</font></i> or areas you can\'t be in <i><font color=\"#ff4444\">(exclude)</font></i> for an alarm to ring.</p>
 	<p>You can <b>\"Clear\"</b> or remove the last point with <b>\"Undo\"</b>.</p>
 	]]>
 	</string>

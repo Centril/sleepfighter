@@ -23,21 +23,28 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.GPSFilterAreaAdapter;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
-import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea.Field;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * ManageEditAreasActivity is the activity for managing the<br/>
@@ -50,8 +57,12 @@ import android.widget.ListView;
 public class ManageGPSFilterAreasActivity extends Activity {
 	private static final String TAG = ManageGPSFilterAreasActivity.class.getSimpleName();
 
+	private static final long SPLASH_FADE_DELAY = 150;
+
 	private GPSFilterAreaAdapter setAdapter;
 	private GPSFilterAreaSet set;
+
+	private Animation splashFadeOut;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -65,6 +76,59 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		this.setAdapter = new GPSFilterAreaAdapter( this, this.set );
 
 		this.setupSetView();
+
+		this.setupSplash();
+	}
+
+	/**
+	 * Launches the splash information (help) layout, or hides it.
+	 */
+	private void setupSplash() {
+		final ViewGroup splash = (ViewGroup) this.findViewById( R.id.manage_gpsfilter_what_splash );
+
+		if ( this.set.isEmpty() ) {
+			this.launchSplash();
+		} else {
+			splash.setVisibility( View.GONE );
+		}
+	}
+
+	/**
+	 * Launches the splash information (help) layout.
+	 */
+	private void launchSplash() {
+		final ViewGroup splash = (ViewGroup) this.findViewById( R.id.manage_gpsfilter_what_splash );
+		splash.setVisibility( View.VISIBLE );
+
+		if ( this.splashFadeOut == null ) {
+			// Fix text layout.
+			TextView textView = (TextView) this.findViewById( R.id.manage_gpsfilter_what_splash_text );
+			textView.setText( Html.fromHtml( this.getString( R.string.manage_gpsfilter_what_splash_text ) ) );
+
+			// Define fade out animation.
+			this.splashFadeOut = new AlphaAnimation( 1.00f, 0.00f );
+			this.splashFadeOut.setDuration( SPLASH_FADE_DELAY );
+			this.splashFadeOut.setAnimationListener( new AnimationListener() {
+				public void onAnimationStart( Animation animation ) {
+				}
+
+				public void onAnimationRepeat( Animation animation ) {
+				}
+
+				public void onAnimationEnd( Animation animation ) {
+					splash.setVisibility( View.GONE );
+				}
+			} );
+		}
+
+		final ViewGroup vg = (ViewGroup) splash.getParent();
+		vg.setOnClickListener( new OnClickListener() {
+			@Override
+			public void onClick( View v ) {
+				vg.setOnClickListener( null );
+				splash.startAnimation( splashFadeOut );
+			}
+		} );
 	}
 
 	@Override
@@ -199,6 +263,10 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		switch ( item.getItemId() ) {
 		case R.id.action_manage_gpsfilter_areas_add:
 			this.addArea();
+			return true;
+
+		case R.id.action_manage_gpsfilter_help:
+			this.launchSplash();
 			return true;
 
 		case R.id.action_manage_gpsfilter_areas_clear:
