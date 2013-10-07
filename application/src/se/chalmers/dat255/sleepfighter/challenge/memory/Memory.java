@@ -100,6 +100,7 @@ public class Memory implements Parcelable {
 	public boolean isUnoccupied(int index) {
 		return getCard(index) == UNOCCUPIED;
 	}
+
 	
 	private void removeCard(int index) {
 		if(this.getCard(index) == UNOCCUPIED) {
@@ -146,7 +147,7 @@ public class Memory implements Parcelable {
 		} while(!isUnoccupied(pos[0], pos[1]));
 	}
 	
-	private boolean isUnoccupied(int row, int col) {
+	public boolean isUnoccupied(int row, int col) {
 		return cards[row][col] == UNOCCUPIED;
 	}
 	

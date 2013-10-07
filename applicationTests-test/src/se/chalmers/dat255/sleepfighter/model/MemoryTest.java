@@ -49,7 +49,7 @@ public class MemoryTest extends TestCase {
 		// Requirement 1: there should not be any onoccupied spaces.
 		for(int i = 0; i < rows; ++i) {
 			for(int j = 0; j < cols; ++j) {
-				if(mem.getCard(i, j) == Memory.UNOCCUPIED) {
+				if(mem.isUnoccupied(i, j)) {
 					return false;
 				}
 			}
