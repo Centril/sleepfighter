@@ -102,4 +102,23 @@ public class GPSFilterPolygon implements Serializable {
 	public List<GPSLatLng> getPoints() {
 		return Collections.unmodifiableList( this.poly );
 	}
+
+	/**
+	 * Returns whether or not this is a valid polygon.<br/>
+	 * It is when {@link #getEdgeCount()} >= 3.
+	 *
+	 * @return true if it's a valid polygon.
+	 */
+	public boolean isValid() {
+		return this.getEdgeCount() >= 3;
+	}
+
+	/**
+	 * Returns the number of edges in polygon.
+	 *
+	 * @return the edge count.
+	 */
+	public int getEdgeCount() {
+		return this.poly.size();
+	}
 }

@@ -171,7 +171,7 @@ public class GPSFilterArea implements IdProvider {
 	 * @return true if {@link #getPolygon()} != null.
 	 */
 	public boolean isValid() {
-		return this.poly != null;
+		return this.poly != null && this.poly.isValid();
 	}
 
 	/**
