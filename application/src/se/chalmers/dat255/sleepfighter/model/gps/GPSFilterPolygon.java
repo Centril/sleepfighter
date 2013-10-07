@@ -80,18 +80,8 @@ public class GPSFilterPolygon implements Serializable {
 	 * @return the SphericalPolygon.
 	 */
 	private SphericalPolygon convertToSpherical() {
-		// First convert to a SphericalPolygon.
-		double latitudes[] = new double[this.poly.size()];
-		double longitudes[] = new double[this.poly.size()];
-
-		for ( int i = 0; i < this.poly.size(); ++i ) {
-			GPSLatLng point = this.poly.get( i );
-
-			latitudes[i] = point.getLat();
-			longitudes[i] = point.getLng();
-		}
-
-		return new SphericalPolygon( latitudes, longitudes );
+		double positions[][] = this.asArray();
+		return new SphericalPolygon( positions[0], positions[1] );
 	}
 
 	/**
@@ -120,5 +110,25 @@ public class GPSFilterPolygon implements Serializable {
 	 */
 	public int getEdgeCount() {
 		return this.poly.size();
+	}
+
+	/**
+	 * Converts to an array representation.
+	 *
+	 * @return the array.
+	 */
+	private double[][] asArray() {
+		// First convert to a SphericalPolygon.
+		double latitudes[] = new double[this.poly.size()];
+		double longitudes[] = new double[this.poly.size()];
+
+		for ( int i = 0; i < this.poly.size(); ++i ) {
+			GPSLatLng point = this.poly.get( i );
+
+			latitudes[i] = point.getLat();
+			longitudes[i] = point.getLng();
+		}
+
+		return new double[][] { latitudes, longitudes };
 	}
 }

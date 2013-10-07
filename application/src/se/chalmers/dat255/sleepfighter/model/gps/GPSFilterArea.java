@@ -299,6 +299,15 @@ public class GPSFilterArea implements IdProvider {
 		this.bus = messageBus;
 	}
 
+	/**
+	 * Returns the current message-bus if any.
+	 *
+	 * @return the bus, or null.
+	 */
+	public MessageBus<Message> getMessageBus() {
+		return this.bus;
+	}
+
 	/* --------------------------------
 	 * Private Methods.
 	 * --------------------------------
