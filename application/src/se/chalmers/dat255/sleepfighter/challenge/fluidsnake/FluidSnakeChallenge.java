@@ -22,7 +22,7 @@ package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -66,13 +66,10 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	
 	public final int targetFPS = 60;
 	
-	 ChallengeConfigSet config;
-	
 	@Override
-	public void start(ChallengeActivity activity, ChallengeConfigSet config) {
-		this.config = config;
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params) {
 		this.activity = activity;
-		
+
 		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		model = new Model();
@@ -157,9 +154,9 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	}
 
 	@Override
-	public void start( ChallengeActivity activity, Bundle state ) {
+	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
 		Toast.makeText( activity, "TODO: IMPLEMENT START FROM SAVED STATE", Toast.LENGTH_LONG ).show();
-		this.start( activity, config );
+		this.start( activity, params );
 	}
 
 	@Override

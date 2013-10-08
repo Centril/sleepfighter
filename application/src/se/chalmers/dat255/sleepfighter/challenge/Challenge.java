@@ -19,7 +19,6 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import android.os.Bundle;
 
 /**
@@ -37,9 +36,10 @@ public interface Challenge {
 	 * <p>Here should at least {@code setContentView()},<br/>
 	 * or similar method in ChallengeActivity, be called.</p>
 	 * 
-	 * @param activity the ChallengeActivity that the Challenge modifies
+	 * @param activity the ChallengeActivity that the Challenge modifies.
+	 * @param params the resolved params (may have no params defined).
 	 */
-	public void start(ChallengeActivity activity, ChallengeConfigSet config);
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params );
 
 	/**
 	 * <p>Called from the outside when the challenge is to be started again.</p>
@@ -48,9 +48,11 @@ public interface Challenge {
 	 * or similar method in ChallengeActivity, be called.</p>
 	 * 
 	 * @param activity the ChallengeActivity that the Challenge modifies
+	 * @param params the resolved params (may have no params defined).
 	 * @param state the state that was saved by Challenge before.
+	 * @param challengeResolvedParams 
 	 */
-	public void start(ChallengeActivity activity, Bundle state);
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params, Bundle state);
 
 	/**
 	 * Called when challenge must save its state.

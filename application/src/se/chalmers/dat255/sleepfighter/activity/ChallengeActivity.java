@@ -25,6 +25,7 @@ import java.util.Set;
 
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
@@ -59,12 +60,12 @@ public class ChallengeActivity extends Activity {
 
 		if (savedInstanceState == null) {
 			// Either fetch or make a random challenge type.
-			Object bundled = getIntent().getSerializableExtra(
-					BUNDLE_CHALLENGE_TYPE);
-			ChallengeType type = bundled instanceof ChallengeType ? (ChallengeType) bundled
-					: this.makeRandomChallenge();
+			Object bundled = getIntent().getSerializableExtra( BUNDLE_CHALLENGE_TYPE );
+			ChallengeType type = bundled instanceof ChallengeType
+							   ? (ChallengeType) bundled
+							   : this.makeRandomChallenge();
 
-			this.startFromScratch(type);
+			this.startFromScratch( type );
 		} else {
 			this.restart(savedInstanceState);
 		}
@@ -93,7 +94,7 @@ public class ChallengeActivity extends Activity {
 
 		Bundle challengeData = state.getBundle(BUNDLE_CHALLENGE_DATA);
 
-		this.challenge.start(this, challengeData);
+		this.challenge.start(this, this.makeResolvedParams(), challengeData );
 	}
 
 	/**
@@ -102,9 +103,20 @@ public class ChallengeActivity extends Activity {
 	private void startFromScratch(ChallengeType type) {
 		this.challengeType = type;
 		this.updateChallenge();
-		this.challenge.start(this, alarm.getChallengeSet());
+		this.challenge.start(this, this.makeResolvedParams() );
 	}
-	
+
+	/**
+	 * Makes a ChallengeResolvedParams and resolves all params.
+	 *
+	 * @return the resolved params.
+	 */
+	private ChallengeResolvedParams makeResolvedParams() {
+		ChallengeResolvedParams resolved = new ChallengeResolvedParams();
+		resolved.resolve( this.challengeSet, ChallengeFactory.getPrototypeDefinition( this.challengeType ) );
+		return resolved;
+	}
+
 	/**
 	 * Sets the challenge using current type.
 	 */
