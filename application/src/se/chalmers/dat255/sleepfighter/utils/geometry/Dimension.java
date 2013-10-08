@@ -24,8 +24,6 @@ package se.chalmers.dat255.sleepfighter.utils.geometry;
  * Original author Mazdak, modified by Laszlo for SleepFighter
  */
 public class Dimension {
-	private static final long serialVersionUID = -1845270057681504248L;
-
 	private int width, height;
 	
 	/**
