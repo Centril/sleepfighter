@@ -95,6 +95,7 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 		Debug.d("done initi tts");
 		
 		TextToSpeechUtil.setBestLanguage(tts, this);
+		TextToSpeechUtil.config(tts);
 		
 		
 		tts.speak("Hello, master, it's time to wake up. The time is: "/*+ this.currentTime()*/, TextToSpeech.QUEUE_FLUSH, null);

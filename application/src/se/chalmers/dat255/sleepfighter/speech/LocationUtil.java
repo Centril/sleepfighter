@@ -10,6 +10,7 @@ public class LocationUtil {
 		
 	}
 
+
 	public static Location getCurrentLocation(Context context) {
 		LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 	
