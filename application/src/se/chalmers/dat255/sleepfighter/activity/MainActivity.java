@@ -289,7 +289,7 @@ public class MainActivity extends Activity {
 
 	private void updateChallengePoints() {
 		TextView cpText = (TextView) findViewById(R.id.mainChallengePoints);
-		cpText.setText(this.app().getPrefs().getChallengePoints() + " C. Pts.");
+		cpText.setText(this.app().getPrefs().getChallengePoints() + " ");
 	}
 	
 	/**

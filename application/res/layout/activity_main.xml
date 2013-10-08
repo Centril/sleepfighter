@@ -21,16 +21,28 @@
         android:orientation="horizontal" 
         android:padding="5dp" >
 
-        <TextView 
-            android:id="@+id/mainChallengePoints"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:gravity="center"
             android:layout_weight="1"
-            android:layout_margin="5dp" />
+            android:layout_margin="5dp"
+            android:gravity="center">
+            
+	        <TextView 
+	            android:id="@+id/mainChallengePoints"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textColor="@android:color/primary_text_dark"
+	            android:textSize="18sp"
+	            android:textStyle="bold" />
+	        
+	        <ImageView
+	            android:src="@drawable/sun"
+	            android:adjustViewBounds="true"
+	            android:layout_height="18dp"
+	            android:layout_width="18dp"
+	            android:contentDescription="Challenge points" />
+        </LinearLayout>
         
         <TextView
             android:layout_width="1dp"
