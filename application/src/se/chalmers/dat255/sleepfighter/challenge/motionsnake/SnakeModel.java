@@ -60,6 +60,12 @@ public class SnakeModel {
 	/** The size of the board. */
 	private Dimension boardSize;
 
+	/** The size of a tile. */
+	private int tileSize;
+
+	/** Whether game is over or not. */
+	private boolean gameOver;
+
 	/*
 	 * -------------------------------- Getters.
 	 * --------------------------------
@@ -109,6 +115,10 @@ public class SnakeModel {
 		return boardSize;
 	}
 
+	public boolean isGameOver() {
+		return gameOver;
+	}
+
 	/**
 	 * Returns whether or not a position is the head of the snake. Since snake
 	 * always has a head this method will never cause NullPointerException.
@@ -139,6 +149,12 @@ public class SnakeModel {
 
 		// Set board size.
 		this.boardSize = size;
+
+		// Set tile size.
+		this.tileSize = SnakeConstants.getTileSize();
+
+		// Set game status.
+		this.gameOver = false;
 
 		// Blank out the whole gameboard.
 		this.emptyPos = new ArrayList<Position>(size.getWidth()
@@ -248,6 +264,7 @@ public class SnakeModel {
 	 * @throws GameOverException
 	 */
 	private void gameOver() throws GameOverException {
+		gameOver = true;
 		throw new GameOverException(this.score);
 	}
 
@@ -284,8 +301,8 @@ public class SnakeModel {
 	/**
 	 * @param newHeadPos
 	 * @param otherPos
-	 * @return true if Snake (newHeadPos) collides with another object occupying
-	 *         otherPos
+	 * @return true if Snake (newHeadPos) collides with another object
+	 *         (typically fruit) occupying otherPos
 	 */
 	private boolean isCollision(Position newHeadPos, Position otherPos) {
 		boolean collision = false;
@@ -296,11 +313,13 @@ public class SnakeModel {
 		return collision;
 	}
 
+	/**
+	 * Check if Position pos is out of bounds on Android device.
+	 */
 	private boolean isOutOfBounds(Position pos) {
-		return pos.getX() < SnakeConstants.getTileSize()
-				|| pos.getY() < SnakeConstants.getTileSize()
-				|| pos.getY() > boardSize.getHeight()
-				|| pos.getX() > boardSize.getWidth();
+		return pos.getX() < tileSize || pos.getY() < tileSize
+				|| pos.getY() > boardSize.getHeight() - tileSize
+				|| pos.getX() > boardSize.getWidth() - tileSize;
 	}
 
 }

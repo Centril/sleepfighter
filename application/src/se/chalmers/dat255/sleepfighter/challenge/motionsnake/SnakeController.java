@@ -108,14 +108,20 @@ public class SnakeController {
 		return view;
 	}
 
-	public void pause(){
+	/**
+	 * Call when activity/game pauses. If not called, game will keep running.
+	 */
+	public void pause() {
 		this.thread.setRunning(false);
 	}
-	
-	public void resume(){
+
+	/**
+	 * Call when activity/game resumes.
+	 */
+	public void resume() {
 		this.thread.setRunning(true);
 	}
-	
+
 	private class SnakeThread extends Thread {
 		private boolean isRunning = true;
 
@@ -126,8 +132,10 @@ public class SnakeController {
 		@Override
 		public void run() {
 			while (isRunning) {
-				view.render();
 				update();
+				if (!model.isGameOver()) {
+					view.render();
+				}
 				try {
 					Thread.sleep(updateSpeed());
 				} catch (InterruptedException e) {
@@ -137,6 +145,9 @@ public class SnakeController {
 		}
 	}
 
+	/**
+	 * Call if the user gets game over without fulfilling victory conditions.
+	 */
 	private void resetGame() {
 		this.model = new SnakeModel(SnakeConstants.getGameSize(),
 				Direction.NORTH, this.rng);
