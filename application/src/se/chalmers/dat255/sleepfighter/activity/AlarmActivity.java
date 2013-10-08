@@ -19,6 +19,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,8 +39,13 @@ import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -55,7 +61,7 @@ import android.widget.Toast;
  * @version 1.0
  * @since Sep 20, 2013
  */
-public class AlarmActivity extends Activity {
+public class AlarmActivity extends Activity implements TextToSpeech.OnInitListener,  LocationListener {
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
 
@@ -66,6 +72,7 @@ public class AlarmActivity extends Activity {
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
 	public static final int CHALLENGE_REQUEST_CODE = 1;
+	public static final int CHECK_TTS_DATA_REQUEST_CODE = 2;
 
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
@@ -73,10 +80,52 @@ public class AlarmActivity extends Activity {
 	private TextView tvTime;
 	private Alarm alarm;
 	public Timer timer;
+	
+	// To support more languages we use.
+	// http://stackoverflow.com/questions/15691031/android-text-to-speech-not-working-w-japanese
+	// used to read out. 
+	private TextToSpeech tts;
+	
+	
+	
+	// called when tts has been fully initialized. 
+	@Override
+	public void onInit(int status) {
+		Debug.d("done initi tts");
+		
+	/*	tts.setLanguage(Locale.ENGLISH);
+		
+		tts.speak("Hello, master, it's time to wake up. The time is: "+ this.currentTime(), TextToSpeech.QUEUE_FLUSH, null);*/
+	}
+	
+	public String currentTime() {
+		String time =  new DateTime().toString();
+		Debug.d(time);
+		return time;
+	}
+		
+	// check whether we have TTS data. 
+	public void checkTextToSpeech() {
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, CHECK_TTS_DATA_REQUEST_CODE);
+	}
 
+	public void setupLocationListener() {
+		LocationManager locationManager = (LocationManager) 
+				getSystemService(Context.LOCATION_SERVICE);
+		
+		LocationListener locationListener = this;
+		locationManager.requestLocationUpdates(  
+		LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		setupLocationListener();
+		checkTextToSpeech();
 
 		// Turn and/or Keep screen on.
 		this.setScreenFlags();
@@ -244,7 +293,20 @@ public class AlarmActivity extends Activity {
 						Toast.LENGTH_LONG).show();
 			}
 
-		} else {
+		} else if(requestCode == CHECK_TTS_DATA_REQUEST_CODE) {
+			
+	        if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+	            // success, create the TTS instance
+	            tts = new TextToSpeech(this, this);
+	        } else {
+	            // missing TTS data, install it
+	            Intent installIntent = new Intent();
+	            installIntent.setAction(
+	                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+	            startActivity(installIntent);
+	        }
+			
+		}else {
 			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
@@ -312,5 +374,25 @@ public class AlarmActivity extends Activity {
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int minute = cal.get(Calendar.MINUTE);
 		return String.format("%02d:%02d", hour, minute);
+	}
+
+	// location listener LocationListener
+	@Override
+	public void onLocationChanged(Location loc) {
+	       Debug.d(
+	                "Location changed: Lat: " + loc.getLatitude() + " Lng: "
+	                    + loc.getLongitude());
+	}
+
+	@Override
+	public void onProviderDisabled(String arg0) {	
+	}
+
+	@Override
+	public void onProviderEnabled(String arg0) {	
+	}
+
+	@Override
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {		
 	}
 }

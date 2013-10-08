@@ -56,7 +56,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity  implements TextToSpeech.OnInitListener{
+public class MainActivity extends Activity {
 
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
@@ -78,39 +78,7 @@ public class MainActivity extends Activity  implements TextToSpeech.OnInitListen
 		return SFApplication.get();
 	}
 
-	public void checkTextToSpeech() {
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, 3);
-	}
 	
-	@Override
-	public void onInit(int status) {
-		Debug.d("done initi tts");
-		
-		mTts.setLanguage(Locale.ENGLISH);
-	}
-	
-	// To support more languages we use.
-	// http://stackoverflow.com/questions/15691031/android-text-to-speech-not-working-w-japanese
-	private TextToSpeech mTts;
-	
-	@Override
-	protected void onActivityResult(
-	        int requestCode, int resultCode, Intent data) {
-	    if (requestCode == 3) {
-	        if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-	            // success, create the TTS instance
-	            mTts = new TextToSpeech(this, this);
-	        } else {
-	            // missing data, install it
-	            Intent installIntent = new Intent();
-	            installIntent.setAction(
-	                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-	            startActivity(installIntent);
-	        }
-	    }
-	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +96,6 @@ public class MainActivity extends Activity  implements TextToSpeech.OnInitListen
 		this.updateEarliestText();
 		
 		
-		checkTextToSpeech();
 	}
 
 	@Override
@@ -358,8 +325,7 @@ public class MainActivity extends Activity  implements TextToSpeech.OnInitListen
 
 		case R.id.action_speech:
 			Debug.d("speech");
-			mTts.speak("Hello, master, it's time to wake up.", TextToSpeech.QUEUE_FLUSH, null);
-
+	
 			return true;
 			
 		case R.id.action_gpsfilter_area_edit:
