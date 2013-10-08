@@ -63,6 +63,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
 		try {
 			this.motionControl = new MotionControl(this.activity);
 		} catch (NoSensorException e) {
@@ -99,10 +100,6 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	private void handleRotation() {
-		// Debug.d("Azimuth: " + motionControl.getAzimuth());
-		// Debug.d("Pitch: " + motionControl.getPitch());
-		// Debug.d("Roll: " + motionControl.getRoll());
-
 		// User controls for the Challenge
 		if (withinMargin(Direction.WEST)) {
 			this.snakeController.update(Direction.WEST);
@@ -118,27 +115,20 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	private boolean withinMargin(Direction dir) {
 		this.angle = this.motionControl.getAzimuth();
 
-		boolean within = false;
-
 		switch (dir) {
 		case WEST:
-			within = Math.abs(Math.abs(this.angle) - this.margin) <= this.margin;
-			break;
+			return Math.abs(Math.abs(this.angle) - this.margin) <= this.margin;
 		case NORTH:
-			within = this.angle >= 0
+			return this.angle >= 0
 					&& Math.abs(this.angle - (Math.PI / 2)) <= this.margin;
-			break;
 		case EAST:
-			within = Math.abs(Math.abs(this.angle) - Math.PI) <= this.margin;
-			break;
+			return Math.abs(Math.abs(this.angle) - Math.PI) <= this.margin;
 		case SOUTH:
-			within = this.angle <= 0
-					&& Math.abs((this.angle + (Math.PI / 2))) <= this.margin;
-			break;
+			return this.angle <= 0
+					&& Math.abs(this.angle + (Math.PI / 2)) <= this.margin;
 		default:
-			break;
+			return false;
 		}
-		return within;
 	}
 
 	private void complete() {
