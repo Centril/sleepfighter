@@ -51,7 +51,6 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
 	private NoSensorException exception = null;
-	private boolean stopped = false;
 
 	private ChallengeConfigSet config;
 
@@ -159,14 +158,8 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	 */
 	public void pause() {
 		motionControl.unregisterSensorListener();
-		this.exception = null;
-		this.stopped = true;
 	}
 
-	public boolean isStopped() {
-		return this.stopped;
-	}
-		
 	@Override
 	public void start(ChallengeActivity activity, Bundle state) {
 		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE",
@@ -176,7 +169,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 	@Override
 	public Bundle savedState() {
-		// TODO Auto-generated method stub
+		// To be implemented
 		return null;
 	}
 
