@@ -35,6 +35,7 @@
     <string name="btn_answer">Answer</string>
     <string name="btn_complete" tools:ignore="MissingTranslation">Complete!</string>
     <string name="btn_fail" tools:ignore="MissingTranslation">Fail!</string>
+    <string name="challenge_points">Challenge Points</string>
 
     <!-- Alarm name & time, these should be overwritten -->
     <string name="alarm_name" tools:ignore="MissingTranslation">Alarm name</string>

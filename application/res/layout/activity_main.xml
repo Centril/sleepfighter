@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_margin="5dp"
-            android:gravity="center">
+            android:gravity="center"
+            tools:ignore="UseCompoundDrawables">
             
 	        <TextView 
 	            android:id="@+id/mainChallengePoints"
@@ -41,7 +42,7 @@
 	            android:adjustViewBounds="true"
 	            android:layout_height="18dp"
 	            android:layout_width="18dp"
-	            android:contentDescription="Challenge points" />
+	            android:contentDescription="@string/challenge_points" />
         </LinearLayout>
         
         <TextView
