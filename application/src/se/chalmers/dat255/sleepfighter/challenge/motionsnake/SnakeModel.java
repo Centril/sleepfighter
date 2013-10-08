@@ -217,12 +217,13 @@ public class SnakeModel {
 
 		// Check if there's food at the snakes head.
 		// If yes: Award client with score and add a new snake-food (if not
-		// possible -> game over).
+		// possible or if reached victory condition -> game over).
 		// If not: Transfer the previous snake tail position to empty positions
 		// and remove head from empty positions.
 		if (isCollision(newHeadPos, this.currFoodPos)) {
 			this.score++;
-			if (this.emptyPos.isEmpty()) {
+			if (this.emptyPos.isEmpty()
+					|| score == SnakeConstants.getVictoryCondition()) {
 				this.gameOver();
 			} else {
 				this.addFood();
@@ -232,10 +233,8 @@ public class SnakeModel {
 			this.emptyPos.remove(newHeadPos);
 		}
 
-		// Game Over if snake is out of bounds or if snake went into itself.
-		if (newHeadPos.isOutOfBounds(this.getBoardSize())
-				|| this.snakePos.contains(newHeadPos)
-				|| score == SnakeConstants.getVictoryCondition()) {
+		// Game Over if snake is out of bounds.
+		if (isOutOfBounds(newHeadPos)) {
 			this.gameOver();
 		}
 
@@ -289,16 +288,19 @@ public class SnakeModel {
 	 *         otherPos
 	 */
 	private boolean isCollision(Position newHeadPos, Position otherPos) {
-		boolean eats = false;
+		boolean collision = false;
 
 		if (otherPos.equals(newHeadPos)) {
-			eats = true;
+			collision = true;
 		}
-		// else if ((Math.abs(otherPos.getX() - newHeadPos.getX()) <=
-		// this.margin)
-		// && (Math.abs(otherPos.getY() - newHeadPos.getY()) <= this.margin)) {
-		// eats = true;
-		// }
-		return eats;
+		return collision;
 	}
+
+	private boolean isOutOfBounds(Position pos) {
+		return pos.getX() < SnakeConstants.getTileSize()
+				|| pos.getY() < SnakeConstants.getTileSize()
+				|| pos.getY() > boardSize.getHeight()
+				|| pos.getX() > boardSize.getWidth();
+	}
+
 }
