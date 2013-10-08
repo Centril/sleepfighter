@@ -24,8 +24,8 @@
     <string name="action_manage_gpsfilter_help">Help</string>
 
     <string-array name="manage_gpsfilter_areas_context">
-        <item>Edit exclusion area</item>
-        <item>Delete exclusion area</item>
+        <item>Edit area</item>
+        <item>Delete area</item>
     </string-array>
 
     <string name="manage_gpsfilter_what_splash_text">

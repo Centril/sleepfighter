@@ -65,8 +65,8 @@
         <item>Copy Alarm</item>
     </string-array>
 
-    <!-- Exclude Area (GPS) -->
-    <string name="action_gpsfilter_area_edit">Exclude Areas/GPS</string>
+    <!-- Location Filter -->
+    <string name="action_gpsfilter_area_edit">Location Filter</string>
 
     <string name="install_google_play_music_message">Please install Google Play Music</string>
     
