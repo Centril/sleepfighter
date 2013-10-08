@@ -117,14 +117,9 @@ public class SnakeController {
 
 		@Override
 		public void run() {
-			// int i = 0;
 			while (isRunning) {
 				update();
-				// i++;
-				// if(i == 10){
 				view.render();
-				// i = 0;
-				// }
 				try {
 					Thread.sleep(updateSpeed());
 				} catch (InterruptedException e) {

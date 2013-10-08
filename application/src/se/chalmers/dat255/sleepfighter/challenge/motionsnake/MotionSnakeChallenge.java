@@ -38,7 +38,12 @@ import android.widget.Toast;
  * A challenge that requires the player to move and rotate the device.
  */
 public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
-
+	/**
+	 * PrototypeDefinition for MotionSnakeChallenge.
+	 * 
+	 * @version 1.0
+	 * @since Oct 8, 2013
+	 */
 	public static class PrototypeDefinition extends
 			ChallengePrototypeDefinition {
 		{
@@ -169,7 +174,6 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 	@Override
 	public Bundle savedState() {
-		// To be implemented
 		return null;
 	}
 

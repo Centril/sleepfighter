@@ -34,13 +34,13 @@ public enum SnakeConstants {
 	 * --------------------------------
 	 */
 	/** The size of games, that is how many tiles there is in each axis. */
-	private static final Dimension SIZE = new Dimension(200, 100);
+	private static final Dimension SIZE = new Dimension(20, 10);
 
 	/** The size of each tile in game. */
-	private static final int TILE_SIZE = 10;
+	private static final int TILE_SIZE = 1;
 
 	/** The number of milliseconds (ms) between game updates. */
-	private static final int UPDATE_INTERVAL = 150;
+	private static final int UPDATE_INTERVAL = 300;
 
 	/** The initial length of snake. */
 	private static final int INITIAL_SNAKE_LENGTH = 10;
