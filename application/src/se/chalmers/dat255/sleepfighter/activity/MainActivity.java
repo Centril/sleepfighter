@@ -97,6 +97,7 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
+		this.updateChallengePoints();
 		this.updateEarliestText();
 	}
 
