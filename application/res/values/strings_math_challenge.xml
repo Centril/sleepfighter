@@ -23,13 +23,7 @@
     <string name="differentiation_challenge_desc">Find %s rounded to its nearest integer</string>
     <string name="gdc_challenge_desc">Find the greatest common divisor of %1$s and %2$s</string>
     <string name="prime_factor_challenge_desc">"Find the largest prime factor of %s</string>
-  
-    <!-- Math challenge setings --> 
-    <string name="challenge_math_settings_title">Math Settings</string>
- 
-    <string name="challenge_math_hard_problems_title">Use hard math problems</string>
-    <string name="challenge_math_hard_problems_summary">Hard.</string>
-    
+
     <!-- Math challenge setings --> 
     <string name="challenge_math_settings_title">Math Settings</string>
  
