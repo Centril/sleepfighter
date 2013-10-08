@@ -158,9 +158,9 @@ public class SnakeModel {
 
 		// Blank out the whole gameboard.
 		this.emptyPos = new ArrayList<Position>(size.getWidth()
-				* size.getWidth());
-		for (int i = 0; i < size.getWidth(); i++) {
-			for (int j = 0; j < size.getHeight(); j++) {
+				* size.getHeight() - this.tileSize);
+		for (int i = this.tileSize; i < size.getWidth(); i++) {
+			for (int j = this.tileSize; j < size.getHeight(); j++) {
 				this.emptyPos.add(new Position(i, j));
 			}
 		}
