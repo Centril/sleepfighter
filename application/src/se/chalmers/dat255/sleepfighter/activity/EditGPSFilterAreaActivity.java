@@ -24,6 +24,7 @@ import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.location.LocationAdapter;
+import se.chalmers.dat255.sleepfighter.gps.GPSFilterLocationRetriever;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
@@ -40,7 +41,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -240,34 +240,27 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	 * Moves the user to its current location.
 	 */
 	private void moveToCurrentLocation() {
-		// Getting LocationManager object from System Service LOCATION_SERVICE
-		LocationManager manager = (LocationManager) this.getSystemService( Context.LOCATION_SERVICE );
+		GPSFilterLocationRetriever retriever = new GPSFilterLocationRetriever( new Criteria() );
+		Location loc = retriever.getLocation( this );
 
-		// Creating a criteria object to retrieve provider
-		Criteria criteria = new Criteria();
-
-		// Getting the name of the best provider
-		String provider = manager.getBestProvider( criteria, true );
-
-		if ( provider == null ) {
+		if ( loc == null ) {
 			// User turned off GPS, send it to device location settings.
 			Intent i = new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
 			this.startActivity( i );
 		} else {
 			// First move to the last known location..
-			Location loc =  manager.getLastKnownLocation( provider );
 			this.moveCameraToLocation( loc, false );
 
 			// Check if location fix is out dated, if it is, request a new location, ONCE.
 			long elapsedTime = System.currentTimeMillis() - loc.getTime();
 			if ( elapsedTime > MAX_LOCATION_FIX_AGE ) {
-				// Therefore, we request a single 
-				manager.requestSingleUpdate( provider, new LocationAdapter() {
+				// Therefore, we request a single fix.
+				retriever.requestSingleUpdate( this, null, new LocationAdapter() {
 					@Override
 					public void onLocationChanged( Location loc ) {
 						moveCameraToLocation( loc, true );
 					}
-				}, null );
+				} );
 			}
 		}
 	}
