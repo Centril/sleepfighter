@@ -32,7 +32,7 @@ import android.preference.PreferenceManager;
  * @version 1.0
  * @since Sep 29, 2013
  */
-public class GlobalPreferencesReader {
+public class GlobalPreferencesManager {
 	private SharedPreferences prefs;
 
 	/**
@@ -40,7 +40,7 @@ public class GlobalPreferencesReader {
 	 * 
 	 * @param context application android context.
 	 */
-	public GlobalPreferencesReader( Context context ) {
+	public GlobalPreferencesManager( Context context ) {
 		this.prefs = PreferenceManager.getDefaultSharedPreferences( context );
 	}
 

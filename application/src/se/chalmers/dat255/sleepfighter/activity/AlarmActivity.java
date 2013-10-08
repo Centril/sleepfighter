@@ -30,7 +30,7 @@ import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
-import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
+import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
@@ -201,7 +201,7 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void readPreferences() {
-		GlobalPreferencesReader prefs = SFApplication.get().getPrefs();
+		GlobalPreferencesManager prefs = SFApplication.get().getPrefs();
 
 		this.turnScreenOn = prefs.turnScreenOn();
 		this.bypassLockscreen = prefs.bypassLockscreen();
