@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
@@ -151,6 +152,9 @@ public class ChallengeActivity extends Activity {
 		Toast.makeText(this, "DEBUG: Completed challenge", Toast.LENGTH_SHORT)
 				.show();
 		setResult(Activity.RESULT_OK);
+		
+		SFApplication.get().getPrefs().addChallengePoints(5);
+		
 		finish();
 	}
 

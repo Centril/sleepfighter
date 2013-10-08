@@ -51,6 +51,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -88,7 +89,9 @@ public class MainActivity extends Activity {
 		this.app().getBus().subscribe(this);
 
 		this.setupListView();
-
+		
+		this.setupChallengeToggle();
+		this.updateChallengePoints();
 		this.updateEarliestText();
 	}
 
@@ -96,6 +99,7 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
+		this.updateChallengePoints();
 		this.updateEarliestText();
 	}
 
@@ -106,6 +110,41 @@ public class MainActivity extends Activity {
 
 		// Register to get context menu events associated with listView
 		this.registerForContextMenu(listView);
+	}
+	
+	private void setupChallengeToggle() {
+		
+		ImageView toggleImage = (ImageView) findViewById(R.id.challenge_toggle);
+		ImageView pointImage = (ImageView) findViewById(R.id.challenge_points_icon);
+		
+		if (app().getPrefs().isChallengesActivated()) {
+			toggleImage.setImageResource(R.drawable.challenge_toggled);
+			pointImage.setImageResource(R.drawable.sun_enabled);
+		}
+		else {
+			toggleImage.setImageResource(R.drawable.challenge_untoggled);
+			pointImage.setImageResource(R.drawable.sun_disabled);
+		}
+		
+		toggleImage.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (app().getPrefs().isChallengesActivated()) {
+					app().getPrefs().setChallengesActivated(false);
+					((ImageView) v).setImageResource(R.drawable.challenge_untoggled);
+					findViewById(R.id.mainChallengePoints).setEnabled(false);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_disabled);
+				}
+				else {
+					app().getPrefs().setChallengesActivated(true);
+					((ImageView) v).setImageResource(R.drawable.challenge_toggled);
+					findViewById(R.id.mainChallengePoints).setEnabled(true);
+
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_enabled);
+				}
+			}
+			
+		});
 	}
 
 	private long getNow() {
@@ -286,6 +325,11 @@ public class MainActivity extends Activity {
 		earliestTimeText.setText(text);
 	}
 
+	private void updateChallengePoints() {
+		TextView cpText = (TextView) findViewById(R.id.mainChallengePoints);
+		cpText.setText(this.app().getPrefs().getChallengePoints() + " ");
+	}
+	
 	/**
 	 * Sends the user to the activity for editing GPSFilterArea:s.
 	 */
