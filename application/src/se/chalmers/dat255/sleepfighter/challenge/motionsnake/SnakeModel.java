@@ -60,9 +60,6 @@ public class SnakeModel {
 	/** The size of the board. */
 	private Dimension boardSize;
 
-	/** The margin for collisions. */
-	private int margin;
-
 	/*
 	 * -------------------------------- Getters.
 	 * --------------------------------
@@ -143,9 +140,6 @@ public class SnakeModel {
 		// Set board size.
 		this.boardSize = size;
 
-		// Set margin.
-		this.margin = SnakeConstants.getTileSize();
-
 		// Blank out the whole gameboard.
 		this.emptyPos = new ArrayList<Position>(size.getWidth()
 				* size.getWidth());
@@ -197,9 +191,12 @@ public class SnakeModel {
 	 *            wanted direction.
 	 */
 	public void updateDirection(Direction newDirection) {
-		// Don't change direction if it opposite to current one.
-		// This is one of the features of snake.
-		if (!newDirection.isOpposite(this.direction)) {
+		// Don't change direction if it is opposite to current one or if it is
+		// contained by snake.
+		// This is one of the features of THIS snake.
+		if (!newDirection.isOpposite(this.direction)
+				|| snakePos.contains(snakePos.peek()
+						.moveDirection(newDirection))) {
 			this.direction = newDirection;
 		}
 	}
@@ -296,10 +293,12 @@ public class SnakeModel {
 
 		if (otherPos.equals(newHeadPos)) {
 			eats = true;
-		} else if ((Math.abs(otherPos.getX() - newHeadPos.getX()) <= this.margin)
-				&& (Math.abs(otherPos.getY() - newHeadPos.getY()) <= this.margin)) {
-			eats = true;
 		}
+		// else if ((Math.abs(otherPos.getX() - newHeadPos.getX()) <=
+		// this.margin)
+		// && (Math.abs(otherPos.getY() - newHeadPos.getY()) <= this.margin)) {
+		// eats = true;
+		// }
 		return eats;
 	}
 }

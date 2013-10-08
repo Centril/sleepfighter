@@ -40,10 +40,10 @@ public enum SnakeConstants {
 	private static final int TILE_SIZE = 1;
 
 	/** The number of milliseconds (ms) between game updates. */
-	private static final int UPDATE_INTERVAL = 300;
+	private static final int UPDATE_INTERVAL = 800;
 
 	/** The initial length of snake. */
-	private static final int INITIAL_SNAKE_LENGTH = 10;
+	private static final int INITIAL_SNAKE_LENGTH = 3;
 
 	/** The color of food. */
 	private static final int FOOD_COLOR = Color.BLUE;

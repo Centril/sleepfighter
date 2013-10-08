@@ -32,7 +32,6 @@ import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.widget.Toast;
 
 /**
  * A challenge that requires the player to move and rotate the device.
@@ -85,6 +84,11 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	@Override
+	public void start(ChallengeActivity activity, Bundle state) {
+		this.start(activity, config);
+	}
+
+	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		Object source = event.getSource();
 		if (source.equals(this.motionControl)) {
@@ -92,7 +96,6 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		} else if (source.equals(this.snakeController)) {
 			this.complete();
 		}
-
 	}
 
 	private void handleRotation() {
@@ -119,24 +122,18 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
 		switch (dir) {
 		case WEST:
-			within = this.angle <= this.margin && this.angle >= 0
-					|| this.angle >= -this.margin && this.angle <= 0;
+			within = Math.abs(Math.abs(this.angle) - this.margin) <= this.margin;
 			break;
 		case NORTH:
-			within = this.angle <= Math.PI / 2 + this.margin && this.angle >= 0
-					|| this.angle >= Math.PI / 2 - this.margin
-					&& this.angle <= Math.PI / 2;
+			within = this.angle >= 0
+					&& Math.abs(this.angle - (Math.PI / 2)) <= this.margin;
 			break;
 		case EAST:
-			within = this.angle >= Math.PI - this.margin
-					|| this.angle <= -Math.PI + this.margin
-					&& this.angle >= -Math.PI / 2 + this.margin;
+			within = Math.abs(Math.abs(this.angle) - Math.PI) <= this.margin;
 			break;
 		case SOUTH:
-			within = this.angle <= -Math.PI / 2 + this.margin
-					&& this.angle >= -Math.PI / 2
-					|| this.angle >= -Math.PI / 2 - this.margin
-					&& this.angle <= -Math.PI / 2;
+			within = this.angle <= 0
+					&& Math.abs((this.angle + (Math.PI / 2))) <= this.margin;
 			break;
 		default:
 			break;
@@ -162,14 +159,8 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	 * continue listening to the Sensors, which is very expensive.
 	 */
 	public void pause() {
-		motionControl.unregisterSensorListener();
-	}
-
-	@Override
-	public void start(ChallengeActivity activity, Bundle state) {
-		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE",
-				Toast.LENGTH_LONG).show();
-		this.start(activity, config);
+		this.snakeController.pause();
+		this.motionControl.unregisterSensorListener();
 	}
 
 	@Override
@@ -180,6 +171,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	@Override
 	public void onResume() {
 		this.motionControl.resetListener();
+		this.snakeController.resume();
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class SnakeController {
 
 	protected void init() {
 		this.model = new SnakeModel(SnakeConstants.getGameSize(),
-				Direction.getRandom(this.rng), this.rng);
+				Direction.NORTH, this.rng);
 
 		this.view = new SnakeView(this.context, this.model);
 
@@ -85,8 +85,12 @@ public class SnakeController {
 			SnakeModel model = (SnakeModel) this.model;
 			model.tickUpdate();
 		} catch (GameOverException e) {
-			this.stopGame(e.getScore());
-			this.thread.setRunning(false);
+			if (e.getScore() <= SnakeConstants.getVictoryCondition()) {
+				this.stopGame(e.getScore());
+				this.thread.setRunning(false);
+			} else {
+				resetGame();
+			}
 		}
 	}
 
@@ -104,6 +108,14 @@ public class SnakeController {
 		return view;
 	}
 
+	public void pause(){
+		this.thread.setRunning(false);
+	}
+	
+	public void resume(){
+		this.thread.setRunning(true);
+	}
+	
 	private class SnakeThread extends Thread {
 		private boolean isRunning = true;
 
@@ -114,8 +126,8 @@ public class SnakeController {
 		@Override
 		public void run() {
 			while (isRunning) {
-				update();
 				view.render();
+				update();
 				try {
 					Thread.sleep(updateSpeed());
 				} catch (InterruptedException e) {
@@ -123,5 +135,10 @@ public class SnakeController {
 				}
 			}
 		}
+	}
+
+	private void resetGame() {
+		this.model = new SnakeModel(SnakeConstants.getGameSize(),
+				Direction.NORTH, this.rng);
 	}
 }
