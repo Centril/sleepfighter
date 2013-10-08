@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -38,8 +39,11 @@ import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -117,6 +121,56 @@ public class AlarmActivity extends Activity {
 
 		TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
 		pointText.setText(SFApplication.get().getPrefs().getChallengePoints() + " Challenge points.");
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.alarm_activity_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_emergency_stop:
+			handleEmergencyStop();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}		
+	}
+
+	/**
+	 * Handle what happens when the user presses the emergency stop.
+	 */
+	private void handleEmergencyStop() {
+		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
+		if (challengeEnabled) {
+			skipChallengeConfirm();
+		} else {
+			stopAlarm();
+		}
+	}
+
+	/**
+	 * Handles if the user uses emergency stop so that a challenge would be
+	 * skipped by showing confirmation dialog.
+	 */
+	private void skipChallengeConfirm() {
+		// Show confirmation dialog where the user has to confirm skipping the
+		// challenge, and in turn loose a lot of points
+		DialogInterface.OnClickListener yesAction = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO decide point amount
+				SFApplication.get().getPrefs().addChallengePoints(-100);
+				stopAlarm();
+			}
+		};
+		// TODO localized string, point amount insert using String.format?
+		DialogUtils.showConfirmationDialog(
+				"Sure you want to stop? You will loose a 100 points",
+				this, yesAction);
 	}
 
 	private void onStopClick() {
