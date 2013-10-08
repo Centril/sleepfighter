@@ -49,7 +49,7 @@ import android.widget.Toast;
 /**
  * A Class for randomly generating simple arithmetic challenges.
  * 
- * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist, Eric Arneb��ck
+ * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist, Eric Arnebäck
  */
 
 public class MathChallenge implements Challenge {
