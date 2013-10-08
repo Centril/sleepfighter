@@ -296,16 +296,23 @@ public class AlarmActivity extends Activity {
 	}
 
 	/*
-	 * Use to stop the timer
+	 * Use to stop the timer and release the camera
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onStop()
 	 */
 	@Override
 	protected void onStop() {
 		super.onStop();
+		
+		// Stop the timer
 		timer.cancel();
 		timer.purge();
 		timer = null;
+		
+		// Release the camera
+		if (camera != null) {
+			camera.release();
+		}
 	}
 
 	// Get the current time with the Calendar
