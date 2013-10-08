@@ -80,6 +80,10 @@ public class SnakeView extends SurfaceView implements Callback {
 		super(context);
 	}
 
+	public void setModel(SnakeModel model) {
+		this.snakeModel = model;
+	}
+
 	/**
 	 * Tests if the head will be accented.
 	 * 
