@@ -85,7 +85,7 @@ public class SnakeController {
 			SnakeModel model = (SnakeModel) this.model;
 			model.tickUpdate();
 		} catch (GameOverException e) {
-			if (e.getScore() <= SnakeConstants.getVictoryCondition()) {
+			if (e.getScore() >= SnakeConstants.getVictoryCondition()) {
 				this.stopGame(e.getScore());
 				this.thread.setRunning(false);
 			} else {
@@ -151,5 +151,6 @@ public class SnakeController {
 	private void resetGame() {
 		this.model = new SnakeModel(SnakeConstants.getGameSize(),
 				Direction.NORTH, this.rng);
+		this.view.setModel(this.model);
 	}
 }
