@@ -85,4 +85,16 @@ public class TestChallenge implements Challenge {
 	public Bundle savedState() {
 		return null;
 	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
+	}
 }

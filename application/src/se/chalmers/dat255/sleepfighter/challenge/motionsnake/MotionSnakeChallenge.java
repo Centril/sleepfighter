@@ -25,10 +25,8 @@ import java.beans.PropertyChangeListener;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.PrimitiveValueType;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
@@ -165,18 +163,10 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.stopped = true;
 	}
 
-	/**
-	 * To be called when activity resumes.
-	 */
-	public void resume() {
-		Debug.d("Resume");
-		this.motionControl.resetListener();
-	}
-
 	public boolean isStopped() {
 		return this.stopped;
 	}
-
+		
 	@Override
 	public void start(ChallengeActivity activity, Bundle state) {
 		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE",
@@ -188,5 +178,19 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	public Bundle savedState() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void onResume() {
+		this.motionControl.resetListener();
+	}
+
+	@Override
+	public void onPause() {
+		pause();
+	}
+
+	@Override
+	public void onDestroy() {
 	}
 }

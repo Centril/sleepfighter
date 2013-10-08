@@ -24,7 +24,6 @@ import java.util.Random;
 import java.util.Set;
 
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.challenge.motionsnake.MotionSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
@@ -157,11 +156,7 @@ public class ChallengeActivity extends Activity {
 	 */
 	protected void onPause() {
 		super.onPause();
-
-		if (this.challenge instanceof MotionSnakeChallenge
-				&& !((MotionSnakeChallenge) this.challenge).isStopped()) {
-			((MotionSnakeChallenge) challenge).pause();
-		}
+		this.challenge.onPause();
 	}
 
 	/**
@@ -170,10 +165,6 @@ public class ChallengeActivity extends Activity {
 	 */
 	protected void onResume() {
 		super.onResume();
-
-		if (this.challenge instanceof MotionSnakeChallenge
-				&& ((MotionSnakeChallenge) this.challenge).isStopped()) {
-			((MotionSnakeChallenge) challenge).resume();
-		}
+		this.challenge.onResume();
 	}
 }

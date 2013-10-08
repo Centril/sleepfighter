@@ -58,4 +58,20 @@ public interface Challenge {
 	 * @return a Parcelable to save.
 	 */
 	public Bundle savedState();
+
+	/**
+	 * Called when the leaves the activity.
+	 */
+	public void onPause();
+
+	/**
+	 * Called when a users enters the activity, either the first time or when
+	 * returning.
+	 */
+	public void onResume();
+
+	/**
+	 * Called when the activity is destroyed.
+	 */
+	public void onDestroy();
 }

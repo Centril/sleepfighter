@@ -279,4 +279,15 @@ public class SortChallenge implements Challenge {
 		}
 	}
 
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
+	}
 }

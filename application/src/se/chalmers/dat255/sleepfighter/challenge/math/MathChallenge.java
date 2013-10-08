@@ -269,7 +269,16 @@ public class MathChallenge implements Challenge {
 			editText.setText("");
 		}
 	}
-	
 
+	@Override
+	public void onPause() {
+	}
 
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
+	}
 }

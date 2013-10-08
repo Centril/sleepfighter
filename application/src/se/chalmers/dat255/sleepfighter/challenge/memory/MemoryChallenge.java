@@ -242,4 +242,16 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		
 		return outState;
 	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
+	}
 }

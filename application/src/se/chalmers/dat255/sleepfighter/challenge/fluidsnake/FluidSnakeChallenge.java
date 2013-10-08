@@ -166,4 +166,16 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	public Bundle savedState() {
 		return null;
 	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onDestroy() {
+	}
 }
