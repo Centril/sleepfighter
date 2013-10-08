@@ -63,7 +63,8 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
+		this.activity.setTitle("Rotate the device to control the snake!");
+		
 		try {
 			this.motionControl = new MotionControl(this.activity);
 		} catch (NoSensorException e) {

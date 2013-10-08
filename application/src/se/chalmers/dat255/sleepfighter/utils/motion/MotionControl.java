@@ -37,7 +37,7 @@ public class MotionControl implements SensorEventListener {
 
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
-	private int defaultSensorType = Sensor.TYPE_ACCELEROMETER;
+	private static int sensorType = Sensor.TYPE_ACCELEROMETER;
 	private PropertyChangeSupport pcs;
 	private float[] orientation = new float[3];
 
@@ -62,7 +62,7 @@ public class MotionControl implements SensorEventListener {
 		this.mSensorManager = (SensorManager) activity
 				.getSystemService(Activity.SENSOR_SERVICE);
 
-		setSensor(defaultSensorType);
+		this.setSensor();
 
 		this.mSensorManager.registerListener(this, this.mSensor,
 				SensorManager.SENSOR_DELAY_NORMAL);
@@ -80,12 +80,15 @@ public class MotionControl implements SensorEventListener {
 	 * @throws NoSensorException
 	 *             Thrown if Sensor type unavailable on the device.
 	 */
-	public void setSensor(int type) throws NoSensorException {
-		Sensor temp = this.mSensorManager.getDefaultSensor(type);
+	private void setSensor() throws NoSensorException {
+		Sensor temp = this.mSensorManager.getDefaultSensor(sensorType);
 
 		if (temp != null) {
-			// If it exists, use the preferred sensor
-			List<Sensor> sensors = mSensorManager.getSensorList(type);
+
+			// If it exists, use the preferred Sensor
+			List<Sensor> sensors = mSensorManager
+					.getSensorList(sensorType);
+
 			for (int i = 0; i < sensors.size(); i++) {
 				if ((sensors.get(i).getVendor().contains(this.preferredVendor))
 						&& (sensors.get(i).getVersion() == this.preferredVersion)) {
@@ -163,4 +166,5 @@ public class MotionControl implements SensorEventListener {
 		this.mSensorManager.registerListener(this, this.mSensor,
 				SensorManager.SENSOR_DELAY_NORMAL);
 	}
+
 }
