@@ -111,10 +111,6 @@ public class SnakeController {
 			this.isRunning = isRunning;
 		}
 
-		public boolean isRunning() {
-			return isRunning;
-		}
-
 		@Override
 		public void run() {
 			while (isRunning) {
