@@ -37,6 +37,7 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -44,6 +45,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -54,7 +56,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity  implements TextToSpeech.OnInitListener{
 
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
@@ -76,6 +78,40 @@ public class MainActivity extends Activity {
 		return SFApplication.get();
 	}
 
+	public void checkTextToSpeech() {
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, 3);
+	}
+	
+	@Override
+	public void onInit(int status) {
+		Debug.d("done initi tts");
+		
+		mTts.setLanguage(Locale.ENGLISH);
+	}
+	
+	// To support more languages we use.
+	// http://stackoverflow.com/questions/15691031/android-text-to-speech-not-working-w-japanese
+	private TextToSpeech mTts;
+	
+	@Override
+	protected void onActivityResult(
+	        int requestCode, int resultCode, Intent data) {
+	    if (requestCode == 3) {
+	        if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+	            // success, create the TTS instance
+	            mTts = new TextToSpeech(this, this);
+	        } else {
+	            // missing data, install it
+	            Intent installIntent = new Intent();
+	            installIntent.setAction(
+	                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+	            startActivity(installIntent);
+	        }
+	    }
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -90,6 +126,9 @@ public class MainActivity extends Activity {
 		this.setupListView();
 
 		this.updateEarliestText();
+		
+		
+		checkTextToSpeech();
 	}
 
 	@Override
@@ -317,6 +356,12 @@ public class MainActivity extends Activity {
 			startDebugChallenge();
 			return true;
 
+		case R.id.action_speech:
+			Debug.d("speech");
+			mTts.speak("Hello, master, it's time to wake up.", TextToSpeech.QUEUE_FLUSH, null);
+
+			return true;
+			
 		case R.id.action_gpsfilter_area_edit:
 			this.startGPSFilterAreaEdit();
 			return true;
@@ -357,4 +402,6 @@ public class MainActivity extends Activity {
 		AlertDialog dialog = builder.create();
 		dialog.show();
 	}
+
+	
 }
