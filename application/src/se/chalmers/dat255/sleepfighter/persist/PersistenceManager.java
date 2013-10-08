@@ -372,7 +372,7 @@ public class PersistenceManager {
 
 		// 3) Sanity fix. Find any missing ChallengeType:s and add them.
 		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
-			Set<ChallengeType> missingTypes = Sets.complementOf( challengeSet.getDefinedTypes() );
+			Set<ChallengeType> missingTypes = Sets.complementOf( challengeSet.getDefinedTypes(), ChallengeType.class );
 
 			for ( ChallengeType type : missingTypes ) {
 				ChallengeConfig config =  new ChallengeConfig( type, false );
