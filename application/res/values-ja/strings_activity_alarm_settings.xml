@@ -80,5 +80,6 @@
     
      <string name="pref_challenge">チャレンジ</string>
   
+     <string name="title_alarm_challenge_settings">チャレンジ設定</string>  
 	
 </resources>

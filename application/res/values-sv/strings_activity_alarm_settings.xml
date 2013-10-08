@@ -84,4 +84,7 @@
     
     <string name="pref_challenge">Utmaningar</string>
   
+        <string name="title_alarm_challenge_settings">Utmaningsinställningar</string>
+    
+    
 </resources>

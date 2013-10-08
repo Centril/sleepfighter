@@ -49,7 +49,7 @@ import android.widget.Toast;
 /**
  * A Class for randomly generating simple arithmetic challenges.
  * 
- * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist, Eric Arnebäck
+ * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist, Eric Arneb��ck
  */
 
 public class MathChallenge implements Challenge {
@@ -119,7 +119,8 @@ public class MathChallenge implements Challenge {
 		
 		// here we randomize a type.
 		
-		boolean hardProblems = getHardProblemsSetting();
+		// TODO: for some reason getHardProblemsSetting is always false.
+		boolean hardProblems = true;// getHardProblemsSetting();
 			
 		if(!hardProblems) {
 			this.problemType = ProblemType.simple;
