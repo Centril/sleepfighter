@@ -91,4 +91,14 @@ public class GlobalPreferencesReader {
 		edit.putInt("challenge_points", prefs.getInt("challenge_points", 100) + points);
 		edit.commit();
 	}
+	
+	public boolean isChallengesActivated() {
+		return prefs.getBoolean("challenges_activated", true);
+	}
+	
+	public void setChallengesActivated(boolean isActivated) {
+		Editor edit = prefs.edit();
+		edit.putBoolean("challenges_activated", isActivated);
+		edit.commit();
+	}
 }
