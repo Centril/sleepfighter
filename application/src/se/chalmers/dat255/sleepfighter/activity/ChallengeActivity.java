@@ -150,21 +150,21 @@ public class ChallengeActivity extends Activity {
 		finish();
 	}
 
-	/**
-	 * Called when SleepFighter pauses/becomes invisible to user. Necessary for
-	 * MotionSnakeChallenge, so the MotionControl stops consuming power.
-	 */
+	@Override
 	protected void onPause() {
 		super.onPause();
 		this.challenge.onPause();
 	}
 
-	/**
-	 * When SleepFighter becomes visible for user again. Necessary for
-	 * MotionSnakeChallenge, to start collecting Sensor data again.
-	 */
+	@Override
 	protected void onResume() {
 		super.onResume();
 		this.challenge.onResume();
 	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		this.challenge.onDestroy();
+	};
 }
