@@ -22,6 +22,9 @@ import java.util.Random;
 
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 
+import android.content.Context;
+
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 
@@ -29,6 +32,8 @@ import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
  * Challenge: compute the value of a derivative. 
  */
 public class DifferentiationProblem implements MathProblem {
+	
+	private final Context context;
 	
 	// See the documentation of DerivativeStructure for details. 
 	private static final int PARAMETERS = 1;
@@ -119,8 +124,10 @@ public class DifferentiationProblem implements MathProblem {
 		Function f = randomFunction();
 		this.solution = (int)Math.round(f.f.getPartialDerivative(1));
 		this.renderedString = "$f(x) = " + f.s + "$";
-		this.renderedString += "<br>Find $f'(" + this.x + ")$ rounded to its nearest integer";
-		Debug.d("solution is " + solution);
+		
+		String format =  context.getResources().getString(R.string.differentiation_challenge_desc);
+		this.renderedString += "<br>" + String.format(format, "$f'(" + this.x + ")$");
+		Debug.d("solution is " + solution);	
 	}
 	
 	// The identity function f(x) = x
@@ -228,8 +235,8 @@ public class DifferentiationProblem implements MathProblem {
 		return ret;
 	}
 	
-	public DifferentiationProblem() {
-		
+	public DifferentiationProblem(Context context) {
+		this.context = context;
 	}
 	
 }

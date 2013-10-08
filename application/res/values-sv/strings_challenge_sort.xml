@@ -21,4 +21,9 @@
     <string name="challenge_sort_ascending">Tryck panelerna från lågt till högt</string>
     <string name="challenge_sort_descending">Tryck panelerna från högt till lågt</string>
     <string name="challenge_sort_done">Klar!</string>
+    
+       <string name="challenge_sort_settings_title">Utmaning sortering inställningar</string>
+    <string name="challenge_sort_color_confusion_title">Färgförvirrning</string>
+    <string name="challenge_sort_color_confusion_summary">Om inställningen är på, kommer siffrornas backgrunder ha olika färger.</string>
+    
 </resources>

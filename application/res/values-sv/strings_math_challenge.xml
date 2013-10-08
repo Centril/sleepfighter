@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+   
+    <string name="matrix_challenge_desc">Beräkna determinanten av %s</string>
+    
+       <string name="differentiation_challenge_desc">Beräkna %s avrundat till sitt närmsta heltal</string>
+ 
+      <string name="gdc_challenge_desc">Finn den största gemensamma delaren till %1$s och %2$s</string>
+  
+ 
+      <string name="prime_factor_challenge_desc">"Finn den största primtalsfaktorn av %s</string>
+ 
+      <string name="challenge_math_hard_problems_title">Svåra mattetal. </string>
+    <string name="challenge_math_hard_problems_summary">Används svårare mattetal på gymnasienivå.</string>
+    
+    
+      
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    <string name="title_activity_manage_gpsfilter_areas">Location Filter</string>
+    <string name="action_gpsfilter_areas_add">Add area</string>
+    <string name="action_gpsfilter_areas_clear">Clear</string>
+    <string name="action_manage_gpsfilter_help">Help</string>
+
+    <string-array name="manage_gpsfilter_areas_context">
+        <item>Edit exclusion area</item>
+        <item>Delete exclusion area</item>
+    </string-array>
+
+    <string name="manage_gpsfilter_what_splash_text">
+	<![CDATA[
+	<p><b>Location Filter</b> is a feature that lets you i.e <b>avoid embarrasing moments</b> like when the alarm rings during a lecture or meeting.</p>
+	<p>It lets you setup areas you must be in <i><font color=\"#00ddff\">(include)</font></i> and/or areas you can\'t be in <i><font color=\"#ff4444\">(exclude)</font></i> for an alarm to ring</p>
+	<p>Tap the plus / add button to add an area.</p>
+	<p>Note that location providers may be <b>inacturate</b>, so give as wide of a range as possible</p>
+	]]>
+	</string>
+</resources>

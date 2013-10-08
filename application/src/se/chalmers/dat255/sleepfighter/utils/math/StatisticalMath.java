@@ -72,4 +72,52 @@ public class StatisticalMath {
 
 		return sum / arr.length;
 	}
+
+	/**
+	 * Computes the coefficient of variance of a double array.
+	 *
+	 * @param arr the array.
+	 * @return the resulting coefficient.
+	 */
+	public static double computeVariance( double[] arr ) {
+		double mean = computeMean( arr );
+		double stdDev = computeStdDev( arr, mean );
+
+		return stdDev / mean;
+	}
+
+	/**
+	 * Computes the standard deviation of an double array given its mean.<br/>
+	 * It is not defined for an empty array.
+	 *
+	 * @param arr the array.
+	 * @param mean the mean.
+	 * @return the resulting standard deviation.
+	 */
+	public static double computeStdDev( double[] arr, double mean ) {
+		double diffSquareSum = 0;
+		for ( double i : arr ) {
+			double diff = i - mean;
+			diffSquareSum += diff * diff;
+		}
+
+		return Math.sqrt( diffSquareSum / arr.length );
+	}
+
+	/**
+	 * Computes the mean of an double array.<br/>
+	 * It is not defined for an empty array.
+	 *
+	 * @param arr the array.
+	 * @return the resulting mean.
+	 */
+	public static double computeMean( double[] arr ) {
+		double sum = 0;
+		for ( double i : arr ) {
+			sum += i;
+		}
+
+		return sum / arr.length;
+	}
+
 }

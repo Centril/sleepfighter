@@ -19,6 +19,11 @@
 -->
 <resources>
 
+    <string name="challenge_category_title">Challenge</string>
+    <string name="challenge_category_title_plural">Challenges</string>
+
     <string name="title_alarm_challenge_settings">Challenge settings</string>
+
+    <string name="challenge_params_title">Settings</string>
 
 </resources>

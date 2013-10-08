@@ -26,11 +26,13 @@
 
     <include android:id="@+id/challenge_sort_description" layout="@layout/challenge_sort_description" />
 
-    <se.chalmers.dat255.sleepfighter.android.component.layout.SquareLayout
+    <se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout
         android:id="@+id/challenge_sort_square"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center" >
+        android:layout_gravity="center"
+        xmlns:custom="http://schemas.android.com/apk/res/se.chalmers.dat255.sleepfighter"
+        custom:scale="1.0" >
 
         <TableLayout
             android:id="@+id/challenge_sort_button_container"
@@ -94,6 +96,6 @@
 
             </TableRow>
         </TableLayout>
-    </se.chalmers.dat255.sleepfighter.android.component.layout.SquareLayout>
+    </se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout>
 
 </LinearLayout>

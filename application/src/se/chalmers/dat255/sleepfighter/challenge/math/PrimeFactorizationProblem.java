@@ -20,6 +20,9 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 
 import java.util.Random;
 
+import android.content.Context;
+
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 
@@ -31,6 +34,7 @@ public class PrimeFactorizationProblem implements MathProblem {
 	// we'll use these primes in the creation of the number.
 	private static final int[] PRIMES = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59};
 
+	private final Context context;
 	
 	private int solution;
 	
@@ -69,18 +73,16 @@ public class PrimeFactorizationProblem implements MathProblem {
 	
 	public void newProblem() {
 		
-		
-		
 		int n = createNumber();
 		
-		this.renderedString = "Find the largest prime factor of $" + n + "$";
-		Debug.d(solution + "");
+		String format =  context.getResources().getString(R.string.prime_factor_challenge_desc);
 		
+		this.renderedString = String.format(format, "$" + n + "$");
+		Debug.d(solution + "");
 	}
 	
-	
-	public PrimeFactorizationProblem() {
-		
+	public PrimeFactorizationProblem(final Context context) {
+		this.context = context;
 	}
 	
 }

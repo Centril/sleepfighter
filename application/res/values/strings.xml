@@ -29,7 +29,7 @@
     <string name="pre_chal_act">A wild challenge appears!</string>
     <string name="memory_chal_act">Memory</string>
     <string name="snooze">Snooze</string>
-
+	
     <!-- Challenges -->
     <string name="start_challenge">Stop the madness!</string>
     <string name="btn_answer">Answer</string>
@@ -40,6 +40,7 @@
     <string name="alarm_name" tools:ignore="MissingTranslation">Alarm name</string>
     <string name="alarm_time" tools:ignore="MissingTranslation">00:00</string>
 
+    <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">
         <item>No alarm active</item>
         <item>In &lt; 1 minute</item>
@@ -57,10 +58,16 @@
         <item>Tomorrow %1$s</item>
         <item>%2$s %1$s</item> <!-- %2$s = [Monday, ...] -->
     </string-array>
+
     <string-array name="main_list_context_menu">
         <item>Edit alarm</item>
         <item>Delete alarm</item>
         <item>Copy Alarm</item>
     </string-array>
 
+    <!-- Exclude Area (GPS) -->
+    <string name="action_gpsfilter_area_edit">Exclude Areas/GPS</string>
+
+    <string name="install_google_play_music_message">Please install Google Play Music</string>
+    
 </resources>

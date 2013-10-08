@@ -55,5 +55,8 @@
         <item>削除</item>
         <item>コピー</item>
     </string-array>
+    
+    
+    <string name="install_google_play_music_message">「Google Play Music」をインストールしてください</string>
 
 </resources>

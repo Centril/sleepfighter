@@ -18,16 +18,22 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
+import java.util.Map;
+
 import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.FluidSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.memory.MemoryChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.motionsnake.MotionSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
+
+import com.google.common.collect.Maps;
 
 /**
  * A simple factory class for construction of challenges.
  */
 public class ChallengeFactory {
+	private static Map<ChallengeType, ChallengePrototypeDefinition> prototypeDefinitions;
 
 	/**
 	 * Construct a new instance of {@link Challenge} from a given
@@ -49,10 +55,53 @@ public class ChallengeFactory {
 			return new SortChallenge();
 		case FLUID_SNAKE:
 			return new FluidSnakeChallenge();
+		case MOTION_SNAKE:
+			return new MotionSnakeChallenge();
 		case SHAKE:
 			return new ShakeChallenge();
 		default:
 			throw new IllegalArgumentException("Undefined challenge");
 		}
+	}
+
+	public static ChallengePrototypeDefinition getPrototypeDefinition( ChallengeType type ) {
+		if ( prototypeDefinitions == null ) {
+			prototypeDefinitions = Maps.newEnumMap( ChallengeType.class );
+		}
+
+		ChallengePrototypeDefinition def = prototypeDefinitions.get( type );
+
+		if ( def == null ) {
+			switch ( type ) {
+			case TEST:
+				def = new TestChallenge.PrototypeDefinition();
+				break;
+
+			case MATH:
+				def = new MathChallenge.PrototypeDefinition();
+				break;
+
+			case MEMORY:
+				def = new MemoryChallenge.PrototypeDefinition();
+				break;
+
+			case SORT:
+				def = new SortChallenge.PrototypeDefinition();
+				break;
+
+			case FLUID_SNAKE:
+				def = new FluidSnakeChallenge.PrototypeDefinition();
+				break;
+			case MOTION_SNAKE:
+				def = new MotionSnakeChallenge.PrototypeDefinition();
+				break;
+			default:
+				throw new IllegalArgumentException( "Undefined challenge" );
+			}
+
+			prototypeDefinitions.put( type, def );
+		}
+
+		return def;
 	}
 }

@@ -26,10 +26,12 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 
 /**
  * A challenge where the user have to shake the device to complete it.
@@ -49,7 +51,7 @@ public class ShakeChallenge implements Challenge {
 	private Vector3D lastVector;
 
 	@Override
-	public void start(ChallengeActivity activity) {
+	public void start(ChallengeActivity activity, ChallengeConfigSet config) {
 		this.activity = activity;
 		this.activity.setContentView(R.layout.challenge_shake);
 
@@ -70,9 +72,14 @@ public class ShakeChallenge implements Challenge {
 		this.accelerometer = sensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		this.sensorManager.registerListener(this.sensorEventListener,
-				accelerometer, SensorManager.SENSOR_DELAY_GAME);
+				accelerometer, SensorManager.SENSOR_DELAY_GAME);		
 	}
 
+	@Override
+	public void start(ChallengeActivity activity, Bundle state) {
+		start(activity, (ChallengeConfigSet) null);
+	}
+	
 	private SensorEventListener sensorEventListener = new SensorEventListener() {
 
 		@Override
@@ -123,10 +130,28 @@ public class ShakeChallenge implements Challenge {
 
 	private void checkIfCompleted() {
 		if (accumulator >= GOAL) {
-			// Unregister when done, should also be done on something like
-			// onPause
+			// Unregister when done
 			this.sensorManager.unregisterListener(sensorEventListener);
 			this.activity.complete();
 		}
+	}
+
+	@Override
+	public Bundle savedState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void onPause() {
+		this.sensorManager.unregisterListener(sensorEventListener);
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
 	}
 }

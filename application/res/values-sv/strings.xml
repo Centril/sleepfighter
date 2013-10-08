@@ -58,5 +58,10 @@
         <item>Ta bort alarm</item>
         <item>Kopiera alarm</item>
     </string-array>
+    
+    
+    
+    <string name="install_google_play_music_message">Vänligen installera Google Play Music</string>
+    
 
 </resources>

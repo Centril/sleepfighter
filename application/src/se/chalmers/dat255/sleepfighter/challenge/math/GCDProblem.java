@@ -20,6 +20,9 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 
 import java.util.Random;
 
+import android.content.Context;
+
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 
@@ -27,6 +30,7 @@ import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
  * Challenge: Compute the greatest common divisor of two numbers. 
  */
 public class GCDProblem implements MathProblem {
+	final Context context;
 	
 	// ranges of the numbers to compute the gcd of. 
 	final static int MIN = 100;
@@ -79,13 +83,14 @@ public class GCDProblem implements MathProblem {
 		
 		createNumbers();
 		
-		this.renderedString = "Find the greatest common divisor of $" + number1 + "$ and $" + number2 + "$";
+		String format =  context.getResources().getString(R.string.gdc_challenge_desc);
+		this.renderedString =String.format(format, "$" + number1 + "$",  "$" + number2 + "$");
 		Debug.d(solution + "");
 	}
 	
 	
-	public GCDProblem() {
-		
+	public GCDProblem(final Context context) {
+		this.context = context;
 	}
 	
 }

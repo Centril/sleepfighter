@@ -1,11 +1,11 @@
-For license check LICENSE.txt.
+﻿For license check LICENSE.txt.
 
 Unless otherwise specified in a file, ALL files with a copyright notice directing to this file, AUTHORS.txt,
 have the following copyright holders listed in alphabetic order:
 
-	Danny Lam, <fyll_i@example.com>
+	Danny Lam, <dannylaam@gmail.com>
 	Eric Arnebäck, <erkastina@hotmail.com>
-	Johan Hasselqvist, <fyll_i@example.com>
-	Laszlo Sall Vesselenyi <fyll_i@example.com>
+	Johan Hasselqvist, <johan_hasselqvist@hotmail.com>
+	Laszlo Sall Vesselenyi <metaomega@gmail.com>
 	Mazdak Farrokhzad, <twingoow@gmail.com>
 	Niklas Helmertz, <niklas.helmertz@gmail.com>

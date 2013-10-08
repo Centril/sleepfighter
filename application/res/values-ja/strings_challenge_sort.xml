@@ -21,4 +21,9 @@
     <string name="challenge_sort_ascending">低値から高値までタップしてください</string>
     <string name="challenge_sort_descending">高値から低値までタップしてください</string>
     <string name="challenge_sort_done">終了</string>
+    
+       <string name="challenge_sort_settings_title">ソート設定</string>
+    <string name="challenge_sort_color_confusion_title">カラー混乱</string>
+    <string name="challenge_sort_color_confusion_summary">オンにすると、それぞれの数字の背景式がランダムカラーになります。</string>
+    
 </resources>

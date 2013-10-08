@@ -47,14 +47,9 @@
     </PreferenceCategory>
 
 	<PreferenceCategory android:title="@string/challenge_category_title" >
-
-	    <CheckBoxPreference 
-	        android:key="pref_challenge_enable"
-	        android:title="@string/pref_challenge_enabled" />
-	    
-	    <Preference 
-	        android:key="pref_challenge_select"
-	        android:title="@string/pref_challenge_select" />
+	    <se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference
+	        android:key="pref_challenge"
+	        android:title="@string/pref_challenge" />
 
 	</PreferenceCategory>
     

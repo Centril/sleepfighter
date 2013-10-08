@@ -126,4 +126,10 @@ public class RandomMath {
 		while ( (r = nextGaussianRanged( rng, min, max, maxIterations, deviations )) % 10 == 0 );
 		return r;
 	}
+	
+	// get a random enum value. 
+    public static <T extends Enum<?>> T randomEnum(Random rng, Class<T> clazz){
+        int x = rng.nextInt(clazz.getEnumConstants().length);
+        return clazz.getEnumConstants()[x];
+    }
 }

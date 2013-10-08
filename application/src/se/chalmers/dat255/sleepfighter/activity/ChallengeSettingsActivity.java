@@ -19,22 +19,36 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
-import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
 
+/**
+ * ChallengeSettingsActivity handles enabling / disabled challenge types<br/>
+ * and forwards user for more advanced settings.
+ *
+ * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+ * @version 1.0
+ * @since Oct 5, 2013
+ */
 public class ChallengeSettingsActivity extends PreferenceActivity {
 
 	private Alarm alarm;
+	private ChallengeConfigSet challengeSet;
+
 	private String[] names;
 	private String[] descriptions;
 
@@ -44,57 +58,97 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Get alarm from intent bundle
-		int bundledAlarmID = new IntentUtils(getIntent()).getAlarmId();
-		AlarmList alarmList = SFApplication.get().getAlarms();
-		this.alarm = alarmList.getById(bundledAlarmID);
+		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
+		this.challengeSet = this.alarm.getChallengeSet();
 
 		addPreferencesFromResource(R.xml.pref_alarm_challenge);
 
 		// Programmatically add Preference entries in category for all
-		// challenges defined in enum
+		// challenges defined in for challenge set.
 		PreferenceCategory pc = (PreferenceCategory) findPreference("pref_challenge_category");
-		ChallengeType[] types = ChallengeType.values();
-		for (final ChallengeType type : types) {
-			Preference p = getChallengePreference(type);
+
+		for ( final ChallengeType type : this.challengeSet.getDefinedTypes() ) {
+			Preference p = makeChallengePreference(type);
 			pc.addPreference(p);
 		}
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu( Menu menu ) {
+		this.getMenuInflater().inflate(R.menu.alarm_settings_menu, menu);
+		return true;
+	}	
 
 	/**
 	 * Create a Preference for a ChallengeType
 	 * 
-	 * @param type
-	 *            the ChallengeType
+	 * @param type the ChallengeType
 	 * @return a Preference for the ChallengeType
 	 */
-	private Preference getChallengePreference(final ChallengeType type) {
-		final CheckBoxPreference preference = new CheckBoxPreference(this);
-
-		boolean enabled = this.alarm.getChallengeSet().getConfig(type).isEnabled();
-		preference.setChecked(enabled);
-
-		// Makes sure nothing is stored in SharedPreferences
+	private Preference makeChallengePreference( final ChallengeType type ) {
+		// Setup L&F of preference.
+		final EnablePlusSettingsPreference preference = new EnablePlusSettingsPreference(this);
 		preference.setPersistent(false);
+		preference.setTitleColor( this.getResources().getColor( R.color.holo_red_light ) );
 
+		// Set name & summary.
 		String name = getName(type);
 		String description = getDescription(type);
-
 		preference.setTitle(name);
 		preference.setSummary(description);
+
+		// Set enabled/disabled.
+		boolean enabled = this.challengeSet.getConfig(type).isEnabled();
+		preference.setChecked(enabled);
+
+		// Bind listener for when enabled/disabled changes.
 		preference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			@Override
-			public boolean onPreferenceChange(Preference preference,
-					Object newValue) {
-				boolean checked = (Boolean) newValue;
-				
-				ChallengeConfigSet set = ChallengeSettingsActivity.this.alarm.getChallengeSet();
-				set.setEnabled(type, checked);
-				
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				challengeEnabledChanged( type, (Boolean) newValue );
 				return true;
 			}
 		});
+
+		// Bind listener for advanced button click.
+		ChallengePrototypeDefinition def = ChallengeFactory.getPrototypeDefinition( type );
+		if ( def.hasParams() ) {
+			preference.setOnButtonClickListener( new OnClickListener() {
+				@Override
+				public void onClick( View v ) {
+					gotoPreferencesSettings( type );
+				}
+				
+			} );
+		} else {
+			preference.setUseButton( false );
+		}
+
 		return preference;
+	}
+
+	/**
+	 * Changes enabled/disabled for type.
+	 *
+	 * @param type the type to change for.
+	 * @param isEnabled whether to enable/disable.
+	 */
+	protected void challengeEnabledChanged( ChallengeType type, boolean isEnabled ) {
+		this.challengeSet.setEnabled( type, isEnabled );
+	}
+
+	/**
+	 * Moves the user to settings screen for a challenge type.
+	 *
+	 * @param type the challenge type.
+	 */
+	protected void gotoPreferencesSettings( ChallengeType type ) {
+		Intent i = new Intent( this, ChallengeParamsSettingsActivity.class );
+		new IntentUtils( i ).setAlarmId( alarm );
+
+		i.putExtra( ChallengeParamsSettingsActivity.EXTRAS_CHALLENGE_TYPE, type );
+
+		this.startActivity( i );
 	}
 
 	/**
