@@ -19,11 +19,12 @@
 package se.chalmers.dat255.sleepfighter.model.gps;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 
 import nsidc.spheres.Point;
 import nsidc.spheres.SphericalPolygon;
+
+import com.google.common.collect.Lists;
 
 /**
  * GPSFilterPolygon defines a spherical polygon with (lat, lng) vectors to filter.<br/>
@@ -36,7 +37,7 @@ import nsidc.spheres.SphericalPolygon;
 public class GPSFilterPolygon implements Serializable {
 	private static final long serialVersionUID = -4728521809228656822L;
 
-	private List<GPSLatLng> poly;
+	private double[][] poly;
 
 	/**
 	 * Default constructor.
@@ -59,7 +60,7 @@ public class GPSFilterPolygon implements Serializable {
 	 * @param points the points.
 	 */
 	public void setPoints( List<GPSLatLng> points ) {
-		this.poly = points;
+		this.poly = this.asArray( points );
 	}
 
 	/**
@@ -80,8 +81,7 @@ public class GPSFilterPolygon implements Serializable {
 	 * @return the SphericalPolygon.
 	 */
 	private SphericalPolygon convertToSpherical() {
-		double positions[][] = this.asArray();
-		return new SphericalPolygon( positions[0], positions[1] );
+		return new SphericalPolygon( this.poly[0], this.poly[1] );
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class GPSFilterPolygon implements Serializable {
 	 * @return the list of points that make up this polygon.
 	 */
 	public List<GPSLatLng> getPoints() {
-		return Collections.unmodifiableList( this.poly );
+		return this.asPoints( this.poly );
 	}
 
 	/**
@@ -109,26 +109,41 @@ public class GPSFilterPolygon implements Serializable {
 	 * @return the edge count.
 	 */
 	public int getEdgeCount() {
-		return this.poly.size();
+		return this.poly[0].length;
 	}
 
 	/**
-	 * Converts to an array representation.
+	 * Returns the polygon represented as arrays of doubles.<br/>
+	 * [0] contains latitudes, [1] contains longitudes.
 	 *
 	 * @return the array.
 	 */
-	private double[][] asArray() {
-		// First convert to a SphericalPolygon.
-		double latitudes[] = new double[this.poly.size()];
-		double longitudes[] = new double[this.poly.size()];
+	private double[][] asArray( List<GPSLatLng> points ) {
+		double latitudes[] = new double[points.size()];
+		double longitudes[] = new double[points.size()];
 
-		for ( int i = 0; i < this.poly.size(); ++i ) {
-			GPSLatLng point = this.poly.get( i );
+		for ( int i = 0; i < points.size(); ++i ) {
+			GPSLatLng point = points.get( i );
 
 			latitudes[i] = point.getLat();
 			longitudes[i] = point.getLng();
 		}
 
 		return new double[][] { latitudes, longitudes };
+	}
+
+	/**
+	 * Returns the polygon represented as a list of {@link GPSLatLng} points.
+	 *
+	 * @return the points.
+	 */
+	private List<GPSLatLng> asPoints( double[][] arrays ) {
+		List<GPSLatLng> list = Lists.newArrayListWithCapacity( arrays[0].length );
+
+		for ( int i = 0; i < list.size(); ++i ) {
+			list.add( new GPSLatLng( arrays[0][i], arrays[1][i] )  );
+		}
+
+		return list;
 	}
 }
