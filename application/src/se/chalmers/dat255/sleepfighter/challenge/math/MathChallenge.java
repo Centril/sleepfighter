@@ -23,13 +23,11 @@ import java.util.Random;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengeParamsReadWriter;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.ParameterDefinition;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
-import se.chalmers.dat255.sleepfighter.utils.math.*;
+import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -73,23 +71,17 @@ public class MathChallenge implements Challenge {
 	private int problemSolution;
 	
 	private Context context;
-	
-	private ChallengeConfigSet config;
-	
+
 	private Random rng = new Random();
+
+	private ChallengeResolvedParams params;
 	
 	public boolean getHardProblemsSetting() {
-		ChallengeParamsReadWriter readWriter = new ChallengeParamsReadWriter( this.config, ChallengeType.MATH );
-		ChallengePrototypeDefinition protdef = new MathChallenge.PrototypeDefinition();
-		ParameterDefinition paramDef = protdef.get("hard_problems");
-		
 		// TODO: for some reason it always returns false.
-		return readWriter.getBoolean( paramDef.getKey(), (Boolean) paramDef.getDefaultValue() );
+		return params.getBoolean("hard_problems");
 	}
 	
 	private void runChallenge() {
-		
-		
 		// create challenge object
 		
 		MathProblem problem = null;
@@ -112,14 +104,13 @@ public class MathChallenge implements Challenge {
 	}
 	
 	@Override
-	public void start(final ChallengeActivity activity,  ChallengeConfigSet config) {
-		this.config = config;
-		
+	public void start(final ChallengeActivity activity, ChallengeResolvedParams params) {
 		this.context = activity;
 		
 		// here we randomize a type.
 		
-		boolean hardProblems = getHardProblemsSetting();
+		// TODO: for some reason getHardProblemsSetting is always false.
+		boolean hardProblems = true;// getHardProblemsSetting();
 			
 		if(!hardProblems) {
 			this.problemType = ProblemType.simple;
@@ -171,7 +162,7 @@ public class MathChallenge implements Challenge {
 	private final static String PROBLEM_TYPE = "problem_type";
 	
 	@Override
-	public void start( ChallengeActivity activity, Bundle state ) {
+	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
 		
 		this.context = activity;
 		this.problemString = state.getString(PROBLEM_STRING);
@@ -195,9 +186,6 @@ public class MathChallenge implements Challenge {
 	
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi", "InlinedApi" })
 	private void setupWebview(final Activity activity) {
-	
-					
-		
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
 		w.getSettings().setJavaScriptEnabled(true);
 		
@@ -205,8 +193,9 @@ public class MathChallenge implements Challenge {
 		w.getSettings().setRenderPriority(RenderPriority.HIGH);
 		w.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 		
-		if(Build.VERSION.SDK_INT >= 11)
+		if(Build.VERSION.SDK_INT >= 11) {
 			w.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+		}
 	}
 	
 	private String getStyleSheet() {
@@ -268,7 +257,16 @@ public class MathChallenge implements Challenge {
 			editText.setText("");
 		}
 	}
-	
 
+	@Override
+	public void onPause() {
+	}
 
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
+	}
 }

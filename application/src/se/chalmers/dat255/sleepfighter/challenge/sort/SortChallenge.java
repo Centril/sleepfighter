@@ -26,8 +26,8 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortModel.Order;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.graphics.Color;
@@ -83,7 +83,7 @@ public class SortChallenge implements Challenge {
 	private Random rng;
 
 	@Override
-	public void start( ChallengeActivity activity, ChallengeConfigSet config) {
+	public void start( ChallengeActivity activity, ChallengeResolvedParams params ) {
 		this.startCommon( activity );
 
 		this.setupModel();
@@ -92,7 +92,7 @@ public class SortChallenge implements Challenge {
 	}
 
 	@Override
-	public void start( ChallengeActivity activity, Bundle state ) {
+	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
 		this.startCommon( activity );
 
 		// Read stuff from state.
@@ -277,6 +277,18 @@ public class SortChallenge implements Challenge {
 			button.setOnClickListener( this.onButtonClickListener );
 			button.setOnTouchListener( this.onButtonPressListener );
 		}
+	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
 	}
 
 }

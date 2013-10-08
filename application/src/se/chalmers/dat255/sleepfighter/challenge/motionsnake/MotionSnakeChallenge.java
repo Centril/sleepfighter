@@ -25,10 +25,8 @@ import java.beans.PropertyChangeListener;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.PrimitiveValueType;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
@@ -41,23 +39,21 @@ import android.widget.Toast;
  */
 public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
-	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
-		setType( ChallengeType.MOTION_SNAKE );
-	}}
-	
+	public static class PrototypeDefinition extends
+			ChallengePrototypeDefinition {
+		{
+			setType(ChallengeType.MOTION_SNAKE);
+		}
+	}
+
 	private MotionControl motionControl;
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
 	private NoSensorException exception = null;
-	private boolean stopped = false;
-	
-	private ChallengeConfigSet config;
-	
-	
 
 	@Override
-	public void start(ChallengeActivity activity,  ChallengeConfigSet config) {
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params ) {
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -79,6 +75,13 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 					this.activity.getBaseContext());
 			this.activity.setContentView(snakeController.getView());
 		}
+	}
+
+
+	@Override
+	public void start(ChallengeActivity activity,  ChallengeResolvedParams params, Bundle state) {
+		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE", Toast.LENGTH_LONG).show();
+		this.start( activity, params );
 	}
 
 	@Override
@@ -160,45 +163,26 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	 */
 	public void pause() {
 		motionControl.unregisterSensorListener();
-		this.exception = null;
-		this.stopped = true;
 	}
 
-	/**
-	 * 
-	 */
-	public void resume() {
-		Debug.d("Resume");
-		try {
-			this.motionControl = new MotionControl(this.activity);
-		} catch (NoSensorException e) {
-			// If the Challenge for some reason is selected, despite the device
-			// not having the required Sensor, complete the Challenge so as to
-			// not trap the user.
-			this.activity.complete();
-			this.exception = e;
-		}
-
-		if (this.exception == null) {
-			this.motionControl.addListener(this);
-			this.stopped = false;
-		}
-	}
-
-	public boolean isStopped() {
-		return this.stopped;
-	}
-
-	@Override
-	public void start(ChallengeActivity activity, Bundle state) {
-		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE",
-				Toast.LENGTH_LONG).show();
-		this.start(activity, config);
-	}
 
 	@Override
 	public Bundle savedState() {
-		// TODO Auto-generated method stub
+		// To be implemented
 		return null;
+	}
+
+	@Override
+	public void onResume() {
+		this.motionControl.resetListener();
+	}
+
+	@Override
+	public void onPause() {
+		pause();
+	}
+
+	@Override
+	public void onDestroy() {
 	}
 }

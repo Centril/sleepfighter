@@ -31,7 +31,7 @@ import android.hardware.SensorManager;
 
 /**
  * A class for handling motion events that can be used all across the app. Some
- * code copied from http://stackoverflow.com/a/12098469
+ * code inspired by http://stackoverflow.com/a/12098469
  */
 public class MotionControl implements SensorEventListener {
 
@@ -40,6 +40,14 @@ public class MotionControl implements SensorEventListener {
 	private int defaultSensorType = Sensor.TYPE_ACCELEROMETER;
 	private PropertyChangeSupport pcs;
 	private float[] orientation = new float[3];
+
+	// Sensor vendor recommended by
+	// https://developer.android.com/guide/topics/sensors/sensors_motion.html
+	private String preferredVendor = "Google Inc.";
+
+	// Sensor version recommended by
+	// https://developer.android.com/guide/topics/sensors/sensors_motion.html
+	private int preferredVersion = 3;
 
 	/**
 	 * Sets mSensor to {@value defaultType} by default, possible to set to other
@@ -56,17 +64,16 @@ public class MotionControl implements SensorEventListener {
 
 		setSensor(defaultSensorType);
 
-		this.mSensorManager.registerListener(this, mSensor,
+		this.mSensorManager.registerListener(this, this.mSensor,
 				SensorManager.SENSOR_DELAY_NORMAL);
 
 		this.pcs = new PropertyChangeSupport(this);
 	}
 
 	/**
-	 * Sets the mSensors variable to the default Sensor of the specified type if
-	 * it exists, but also checks for the version of the Sensor recommended on
-	 * the Android Developer website. If it does not exist, a NoSensorException
-	 * is thrown.
+	 * Sets the mSensor variable to the default Sensor of the specified type if
+	 * it exists, but also checks for the vendor and version specified by the
+	 * variables. If it does not exist, a NoSensorException is thrown.
 	 * 
 	 * @param type
 	 *            Requested Sensor type.
@@ -77,14 +84,11 @@ public class MotionControl implements SensorEventListener {
 		Sensor temp = this.mSensorManager.getDefaultSensor(type);
 
 		if (temp != null) {
-			// If it exists, use the software-based sensor provided by Android
-			// Open Source Project, recommended by
-			// https://developer.android.com/guide/topics/sensors/sensors_motion.html
+			// If it exists, use the preferred sensor
 			List<Sensor> sensors = mSensorManager.getSensorList(type);
 			for (int i = 0; i < sensors.size(); i++) {
-				if ((sensors.get(i).getVendor().contains("Google Inc."))
-						&& (sensors.get(i).getVersion() == 3)) {
-					// Use the version 3 sensor.
+				if ((sensors.get(i).getVendor().contains(this.preferredVendor))
+						&& (sensors.get(i).getVersion() == this.preferredVersion)) {
 					temp = sensors.get(i);
 				}
 			}
@@ -150,5 +154,13 @@ public class MotionControl implements SensorEventListener {
 	 */
 	public void unregisterSensorListener() {
 		this.mSensorManager.unregisterListener(this);
+	}
+
+	/**
+	 * Used to reset the Listener when activity is resumed.
+	 */
+	public void resetListener() {
+		this.mSensorManager.registerListener(this, this.mSensor,
+				SensorManager.SENSOR_DELAY_NORMAL);
 	}
 }

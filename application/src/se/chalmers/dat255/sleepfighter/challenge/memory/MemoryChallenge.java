@@ -25,7 +25,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.os.Bundle;
@@ -54,19 +54,17 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 	}}
 
 	private ChallengeActivity act;
-	
+
 	private Memory mem;
-	
+
 	private MemoryCardView flippedCard = null;
-	
+
 	private final static int COLS = 2;
 
 	private final static int ROWS = 4;
-	
-	
+
 	private Handler handler = new Handler();
-	
-	
+
 	MemoryCardImageDatabase database;
 	
 	// true when you are waiting for the cards the user has selected to flip over and become hidden again
@@ -74,16 +72,14 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 	// some seconds to view the cards. 
 	private boolean waitingForCardsToFlipOver = false;
 	private boolean waitingForLastCardsToBeRemoved = false;
-	
-	
+
 	private void fadeOutRemove(View v) {
 		// fade out and remove
         v.startAnimation(AnimationUtils.loadAnimation(act, android.R.anim.fade_out));
         v.setVisibility(View.INVISIBLE);
         
 	}
-	
-	
+
 	public void onClick(View v) {
        // Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
       
@@ -201,24 +197,20 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 	
 	private final String FLIPPED_CARD_POSITION = "flipped_card_position";
 
-	
 	@Override
-	public void start(final ChallengeActivity act,  ChallengeConfigSet config) {
+	public void start(final ChallengeActivity act, ChallengeResolvedParams params) {
 		this.act = act;
-	
-		
+
 		mem = new Memory(ROWS, COLS);
 		Debug.d(mem.toString());
 		this.database = new MemoryCardImageDatabase(mem);
-		
-		
+
 		commonStart(-1);
 	}
 
 	@Override
-	public void start( ChallengeActivity activity, Bundle state ) {
+	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
 		this.act = activity;
-		
 
 		this.mem = state.getParcelable(MEMORY);
 		this.database = state.getParcelable(MEMORY_CARD_IMAGE_DATABASE);
@@ -241,5 +233,17 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 			outState.putInt(FLIPPED_CARD_POSITION, -1);
 		
 		return outState;
+	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
 	}
 }

@@ -40,7 +40,7 @@ public enum SnakeConstants {
 	private static final int TILE_SIZE = 10;
 
 	/** The number of milliseconds (ms) between game updates. */
-	private static final int UPDATE_INTERVAL = 50;
+	private static final int UPDATE_INTERVAL = 150;
 
 	/** The initial length of snake. */
 	private static final int INITIAL_SNAKE_LENGTH = 10;
