@@ -1,0 +1,52 @@
+package se.chalmers.dat255.sleepfighter.speech;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+
+import android.content.Context;
+import android.speech.tts.TextToSpeech;
+
+public class TextToSpeechUtil {
+	
+	private TextToSpeechUtil() {	
+	}
+
+	
+	public static void setBestLanguage(TextToSpeech tts, Context context) {
+		
+		Locale[] locales = Locale.getAvailableLocales();
+		List<Locale> localeList = new ArrayList<Locale>();
+		for (Locale locale : locales) {
+		    int res = tts.isLanguageAvailable(locale);
+		    if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
+		        localeList.add(locale);
+		        Debug.d("locale: " + locale.toString());
+		    }
+		}
+		// localeList now contains the available locales for tts. 
+		
+		Locale current = context.getResources().getConfiguration().locale;
+		Debug.d("current locale: " + current);
+		
+		tts.setLanguage(Locale.ENGLISH);
+		
+		// exact match?
+		if(localeList.contains(current)) {
+			tts.setLanguage(current);
+		}
+		
+		// different countries, but same language?
+		for(Locale locale : localeList) {
+			if(locale.getLanguage() == current.getLanguage()) {
+				tts.setLanguage(locale);
+				return;
+			}
+		}
+		
+		// if we found no match, we'll have to default to English. 
+		tts.setLanguage(Locale.ENGLISH);
+	}
+}

@@ -34,6 +34,7 @@ import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
+import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
@@ -93,9 +94,10 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 	public void onInit(int status) {
 		Debug.d("done initi tts");
 		
-	/*	tts.setLanguage(Locale.ENGLISH);
+		TextToSpeechUtil.setBestLanguage(tts, this);
 		
-		tts.speak("Hello, master, it's time to wake up. The time is: "+ this.currentTime(), TextToSpeech.QUEUE_FLUSH, null);*/
+		
+		tts.speak("Hello, master, it's time to wake up. The time is: "/*+ this.currentTime()*/, TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
 	public String currentTime() {
