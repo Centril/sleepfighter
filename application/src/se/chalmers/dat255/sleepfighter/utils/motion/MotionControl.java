@@ -64,7 +64,7 @@ public class MotionControl implements SensorEventListener {
 
 		setSensor(defaultSensorType);
 
-		this.mSensorManager.registerListener(this, mSensor,
+		this.mSensorManager.registerListener(this, this.mSensor,
 				SensorManager.SENSOR_DELAY_NORMAL);
 
 		this.pcs = new PropertyChangeSupport(this);
@@ -154,5 +154,13 @@ public class MotionControl implements SensorEventListener {
 	 */
 	public void unregisterSensorListener() {
 		this.mSensorManager.unregisterListener(this);
+	}
+
+	/**
+	 * Used to reset the Listener when activity is resumed.
+	 */
+	public void resetListener() {
+		this.mSensorManager.registerListener(this, this.mSensor,
+				SensorManager.SENSOR_DELAY_NORMAL);
 	}
 }

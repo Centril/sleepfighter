@@ -41,23 +41,24 @@ import android.widget.Toast;
  */
 public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 
-	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
-		setType( ChallengeType.MOTION_SNAKE );
-	}}
-	
+	public static class PrototypeDefinition extends
+			ChallengePrototypeDefinition {
+		{
+			setType(ChallengeType.MOTION_SNAKE);
+		}
+	}
+
 	private MotionControl motionControl;
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
 	private NoSensorException exception = null;
 	private boolean stopped = false;
-	
+
 	private ChallengeConfigSet config;
-	
-	
 
 	@Override
-	public void start(ChallengeActivity activity,  ChallengeConfigSet config) {
+	public void start(ChallengeActivity activity, ChallengeConfigSet config) {
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -165,24 +166,11 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	/**
-	 * 
+	 * To be called when activity resumes.
 	 */
 	public void resume() {
 		Debug.d("Resume");
-		try {
-			this.motionControl = new MotionControl(this.activity);
-		} catch (NoSensorException e) {
-			// If the Challenge for some reason is selected, despite the device
-			// not having the required Sensor, complete the Challenge so as to
-			// not trap the user.
-			this.activity.complete();
-			this.exception = e;
-		}
-
-		if (this.exception == null) {
-			this.motionControl.addListener(this);
-			this.stopped = false;
-		}
+		this.motionControl.resetListener();
 	}
 
 	public boolean isStopped() {
