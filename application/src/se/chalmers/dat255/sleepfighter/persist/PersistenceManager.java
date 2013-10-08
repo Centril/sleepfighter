@@ -83,6 +83,10 @@ public class PersistenceManager {
 	 */
 	@Handler
 	public void handleListChange( AlarmList.Event evt ) {
+		if ( !(evt.source() instanceof AlarmList )) {
+			return;
+		}
+
 		switch ( evt.operation() ) {
 		case CLEAR:
 			this.clearAlarms();
@@ -147,6 +151,52 @@ public class PersistenceManager {
 	@Handler
 	public void handleSnoozeConfigChange( SnoozeConfig.ChangeEvent evt ) {
 		this.updateSnoozeConfig( evt );
+	}
+
+	/**
+	 * Handles a change in {@link GPSFilterArea}.
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleGPSFilterChange( GPSFilterArea.ChangeEvent evt ) {
+		this.setGPSFilterArea( evt.getArea() );
+	}
+
+	/**
+	 * Handles changes in GPSFilterAreaSet (the set itself, additions, deletions, etc).
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleGPSFilterSetChange( GPSFilterAreaSet.Event evt ) {
+		if ( !(evt.source() instanceof GPSFilterAreaSet )) {
+			return;
+		}
+
+		switch ( evt.operation() ) {
+		case CLEAR:
+			this.clearGPSFilterAreas();
+			break;
+
+		case ADD:
+			for ( Object elem : evt.elements() ) {
+				this.setGPSFilterArea( (GPSFilterArea) elem );
+			}
+			break;
+
+		case REMOVE:
+			for ( Object elem : evt.elements() ) {
+				this.deleteGPSFilterArea( (GPSFilterArea) elem );
+			}
+			break;
+
+		case UPDATE:
+			GPSFilterArea old = (GPSFilterArea) evt.elements().iterator().next();
+			this.deleteGPSFilterArea( old );
+			this.setGPSFilterArea( evt.source().get( evt.index() ) );
+			break;
+		}
 	}
 
 	/**
@@ -646,11 +696,13 @@ public class PersistenceManager {
 	}
 
 	/**
-	 * Stores/updates an GPSFilterArea in database.
+	 * Stores/updates a GPSFilterArea in database.
 	 *
 	 * @param area the GPSFilterArea to store/update.
 	 */
 	public void setGPSFilterArea( GPSFilterArea area ) {
+		Log.d( TAG, area.toString() );
+
 		OrmHelper helper = this.getHelper();
 		helper.getGPSFilterAreaDao().createOrUpdate( area );
 	}

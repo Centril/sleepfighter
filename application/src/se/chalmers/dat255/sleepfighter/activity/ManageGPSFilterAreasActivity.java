@@ -36,11 +36,10 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -63,6 +62,7 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	private GPSFilterAreaSet set;
 
 	private Animation splashFadeOut;
+	private ViewGroup splashInfoContainer;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
@@ -76,6 +76,11 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		this.setAdapter = new GPSFilterAreaAdapter( this, this.set );
 
 		this.setupSetView();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
 
 		this.setupSplash();
 	}
@@ -84,12 +89,37 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	 * Launches the splash information (help) layout, or hides it.
 	 */
 	private void setupSplash() {
-		final ViewGroup splash = (ViewGroup) this.findViewById( R.id.manage_gpsfilter_what_splash );
+		this.splashInfoContainer = (ViewGroup) this.findViewById( R.id.manage_gpsfilter_what_splash );
 
-		if ( this.set.isEmpty() ) {
-			this.launchSplash();
-		} else {
-			splash.setVisibility( View.GONE );
+		// Fix text layout.
+		TextView textView = (TextView) this.findViewById( R.id.manage_gpsfilter_what_splash_text );
+		textView.setText( Html.fromHtml( this.getString( R.string.manage_gpsfilter_what_splash_text ) ) );
+
+		// Define fade out animation.
+		this.splashFadeOut = new AlphaAnimation( 1.00f, 0.00f );
+		this.splashFadeOut.setDuration( SPLASH_FADE_DELAY );
+		this.splashFadeOut.setAnimationListener( new AnimationListener() {
+			public void onAnimationStart( Animation animation ) {
+			}
+
+			public void onAnimationRepeat( Animation animation ) {
+			}
+
+			public void onAnimationEnd( Animation animation ) {
+				splashInfoContainer.setVisibility( View.GONE );
+			}
+		} );
+
+		this.findViewById( R.id.manage_gpsfilter_what_splash_close ).setOnClickListener( new View.OnClickListener() {
+			@Override
+			public void onClick( View v ) {
+				hideSplash();
+			}
+		});
+
+		// Hide if we got areas, user shouldn't need help.
+		if ( !this.set.isEmpty() ) {
+			this.splashInfoContainer.setVisibility( View.GONE );
 		}
 	}
 
@@ -97,38 +127,20 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	 * Launches the splash information (help) layout.
 	 */
 	private void launchSplash() {
-		final ViewGroup splash = (ViewGroup) this.findViewById( R.id.manage_gpsfilter_what_splash );
-		splash.setVisibility( View.VISIBLE );
+		this.splashInfoContainer.setVisibility( View.VISIBLE );
+	}
 
-		if ( this.splashFadeOut == null ) {
-			// Fix text layout.
-			TextView textView = (TextView) this.findViewById( R.id.manage_gpsfilter_what_splash_text );
-			textView.setText( Html.fromHtml( this.getString( R.string.manage_gpsfilter_what_splash_text ) ) );
-
-			// Define fade out animation.
-			this.splashFadeOut = new AlphaAnimation( 1.00f, 0.00f );
-			this.splashFadeOut.setDuration( SPLASH_FADE_DELAY );
-			this.splashFadeOut.setAnimationListener( new AnimationListener() {
-				public void onAnimationStart( Animation animation ) {
-				}
-
-				public void onAnimationRepeat( Animation animation ) {
-				}
-
-				public void onAnimationEnd( Animation animation ) {
-					splash.setVisibility( View.GONE );
-				}
-			} );
+	/**
+	 * Hides the help splash.
+	 */
+	private void hideSplash() {
+		if ( this.splashInfoContainer.getVisibility() != View.VISIBLE ) {
+			return;
 		}
 
-		final ViewGroup vg = (ViewGroup) splash.getParent();
-		vg.setOnClickListener( new OnClickListener() {
-			@Override
-			public void onClick( View v ) {
-				vg.setOnClickListener( null );
-				splash.startAnimation( splashFadeOut );
-			}
-		} );
+		Log.d( TAG, "hiding splash" );
+
+		this.splashInfoContainer.startAnimation( this.splashFadeOut );
 	}
 
 	@Override
@@ -164,8 +176,6 @@ public class ManageGPSFilterAreasActivity extends Activity {
 			return;
 		}
 
-		Log.d( TAG, evt.toString() );
-
 		// Refresh the list items
 		this.setAdapter.notifyDataSetChanged();
 	}
@@ -177,7 +187,6 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	 */
 	@Handler
 	public void handleListChange( GPSFilterAreaSet.Event evt ) {
-		Log.d( TAG, evt.toString() );
 		this.setAdapter.notifyDataSetChanged();
 	}
 

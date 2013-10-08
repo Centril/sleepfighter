@@ -25,6 +25,7 @@
     <string name="alarm_unnamed_format">Alarm %1$d</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="X">X</string>
     <string name="confirm_delete">Do you really want to delete this alarm?"</string>
     <string name="pre_chal_act">A wild challenge appears!</string>
     <string name="memory_chal_act">Memory</string>

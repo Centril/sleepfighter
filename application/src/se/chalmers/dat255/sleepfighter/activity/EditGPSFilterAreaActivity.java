@@ -46,6 +46,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -95,6 +96,8 @@ import com.google.common.collect.Lists;
  * @since Oct 6, 2013
  */
 public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMapClickListener, OnMarkerDragListener, OnMarkerClickListener {
+	private static final String TAG = EditGPSFilterAreaActivity.class.getSimpleName();
+
 	public static final String EXTRAS_AREA_ID = "gpsfilter_area_id";
 	public static final String EXTRAS_AREA_IS_NEW = "gpsfilter_are_isnew";
 
@@ -466,6 +469,8 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 
 		// Find area in set.
 		this.area = this.set.getById( id );
+
+		Log.d( TAG, this.area.toString() );
 
 		if ( this.area == null ) {
 			Toast.makeText( this, "The area ID provided did not exist in set.", Toast.LENGTH_LONG ).show();
