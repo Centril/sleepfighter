@@ -101,11 +101,7 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 		tts.speak("Hello, master, it's time to wake up. The time is: "/*+ this.currentTime()*/, TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
-	public String currentTime() {
-		String time =  new DateTime().toString();
-		Debug.d(time);
-		return time;
-	}
+	
 		
 	// check whether we have TTS data. 
 	public void checkTextToSpeech() {

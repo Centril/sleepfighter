@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
+
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
 import android.content.Context;
@@ -54,4 +56,15 @@ public class TextToSpeechUtil {
 		// if we found no match, we'll have to default to English. 
 		tts.setLanguage(Locale.ENGLISH);
 	}
+	
+	// time and in the temperate
+	
+	// get the time string to read out. 
+	public static String getCurrentTime() {
+		DateTime time =  new DateTime();
+		int min = time.getMinuteOfHour();
+		int hour = time.getHourOfDay();
+		return TimeFormatter.formatTime(hour, min);
+	}
+
 }
