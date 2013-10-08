@@ -63,4 +63,9 @@ public class RingtoneDriver extends BaseAudioDriver  {
 		this.ringtone.stop();
 		super.stop();
 	}
+
+	@Override
+	public void setVolume(int volume) {
+		// TODO Auto-generated method stub	
+	}
 }

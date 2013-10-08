@@ -78,4 +78,9 @@ public class PlaylistDriver extends BaseAudioDriver {
 	public void stop() {
 		super.stop();
 	}
+
+	@Override
+	public void setVolume(int volume) {
+		// TODO Auto-generated method stub
+	}
 }
