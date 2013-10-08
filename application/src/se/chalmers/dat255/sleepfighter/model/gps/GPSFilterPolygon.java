@@ -140,10 +140,23 @@ public class GPSFilterPolygon implements Serializable {
 	private List<GPSLatLng> asPoints( double[][] arrays ) {
 		List<GPSLatLng> list = Lists.newArrayListWithCapacity( arrays[0].length );
 
-		for ( int i = 0; i < list.size(); ++i ) {
+		for ( int i = 0; i < arrays[0].length; ++i ) {
 			list.add( new GPSLatLng( arrays[0][i], arrays[1][i] )  );
 		}
 
 		return list;
+	}
+
+	public String toString() {
+		StringBuilder builder = new StringBuilder( this.getEdgeCount() );
+		builder.append( "GPSFilterPolygon{" );
+
+		for ( int i = 0; i < this.getEdgeCount(); ++i ) {
+			builder.append( "[" + this.poly[0][i] + ", " + this.poly[1][i] + "]" );
+		}
+
+		builder.append( "}" );
+
+		return builder.toString();
 	}
 }

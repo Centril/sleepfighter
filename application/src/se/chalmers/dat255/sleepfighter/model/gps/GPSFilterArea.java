@@ -18,11 +18,15 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.gps;
 
+import java.util.Map;
+
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -306,6 +310,17 @@ public class GPSFilterArea implements IdProvider {
 	 */
 	public MessageBus<Message> getMessageBus() {
 		return this.bus;
+	}
+
+	public String toString() {
+		final Map<String, String> prop = Maps.newHashMap();
+		prop.put( "id", Integer.toString( this.id ) );
+		prop.put( "name", this.name );
+		prop.put( "enabled", Boolean.toString( this.enabled ) );
+		prop.put( "mode", this.mode.toString() );
+		prop.put( "polygon", this.poly == null ? null : this.poly.toString() );
+
+		return "GPSFilterArea[" + StringUtils.PROPERTY_MAP_JOINER.join( prop ) + "]";
 	}
 
 	/* --------------------------------
