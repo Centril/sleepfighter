@@ -6,6 +6,6 @@ have the following copyright holders listed in alphabetic order:
 	Danny Lam, <fyll_i@example.com>
 	Eric Arnebäck, <erkastina@hotmail.com>
 	Johan Hasselqvist, <fyll_i@example.com>
-	Laszlo Sall Vesselenyi <fyll_i@example.com>
+	Laszlo Sall Vesselenyi <metaomega@gmail.com>
 	Mazdak Farrokhzad, <twingoow@gmail.com>
 	Niklas Helmertz, <niklas.helmertz@gmail.com>
