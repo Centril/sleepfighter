@@ -116,7 +116,7 @@ public class AlarmActivity extends Activity {
 		}
 
 		TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
-		pointText.setText(SFApplication.get().getPrefs().getChallengePoints() + " points");
+		pointText.setText(SFApplication.get().getPrefs().getChallengePoints() + " Challenge points.");
 	}
 
 	private void onStopClick() {

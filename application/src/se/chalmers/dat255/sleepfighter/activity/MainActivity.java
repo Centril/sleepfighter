@@ -88,7 +88,8 @@ public class MainActivity extends Activity {
 		this.app().getBus().subscribe(this);
 
 		this.setupListView();
-
+		
+		this.updateChallengePoints();
 		this.updateEarliestText();
 	}
 
@@ -286,6 +287,11 @@ public class MainActivity extends Activity {
 		earliestTimeText.setText(text);
 	}
 
+	private void updateChallengePoints() {
+		TextView cpText = (TextView) findViewById(R.id.mainChallengePoints);
+		cpText.setText(this.app().getPrefs().getChallengePoints() + " C. Pts.");
+	}
+	
 	/**
 	 * Sends the user to the activity for editing GPSFilterArea:s.
 	 */
