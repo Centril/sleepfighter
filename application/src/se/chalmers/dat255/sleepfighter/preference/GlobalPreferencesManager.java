@@ -20,6 +20,7 @@ package se.chalmers.dat255.sleepfighter.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 /**
@@ -31,7 +32,7 @@ import android.preference.PreferenceManager;
  * @version 1.0
  * @since Sep 29, 2013
  */
-public class GlobalPreferencesReader {
+public class GlobalPreferencesManager {
 	private SharedPreferences prefs;
 
 	/**
@@ -39,7 +40,7 @@ public class GlobalPreferencesReader {
 	 * 
 	 * @param context application android context.
 	 */
-	public GlobalPreferencesReader( Context context ) {
+	public GlobalPreferencesManager( Context context ) {
 		this.prefs = PreferenceManager.getDefaultSharedPreferences( context );
 	}
 
@@ -71,5 +72,33 @@ public class GlobalPreferencesReader {
 	 */
 	public boolean displayPeriodOrTime() {
 		return this.prefs.getBoolean( "pref_global_when_or_in_how_much", false );
+	}
+	
+	/**
+	 * @return the number of challenge points stored in the shared preferences
+	 */
+	public int getChallengePoints() {
+		return this.prefs.getInt("challenge_points", 100);
+	}
+	
+	/**
+	 * Adds points to the challenge points stored in the shared preferences
+	 * 
+	 * @param points the number of points to be added
+	 */
+	public void addChallengePoints(int points) {
+		Editor edit = prefs.edit();
+		edit.putInt("challenge_points", prefs.getInt("challenge_points", 100) + points);
+		edit.commit();
+	}
+	
+	public boolean isChallengesActivated() {
+		return prefs.getBoolean("challenges_activated", true);
+	}
+	
+	public void setChallengesActivated(boolean isActivated) {
+		Editor edit = prefs.edit();
+		edit.putBoolean("challenges_activated", isActivated);
+		edit.commit();
 	}
 }
