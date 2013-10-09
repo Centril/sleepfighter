@@ -96,7 +96,7 @@ public class ChallengeFactory {
 				def = new RotoSnakeChallenge.PrototypeDefinition();
 				break;
 			case SHAKE:
-				def = new RotoSnakeChallenge.PrototypeDefinition();
+				def = new ShakeChallenge.PrototypeDefinition();
 				break;
 			default:
 				throw new IllegalArgumentException( "Undefined challenge" );

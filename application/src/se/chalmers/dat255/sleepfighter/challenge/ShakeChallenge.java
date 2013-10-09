@@ -21,7 +21,6 @@ package se.chalmers.dat255.sleepfighter.challenge;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -43,6 +42,7 @@ public class ShakeChallenge implements Challenge {
 	}}
 
 	private static final float GOAL = 5000;
+	private static final String KEY_PROGRESS_FLOAT = "progress";
 
 	private ChallengeActivity activity;
 	private ProgressBar progressBar;
@@ -51,7 +51,7 @@ public class ShakeChallenge implements Challenge {
 	private SensorManager sensorManager;
 	private Sensor accelerometer;
 
-	private float accumulator = 0;
+	private float progress = 0;
 	private Vector3D lastVector;
 
 	@Override
@@ -65,10 +65,6 @@ public class ShakeChallenge implements Challenge {
 		this.activity = activity;
 		this.activity.setContentView(R.layout.challenge_shake);
 
-		// Lock to portrait orientation for now
-		// TODO remove if progress can be stored
-		this.activity.setRequestedOrientation(
-				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		// Get view references
 		this.progressBar = (ProgressBar) this.activity
@@ -76,6 +72,11 @@ public class ShakeChallenge implements Challenge {
 		this.progressText = (TextView) this.activity
 				.findViewById(R.id.progressText);
 
+		// Get progress from bundle
+		if(state != null) {
+			this.progress = state.getFloat(KEY_PROGRESS_FLOAT);
+		}
+	
 		// Register to get acceleration events
 		this.sensorManager = (SensorManager) activity
 				.getSystemService(Context.SENSOR_SERVICE);
@@ -117,7 +118,7 @@ public class ShakeChallenge implements Challenge {
 			double work = diff.getNorm();
 
 			// Increase the accumulator
-			this.accumulator += work;
+			this.progress += work;
 
 			updateProgress();
 
@@ -128,13 +129,13 @@ public class ShakeChallenge implements Challenge {
 
 	private void updateProgress() {
 		// Change the progress bar and text to show how near completion
-		int percentage = Math.min(100, Math.round(100 * (accumulator / GOAL)));
+		int percentage = Math.min(100, Math.round(100 * (progress / GOAL)));
 		this.progressBar.setProgress(percentage);
 		this.progressText.setText(percentage + "%");
 	}
 
 	private void checkIfCompleted() {
-		if (accumulator >= GOAL) {
+		if (progress >= GOAL) {
 			// Unregister when done
 			this.sensorManager.unregisterListener(sensorEventListener);
 			this.activity.complete();
@@ -143,8 +144,9 @@ public class ShakeChallenge implements Challenge {
 
 	@Override
 	public Bundle savedState() {
-		// TODO Auto-generated method stub
-		return null;
+		Bundle state = new Bundle();
+		state.putFloat(KEY_PROGRESS_FLOAT, this.progress);
+		return state;
 	}
 
 	@Override
