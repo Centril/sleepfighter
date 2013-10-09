@@ -126,6 +126,12 @@ public class AlarmActivity extends Activity {
 		button = (Button) findViewById(R.id.btnFlash);
 		Context context = this;
 		PackageManager pm = context.getPackageManager();
+		
+		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+			Log.e("err", "No camera detected");
+
+			return;
+		}
 
 		camera = Camera.open();
 		final Parameters p = camera.getParameters();
