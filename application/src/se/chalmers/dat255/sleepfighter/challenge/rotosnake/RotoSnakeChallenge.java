@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
+package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -34,11 +34,12 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 /**
- * A challenge that requires the player to move and rotate the device.
+ * A challenge that requires the player to rotate the device to control the
+ * "snake".
  */
-public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
+public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 	/**
-	 * PrototypeDefinition for MotionSnakeChallenge.
+	 * PrototypeDefinition for RotoSnakeChallenge.
 	 * 
 	 * @version 1.0
 	 * @since Oct 8, 2013
@@ -46,7 +47,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	public static class PrototypeDefinition extends
 			ChallengePrototypeDefinition {
 		{
-			setType(ChallengeType.MOTION_SNAKE);
+			setType(ChallengeType.ROTO_SNAKE);
 		}
 	}
 
@@ -64,7 +65,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		this.activity.setTitle("Rotate the device to control the snake!");
-		
+
 		try {
 			this.motionControl = new RotationControl(this.activity);
 		} catch (NoSensorException e) {
@@ -145,9 +146,9 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	/**
-	 * Unregisters the RotationControl instance of the Sensors it is listening to.
-	 * Must be called when the Activity pauses, or else the RotationControl will
-	 * continue listening to the Sensors, which is very expensive.
+	 * Unregisters the RotationControl instance of the Sensors it is listening
+	 * to. Must be called when the Activity pauses, or else the RotationControl
+	 * will continue listening to the Sensors, which is very expensive.
 	 */
 	public void pause() {
 		this.snakeController.pause();

@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
+package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 
 import java.beans.PropertyChangeSupport;
 import java.util.Random;
@@ -61,7 +61,7 @@ public class SnakeController {
 		this.init();
 	}
 
-	public SnakeController(MotionSnakeChallenge challenge, Context context) {
+	public SnakeController(RotoSnakeChallenge challenge, Context context) {
 		this(context);
 
 		this.pcs.addPropertyChangeListener(challenge);

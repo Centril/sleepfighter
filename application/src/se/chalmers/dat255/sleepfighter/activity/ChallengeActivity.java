@@ -152,7 +152,7 @@ public class ChallengeActivity extends Activity {
 
 	/**
 	 * Called when SleepFighter pauses/becomes invisible to user. Necessary for
-	 * MotionSnakeChallenge, so the RotationControl stops consuming power.
+	 * RotoSnakeChallenge, so the RotationControl stops consuming power.
 	 */
 	protected void onPause() {
 		super.onPause();
@@ -161,7 +161,7 @@ public class ChallengeActivity extends Activity {
 
 	/**
 	 * When SleepFighter becomes visible for user again. Necessary for
-	 * MotionSnakeChallenge, to start collecting Sensor data again.
+	 * RotoSnakeChallenge, to start collecting Sensor data again.
 	 */
 	protected void onResume() {
 		super.onResume();
