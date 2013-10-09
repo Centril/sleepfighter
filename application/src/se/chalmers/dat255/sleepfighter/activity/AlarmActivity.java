@@ -122,47 +122,42 @@ public class AlarmActivity extends Activity {
 		} else {
 			btnSnooze.setVisibility(View.GONE);
 		}
+
+		camera = Camera.open();
+		startFlash();
 		
-		button = (Button) findViewById(R.id.btnFlash);
-		Context context = this;
+	}
+	
+	
+	private void startFlash(){
+		/*Context context = this;
 		PackageManager pm = context.getPackageManager();
 		
 		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-			Log.e("err", "No camera detected");
-			Toast.makeText(getApplicationContext(),
-					"No camera detected!",
-					Toast.LENGTH_SHORT).show();
-
+			Log.e("err", "No camera/flashlight detected");
 			return;
-		}
-
-		camera = Camera.open();
+		}*/
+		
 		final Parameters p = camera.getParameters();
-
-		button.setOnClickListener(new OnClickListener() {
-			public void onClick(View arg0) {
-				if (isFlashOn) {
-					Log.i("info", "THE FLASH'S OFF!");
-					p.setFlashMode(Parameters.FLASH_MODE_OFF);
-					camera.setParameters(p);					
-					isFlashOn = false;
-					button.setText("FLASH ON");
-				} else {
-					Log.i("info", "THE FLASH'S ON!");
-					p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-					camera.setParameters(p);					
-					isFlashOn = true;
-					button.setText("FLASH OFF");
-				}
-			}
-		});
 		
-		
-		
-		
-		
+		if (isFlashOn) {
+			Log.i("info", "THE FLASH'S OFF!");
+			p.setFlashMode(Parameters.FLASH_MODE_OFF);
+			camera.setParameters(p);					
+			isFlashOn = false;
+		} else {
+			Log.i("info", "THE FLASH'S ON!");
+			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+			camera.setParameters(p);					
+			isFlashOn = true;
+		}
 		
 	}
+	
+	
+	
+	
+	
 
 	private void onStopClick() {
 		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
