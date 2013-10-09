@@ -131,13 +131,17 @@ public class AlarmActivity extends Activity {
 		button.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				if (isFlashOn) {
+					Log.i("info", "no flash");
 					p.setFlashMode(Parameters.FLASH_MODE_OFF);
 					camera.setParameters(p);					
 					isFlashOn = false;
+					button.setText("TestFlashON");
 				} else {
+					Log.i("info", "flash");
 					p.setFlashMode(Parameters.FLASH_MODE_TORCH);
 					camera.setParameters(p);					
 					isFlashOn = true;
+					button.setText("TestFlashOFF");
 				}
 			}
 		});
