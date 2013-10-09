@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
+package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 
 /**
  * Thrown by some Challenges at termination. The exception contains information

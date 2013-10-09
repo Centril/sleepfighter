@@ -51,7 +51,13 @@ public class ShakeChallenge implements Challenge {
 	private Vector3D lastVector;
 
 	@Override
-	public void start(ChallengeActivity activity, ChallengeConfigSet config) {
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params) {
+		start(activity, params, null);
+	}
+	
+	@Override
+	public void start(ChallengeActivity activity,
+			ChallengeResolvedParams params, Bundle state) {
 		this.activity = activity;
 		this.activity.setContentView(R.layout.challenge_shake);
 
@@ -72,12 +78,7 @@ public class ShakeChallenge implements Challenge {
 		this.accelerometer = sensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		this.sensorManager.registerListener(this.sensorEventListener,
-				accelerometer, SensorManager.SENSOR_DELAY_GAME);		
-	}
-
-	@Override
-	public void start(ChallengeActivity activity, Bundle state) {
-		start(activity, (ChallengeConfigSet) null);
+				accelerometer, SensorManager.SENSOR_DELAY_GAME);
 	}
 	
 	private SensorEventListener sensorEventListener = new SensorEventListener() {

@@ -49,18 +49,15 @@ public class AudioDriverFactory {
 	public AudioDriver produce( Context context, AudioSource source ) {
 		AudioDriver driver = null;
 
-		
 		if ( source == null ) {
 			driver = new SilentAudioDriver();
 		} else {
 			Log.d( "AudioDriverFactory", source.toString() );
 
-			
 			switch ( source.getType() ) {
 			case RINGTONE:
 				driver = new RingtoneDriver();
 				break;
-
 			case PLAYLIST:
 				driver = new PlaylistDriver( new PlaylistProviderFactory() );
 				break;
@@ -70,7 +67,7 @@ public class AudioDriverFactory {
 			case INTERNET_STREAM:
 			case SPOTIFY:
 				Toast.makeText( context, "NOT IMPLEMENTED YET!", Toast.LENGTH_LONG ).show();
-				driver = new RingtoneDriver();
+				driver = new SilentAudioDriver();
 				break;
 			}
 		}

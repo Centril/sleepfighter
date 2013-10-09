@@ -18,22 +18,22 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.audio;
 
-import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
-import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 
 /**
  * RingtoneDriver is the AudioDriver for ringtones.
- *
+ * <p>Only difference from a LocalContentDriver is that it's using different
+ * way to fetch names.</p>
+ * 
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Sep 27, 2013
  */
-public class RingtoneDriver extends BaseAudioDriver  {
+public class RingtoneDriver extends LocalContentDriver  {
 	private Ringtone ringtone;
 
 	@Override
@@ -45,22 +45,9 @@ public class RingtoneDriver extends BaseAudioDriver  {
 	}
 
 	@Override
+	// Overridden since getting title from some ringtones doesn't seem to work
+	// otherwise (DRM related?)
 	public String printSourceName() {
 		return this.ringtone.getTitle( this.getContext() );
-	}
-
-	@Override
-	public void play( AudioConfig config ) {
-		super.play( config );
-
-		// TODO: Use volume and stuff, use MediaPlayer maybe?
-		this.ringtone.setStreamType( AudioManager.STREAM_ALARM );
-		this.ringtone.play();
-	}
-
-	@Override
-	public void stop() {
-		this.ringtone.stop();
-		super.stop();
 	}
 }

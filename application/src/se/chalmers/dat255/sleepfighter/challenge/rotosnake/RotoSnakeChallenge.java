@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
+package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -25,43 +25,47 @@ import java.beans.PropertyChangeListener;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
-import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
+import se.chalmers.dat255.sleepfighter.utils.motion.RotationControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.widget.Toast;
 
 /**
- * A challenge that requires the player to move and rotate the device.
+ * A challenge that requires the player to rotate the device to control the
+ * "snake".
  */
-public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
-
+public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
+	/**
+	 * PrototypeDefinition for RotoSnakeChallenge.
+	 * 
+	 * @version 1.0
+	 * @since Oct 8, 2013
+	 */
 	public static class PrototypeDefinition extends
 			ChallengePrototypeDefinition {
 		{
-			setType(ChallengeType.MOTION_SNAKE);
+			setType(ChallengeType.ROTO_SNAKE);
 		}
 	}
 
-	private MotionControl motionControl;
+	private RotationControl motionControl;
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
 	private NoSensorException exception = null;
-	private boolean stopped = false;
-
-	private ChallengeConfigSet config;
 
 	@Override
-	public void start(ChallengeActivity activity, ChallengeConfigSet config) {
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params ) {
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		this.activity.setTitle("Rotate the device to control the snake!");
+
 		try {
-			this.motionControl = new MotionControl(this.activity);
+			this.motionControl = new RotationControl(this.activity);
 		} catch (NoSensorException e) {
 			// If the Challenge for some reason is selected, despite the device
 			// not having the required Sensor, complete the Challenge so as to
@@ -80,6 +84,12 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		}
 	}
 
+
+	@Override
+	public void start(ChallengeActivity activity,  ChallengeResolvedParams params, Bundle state) {
+		this.start( activity, params );
+	}
+
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		Object source = event.getSource();
@@ -88,14 +98,9 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		} else if (source.equals(this.snakeController)) {
 			this.complete();
 		}
-
 	}
 
 	private void handleRotation() {
-		// Debug.d("Azimuth: " + motionControl.getAzimuth());
-		// Debug.d("Pitch: " + motionControl.getPitch());
-		// Debug.d("Roll: " + motionControl.getRoll());
-
 		// User controls for the Challenge
 		if (withinMargin(Direction.WEST)) {
 			this.snakeController.update(Direction.WEST);
@@ -111,33 +116,20 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	private boolean withinMargin(Direction dir) {
 		this.angle = this.motionControl.getAzimuth();
 
-		boolean within = false;
-
 		switch (dir) {
 		case WEST:
-			within = this.angle <= this.margin && this.angle >= 0
-					|| this.angle >= -this.margin && this.angle <= 0;
-			break;
+			return Math.abs(Math.abs(this.angle) - this.margin) <= this.margin;
 		case NORTH:
-			within = this.angle <= Math.PI / 2 + this.margin && this.angle >= 0
-					|| this.angle >= Math.PI / 2 - this.margin
-					&& this.angle <= Math.PI / 2;
-			break;
+			return this.angle >= 0
+					&& Math.abs(this.angle - (Math.PI / 2)) <= this.margin;
 		case EAST:
-			within = this.angle >= Math.PI - this.margin
-					|| this.angle <= -Math.PI + this.margin
-					&& this.angle >= -Math.PI / 2 + this.margin;
-			break;
+			return Math.abs(Math.abs(this.angle) - Math.PI) <= this.margin;
 		case SOUTH:
-			within = this.angle <= -Math.PI / 2 + this.margin
-					&& this.angle >= -Math.PI / 2
-					|| this.angle >= -Math.PI / 2 - this.margin
-					&& this.angle <= -Math.PI / 2;
-			break;
+			return this.angle <= 0
+					&& Math.abs(this.angle + (Math.PI / 2)) <= this.margin;
 		default:
-			break;
+			return false;
 		}
-		return within;
 	}
 
 	private void complete() {
@@ -153,36 +145,24 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	/**
-	 * Unregisters the MotionControl instance of the Sensors it is listening to.
-	 * Must be called when the Activity pauses, or else the MotionControl will
-	 * continue listening to the Sensors, which is very expensive.
+	 * Unregisters the RotationControl instance of the Sensors it is listening
+	 * to. Must be called when the Activity pauses, or else the RotationControl
+	 * will continue listening to the Sensors, which is very expensive.
 	 */
 	public void pause() {
-		motionControl.unregisterSensorListener();
-		this.exception = null;
-		this.stopped = true;
-	}
-
-	public boolean isStopped() {
-		return this.stopped;
-	}
-		
-	@Override
-	public void start(ChallengeActivity activity, Bundle state) {
-		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE",
-				Toast.LENGTH_LONG).show();
-		this.start(activity, config);
+		this.snakeController.pause();
+		this.motionControl.unregisterSensorListener();
 	}
 
 	@Override
 	public Bundle savedState() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void onResume() {
 		this.motionControl.resetListener();
+		this.snakeController.resume();
 	}
 
 	@Override

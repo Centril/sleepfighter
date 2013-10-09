@@ -237,7 +237,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			@Override
 			public void onClick( View v ) {
 				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
-				new IntentUtils(i).setAlarmId(alarm);
+				IntentUtils intentUtils = new IntentUtils(i);
+				if (AlarmSettingsActivity.this.alarm.isPresetAlarm()) {
+					intentUtils.setSettingPresetAlarm(true);
+				} else {
+					intentUtils.setAlarmId(alarm);
+				}
 				startActivity(i);
 			}
 		});

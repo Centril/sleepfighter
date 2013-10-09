@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
+package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 
 import se.chalmers.dat255.sleepfighter.utils.geometry.Dimension;
 import android.graphics.Color;
@@ -34,16 +34,16 @@ public enum SnakeConstants {
 	 * --------------------------------
 	 */
 	/** The size of games, that is how many tiles there is in each axis. */
-	private static final Dimension SIZE = new Dimension(200, 100);
+	private static final Dimension SIZE = new Dimension(20, 10);
 
 	/** The size of each tile in game. */
-	private static final int TILE_SIZE = 10;
+	private static final int TILE_SIZE = 1;
 
 	/** The number of milliseconds (ms) between game updates. */
-	private static final int UPDATE_INTERVAL = 50;
+	private static final int UPDATE_INTERVAL = 800;
 
 	/** The initial length of snake. */
-	private static final int INITIAL_SNAKE_LENGTH = 10;
+	private static final int INITIAL_SNAKE_LENGTH = 3;
 
 	/** The color of food. */
 	private static final int FOOD_COLOR = Color.BLUE;

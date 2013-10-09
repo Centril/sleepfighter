@@ -18,11 +18,15 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.challenge;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+import java.util.Map;
 
 import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.persist.ChallengeParamDao;
+import se.chalmers.dat255.sleepfighter.utils.StringUtils;
+
+import com.google.common.collect.Maps;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * ChallengeParam models one parameter for a ChallengeConfig<br/>
@@ -86,5 +90,15 @@ public class ChallengeParam implements IdProvider {
 	 */
 	public String getValue() {
 		return this.value;
+	}
+
+	@Override
+	public String toString() {
+		final Map<String, String> prop = Maps.newHashMap();
+		prop.put( "id", Integer.toString( this.getId() ) );
+		prop.put( "key", this.getKey() );
+		prop.put( "value", this.getValue() );
+
+		return "ChallengeParam[" + StringUtils.PROPERTY_MAP_JOINER.join( prop ) + "]";
 	}
 }

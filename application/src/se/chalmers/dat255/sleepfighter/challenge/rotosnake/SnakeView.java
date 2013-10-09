@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
+package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +78,10 @@ public class SnakeView extends SurfaceView implements Callback {
 
 	private SnakeView(Context context) {
 		super(context);
+	}
+
+	public void setModel(SnakeModel model) {
+		this.snakeModel = model;
 	}
 
 	/**

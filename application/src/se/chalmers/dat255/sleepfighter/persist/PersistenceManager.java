@@ -372,7 +372,7 @@ public class PersistenceManager {
 
 		// 3) Sanity fix. Find any missing ChallengeType:s and add them.
 		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
-			Set<ChallengeType> missingTypes = Sets.complementOf( challengeSet.getDefinedTypes() );
+			Set<ChallengeType> missingTypes = Sets.complementOf( challengeSet.getDefinedTypes(), ChallengeType.class );
 
 			for ( ChallengeType type : missingTypes ) {
 				ChallengeConfig config =  new ChallengeConfig( type, false );
@@ -497,11 +497,12 @@ public class PersistenceManager {
 		ChallengeConfigSet set = evt.getSet();
 
 		if ( evt instanceof ChallengeConfigSet.EnabledEvent ) {
+			Log.d( TAG, "updateChallenges #2: " + evt.toString() );
 			// Handle change for isEnabled().
 			helper.getChallengeConfigSetDao().update( set );
 			return;
 		} else if ( evt instanceof ChallengeConfigSet.ChallengeEvent ) {
-			ChallengeConfig config = ((ChallengeConfigSet.ChallengeEnabledEvent) evt).getChallengeConfig();
+			ChallengeConfig config = ((ChallengeConfigSet.ChallengeEvent) evt).getChallengeConfig();
 
 			if ( evt instanceof ChallengeConfigSet.ChallengeEnabledEvent ) {
 				// Handle change for isEnabled() for specific ChallengeConfig.
@@ -517,8 +518,9 @@ public class PersistenceManager {
 				return;
 			}
 		}
+		Log.d( TAG, "updateChallenges #6: " + evt.toString() );
 
-		throw new AssertionError( "Do you know something we don't?" );
+		throw new IllegalArgumentException( "Do you know something we don't?" );
 	}
 
 	/**
