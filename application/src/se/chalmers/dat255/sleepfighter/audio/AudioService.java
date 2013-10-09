@@ -39,14 +39,35 @@ public class AudioService extends Service implements OnPreparedListener,
 
 	private static final String TAG = "AudioService";
 
+	/**
+	 * Action for starting playback of local media.
+	 * <p>A {@link Uri}, to identify the audio track in the Android MediaStore,
+	 * must be bundled with the Intent, using the name defined by
+	 * {@link #BUNDLE_URI}. In addition to that must the initial volume, a float
+	 * (0-1), also be bundled with the intent, using the name defined by
+	 * {@link #BUNDLE_FLOAT_VOLUME}.</p>
+	 */
 	public static final String ACTION_PLAY = "se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY";
+	
+	/**
+	 * Action for stopping any playback.
+	 */
 	public static final String ACTION_STOP = "se.chalmers.dat255.sleepfighter.audio.AudioService.STOP";
+
+	/**
+	 * Action for modifying the volume of playing audio.
+	 * <p>The volume, a float (0-1), to use for playback must be bundled with the
+	 * Intent, using the name defined by {@link #BUNDLE_FLOAT_VOLUME}.</p>
+	 */
+	public static final String ACTION_VOLUME = "se.chalmers.dat255.sleepfighter.audio.AudioService.VOLUME";
+
 	public static final String BUNDLE_URI = "audio_uri";
+	public static final String BUNDLE_FLOAT_VOLUME = "audio_volume";
 
 	public enum State {
-		Preparing,
-		Playing,
-		Stopped
+		PREPARING,
+		PLAYING,
+		STOPPED
 	}
 
 	private MediaPlayer player;
@@ -55,7 +76,6 @@ public class AudioService extends Service implements OnPreparedListener,
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
 		this.player = new MediaPlayer();
 		this.player.setAudioStreamType(AudioManager.STREAM_ALARM);
 		this.player.setLooping(true);
@@ -65,7 +85,7 @@ public class AudioService extends Service implements OnPreparedListener,
 		// Makes MediaPlayer hold a wake lock while playing
 		this.player.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
 		
-		this.state = State.Stopped;
+		this.state = State.STOPPED;
 	}
 
 	@Override
@@ -74,17 +94,41 @@ public class AudioService extends Service implements OnPreparedListener,
 		Log.d(TAG, "start action " + action);
 
 		if (ACTION_PLAY.equals(action)) {
-			Object o = intent.getParcelableExtra(BUNDLE_URI);
-			if(!(o instanceof Uri)) {
-				throw new IllegalArgumentException("No Uri bundled with PLAY action");
-			}
-			Uri uri = (Uri) o;
-			play(uri);
+			handleVolumeAction(intent);
+			handlePlayAction(intent);
 		} else if (ACTION_STOP.equals(action)) {
-			stopPlayback();
-			stopSelf();
+			handleStopAction();
+		} else if (ACTION_VOLUME.equals(action)) {
+			handleVolumeAction(intent);
 		}
 		return START_NOT_STICKY;
+	}
+
+	private void handlePlayAction(Intent intent) {
+		Object o = intent.getParcelableExtra(BUNDLE_URI);
+		if(!(o instanceof Uri)) {
+			throw new IllegalArgumentException("No Uri bundled with PLAY action");
+		}
+		Uri uri = (Uri) o;
+		play(uri);
+	}
+
+	private void handleStopAction() {
+		stopPlayback();
+		stopSelf();
+	}
+
+	private void handleVolumeAction(Intent intent) {
+		float volume = intent.getFloatExtra(BUNDLE_FLOAT_VOLUME, -1f);
+		setVolume(volume);
+	}
+
+	private void setVolume(float volume) {
+		if (volume > 1 || volume < 0) {
+			throw new IllegalArgumentException("No valid volume bundled");
+		}
+
+		this.player.setVolume(volume, volume);
 	}
 
 	/**
@@ -95,14 +139,14 @@ public class AudioService extends Service implements OnPreparedListener,
 	 */
 	private void play(Uri uri) {
 		// Stop if previously playing
-		if (state != State.Stopped) {
+		if (state != State.STOPPED) {
 			stopPlayback();
 		}
 
 		try {
 			player.setDataSource(this, uri);
 			player.prepareAsync();
-			state = State.Preparing;
+			state = State.PREPARING;
 		} catch (IllegalArgumentException e) {
 			handleException(e);
 		} catch (SecurityException e) {
@@ -116,9 +160,9 @@ public class AudioService extends Service implements OnPreparedListener,
 
 	@Override
 	public void onPrepared(MediaPlayer mp) {
-		if (state == State.Preparing) {
+		if (state == State.PREPARING) {
 			mp.start();
-			state = State.Playing;
+			state = State.PLAYING;
 		}
 	}
 
@@ -126,11 +170,11 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * Stops any ongoing audio playback.
 	 */
 	private void stopPlayback() {
-		if (state == State.Playing) {
+		if (state == State.PLAYING) {
 			player.stop();
 		}
 		player.reset();
-		state = State.Stopped;
+		state = State.STOPPED;
 	}
 
 	@Override
