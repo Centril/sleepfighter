@@ -129,6 +129,9 @@ public class AlarmActivity extends Activity {
 		
 		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 			Log.e("err", "No camera detected");
+			Toast.makeText(getApplicationContext(),
+					"No camera detected!",
+					Toast.LENGTH_SHORT).show();
 
 			return;
 		}
