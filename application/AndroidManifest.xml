@@ -161,6 +161,7 @@
                 <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY" />
                 <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.STOP" />
                 <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.VOLUME" />
+                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_PLAYLIST" />
             </intent-filter>
         </service>
     </application>
