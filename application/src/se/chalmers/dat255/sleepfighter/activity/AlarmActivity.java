@@ -124,7 +124,28 @@ public class AlarmActivity extends Activity {
 		}
 		
 		button = (Button) findViewById(R.id.btnFlash);
+
 		camera = Camera.open();
+		final Parameters p = camera.getParameters();
+
+		button.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				if (isFlashOn) {
+					p.setFlashMode(Parameters.FLASH_MODE_OFF);
+					camera.setParameters(p);					
+					isFlashOn = false;
+				} else {
+					p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+					camera.setParameters(p);					
+					isFlashOn = true;
+				}
+			}
+		});
+		
+		
+		
+		
+		
 		
 	}
 
