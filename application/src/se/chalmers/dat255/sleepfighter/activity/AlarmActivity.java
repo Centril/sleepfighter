@@ -108,7 +108,7 @@ public class AlarmActivity extends Activity {
 		});
 
 		Button btnSnooze = (Button) findViewById(R.id.btnSnooze);
-		if(alarm.getSnoozeConfig().isSnoozeEnabled()) {
+		if (alarm.getSnoozeConfig().isSnoozeEnabled()) {
 			btnSnooze.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -120,7 +120,8 @@ public class AlarmActivity extends Activity {
 		}
 
 		TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
-		pointText.setText(SFApplication.get().getPrefs().getChallengePoints() + " Challenge points.");
+		pointText.setText(SFApplication.get().getPrefs().getChallengePoints()
+				+ " Challenge points.");
 	}
 
 	@Override
@@ -137,7 +138,7 @@ public class AlarmActivity extends Activity {
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-		}		
+		}
 	}
 
 	/**
@@ -158,7 +159,7 @@ public class AlarmActivity extends Activity {
 	 */
 	private void skipChallengeConfirm() {
 		// Show confirmation dialog where the user has to confirm skipping the
-		// challenge, and in turn loose a lot of points
+		// challenge, and in turn lose a lot of points
 		DialogInterface.OnClickListener yesAction = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -169,7 +170,7 @@ public class AlarmActivity extends Activity {
 		};
 		// TODO localized string, point amount insert using String.format?
 		DialogUtils.showConfirmationDialog(
-				"Sure you want to stop? You will loose a 100 points",
+				getResources().getString(R.string.alarm_emergency_dialog),
 				this, yesAction);
 	}
 
@@ -191,7 +192,7 @@ public class AlarmActivity extends Activity {
 
 		// Send user to ChallengeActivity.
 		Intent i = new Intent(this, ChallengeActivity.class);
-		new IntentUtils( i ).setAlarmId( this.alarm );
+		new IntentUtils(i).setAlarmId(this.alarm);
 		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
 	}
 
@@ -350,8 +351,8 @@ public class AlarmActivity extends Activity {
 	}
 
 	/*
-	 * Use to stop the timer
-	 * (non-Javadoc)
+	 * Use to stop the timer (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onStop()
 	 */
 	@Override
