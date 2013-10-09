@@ -31,7 +31,14 @@ import android.os.PowerManager;
 import android.util.Log;
 
 /**
- * Service for handling audio playback using a MediaPlayer.
+ * Service for handling local audio playback using a MediaPlayer.
+ * 
+ * <p>
+ * Audio played will go through {@link AudioManager#STREAM_ALARM} and played
+ * until a {@link #ACTION_STOP} is sent to the service. Both single tracks and
+ * playlists can be played through the service, see {@link #ACTION_PLAY_TRACK} and
+ * {@link #ACTION_PLAY_PLAYLIST} for details.
+ * </p>
  */
 public class AudioService extends Service implements OnPreparedListener,
 		OnErrorListener, OnCompletionListener {
@@ -42,13 +49,13 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * Action for starting playback of a single audio track.
 	 * <p>Required extras:</p>
 	 * <ul>
-	 * <li>A {@link Uri}, using name defined by {@link #BUNDLE_URI} - the Uri
-	 * for the track to be played</li>
-	 * <li>A float (0-1), using name defined by {@link #BUNDLE_FLOAT_VOLUME} -
+	 * <li>A {@link Uri}, using key defined by {@link #BUNDLE_URI} - the Uri for
+	 * the track to be played</li>
+	 * <li>A float (0-1), using key defined by {@link #BUNDLE_FLOAT_VOLUME} -
 	 * the initial volume</li>
 	 * </ul>
 	 */
-	public static final String ACTION_PLAY = "se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY";
+	public static final String ACTION_PLAY_TRACK = "se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_TRACK";
 
 	/**
 	 * Action for stopping any playback.
@@ -59,7 +66,7 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * Action for modifying the volume of what's currently playing. 
 	 * <p>Required extras:</p>
 	 * <ul>
-	 * <li>A float, using name defined by {@link #BUNDLE_FLOAT_VOLUME} - the
+	 * <li>A float, using key defined by {@link #BUNDLE_FLOAT_VOLUME} - the
 	 * volume (0-1) for the playing audio</li>
 	 * </ul>
 	 */
@@ -69,9 +76,9 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * Action for starting playback of a playlist.
 	 * <p>Required extras:</p>
 	 * <ul>
-	 * <li>A {@code String[]}, using name defined by {@link #BUNDLE_PLAYLIST} -
+	 * <li>A {@code String[]}, using key defined by {@link #BUNDLE_PLAYLIST} -
 	 * paths to the tracks to be played</li>
-	 * <li>A float (0-1), using name defined by {@link #BUNDLE_FLOAT_VOLUME} -
+	 * <li>A float (0-1), using key defined by {@link #BUNDLE_FLOAT_VOLUME} -
 	 * the initial volume</li>
 	 * </ul>
 	 */
@@ -127,7 +134,7 @@ public class AudioService extends Service implements OnPreparedListener,
 		String action = intent.getAction();
 		Log.d(TAG, "start action " + action);
 
-		if (ACTION_PLAY.equals(action)) {
+		if (ACTION_PLAY_TRACK.equals(action)) {
 			handleVolumeAction(intent);
 			handlePlayAction(intent);
 		} else if (ACTION_STOP.equals(action)) {

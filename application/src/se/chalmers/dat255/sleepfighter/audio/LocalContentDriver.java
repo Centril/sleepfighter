@@ -60,7 +60,7 @@ public class LocalContentDriver extends BaseAudioDriver {
 
 		float bundleVol = VolumeUtils.convertUIToFloatVolume(config.getVolume());
 
-		Intent i = new Intent(AudioService.ACTION_PLAY);
+		Intent i = new Intent(AudioService.ACTION_PLAY_TRACK);
 		i.putExtra(AudioService.BUNDLE_URI, uri);
 		i.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
 		getContext().startService(i);
