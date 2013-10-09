@@ -47,6 +47,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -123,7 +126,23 @@ public class AlarmActivity extends Activity {
 		}
 
 		camera = Camera.open();
-		
+
+		// Animation to the buttons
+
+		Animation fadeAnm1 = new AlphaAnimation(1, 0);
+		fadeAnm1.setDuration(300);
+		fadeAnm1.setInterpolator(new LinearInterpolator());
+		fadeAnm1.setRepeatCount(Animation.INFINITE);
+		fadeAnm1.setRepeatMode(Animation.REVERSE);
+		btnChallenge.startAnimation(fadeAnm1);
+
+		Animation fadeAnm2 = new AlphaAnimation(1, 0);
+		fadeAnm2.setDuration(500);
+		fadeAnm2.setInterpolator(new LinearInterpolator());
+		fadeAnm2.setRepeatCount(Animation.INFINITE);
+		fadeAnm2.setRepeatMode(Animation.REVERSE);
+		btnSnooze.startAnimation(fadeAnm2);
+
 		startFlash();
 
 	}
@@ -308,6 +327,7 @@ public class AlarmActivity extends Activity {
 		SFApplication.get().setAudioDriver(null);
 	}
 
+	//
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -323,13 +343,12 @@ public class AlarmActivity extends Activity {
 		};
 
 		// Update the user interface
-		int msec = 999 - calendar.get(Calendar.MILLISECOND);
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
 				runOnUiThread(updateTask);
 			}
-		}, msec, 1000);
+		}, calendar.get(Calendar.MILLISECOND), 1000);
 	}
 
 	/*
