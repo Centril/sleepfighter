@@ -71,7 +71,7 @@ public class AlarmActivity extends Activity {
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
 	public static final int CHALLENGE_REQUEST_CODE = 1;
-
+	private Parameters p;
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 	private TextView tvName;
@@ -141,7 +141,7 @@ public class AlarmActivity extends Activity {
 		}
 		
 		// If camera found, set flash mode ON.
-		final Parameters p = camera.getParameters();
+			p = camera.getParameters();
 			Log.i("info", "The flashlight is on.");
 			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
 			camera.setParameters(p);					
