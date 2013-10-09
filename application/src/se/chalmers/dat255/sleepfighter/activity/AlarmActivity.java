@@ -41,6 +41,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -77,6 +78,7 @@ public class AlarmActivity extends Activity {
 	private TextView tvTime;
 	private Alarm alarm;
 	public Timer timer;
+	private static final int EMERGENCY_COST = 100;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -163,15 +165,17 @@ public class AlarmActivity extends Activity {
 		DialogInterface.OnClickListener yesAction = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO decide point amount
-				SFApplication.get().getPrefs().addChallengePoints(-100);
+				SFApplication.get().getPrefs()
+						.addChallengePoints(EMERGENCY_COST);
 				stopAlarm();
 			}
 		};
-		// TODO localized string, point amount insert using String.format?
-		DialogUtils.showConfirmationDialog(
-				getResources().getString(R.string.alarm_emergency_dialog),
-				this, yesAction);
+		Resources res = getResources();
+		DialogUtils.showConfirmationDialog(String.format(res
+				.getString(R.string.alarm_emergency_dialog), res
+				.getQuantityString(R.plurals.alarm_emergency_cost,
+						EMERGENCY_COST, EMERGENCY_COST)), this, yesAction);
+
 	}
 
 	private void onStopClick() {
