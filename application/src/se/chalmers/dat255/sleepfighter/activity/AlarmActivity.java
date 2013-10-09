@@ -142,11 +142,10 @@ public class AlarmActivity extends Activity {
 		
 		// If camera found, set flash mode ON.
 		if(!isFlashOn){
-			p = camera.getParameters();
 			Log.i("info", "The flashlight is on.");
-			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-			camera.setParameters(p);	
 			isFlashOn = true;
+			
+			run();
 		}else{
 			p = camera.getParameters();
 			Log.i("info", "The flashlight is off.");
@@ -155,6 +154,24 @@ public class AlarmActivity extends Activity {
 			isFlashOn = false;
 		}
 	}
+	
+	public void run() {   
+            while(isFlashOn){
+            	p = camera.getParameters();
+            	p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+    			camera.setParameters(p);                                                                
+               try {
+                   Thread.sleep(1000);
+               }catch (Exception e) {
+            	   Log.e("err", "No flashlight detected!");
+               }           
+            } 
+    }           
+	
+	
+	
+	
+	
 
 	private void onStopClick() {
 		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
