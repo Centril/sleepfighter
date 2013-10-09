@@ -82,8 +82,6 @@ public class ShakeChallenge implements Challenge {
 				.getSystemService(Context.SENSOR_SERVICE);
 		this.accelerometer = sensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		this.sensorManager.registerListener(this.sensorEventListener,
-				accelerometer, SensorManager.SENSOR_DELAY_GAME);
 	}
 	
 	private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -156,6 +154,8 @@ public class ShakeChallenge implements Challenge {
 
 	@Override
 	public void onResume() {
+		this.sensorManager.registerListener(this.sensorEventListener,
+				accelerometer, SensorManager.SENSOR_DELAY_GAME);
 	}
 
 	@Override
