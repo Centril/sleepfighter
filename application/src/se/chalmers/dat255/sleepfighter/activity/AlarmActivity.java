@@ -130,15 +130,19 @@ public class AlarmActivity extends Activity {
 	
 	// Start the flashlight
 	private void startFlash(){
-		/*Context context = this;
+		
+		// Check if there is any camera. If not found, return nothing.
+		Context context = this;
 		PackageManager pm = context.getPackageManager();
 		
 		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-			Log.e("err", "No camera/flashlight detected");
+			Log.e("err", "No flashlight detected!");
 			return;
-		}*/
+		}
+		
+		// If camera found, set flash mode ON.
 		final Parameters p = camera.getParameters();
-			Log.i("info", "THE FLASH'S ON!");
+			Log.i("info", "The flashlight is on.");
 			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
 			camera.setParameters(p);					
 	}
