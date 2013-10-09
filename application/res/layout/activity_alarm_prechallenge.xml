@@ -72,13 +72,6 @@
             android:text="@string/snooze"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/btnFlash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="FLASH-ON" />
-
     </LinearLayout>
 
 </LinearLayout>

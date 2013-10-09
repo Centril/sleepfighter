@@ -80,7 +80,7 @@ public class AlarmActivity extends Activity {
 	public Timer timer;
 	private boolean isFlashOn = false;
 	private Camera camera;
-	private Button button;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +128,7 @@ public class AlarmActivity extends Activity {
 		
 	}
 	
-	
+	// Start the flashlight
 	private void startFlash(){
 		/*Context context = this;
 		PackageManager pm = context.getPackageManager();
@@ -137,27 +137,11 @@ public class AlarmActivity extends Activity {
 			Log.e("err", "No camera/flashlight detected");
 			return;
 		}*/
-		
 		final Parameters p = camera.getParameters();
-		
-		if (isFlashOn) {
-			Log.i("info", "THE FLASH'S OFF!");
-			p.setFlashMode(Parameters.FLASH_MODE_OFF);
-			camera.setParameters(p);					
-			isFlashOn = false;
-		} else {
 			Log.i("info", "THE FLASH'S ON!");
 			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
 			camera.setParameters(p);					
-			isFlashOn = true;
-		}
-		
 	}
-	
-	
-	
-	
-	
 
 	private void onStopClick() {
 		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
