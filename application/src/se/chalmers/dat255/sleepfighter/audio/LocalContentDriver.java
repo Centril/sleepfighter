@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.audio;
 
+import se.chalmers.dat255.sleepfighter.audio.utils.VolumeUtils;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
@@ -57,7 +58,7 @@ public class LocalContentDriver extends BaseAudioDriver {
 	public void play(AudioConfig config) {
 		super.play(config);
 
-		float bundleVol = convertVolume(config.getVolume());
+		float bundleVol = VolumeUtils.convertUIToFloatVolume(config.getVolume());
 
 		Intent i = new Intent(AudioService.ACTION_PLAY);
 		i.putExtra(AudioService.BUNDLE_URI, uri);
@@ -74,22 +75,10 @@ public class LocalContentDriver extends BaseAudioDriver {
 
 	@Override
 	public void setVolume(int volume) {
-		float bundleVol = convertVolume(volume);
+		float bundleVol = VolumeUtils.convertUIToFloatVolume(volume);
 
 		Intent i = new Intent(AudioService.ACTION_VOLUME);
 		i.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
 		getContext().startService(i);
-	}
-
-	/**
-	 * Convert volume from 0-100 integer to 0-1 float, which MediaPlayer uses.
-	 * 
-	 * @param volume
-	 *            the volume in the range 0-100
-	 * @return the volume in the range 0-1
-	 */
-	private static float convertVolume(int volume) {
-		// TODO perhaps to logarithmic conversion here
-		return (float) volume / 100;
 	}
 }
