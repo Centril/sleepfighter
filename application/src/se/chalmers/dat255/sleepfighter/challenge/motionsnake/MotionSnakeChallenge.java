@@ -28,7 +28,7 @@ import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
-import se.chalmers.dat255.sleepfighter.utils.motion.MotionControl;
+import se.chalmers.dat255.sleepfighter.utils.motion.RotationControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -50,7 +50,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		}
 	}
 
-	private MotionControl motionControl;
+	private RotationControl motionControl;
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
@@ -66,7 +66,7 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.activity.setTitle("Rotate the device to control the snake!");
 		
 		try {
-			this.motionControl = new MotionControl(this.activity);
+			this.motionControl = new RotationControl(this.activity);
 		} catch (NoSensorException e) {
 			// If the Challenge for some reason is selected, despite the device
 			// not having the required Sensor, complete the Challenge so as to
@@ -145,8 +145,8 @@ public class MotionSnakeChallenge implements Challenge, PropertyChangeListener {
 	}
 
 	/**
-	 * Unregisters the MotionControl instance of the Sensors it is listening to.
-	 * Must be called when the Activity pauses, or else the MotionControl will
+	 * Unregisters the RotationControl instance of the Sensors it is listening to.
+	 * Must be called when the Activity pauses, or else the RotationControl will
 	 * continue listening to the Sensors, which is very expensive.
 	 */
 	public void pause() {

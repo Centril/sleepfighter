@@ -30,10 +30,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 /**
- * A class for handling motion events that can be used all across the app. Some
+ * A class for handling rotation events that can be used all across the app. Some
  * code inspired by http://stackoverflow.com/a/12098469
  */
-public class MotionControl implements SensorEventListener {
+public class RotationControl implements SensorEventListener {
 
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
@@ -57,7 +57,7 @@ public class MotionControl implements SensorEventListener {
 	 * @throws NoSensorException
 	 *             If the default Sensor type is unavailable on the device.
 	 */
-	public MotionControl(Activity activity) throws NoSensorException {
+	public RotationControl(Activity activity) throws NoSensorException {
 		// Get an instance of the SensorManager
 		this.mSensorManager = (SensorManager) activity
 				.getSystemService(Activity.SENSOR_SERVICE);
