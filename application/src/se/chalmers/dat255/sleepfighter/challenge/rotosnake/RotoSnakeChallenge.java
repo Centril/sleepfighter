@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.RotationControl;
@@ -57,10 +57,8 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 	private SnakeController snakeController;
 	private NoSensorException exception = null;
 
-	private ChallengeConfigSet config;
-
 	@Override
-	public void start(ChallengeActivity activity, ChallengeConfigSet config) {
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params ) {
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -86,9 +84,10 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 		}
 	}
 
+
 	@Override
-	public void start(ChallengeActivity activity, Bundle state) {
-		this.start(activity, config);
+	public void start(ChallengeActivity activity,  ChallengeResolvedParams params, Bundle state) {
+		this.start( activity, params );
 	}
 
 	@Override

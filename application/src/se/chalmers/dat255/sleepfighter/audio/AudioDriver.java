@@ -79,4 +79,12 @@ public interface AudioDriver {
 	 * @param config audio configuration.
 	 */
 	public void toggle( AudioConfig config );
+
+	/**
+	 * Sets the volume of audio played through the driver.
+	 * 
+	 * @param volume
+	 *            the volume (0-100)
+	 */
+	public void setVolume(int volume);
 }

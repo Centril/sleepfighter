@@ -41,7 +41,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 
 /**
- *
+ * ChallengeParamsSettingsActivity is the activity for configuring the parameters/settings for one ChallengeType.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0

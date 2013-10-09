@@ -66,4 +66,8 @@ public class SilentAudioDriver implements AudioDriver {
 	@Override
 	public void toggle( AudioConfig config ) {
 	}
+
+	@Override
+	public void setVolume(int volume) {
+	}
 }
