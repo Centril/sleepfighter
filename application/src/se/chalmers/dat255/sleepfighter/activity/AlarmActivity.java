@@ -44,6 +44,7 @@ import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -155,21 +156,24 @@ public class AlarmActivity extends Activity {
 		}
 	}
 	
-	public void run() {   
-            while(isFlashOn){
-            	p = camera.getParameters();
-            	p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-    			camera.setParameters(p);                                                                
-               try {
-                   Thread.sleep(1000);
-               }catch (Exception e) {
-            	   Log.e("err", "No flashlight detected!");
-               }           
-            } 
-    }           
-	
-	
-	
+	Handler mHandler = new Handler();
+    public void run() {   
+         while(true){                                                             
+            try {
+                mHandler.post(new Runnable(){
+                   @Override
+                   public void run() {
+                      p = camera.getParameters();
+                  	p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+          			camera.setParameters(p);
+                   }}
+                   );
+                  Thread.sleep(1000);
+            }catch (Exception e) {
+            	Log.e("err", "No flashlight detected!");
+            }           
+         } 
+    }      
 	
 	
 
