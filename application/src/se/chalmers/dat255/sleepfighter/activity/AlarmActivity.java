@@ -81,7 +81,8 @@ public class AlarmActivity extends Activity {
 	public Timer timer;
 	private boolean isFlashOn = false;
 	private Camera camera;
-
+	private Handler handler;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +113,16 @@ public class AlarmActivity extends Activity {
 			}
 		});
 
+		handler = new Handler();
+		handler.removeCallbacks(toggleFlash);
+		handler.postDelayed(toggleFlash, 1000 * 60);
+		
+		
+		
+		
+
 		Button btnSnooze = (Button) findViewById(R.id.btnSnooze);
-		if(alarm.getSnoozeConfig().isSnoozeEnabled()) {
+		if (alarm.getSnoozeConfig().isSnoozeEnabled()) {
 			btnSnooze.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -125,57 +134,60 @@ public class AlarmActivity extends Activity {
 		}
 
 		camera = Camera.open();
-		startFlash();
-		
+
 	}
+
+	
+	private Runnable toggleFlash = new Runnable() {
+	    public void run() {
+	        if(!isFlashOn)
+	        {
+	        	p = camera.getParameters();
+				Log.i("info", "The flashlight is off.");
+				p.setFlashMode(Parameters.FLASH_MODE_OFF);
+				camera.setParameters(p);
+				isFlashOn = false;
+	        }
+	        else
+	        {
+	        	Log.i("info", "The flashlight is on.");
+				p = camera.getParameters();
+				p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+				camera.setParameters(p);
+				isFlashOn = true;
+	        }
+	        handler.postDelayed(this, 1000 * 60);
+	    }
+	};
+	
 	
 	// Start the flashlight
-	private void startFlash(){
-		
+	private void startFlash() {
+
 		// Check if there is any camera. If not found, return nothing.
 		Context context = this;
 		PackageManager pm = context.getPackageManager();
-		
+
 		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 			Log.e("err", "No flashlight detected!");
 			return;
 		}
-		
+
 		// If camera found, set flash mode ON.
-		if(!isFlashOn){
+		/*if (!isFlashOn) {
 			Log.i("info", "The flashlight is on.");
+			p = camera.getParameters();
+			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+			camera.setParameters(p);
 			isFlashOn = true;
-			
-			run();
-		}else{
+		} else {
 			p = camera.getParameters();
 			Log.i("info", "The flashlight is off.");
 			p.setFlashMode(Parameters.FLASH_MODE_OFF);
-			camera.setParameters(p);	
+			camera.setParameters(p);
 			isFlashOn = false;
-		}
+		}*/
 	}
-	
-	Handler mHandler = new Handler();
-    public void run() {   
-         while(true){                                                             
-            try {
-                mHandler.post(new Runnable(){
-                   @Override
-                   public void run() {
-                      p = camera.getParameters();
-                  	p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-          			camera.setParameters(p);
-                   }}
-                   );
-                  Thread.sleep(1000);
-            }catch (Exception e) {
-            	Log.e("err", "No flashlight detected!");
-            }           
-         } 
-    }      
-	
-	
 
 	private void onStopClick() {
 		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
@@ -195,7 +207,7 @@ public class AlarmActivity extends Activity {
 
 		// Send user to ChallengeActivity.
 		Intent i = new Intent(this, ChallengeActivity.class);
-		new IntentUtils( i ).setAlarmId( this.alarm );
+		new IntentUtils(i).setAlarmId(this.alarm);
 		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
 	}
 
@@ -354,19 +366,19 @@ public class AlarmActivity extends Activity {
 	}
 
 	/*
-	 * Use to stop the timer and release the camera
-	 * (non-Javadoc)
+	 * Use to stop the timer and release the camera (non-Javadoc)
+	 * 
 	 * @see android.app.Activity#onStop()
 	 */
 	@Override
 	protected void onStop() {
 		super.onStop();
-		
+
 		// Stop the timer
 		timer.cancel();
 		timer.purge();
 		timer = null;
-		
+
 		// Release the camera
 		if (camera != null) {
 			camera.release();
