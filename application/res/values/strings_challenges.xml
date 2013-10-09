@@ -25,6 +25,7 @@
         <item>Memory</item>
         <item>Sort Numbers</item>
         <item>Fluid Snake</item>
+        <item>Roto Snake</item>
     </string-array>
     <string-array name="challenge_descriptions">
         <item>A test challenge</item>
@@ -32,6 +33,7 @@
         <item>A memory challenge where letters are matched</item>
         <item>Challenge where numbers are sorted by size</item>
         <item>A free-form version of snake</item>
+        <item>A version of snake where you control the snake by rotating your device</item>
     </string-array>
 
 </resources>
