@@ -76,6 +76,7 @@ public class AlarmActivity extends Activity {
 	public Timer timer;
 	private boolean isFlashOn = false;
 	private Camera camera;
+	private Button button;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
