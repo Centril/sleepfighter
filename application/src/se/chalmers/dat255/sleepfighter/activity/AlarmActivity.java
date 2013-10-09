@@ -148,7 +148,12 @@ public class AlarmActivity extends Activity {
 	 */
 	private void handleEmergencyStop() {
 		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
-		if (challengeEnabled) {
+
+		GlobalPreferencesManager gpm = new GlobalPreferencesManager(
+				getBaseContext());
+		boolean globallyEnabled = gpm.isChallengesActivated();
+
+		if (challengeEnabled && globallyEnabled) {
 			skipChallengeConfirm();
 		} else {
 			stopAlarm();
@@ -171,6 +176,8 @@ public class AlarmActivity extends Activity {
 			}
 		};
 		Resources res = getResources();
+
+		// Get the correct string with the correct value inserted.
 		DialogUtils.showConfirmationDialog(String.format(res
 				.getString(R.string.alarm_emergency_dialog), res
 				.getQuantityString(R.plurals.alarm_emergency_cost,
