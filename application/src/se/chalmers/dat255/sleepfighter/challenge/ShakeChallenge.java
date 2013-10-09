@@ -31,12 +31,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 
 /**
  * A challenge where the user have to shake the device to complete it.
  */
 public class ShakeChallenge implements Challenge {
+
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType(ChallengeType.SHAKE);
+	}}
 
 	private static final float GOAL = 5000;
 
