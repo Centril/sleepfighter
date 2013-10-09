@@ -18,10 +18,15 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.audio.playlist;
 
+import java.util.List;
+
+import se.chalmers.dat255.sleepfighter.audio.AudioService;
 import se.chalmers.dat255.sleepfighter.audio.BaseAudioDriver;
+import se.chalmers.dat255.sleepfighter.audio.utils.VolumeUtils;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import android.content.Context;
+import android.content.Intent;
 
 /**
  * PlaylistDriver is the AudioDriver for playlists.
@@ -72,15 +77,40 @@ public class PlaylistDriver extends BaseAudioDriver {
 	@Override
 	public void play( AudioConfig config ) {
 		super.play( config );
+
+		float bundleVol = VolumeUtils
+				.convertUIToFloatVolume(config.getVolume());
+
+		Intent intent = new Intent(AudioService.ACTION_PLAY_PLAYLIST);
+
+		List<Track> tracks = getProvider().getTracks(getContext(),
+				getSource().getUri());
+
+		// Assemble String array with paths to bundle
+		String[] data = new String[tracks.size()];
+		for(int i = 0; i < data.length; i++) {
+			data[i] = tracks.get(i).getData();
+		}
+
+		intent.putExtra(AudioService.BUNDLE_PLAYLIST, data);
+		intent.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
+		getContext().startService(intent);
 	}
 
 	@Override
 	public void stop() {
 		super.stop();
+		Intent i = new Intent(AudioService.ACTION_STOP);
+		getContext().startService(i);
+		super.stop();
 	}
 
 	@Override
 	public void setVolume(int volume) {
-		// TODO Auto-generated method stub
+		float bundleVol = VolumeUtils.convertUIToFloatVolume(volume);
+
+		Intent i = new Intent(AudioService.ACTION_VOLUME);
+		i.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
+		getContext().startService(i);
 	}
 }
