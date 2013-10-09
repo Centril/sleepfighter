@@ -141,10 +141,19 @@ public class AlarmActivity extends Activity {
 		}
 		
 		// If camera found, set flash mode ON.
+		if(!isFlashOn){
 			p = camera.getParameters();
 			Log.i("info", "The flashlight is on.");
 			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-			camera.setParameters(p);					
+			camera.setParameters(p);	
+			isFlashOn = true;
+		}else{
+			p = camera.getParameters();
+			Log.i("info", "The flashlight is off.");
+			p.setFlashMode(Parameters.FLASH_MODE_OFF);
+			camera.setParameters(p);	
+			isFlashOn = false;
+		}
 	}
 
 	private void onStopClick() {
