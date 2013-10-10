@@ -120,9 +120,13 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		// get time.
 		String time = TextToSpeechUtil.getCurrentTime();
 	
-		String s = weather.getSummary();
+		String weatherStr = weather.getSummary();
+	
+		String format = this.getResources().getString(R.string.speech_format);
 		
-		tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is " + s, TextToSpeech.QUEUE_FLUSH, null);
+		String s = String.format(format, time, weatherStr);
+		
+		tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
 	// called when tts has been fully initialized. 

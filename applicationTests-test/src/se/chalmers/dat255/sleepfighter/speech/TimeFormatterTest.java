@@ -22,5 +22,12 @@ public class TimeFormatterTest extends TestCase{
 		assertEquals("half past ten", TimeFormatter.formatTime(10, 31));
 		assertEquals("half past ten", TimeFormatter.formatTime(10, 32));
 		
+		
+		assertEquals("ten", TimeFormatter.formatTime(10, 2));
+		assertEquals("ten", TimeFormatter.formatTime(10, 0));
+		assertEquals("ten", TimeFormatter.formatTime(10, 1));
+		
+		assertEquals("ten", TimeFormatter.formatTime(9, 58));
+		assertEquals("ten", TimeFormatter.formatTime(9, 59));
 	}
 }
