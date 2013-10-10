@@ -26,8 +26,9 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.speech.tts.TextToSpeech;
 
-public class GlobalSettingsActivity extends PreferenceActivity {
+public class GlobalSettingsActivity extends PreferenceActivity   {
 	
 	private final String GLOBAL_PRESET_ALARM_SUBSCREEN = "perf_global_preset_alarm";
 

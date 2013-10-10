@@ -233,7 +233,11 @@ public class Alarm implements Cloneable, IdProvider {
 
 	@DatabaseField(foreign = true, canBeNull = false)
 	private SnoozeConfig snoozeConfig;
-
+	
+	@DatabaseField
+	// the time and weather will be read out when the alarm goes off. 
+	private boolean isSpeech = false;
+	
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
@@ -733,6 +737,15 @@ public class Alarm implements Cloneable, IdProvider {
 	 */
 	public boolean isRepeating() {
 		return this.isRepeating;
+	}
+	
+	// if true, then the time and weather will be read out when the alarm goes off.
+	public boolean isSpeech() {
+		return this.isSpeech;
+	}
+	
+	public void setSpeech(boolean isSpeech) {
+		this.isSpeech = isSpeech;
 	}
 
 	/**

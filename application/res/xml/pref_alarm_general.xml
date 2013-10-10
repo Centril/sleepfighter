@@ -53,7 +53,17 @@
 
 	</PreferenceCategory>
     
-	<PreferenceCategory android:title="@string/misc_category_title" 
+	<PreferenceCategory android:title="Speech"   >   
+        <CheckBoxPreference
+            android:title="Read out time and weather when alarm goes off"
+            android:key="pref_alarm_speech"
+            android:defaultValue="false" />
+        <Preference
+            android:title="Sample"
+            android:key="pref_speech_sample" />
+	</PreferenceCategory>
+	
+		<PreferenceCategory android:title="@string/misc_category_title" 
 	    android:key="pref_category_misc"  >
 
         <!-- NOTE: EditTextPreference accepts EditText attributes. -->

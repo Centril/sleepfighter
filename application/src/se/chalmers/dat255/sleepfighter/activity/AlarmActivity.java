@@ -42,7 +42,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,7 +75,6 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
 	public static final int CHALLENGE_REQUEST_CODE = 1;
-	public static final int CHECK_TTS_DATA_REQUEST_CODE = 2;
 
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
@@ -109,7 +107,6 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	
 		final Location location = currentLocation;
 		
-		
       	final WeatherUtil util  =new WeatherUtil();
 		
 		// you can't do networking on the main thread in android. 
@@ -130,19 +127,14 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		
 		Debug.d("longtide:  " + currentLocation.getLatitude() + " : " + this.currentLocation.getLongitude());
 		
-	*/	//tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is ", TextToSpeech.QUEUE_FLUSH, null);
+	*/	tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is ", TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
 	static Thread thread;
 	
 	//cb8a0d4b48c35b562d1b427b3f77552d
 	
-	// check whether we have TTS data. 
-	public void checkTextToSpeech() {
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, CHECK_TTS_DATA_REQUEST_CODE);
-	}
+	
 	
 	/**
 	 * Sets up google play services. We need this to get the current location. 
@@ -166,8 +158,7 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		setupGooglePlay();
 		locationClient = new LocationClient(this, this, this);
 		
-		
-		checkTextToSpeech();
+		TextToSpeechUtil.checkTextToSpeech(this);
 
 		// Turn and/or Keep screen on.
 		this.setScreenFlags();
@@ -316,9 +307,6 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		return flags;
 	}
 
-	/**
-	 * What will happen when you complete a challenge or press back.
-	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Check if result is from a challenge
@@ -335,19 +323,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 						Toast.LENGTH_LONG).show();
 			}
 
-		} else if(requestCode == CHECK_TTS_DATA_REQUEST_CODE) {
-			
-	        if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-	            // success, create the TTS instance
-	            tts = new TextToSpeech(this, this);
-	        } else {
-	            // missing TTS data, install it
-	            Intent installIntent = new Intent();
-	            installIntent.setAction(
-	                TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-	            startActivity(installIntent);
-	        }
-			
+		} else if(requestCode == TextToSpeechUtil.CHECK_TTS_DATA_REQUEST_CODE) {   
+			tts = new TextToSpeech(this, this);
 		}else {
 			super.onActivityResult(requestCode, resultCode, data);
 		}

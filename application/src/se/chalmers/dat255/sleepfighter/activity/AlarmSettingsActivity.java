@@ -33,11 +33,14 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.AudioChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +52,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.speech.tts.TextToSpeech;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,6 +63,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 /**
@@ -67,7 +72,7 @@ import android.widget.TextView.OnEditorActionListener;
  * @author Hassel
  *
  */
-public class AlarmSettingsActivity extends PreferenceActivity {
+public class AlarmSettingsActivity extends PreferenceActivity implements TextToSpeech.OnInitListener {
 
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
@@ -83,11 +88,17 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private static final String ENABLE_SNOOZE = "pref_alarm_snooze_enabled";
 	private static final String SNOOZE_TIME = "pref_alarm_snooze_time";
 	
+	private static final String SPEECH = "pref_alarm_speech";
+	private static final String SPEECH_SAMPLE = "pref_speech_sample";
+	
 	private Preference ringerPreference;
 
 	private Alarm alarm;
 	private AlarmList alarmList;
 
+	private TextToSpeech tts;
+	
+	
 	private SFApplication app() {
 		return SFApplication.get();
 	}
@@ -171,6 +182,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+				
+		TextToSpeechUtil.checkTextToSpeech(this);
 		
 		alarmList = app().getAlarms();
 		app().getBus().subscribe(this);
@@ -218,6 +231,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(CHALLENGE));
 		bindPreferenceSummaryToValue(findPreference(ENABLE_SNOOZE));
 		bindPreferenceSummaryToValue(findPreference(SNOOZE_TIME));
+		bindPreferenceSummaryToValue(findPreference(SPEECH));
 
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
@@ -227,10 +241,21 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			}
 		});
 
+		findPreference(SPEECH_SAMPLE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				Debug.d("speech sample here");
+				// TODO: ask the user if he/she wants to install vox or something. 
+				tts.speak("Hello. I am the sexiest voice in the world", TextToSpeech.QUEUE_FLUSH, null);
+				return true;
+			}
+		});
+		
 		this.bindChallengeAdvancedButton();
 
 		this.setupRingerPreferences();
 	}
+	
 
 	private void bindChallengeAdvancedButton() {
 		((EnablePlusSettingsPreference) findPreference(CHALLENGE)).setOnButtonClickListener(new OnClickListener() {
@@ -351,6 +376,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				alarm.getSnoozeConfig().setSnoozeTime(Integer.parseInt(stringValue));
 				preference.setSummary(stringValue);
 			}
+			else if (SPEECH.equals(preference.getKey())) {
+				alarm.setSpeech(("true".equals(stringValue)) ? true : false);
+			}
+			
 			return true;
 		}
 	};
@@ -394,6 +423,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			EditTextPreference pref = ((EditTextPreference) preference);
 			pref.setText(time + "");
 			pref.setSummary(time + "");
+		}else if (SPEECH.equals(preference.getKey())) {
+			((CheckBoxPreference) preference).setChecked(alarm.isSpeech());
 		}
 
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
@@ -402,5 +433,22 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private void initiateTimePicker(TimepickerPreference tp) {
 		tp.setHour(alarm.getHour());
 		tp.setMinute(alarm.getMinute());
+	}
+	
+
+	// called when the text to speech engine is initialized. 
+	@Override
+	public void onInit(int status) {
+		TextToSpeechUtil.setBestLanguage(tts, this);
+		TextToSpeechUtil.config(tts);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == TextToSpeechUtil.CHECK_TTS_DATA_REQUEST_CODE) {   
+			tts = new TextToSpeech(this, this);
+		}else {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
 	}
 }

@@ -8,7 +8,9 @@ import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.speech.tts.TextToSpeech;
 
 public class TextToSpeechUtil {
@@ -22,6 +24,14 @@ public class TextToSpeechUtil {
 		tts.setPitch(1.2f);*/
 	}
 	
+	public static final int CHECK_TTS_DATA_REQUEST_CODE = 2;
+
+	// check whether we have TTS data. 
+	public static void checkTextToSpeech(Activity activity) {
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		activity.startActivityForResult(checkIntent, CHECK_TTS_DATA_REQUEST_CODE);
+	}
 	
 	public static void setBestLanguage(TextToSpeech tts, Context context) {
 		
