@@ -124,12 +124,12 @@ public class MainActivity extends Activity {
 		ImageView pointImage = (ImageView) findViewById(R.id.challenge_points_icon);
 		
 		if (app().getPrefs().isChallengesActivated()) {
-			toggleImage.setImageResource(R.drawable.challenge_toggled);
-			pointImage.setImageResource(R.drawable.sun_enabled);
+			toggleImage.setImageResource(R.drawable.ic_action_challenge_toggled);
+			pointImage.setImageResource(R.drawable.ic_sun_enabled);
 		}
 		else {
-			toggleImage.setImageResource(R.drawable.challenge_untoggled);
-			pointImage.setImageResource(R.drawable.sun_disabled);
+			toggleImage.setImageResource(R.drawable.ic_action_challenge_untoggled);
+			pointImage.setImageResource(R.drawable.ic_sun_disabled);
 			findViewById(R.id.mainChallengePoints).setEnabled(false);
 		}
 		
@@ -138,16 +138,16 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				if (app().getPrefs().isChallengesActivated()) {
 					app().getPrefs().setChallengesActivated(false);
-					((ImageView) v).setImageResource(R.drawable.challenge_untoggled);
+					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_untoggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(false);
-					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_disabled);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_disabled);
 					Toast.makeText(MainActivity.this, "Challenges disabled", Toast.LENGTH_SHORT).show();
 				}
 				else {
 					app().getPrefs().setChallengesActivated(true);
-					((ImageView) v).setImageResource(R.drawable.challenge_toggled);
+					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_toggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(true);
-					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_enabled);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_enabled);
 					Toast.makeText(MainActivity.this, "Challenges enabled", Toast.LENGTH_SHORT).show();
 				}
 			}

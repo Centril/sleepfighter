@@ -27,8 +27,7 @@
             android:adjustViewBounds="true"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:contentDescription="@string/challenge_toggle_content_desc"
-            android:src="@drawable/challenge_untoggled" />
+            android:contentDescription="@string/challenge_toggle_content_desc" />
         
         <TextView
             android:layout_width="1dp"

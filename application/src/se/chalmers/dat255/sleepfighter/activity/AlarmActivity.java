@@ -209,9 +209,15 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 			btnSnooze.setVisibility(View.GONE);
 		}
 
-		TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
-		pointText.setText(SFApplication.get().getPrefs().getChallengePoints()
-				+ " Challenge points.");
+		if (SFApplication.get().getPrefs().isChallengesActivated()
+				&& this.alarm.getChallengeSet().isEnabled()) {
+			TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
+			pointText.setText(SFApplication.get().getPrefs().getChallengePoints()
+					+ " Challenge points.");
+		}
+		else {
+			findViewById(R.id.preChallengeFooter).setVisibility(View.INVISIBLE);
+		}
 	}
 
 	@Override

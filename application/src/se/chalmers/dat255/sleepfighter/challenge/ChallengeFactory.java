@@ -57,6 +57,8 @@ public class ChallengeFactory {
 			return new FluidSnakeChallenge();
 		case ROTO_SNAKE:
 			return new RotoSnakeChallenge();
+		case SHAKE:
+			return new ShakeChallenge();
 		default:
 			throw new IllegalArgumentException("Undefined challenge");
 		}
@@ -92,6 +94,9 @@ public class ChallengeFactory {
 				break;
 			case ROTO_SNAKE:
 				def = new RotoSnakeChallenge.PrototypeDefinition();
+				break;
+			case SHAKE:
+				def = new ShakeChallenge.PrototypeDefinition();
 				break;
 			default:
 				throw new IllegalArgumentException( "Undefined challenge" );
