@@ -115,6 +115,7 @@ public class AlarmActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					startSnooze();
+					SFApplication.get().getPrefs().addChallengePoints(-5);
 				}
 			});
 		} else {
