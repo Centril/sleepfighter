@@ -196,7 +196,7 @@ public class AlarmActivity extends Activity {
 			}
 		}
 	}
-	
+
 	/**
 	 * What will happen when you complete a challenge or press back.
 	 */
@@ -285,7 +285,7 @@ public class AlarmActivity extends Activity {
 
 	/**
 	 * Start and show the current time on display
-	 */ 
+	 */
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -333,7 +333,6 @@ public class AlarmActivity extends Activity {
 		int minute = cal.get(Calendar.MINUTE);
 		return String.format("%02d:%02d", hour, minute);
 	}
-	
 
 	/**
 	 * Start the camera's flashlight if found
