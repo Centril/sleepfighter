@@ -37,6 +37,7 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -78,6 +79,8 @@ public class MainActivity extends Activity {
 		return SFApplication.get();
 	}
 
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,6 +97,8 @@ public class MainActivity extends Activity {
 		this.setupChallengeToggle();
 		this.updateChallengePoints();
 		this.updateEarliestText();
+		
+		
 	}
 
 	@Override
@@ -364,6 +369,11 @@ public class MainActivity extends Activity {
 			startDebugChallenge();
 			return true;
 
+		case R.id.action_speech:
+			Debug.d("speech");
+	
+			return true;
+			
 		case R.id.action_gpsfilter_area_edit:
 			this.startGPSFilterAreaEdit();
 			return true;
@@ -404,4 +414,6 @@ public class MainActivity extends Activity {
 		AlertDialog dialog = builder.create();
 		dialog.show();
 	}
+
+	
 }

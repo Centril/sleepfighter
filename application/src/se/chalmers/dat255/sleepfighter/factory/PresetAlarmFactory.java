@@ -109,4 +109,9 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 
 		return set;
 	}
+
+	@Override
+	protected boolean createIsSpeech() {
+		return false;
+	}
 }
