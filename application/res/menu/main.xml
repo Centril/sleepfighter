@@ -38,12 +38,6 @@
     <item
         android:id="@+id/action_start_challenge"
         android:showAsAction="never"
-        android:title="DEBUG: Start challenge"/>
-
-    <item
-        android:id="@+id/action_speech"
-        android:showAsAction="never"
-        android:title="DEBUG: Debug speech"/>
-    
+        android:title="DEBUG: Start challenge"/>    
     
 </menu>
