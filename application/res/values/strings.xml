@@ -30,7 +30,13 @@
     <string name="pre_chal_act">A wild challenge appears!</string>
     <string name="memory_chal_act">Memory</string>
     <string name="snooze">Snooze</string>
-	
+    <string name="alarm_emergency_stop">Emergency Stop</string>
+    <string name="alarm_emergency_dialog">Sure you want to stop? You will lose %1$s (but this alarm will not ring again).</string>
+    <plurals name="alarm_emergency_cost">
+        <item quantity="one">one point</item>
+        <item quantity="other">%d points</item>
+    </plurals>
+    	
     <!-- Challenges -->
     <string name="start_challenge">Stop the madness!</string>
     <string name="btn_answer">Answer</string>

@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
+package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,8 +60,11 @@ public class SnakeModel {
 	/** The size of the board. */
 	private Dimension boardSize;
 
-	/** The margin for collisions. */
-	private int margin;
+	/** The size of a tile. */
+	private int tileSize;
+
+	/** Whether game is over or not. */
+	private boolean gameOver;
 
 	/*
 	 * -------------------------------- Getters.
@@ -112,6 +115,10 @@ public class SnakeModel {
 		return boardSize;
 	}
 
+	public boolean isGameOver() {
+		return gameOver;
+	}
+
 	/**
 	 * Returns whether or not a position is the head of the snake. Since snake
 	 * always has a head this method will never cause NullPointerException.
@@ -143,14 +150,17 @@ public class SnakeModel {
 		// Set board size.
 		this.boardSize = size;
 
-		// Set margin.
-		this.margin = SnakeConstants.getTileSize();
+		// Set tile size.
+		this.tileSize = SnakeConstants.getTileSize();
+
+		// Set game status.
+		this.gameOver = false;
 
 		// Blank out the whole gameboard.
 		this.emptyPos = new ArrayList<Position>(size.getWidth()
-				* size.getWidth());
-		for (int i = 0; i < size.getWidth(); i++) {
-			for (int j = 0; j < size.getHeight(); j++) {
+				* size.getHeight() - this.tileSize);
+		for (int i = this.tileSize; i < size.getWidth(); i++) {
+			for (int j = this.tileSize; j < size.getHeight(); j++) {
 				this.emptyPos.add(new Position(i, j));
 			}
 		}
@@ -197,9 +207,12 @@ public class SnakeModel {
 	 *            wanted direction.
 	 */
 	public void updateDirection(Direction newDirection) {
-		// Don't change direction if it opposite to current one.
-		// This is one of the features of snake.
-		if (!newDirection.isOpposite(this.direction)) {
+		// Don't change direction if it is opposite to current one or if it is
+		// contained by snake.
+		// This is one of the features of THIS snake.
+		if (!newDirection.isOpposite(this.direction)
+				|| snakePos.contains(snakePos.peek()
+						.moveDirection(newDirection))) {
 			this.direction = newDirection;
 		}
 	}
@@ -220,12 +233,13 @@ public class SnakeModel {
 
 		// Check if there's food at the snakes head.
 		// If yes: Award client with score and add a new snake-food (if not
-		// possible -> game over).
+		// possible or if reached victory condition -> game over).
 		// If not: Transfer the previous snake tail position to empty positions
 		// and remove head from empty positions.
 		if (isCollision(newHeadPos, this.currFoodPos)) {
 			this.score++;
-			if (this.emptyPos.isEmpty()) {
+			if (this.emptyPos.isEmpty()
+					|| score == SnakeConstants.getVictoryCondition()) {
 				this.gameOver();
 			} else {
 				this.addFood();
@@ -235,10 +249,8 @@ public class SnakeModel {
 			this.emptyPos.remove(newHeadPos);
 		}
 
-		// Game Over if snake is out of bounds or if snake went into itself.
-		if (newHeadPos.isOutOfBounds(this.getBoardSize())
-				|| this.snakePos.contains(newHeadPos)
-				|| score == SnakeConstants.getVictoryCondition()) {
+		// Game Over if snake is out of bounds.
+		if (isOutOfBounds(newHeadPos)) {
 			this.gameOver();
 		}
 
@@ -252,6 +264,7 @@ public class SnakeModel {
 	 * @throws GameOverException
 	 */
 	private void gameOver() throws GameOverException {
+		gameOver = true;
 		throw new GameOverException(this.score);
 	}
 
@@ -288,18 +301,25 @@ public class SnakeModel {
 	/**
 	 * @param newHeadPos
 	 * @param otherPos
-	 * @return true if Snake (newHeadPos) collides with another object occupying
-	 *         otherPos
+	 * @return true if Snake (newHeadPos) collides with another object
+	 *         (typically fruit) occupying otherPos
 	 */
 	private boolean isCollision(Position newHeadPos, Position otherPos) {
-		boolean eats = false;
+		boolean collision = false;
 
 		if (otherPos.equals(newHeadPos)) {
-			eats = true;
-		} else if ((Math.abs(otherPos.getX() - newHeadPos.getX()) <= this.margin)
-				&& (Math.abs(otherPos.getY() - newHeadPos.getY()) <= this.margin)) {
-			eats = true;
+			collision = true;
 		}
-		return eats;
+		return collision;
 	}
+
+	/**
+	 * Check if Position pos is out of bounds on Android device.
+	 */
+	private boolean isOutOfBounds(Position pos) {
+		return pos.getX() < tileSize || pos.getY() < tileSize
+				|| pos.getY() > boardSize.getHeight() - tileSize
+				|| pos.getX() > boardSize.getWidth() - tileSize;
+	}
+
 }

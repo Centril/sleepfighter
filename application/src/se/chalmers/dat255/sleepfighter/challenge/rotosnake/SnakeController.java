@@ -17,7 +17,7 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-package se.chalmers.dat255.sleepfighter.challenge.motionsnake;
+package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 
 import java.beans.PropertyChangeSupport;
 import java.util.Random;
@@ -61,7 +61,7 @@ public class SnakeController {
 		this.init();
 	}
 
-	public SnakeController(MotionSnakeChallenge challenge, Context context) {
+	public SnakeController(RotoSnakeChallenge challenge, Context context) {
 		this(context);
 
 		this.pcs.addPropertyChangeListener(challenge);
@@ -73,7 +73,7 @@ public class SnakeController {
 
 	protected void init() {
 		this.model = new SnakeModel(SnakeConstants.getGameSize(),
-				Direction.getRandom(this.rng), this.rng);
+				Direction.NORTH, this.rng);
 
 		this.view = new SnakeView(this.context, this.model);
 
@@ -85,8 +85,12 @@ public class SnakeController {
 			SnakeModel model = (SnakeModel) this.model;
 			model.tickUpdate();
 		} catch (GameOverException e) {
-			this.stopGame(e.getScore());
-			this.thread.setRunning(false);
+			if (e.getScore() >= SnakeConstants.getVictoryCondition()) {
+				this.stopGame(e.getScore());
+				this.thread.setRunning(false);
+			} else {
+				resetGame();
+			}
 		}
 	}
 
@@ -104,6 +108,20 @@ public class SnakeController {
 		return view;
 	}
 
+	/**
+	 * Call when activity/game pauses. If not called, game will keep running.
+	 */
+	public void pause() {
+		this.thread.setRunning(false);
+	}
+
+	/**
+	 * Call when activity/game resumes.
+	 */
+	public void resume() {
+		this.thread.setRunning(true);
+	}
+
 	private class SnakeThread extends Thread {
 		private boolean isRunning = true;
 
@@ -111,20 +129,13 @@ public class SnakeController {
 			this.isRunning = isRunning;
 		}
 
-		public boolean isRunning() {
-			return isRunning;
-		}
-
 		@Override
 		public void run() {
-			// int i = 0;
 			while (isRunning) {
 				update();
-				// i++;
-				// if(i == 10){
-				view.render();
-				// i = 0;
-				// }
+				if (!model.isGameOver()) {
+					view.render();
+				}
 				try {
 					Thread.sleep(updateSpeed());
 				} catch (InterruptedException e) {
@@ -132,5 +143,14 @@ public class SnakeController {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Call if the user gets game over without fulfilling victory conditions.
+	 */
+	private void resetGame() {
+		this.model = new SnakeModel(SnakeConstants.getGameSize(),
+				Direction.NORTH, this.rng);
+		this.view.setModel(this.model);
 	}
 }

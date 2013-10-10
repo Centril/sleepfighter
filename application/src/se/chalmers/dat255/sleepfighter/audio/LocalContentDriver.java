@@ -57,8 +57,11 @@ public class LocalContentDriver extends BaseAudioDriver {
 	public void play(AudioConfig config) {
 		super.play(config);
 
+		float bundleVol = convertVolume(config.getVolume());
+
 		Intent i = new Intent(AudioService.ACTION_PLAY);
 		i.putExtra(AudioService.BUNDLE_URI, uri);
+		i.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
 		getContext().startService(i);
 	}
 
@@ -67,5 +70,26 @@ public class LocalContentDriver extends BaseAudioDriver {
 		Intent i = new Intent(AudioService.ACTION_STOP);
 		getContext().startService(i);
 		super.stop();
+	}
+
+	@Override
+	public void setVolume(int volume) {
+		float bundleVol = convertVolume(volume);
+
+		Intent i = new Intent(AudioService.ACTION_VOLUME);
+		i.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
+		getContext().startService(i);
+	}
+
+	/**
+	 * Convert volume from 0-100 integer to 0-1 float, which MediaPlayer uses.
+	 * 
+	 * @param volume
+	 *            the volume in the range 0-100
+	 * @return the volume in the range 0-1
+	 */
+	private static float convertVolume(int volume) {
+		// TODO perhaps to logarithmic conversion here
+		return (float) volume / 100;
 	}
 }
