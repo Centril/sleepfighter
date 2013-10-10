@@ -66,23 +66,25 @@ import android.widget.Toast;
 public class AlarmActivity extends Activity {
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
+	
+	public static final int CHALLENGE_REQUEST_CODE = 1;
 
 	private static final int WINDOW_FLAGS_SCREEN_ON = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 			| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
 			| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
-
+	
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-
-	public static final int CHALLENGE_REQUEST_CODE = 1;
+	
+	
 	private Parameters p;
+	private TextView tvName, tvTime;
+	private Button btnChallenge, btnSnooze;
+	private Alarm alarm;
+	private Timer timer;
+	private Camera camera;
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
-	private TextView tvName;
-	private TextView tvTime;
-	private Alarm alarm;
-	public Timer timer;
 	private boolean isFlashOn = false;
-	private Camera camera;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +92,7 @@ public class AlarmActivity extends Activity {
 
 		// Turn and/or Keep screen on.
 		this.setScreenFlags();
-
 		this.setContentView(R.layout.activity_alarm_prechallenge);
-
 		SFApplication app = SFApplication.get();
 
 		// Fetch alarm Id.
@@ -102,10 +102,10 @@ public class AlarmActivity extends Activity {
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
 		tvName.setText(alarm.getName());
-
 		tvTime = (TextView) findViewById(R.id.tvAlarmTime);
 
-		Button btnChallenge = (Button) findViewById(R.id.btnChallenge);
+		// Connect the challenge button with XML
+		btnChallenge = (Button) findViewById(R.id.btnChallenge);
 		btnChallenge.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -113,7 +113,8 @@ public class AlarmActivity extends Activity {
 			}
 		});
 
-		Button btnSnooze = (Button) findViewById(R.id.btnSnooze);
+		// Connect the snooze button with XML
+		btnSnooze = (Button) findViewById(R.id.btnSnooze);
 		if (alarm.getSnoozeConfig().isSnoozeEnabled()) {
 			btnSnooze.setOnClickListener(new OnClickListener() {
 				@Override
@@ -125,31 +126,15 @@ public class AlarmActivity extends Activity {
 			btnSnooze.setVisibility(View.GONE);
 		}
 
-		camera = Camera.open();
-
-		// Animation to the buttons
-
-		Animation fadeAnm1 = new AlphaAnimation(1, 0);
-		fadeAnm1.setDuration(300);
-		fadeAnm1.setInterpolator(new LinearInterpolator());
-		fadeAnm1.setRepeatCount(Animation.INFINITE);
-		fadeAnm1.setRepeatMode(Animation.REVERSE);
-		btnChallenge.startAnimation(fadeAnm1);
-
-		Animation fadeAnm2 = new AlphaAnimation(1, 0);
-		fadeAnm2.setDuration(500);
-		fadeAnm2.setInterpolator(new LinearInterpolator());
-		fadeAnm2.setRepeatCount(Animation.INFINITE);
-		fadeAnm2.setRepeatMode(Animation.REVERSE);
-		btnSnooze.startAnimation(fadeAnm2);
-
+		// Start animation and flash
+		startAnimate();
 		startFlash();
 
 	}
 
 	// Start the flashlight
 	private void startFlash() {
-
+		camera = Camera.open();
 		// Check if there is any camera. If not found, return nothing.
 		Context context = this;
 		PackageManager pm = context.getPackageManager();
@@ -173,6 +158,26 @@ public class AlarmActivity extends Activity {
 			camera.setParameters(p);
 			isFlashOn = false;
 		}
+	}
+
+	private void startAnimate() {
+		
+		// Setting animation
+		Animation fadeLong = new AlphaAnimation(1, 0);
+		fadeLong.setDuration(7000);
+		fadeLong.setInterpolator(new LinearInterpolator());
+		fadeLong.setRepeatCount(Animation.INFINITE);
+		fadeLong.setRepeatMode(Animation.REVERSE);
+
+		Animation fadeShort = new AlphaAnimation(1, 0);
+		fadeShort.setDuration(200);
+		fadeShort.setInterpolator(new LinearInterpolator());
+		fadeShort.setRepeatCount(Animation.INFINITE);
+		fadeShort.setRepeatMode(Animation.REVERSE);
+		
+		// Set the components with animation
+		btnSnooze.startAnimation(fadeLong);
+		tvTime.startAnimation(fadeShort);
 	}
 
 	private void onStopClick() {
