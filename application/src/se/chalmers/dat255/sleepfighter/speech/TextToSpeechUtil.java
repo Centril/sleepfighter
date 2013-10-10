@@ -42,12 +42,16 @@ public class TextToSpeechUtil {
 		tts.setLanguage(Locale.ENGLISH);
 		
 		// exact match?
-		if(localeList.contains(current)) {
-			tts.setLanguage(current);
+		for(Locale locale : localeList) {
+			if(locale.equals(current)) {
+				tts.setLanguage(locale);
+				return;
+			}
 		}
 		
+		
 		// different countries, but same language?
-		for(Locale locale : localeList) {
+		for(Locale locale : localeList) {	
 			if(locale.getLanguage() == current.getLanguage()) {
 				tts.setLanguage(locale);
 				return;

@@ -129,8 +129,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		/*Debug.d("summary: " + util.getSummary());
 		
 		Debug.d("longtide:  " + currentLocation.getLatitude() + " : " + this.currentLocation.getLongitude());
-	*/	tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is ", TextToSpeech.QUEUE_FLUSH, null);
 		
+	*/	//tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is ", TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
 	static Thread thread;
