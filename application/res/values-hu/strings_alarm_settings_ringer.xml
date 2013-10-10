@@ -20,6 +20,9 @@
 <resources>
     <string name="title_alarm_ringer_settings">Csengőbeállitások</string>
 
+    <string name="ringer_action_test">Próba</string>
+    <string name="ringer_action_cancel">Lefúj</string>
+    
     <string name="audio_source_category_title">Hang</string>
 
     <string name="perf_ringtone_picker">Csengőhang</string>
@@ -27,8 +30,7 @@
     <string name="alarm_audiosource_summary_name_title">Választott:</string>
     <string name="alarm_audiosource_summary_type_label">Forrás:</string>
     <string name="alarm_audiosource_summary_name_none">Semmi</string>
-    
-    <string name="alarm_audiosource_summary_type_none">N/A</string>
+    <string name="alarm_audiosource_summary_type_none">Hiányzik</string>
 
     <string-array name="alarm_audiosource_summary_type">
         <item>Csengőhang</item>
@@ -37,5 +39,11 @@
         <item>Internet stream</item>
         <item>Spotify</item>
     </string-array>
+    
+    <string name="pref_local_content_uri_picker">Zene</string>
+    <string name="pref_local_content_uri_picker_summary">Válasszál egy hangfájlt a készülékeden</string>
+
+    <string name="pref_playlist_picker">Playlist</string>
+    <string name="pref_playlist_picker_summary">Válasszál egy playlist-et a készülékeden</string>
     
 </resources>

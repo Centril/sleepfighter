@@ -36,7 +36,7 @@
     <PreferenceCategory android:title="@string/ringer_category_title">
  
         <Preference
-            android:title="@string/perf_alarm_ringtone"
+            android:title="@string/pref_alarm_ringtone"
             android:key="perf_alarm_ringtone"
             android:persistent="false" />
 

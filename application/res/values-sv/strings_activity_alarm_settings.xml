@@ -63,7 +63,7 @@
     <string name="pref_alarm_repeat">Upprepa</string>
     <string name="pref_delete_alarm">Radera alarm</string>
     
-    <string name="perf_alarm_ringtone">Ringsignal</string>
+    <string name="pref_alarm_ringtone">Ringsignal</string>
     
 	  <string name="pref_alarm_vibration">Vibration</string>
 	  

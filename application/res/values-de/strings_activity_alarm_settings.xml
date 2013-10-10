@@ -63,6 +63,6 @@
     <string name="pref_alarm_repeat">Wiederholen</string>
     <string name="pref_delete_alarm">Alarm löschen</string>
     
-    <string name="perf_alarm_ringtone">Klingelton</string>
+    <string name="pref_alarm_ringtone">Klingelton</string>
 	
 </resources>
