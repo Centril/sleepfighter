@@ -111,15 +111,15 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	private LocationListener locationListener = new LocationListener() {
 		@Override
 		public synchronized void onLocationChanged(Location l) {
-			
-			boolean hadFormerLocation = currentLocation != null;   
-			
 			obtainedLocation = true;
+			
+			locationManager.removeUpdates(locationListener);
+
 			currentLocation = l;
 			
-			
-			if(ttsInitialized && obtainedLocation && !hadFormerLocation)
+			if(ttsInitialized && obtainedLocation) {
 				fetchWeatherData();
+			}
 		}
 
 		@Override
@@ -543,16 +543,22 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
      */
     @Override
     public void onConnected(Bundle dataBundle) {
+    	
+    	// if we had already obtained the location we don't need to do anything here. 
+    	if(this.obtainedLocation) {
+    		return;
+    	}
+    	
     	this.obtainedLocation = true;
         // Display the connection status
-        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 
-        boolean hadFormerLocation = currentLocation != null;
         currentLocation = locationClient.getLastLocation();
+        if(currentLocation == null)
+        	obtainedLocation = false;
 	    Debug.d("current location: " + currentLocation);
 	    
 		// fetch the json weather data. 
-		if(this.ttsInitialized && this.obtainedLocation && !hadFormerLocation)
+		if(this.ttsInitialized && this.obtainedLocation)
 			fetchWeatherData(); 
     }
     
