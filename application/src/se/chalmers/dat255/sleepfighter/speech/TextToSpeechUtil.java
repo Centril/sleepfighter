@@ -18,9 +18,10 @@ public class TextToSpeechUtil {
 
 	// set some miscellaneous settings for tts.
 	public static void config(TextToSpeech tts) {
-		tts.setSpeechRate(1.8f);
-		tts.setPitch(1.2f);
+/*		tts.setSpeechRate(1.8f);
+		tts.setPitch(1.2f);*/
 	}
+	
 	
 	public static void setBestLanguage(TextToSpeech tts, Context context) {
 		

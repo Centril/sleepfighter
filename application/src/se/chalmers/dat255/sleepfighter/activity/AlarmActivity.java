@@ -19,7 +19,6 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,12 +39,10 @@ import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,6 +50,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
 
 /**
  * The activity for when an alarm rings/occurs.
@@ -62,7 +64,8 @@ import android.widget.Toast;
  * @version 1.0
  * @since Sep 20, 2013
  */
-public class AlarmActivity extends Activity implements TextToSpeech.OnInitListener,  LocationListener {
+public class AlarmActivity extends Activity implements TextToSpeech.OnInitListener, 
+GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener{
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
 
@@ -82,6 +85,10 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 	private Alarm alarm;
 	public Timer timer;
 	
+    Location currentLocation;
+	
+	private LocationClient locationClient;
+
 	// To support more languages we use.
 	// http://stackoverflow.com/questions/15691031/android-text-to-speech-not-working-w-japanese
 	// used to read out. 
@@ -97,33 +104,69 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 		TextToSpeechUtil.setBestLanguage(tts, this);
 		TextToSpeechUtil.config(tts);
 		
-		
+		// get time.
 		String time = TextToSpeechUtil.getCurrentTime();
-		Debug.d("time: " + time);
-		tts.speak("Hello, master, it's time to wake up. The time is: " + time, TextToSpeech.QUEUE_FLUSH, null);
-	}
+	
+		final Location location = currentLocation;
 		
+		
+      	final WeatherUtil util  =new WeatherUtil();
+		
+		// you can't do networking on the main thread in android. 
+		/*thread = new Thread(new Runnable(){
+		    @Override
+		    public void run() {
+		        try {
+		        	util.init(location.getLatitude(), location.getLongitude());
+		        } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+		    }
+		});
+		thread.start();*/
+		
+		
+		/*Debug.d("summary: " + util.getSummary());
+		
+		Debug.d("longtide:  " + currentLocation.getLatitude() + " : " + this.currentLocation.getLongitude());
+	*/	tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is ", TextToSpeech.QUEUE_FLUSH, null);
+		
+	}
+	
+	static Thread thread;
+	
+	//cb8a0d4b48c35b562d1b427b3f77552d
+	
 	// check whether we have TTS data. 
 	public void checkTextToSpeech() {
 		Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 		startActivityForResult(checkIntent, CHECK_TTS_DATA_REQUEST_CODE);
 	}
-
-	public void setupLocationListener() {
-		LocationManager locationManager = (LocationManager) 
-				getSystemService(Context.LOCATION_SERVICE);
-		
-		LocationListener locationListener = this;
-		locationManager.requestLocationUpdates(  
-		LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
+	
+	/**
+	 * Sets up google play services. We need this to get the current location. 
+	 */
+	private void setupGooglePlay() {
+        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
+		if ( status != ConnectionResult.SUCCESS ) {
+			// Google Play Services are not available.
+			int requestCode = 10;
+			GooglePlayServicesUtil.getErrorDialog( status, this, requestCode ).show();
+		} else {
+			Debug.d("google maps is setup");
+			// google map is availabel 
+		}
 	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+				
+		setupGooglePlay();
+		locationClient = new LocationClient(this, this, this);
 		
-		setupLocationListener();
+		
 		checkTextToSpeech();
 
 		// Turn and/or Keep screen on.
@@ -332,6 +375,11 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 	@Override
 	protected void onStart() {
 		super.onStart();
+	
+		// Connect the client.
+        locationClient.connect();
+
+		
 		timer = new Timer("SFTimer");
 		Calendar calendar = Calendar.getInstance();
 
@@ -351,6 +399,7 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 				runOnUiThread(updateTask);
 			}
 		}, msec, 1000);
+		
 	}
 
 	/*
@@ -361,6 +410,8 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 	@Override
 	protected void onStop() {
 		super.onStop();
+        locationClient.disconnect();
+
 		timer.cancel();
 		timer.purge();
 		timer = null;
@@ -374,24 +425,56 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnInitListen
 		int minute = cal.get(Calendar.MINUTE);
 		return String.format("%02d:%02d", hour, minute);
 	}
+	
+	   /*
+     * Called by Location Services when the request to connect the
+     * client finishes successfully. At this point, you can
+     * request the current location or start periodic updates
+     */
+    @Override
+    public void onConnected(Bundle dataBundle) {
+        // Display the connection status
+        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 
-	// location listener LocationListener
-	@Override
-	public void onLocationChanged(Location loc) {
-	       Debug.d(
-	                "Location changed: Lat: " + loc.getLatitude() + " Lng: "
-	                    + loc.getLongitude());
-	}
+        currentLocation = locationClient.getLastLocation();
+	    Debug.d("current location: " + currentLocation);
+    }
+    
+    /*
+     * Called by Location Services if the connection to the
+     * location client drops because of an error.
+     */
+    @Override
+    public void onDisconnected() {
+        // Display the connection status
+        Toast.makeText(this, "Disconnected. Please re-connect.",
+                Toast.LENGTH_SHORT).show();
+    }
+    
+    /*
+     * Called by Location Services if the attempt to
+     * Location Services fails.
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        /*
+         * Google Play services can resolve some errors it detects.
+         * If the error has a resolution, try sending an Intent to
+         * start a Google Play services activity that can resolve
+         * error.
+         */
+        if (connectionResult.hasResolution()) {
+    
+        	Toast.makeText(this, "Connection failed we are dead.", Toast.LENGTH_SHORT).show();
+            	
+        } else {
+            /*
+             * If no resolution is available, display a dialog to the
+             * user with the error.
+             */
+            Toast.makeText(this, "Connection failed with no resolution. Error code: " + connectionResult.getErrorCode(),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 
-	@Override
-	public void onProviderDisabled(String arg0) {	
-	}
-
-	@Override
-	public void onProviderEnabled(String arg0) {	
-	}
-
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {		
-	}
 }
