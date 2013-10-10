@@ -26,6 +26,7 @@
         <item>Sort Numbers</item>
         <item>Fluid Snake</item>
         <item>Roto Snake</item>
+        <item>Shake</item>
     </string-array>
     <string-array name="challenge_descriptions">
         <item>A test challenge</item>
@@ -34,6 +35,7 @@
         <item>Challenge where numbers are sorted by size</item>
         <item>A free-form version of snake</item>
         <item>A version of snake where you control the snake by rotating your device</item>
+        <item>A challenge where you need to shake your device</item>
     </string-array>
 
 </resources>
