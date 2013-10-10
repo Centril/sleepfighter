@@ -79,7 +79,8 @@ public class AlarmActivity extends Activity {
 	private Alarm alarm;
 	public Timer timer;
 	private static final int EMERGENCY_COST = 100;
-
+	private static final int SNOOZE_COST = 5;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -115,6 +116,9 @@ public class AlarmActivity extends Activity {
 				@Override
 				public void onClick(View v) {
 					startSnooze();
+					if (SFApplication.get().getPrefs().isChallengesActivated()) {
+						SFApplication.get().getPrefs().addChallengePoints(-SNOOZE_COST);
+					}
 				}
 			});
 		} else {
@@ -171,7 +175,7 @@ public class AlarmActivity extends Activity {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				SFApplication.get().getPrefs()
-						.addChallengePoints(EMERGENCY_COST);
+						.addChallengePoints(-EMERGENCY_COST);
 				stopAlarm();
 			}
 		};
