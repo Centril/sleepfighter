@@ -34,6 +34,7 @@ import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
+import se.chalmers.dat255.sleepfighter.speech.WeatherDataFetcher;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
@@ -94,26 +95,25 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	private TextToSpeech tts;
 	
 	
-	class WeatherDataTask extends AsyncTask<Double, Void, WeatherUtil> {
+	class WeatherDataTask extends AsyncTask<Double, Void, WeatherDataFetcher> {
 
-	    protected void onPostExecute(WeatherUtil weather) {
+	    protected void onPostExecute(WeatherDataFetcher weather) {
 	    	Debug.d("done loading url");
 	    	doSpeech(weather);
 	    }
 
 		@Override
-		protected WeatherUtil doInBackground(Double... params) {
-			return new WeatherUtil(params[0], params[1]);
+		protected WeatherDataFetcher doInBackground(Double... params) {
+			return new WeatherDataFetcher(params[0], params[1]);
 		}
 	}
 	
 	// read out the time and weather.
-	public void doSpeech(WeatherUtil weather) {
+	public void doSpeech(WeatherDataFetcher weather) {
 		// get time.
 		String time = TextToSpeechUtil.getCurrentTime();
 	
 		String s = weather.getSummary();
-		Debug.d("Simmary: " + s);
 		
 		tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is " + s, TextToSpeech.QUEUE_FLUSH, null);
 	}
@@ -133,10 +133,6 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	
 	static Thread thread;
 	
-	//cb8a0d4b48c35b562d1b427b3f77552d
-	
-	
-	
 	/**
 	 * Sets up google play services. We need this to get the current location. 
 	 */
@@ -155,9 +151,6 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-				
-		
-		
 		
 		// Turn and/or Keep screen on.
 		this.setScreenFlags();

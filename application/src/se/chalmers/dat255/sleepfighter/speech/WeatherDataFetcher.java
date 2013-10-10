@@ -1,17 +1,32 @@
-package se.chalmers.dat255.sleepfighter.activity;
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+package se.chalmers.dat255.sleepfighter.speech;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
 // gets the current weather from forecast.io given the current coordinates. 
-public class WeatherUtil {
+public class WeatherDataFetcher {
 
 	private final String KEY = "cb8a0d4b48c35b562d1b427b3f77552d";
 	
@@ -20,14 +35,9 @@ public class WeatherUtil {
 
 	
 	// build the url used to access the weather data, given latitudes and longitudes. 
-	public WeatherUtil(double lat, double lon) {
+	public WeatherDataFetcher(double lat, double lon) {
 			// fetch the json data form forecast.io
 			jsonData = httpGET(buildUrl(lat, lon));
-			
-			//Debug.d("json: " + json);
-			
-		   //jObject = new JSONObject(json);
-		
 	}
 	
 	// get a summary of the weather condition
@@ -54,16 +64,6 @@ public class WeatherUtil {
 		int endI = jsonData.indexOf("\"", i) + 1;
 		
 		return (String) jsonData.subSequence(i, endI);
-		
-		/*
-		String summary = "no data";
-		try {
-			JSONObject currently = jObject.getJSONObject("currently");
-			summary = currently.getString("summary");
-		} catch (JSONException e) {
-			Debug.e(e);
-		}
-		return summary;*/
 	}
 	
 	private String buildUrl(double lat, double lon) {

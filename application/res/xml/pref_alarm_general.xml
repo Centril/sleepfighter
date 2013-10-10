@@ -55,7 +55,9 @@
     
 	<PreferenceCategory android:title="Speech"   >   
         <CheckBoxPreference
-            android:title="Read out time and weather when alarm goes off"
+            android:title="Use Speech"
+              android:summary="Read out time and weather when the alarm goes off"
+      
             android:key="pref_alarm_speech"
             android:defaultValue="false" />
         <Preference

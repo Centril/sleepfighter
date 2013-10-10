@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.speech.tts.TextToSpeech;
 
 public class GlobalSettingsActivity extends PreferenceActivity   {
 	
