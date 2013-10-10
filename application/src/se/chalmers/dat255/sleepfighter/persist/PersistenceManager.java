@@ -40,7 +40,6 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet.Event;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
-import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaAlarm;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
@@ -54,9 +53,7 @@ import com.google.common.collect.Sets;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DataPersisterManager;
-import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.table.TableUtils;
 
 /**
@@ -83,6 +80,10 @@ public class PersistenceManager {
 	 */
 	@Handler
 	public void handleListChange( AlarmList.Event evt ) {
+		if ( !(evt.source() instanceof AlarmList )) {
+			return;
+		}
+
 		switch ( evt.operation() ) {
 		case CLEAR:
 			this.clearAlarms();
@@ -136,6 +137,7 @@ public class PersistenceManager {
 	 */
 	@Handler
 	public void handleAudioConfigChange( AudioConfig.ChangeEvent evt ) {
+		Log.d( TAG, "handleAudioConfigChange #1" );
 		this.updateAudioConfig( evt );
 	}
 	
@@ -147,6 +149,52 @@ public class PersistenceManager {
 	@Handler
 	public void handleSnoozeConfigChange( SnoozeConfig.ChangeEvent evt ) {
 		this.updateSnoozeConfig( evt );
+	}
+
+	/**
+	 * Handles a change in {@link GPSFilterArea}.
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleGPSFilterChange( GPSFilterArea.ChangeEvent evt ) {
+		this.setGPSFilterArea( evt.getArea() );
+	}
+
+	/**
+	 * Handles changes in GPSFilterAreaSet (the set itself, additions, deletions, etc).
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleGPSFilterSetChange( GPSFilterAreaSet.Event evt ) {
+		if ( !(evt.source() instanceof GPSFilterAreaSet )) {
+			return;
+		}
+
+		switch ( evt.operation() ) {
+		case CLEAR:
+			this.clearGPSFilterAreas();
+			break;
+
+		case ADD:
+			for ( Object elem : evt.elements() ) {
+				this.setGPSFilterArea( (GPSFilterArea) elem );
+			}
+			break;
+
+		case REMOVE:
+			for ( Object elem : evt.elements() ) {
+				this.deleteGPSFilterArea( (GPSFilterArea) elem );
+			}
+			break;
+
+		case UPDATE:
+			GPSFilterArea old = (GPSFilterArea) evt.elements().iterator().next();
+			this.deleteGPSFilterArea( old );
+			this.setGPSFilterArea( evt.source().get( evt.index() ) );
+			break;
+		}
 	}
 
 	/**
@@ -190,8 +238,6 @@ public class PersistenceManager {
 		this.clearTable( ChallengeParam.class );
 
 		this.clearTable(SnoozeConfig.class);
-
-		this.clearTable( GPSFilterAreaAlarm.class );
 	}
 
 	/**
@@ -324,12 +370,16 @@ public class PersistenceManager {
 		// Set AudioConfig to each alarm.
 		for ( AudioConfig config : audioConfigSetList ) {
 			int alarmIndex = audioConfigLookup.get( config.getId() );
+			Alarm alarm = alarms.get( alarmIndex );
+			config.setMessageBus( alarm.getMessageBus() );
 			alarms.get( alarmIndex ).setFetched( config );
 		}
 
 		for ( SnoozeConfig config : snoozeConfigSetList ) {
 			int alarmIndex = snoozeConfigLookup.get( config.getId() );
-			alarms.get( alarmIndex ).setFetched( config );
+			Alarm alarm = alarms.get( alarmIndex );
+			config.setMessageBus( alarm.getMessageBus() );
+			alarm.setFetched( config );
 		}
 
 		/*
@@ -354,7 +404,9 @@ public class PersistenceManager {
 		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
 			// Bind challenge config set to alarm.
 			int alarmIndex = challengeSetLookup.get( challengeSet.getId() );
-			alarms.get( alarmIndex ).setChallenges( challengeSet );
+			Alarm alarm = alarms.get( alarmIndex );
+			challengeSet.setMessageBus( alarm.getMessageBus() );
+			alarm.setChallenges( challengeSet );
 		}
 
 		// 2) Read all challenge config:s and set to each set.
@@ -442,9 +494,12 @@ public class PersistenceManager {
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) throws PersistenceException {
+		Log.d( TAG, "updateAudioConfig #1" );
 		OrmHelper helper = this.getHelper();
 
+		Log.d( TAG, "updateAudioConfig #2" );
 		helper.getAudioConfigDao().update( evt.getAudioConfig() );
+		Log.d( TAG, "updateAudioConfig #3" );
 	}
 
 	/**
@@ -604,9 +659,6 @@ public class PersistenceManager {
 		// Handle challenge config set foreign object.
 		this.removeChallengeSet( alarm );
 
-		// Remove from ExludeArea junction table.
-		this.deleteGPSFilterAreaJunction( GPSFilterAreaAlarm.ALARM_ID_FIELD, alarm.getId() );
-
 		// Finally delete alarm itself from DB.
 		helper.getAlarmDao().delete( alarm );
 	}
@@ -648,11 +700,13 @@ public class PersistenceManager {
 	}
 
 	/**
-	 * Stores/updates an GPSFilterArea in database.
+	 * Stores/updates a GPSFilterArea in database.
 	 *
 	 * @param area the GPSFilterArea to store/update.
 	 */
 	public void setGPSFilterArea( GPSFilterArea area ) {
+		Log.d( TAG, area.toString() );
+
 		OrmHelper helper = this.getHelper();
 		helper.getGPSFilterAreaDao().createOrUpdate( area );
 	}
@@ -665,68 +719,14 @@ public class PersistenceManager {
 	public void deleteGPSFilterArea( GPSFilterArea area ) {
 		OrmHelper helper = this.getHelper();
 
-		this.deleteGPSFilterAreaJunction( GPSFilterAreaAlarm.EXCLUDE_AREA_ID_FIELD, area.getId() );
-
 		helper.getGPSFilterAreaDao().delete( area );
 	}
 
 	/**
-	 * Binds a GPSFilterArea to an Alarm.
-	 *
-	 * @param alarm the alarm.
-	 * @param area the area.
-	 */
-	public void bindGPSFilterArea( Alarm alarm, GPSFilterArea area ) {
-		OrmHelper helper = this.getHelper();
-		helper.getGPSFilterAreaAlarmDao().create( new GPSFilterAreaAlarm( alarm, area ) );
-	}
-
-	/**
-	 * Unbinds an GPSFilterArea from an alarm.
-	 *
-	 * @param alarm the alarm.
-	 * @param area the area.
-	 */
-	public void unbindGPSFilterArea( Alarm alarm, GPSFilterArea area ) {
-		OrmHelper helper = this.getHelper();
-		try {
-			DeleteBuilder<GPSFilterAreaAlarm, Integer> builder = helper.getGPSFilterAreaAlarmDao().deleteBuilder();
-			Where<GPSFilterAreaAlarm, Integer> where = builder.where()
-				.eq( GPSFilterAreaAlarm.ALARM_ID_FIELD, alarm.getId() ).and()
-				.eq( GPSFilterAreaAlarm.EXCLUDE_AREA_ID_FIELD, area.getId() );
-
-			builder.setWhere( where );
-			builder.delete();
-		} catch ( SQLException e ) {
-			throw new PersistenceException( e );
-		}
-	}
-
-	/**
-	 * Removes a junction row for Alarm:GPSFilterArea relation.
-	 *
-	 * @param column the column that has the ID field of either Alarm or GPSFilterArea.
-	 * @param id the ID of Alarm or Alarm:GPSFilterArea
-	 */
-	private void deleteGPSFilterAreaJunction( String column, int id ) {
-		OrmHelper helper = this.getHelper();
-		try {
-			DeleteBuilder<GPSFilterAreaAlarm, Integer> builder = helper.getGPSFilterAreaAlarmDao().deleteBuilder();
-			Where<GPSFilterAreaAlarm, Integer> where = builder.where().eq( column, id );
-
-			builder.setWhere( where );
-			builder.delete();
-		} catch ( SQLException e ) {
-			throw new PersistenceException( e );
-		}
-	}
-
-	/**
-	 * Removes all gpsfilter areas (& junction table for alarms as a consequence).
+	 * Removes all gpsfilter areas.
 	 */
 	public void clearGPSFilterAreas() {
 		this.clearTable( GPSFilterArea.class );
-		this.clearTable( GPSFilterAreaAlarm.class );
 	}
 
 	/**
