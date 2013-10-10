@@ -149,6 +149,10 @@ public class TimeFormatter {
 		min = roundMinute(min);
 		
 		String hourStr = hourToString(min > 30 ? hour + 1: hour);
+		if(min == 60 || min == 0) {
+			// minutes are 0, so only need to tell the hours. 
+			return hourStr;
+		}
 		String minStr = minuteToString(min);
 		return minStr +" "+ hourStr;
 	}
