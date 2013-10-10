@@ -86,9 +86,8 @@ public class PlaylistDriver extends BaseAudioDriver {
 		List<Track> tracks = getProvider().getTracks(getContext(),
 				getSource().getUri());
 
-		if (tracks.size() == 0) {
-			// Play nothing if playlist empty. Would maybe be better to instead
-			// not allow user to select an empty playlist.
+		if (tracks.isEmpty()) {
+			// Play nothing if playlist empty
 			return;
 		}
 
