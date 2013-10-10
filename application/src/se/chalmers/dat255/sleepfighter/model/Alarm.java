@@ -439,7 +439,7 @@ public class Alarm implements Cloneable, IdProvider {
 			throw new IllegalArgumentException();
 		}
 
-		int[] old = new int[] { hour, minute, second };
+		int[] old = new int[] { this.hour, this.minute, this.second };
 
 		this.hour = hour;
 		this.minute = minute;
