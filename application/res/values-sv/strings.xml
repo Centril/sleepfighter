@@ -35,6 +35,8 @@
     <string name="btn_fail">Misslyckas!</string>
     <string name="start_challenge">Avsluta galenskapen!</string>
     <string name="btn_answer">Svara</string>
+     <string name="deactivate">Alarm avaktiverad!</string>
+      <string name="returned">Returnerad från oavslutad utmaning.</string>
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>

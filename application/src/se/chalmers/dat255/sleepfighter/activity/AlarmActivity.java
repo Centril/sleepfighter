@@ -292,14 +292,16 @@ public class AlarmActivity extends Activity {
 		// Check if result is from a challenge
 		if (requestCode == CHALLENGE_REQUEST_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
-				Toast.makeText(this, "Challenge completed", Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(getApplicationContext(),
+						getResources().getString(R.string.deactivate),
+						Toast.LENGTH_LONG).show();
 				Debug.d("done with challenge");
 
 				// If completed, stop the alarm
 				stopAlarm();
 			} else {
-				Toast.makeText(this, "Returned from uncompleted challenge",
+				Toast.makeText(getApplicationContext(),
+						getResources().getString(R.string.returned),
 						Toast.LENGTH_LONG).show();
 			}
 
