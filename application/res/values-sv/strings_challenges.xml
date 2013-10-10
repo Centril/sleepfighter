@@ -25,6 +25,7 @@
         <item>Memory</item>
         <item>Sortera nummer</item>
         <item>Flytande snake</item>
+        <item>Roto snake</item>
     </string-array>
     <string-array name="challenge_descriptions">
         <item>Testutmaning</item>
@@ -32,6 +33,7 @@
         <item>Memoryutmaning där man ska matcha bokstäver</item>
         <item>Utmaning där nummer sorteras baserat på storlek</item>
         <item>Version av snake där ormen ej är bunden till ett rutnät</item>
+        <item>Version av snake där ormen styrs genom att enheten roteras</item>
     </string-array>
 
 </resources>

@@ -32,7 +32,6 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -72,12 +71,6 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 			pc.addPreference(p);
 		}
 	}
-	
-	@Override
-	public boolean onCreateOptionsMenu( Menu menu ) {
-		this.getMenuInflater().inflate(R.menu.alarm_settings_menu, menu);
-		return true;
-	}	
 
 	/**
 	 * Create a Preference for a ChallengeType

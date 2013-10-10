@@ -50,14 +50,13 @@ public interface Challenge {
 	 * @param activity the ChallengeActivity that the Challenge modifies
 	 * @param params the resolved params (may have no params defined).
 	 * @param state the state that was saved by Challenge before.
-	 * @param challengeResolvedParams 
 	 */
 	public void start(ChallengeActivity activity, ChallengeResolvedParams params, Bundle state);
 
 	/**
 	 * Called when challenge must save its state.
 	 *
-	 * @return a Parcelable to save.
+	 * @return a Bundle wherein the challenge's state should have been saved.
 	 */
 	public Bundle savedState();
 
