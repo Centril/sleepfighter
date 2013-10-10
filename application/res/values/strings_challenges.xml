@@ -38,4 +38,6 @@
         <item>A challenge where you need to shake your device</item>
     </string-array>
 
+    
+    <string name="fluidSnakeTitle">Touch to move the snake!</string>
 </resources>

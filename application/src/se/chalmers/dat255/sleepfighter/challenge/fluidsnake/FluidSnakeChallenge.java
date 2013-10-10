@@ -19,6 +19,7 @@
 
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
@@ -71,6 +72,8 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 		this.activity = activity;
 
 		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
+		activity.setTitle(R.string.fluidSnakeTitle);
 		
 		model = new Model();
 		view = new GameView(activity, model);
