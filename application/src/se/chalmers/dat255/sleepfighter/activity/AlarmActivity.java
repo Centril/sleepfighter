@@ -153,9 +153,7 @@ public class AlarmActivity extends Activity {
 	private void handleEmergencyStop() {
 		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
 
-		GlobalPreferencesManager gpm = new GlobalPreferencesManager(
-				getBaseContext());
-		boolean globallyEnabled = gpm.isChallengesActivated();
+		boolean globallyEnabled = SFApplication.get().getPrefs().isChallengesActivated();
 
 		if (challengeEnabled && globallyEnabled) {
 			skipChallengeConfirm();
@@ -190,7 +188,8 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void onStopClick() {
-		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
+		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled()
+				&& SFApplication.get().getPrefs().isChallengesActivated();
 		if (challengeEnabled) {
 			startChallenge();
 		} else {
