@@ -15,32 +15,47 @@ public class WeatherUtil {
 
 	private final String KEY = "cb8a0d4b48c35b562d1b427b3f77552d";
 	
-	private JSONObject jObject;
+	// the json weather data.
+	String jsonData;
+
 	
-	
-	// use this instead of the constuctor; the constructor does nothing.
 	// build the url used to access the weather data, given latitudes and longitudes. 
-	public synchronized void init(double lat, double lon) {
-		try {
+	public WeatherUtil(double lat, double lon) {
 			// fetch the json data form forecast.io
-			String json = httpGET(buildUrl(lat, lon));
+			jsonData = httpGET(buildUrl(lat, lon));
 			
+			//Debug.d("json: " + json);
 			
-			Debug.d("json: " + json);
-			
-		   jObject = new JSONObject(json);
-		   
-		   JSONObject currently = jObject.getJSONObject("currently");
-		   String summary = currently.getString("summary");
-		   Debug.d("summary :" + summary);
-		   
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		   //jObject = new JSONObject(json);
+		
 	}
 	
 	// get a summary of the weather condition
-	public synchronized String getSummary() {
+	public String getSummary() {
+		
+		// For some reason JSONObject threw an exception when parsing the data. 
+		// But we are really only interested in one piece of information in this json data.
+		// That is, the value of the field "summary" in the object "currently".
+		// See: https://developer.forecast.io/docs/v2
+		// So we'll extract the value using some elementary string methods. 
+		
+		// find the currently object
+		int currentlyIndex = jsonData.indexOf("\"currently\"");
+		
+		// now find the "summary" field of the "currently" object
+		int summaryIndex = jsonData.indexOf("\"summary\"", currentlyIndex);
+		
+		// now skip until the value of "summary"
+		int i = summaryIndex+1;
+		i = jsonData.indexOf("\"", i) + 1;
+		i = jsonData.indexOf("\"", i) + 1;
+		
+		// find the end of the data.
+		int endI = jsonData.indexOf("\"", i) + 1;
+		
+		return (String) jsonData.subSequence(i, endI);
+		
+		/*
 		String summary = "no data";
 		try {
 			JSONObject currently = jObject.getJSONObject("currently");
@@ -48,21 +63,21 @@ public class WeatherUtil {
 		} catch (JSONException e) {
 			Debug.e(e);
 		}
-		return summary;
+		return summary;*/
 	}
 	
-	private synchronized String buildUrl(double lat, double lon) {
+	private String buildUrl(double lat, double lon) {
 		String s =  new String("https://api.forecast.io/forecast/") + KEY + "/" +
 				doubleToString(lat) + "," + doubleToString(lon);
 		return s;
 	}
 	
-	private synchronized static String doubleToString(double d) {
+	private static String doubleToString(double d) {
 		return String.valueOf(d).replace(",", ".");
 	}
 	
 
-	private synchronized String httpGET(String requestURL) {
+	private String httpGET(String requestURL) {
 
 		//Variables
 		URL request = null;

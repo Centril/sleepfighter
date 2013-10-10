@@ -41,6 +41,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -93,41 +94,41 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	private TextToSpeech tts;
 	
 	
+	class WeatherDataTask extends AsyncTask<Double, Void, WeatherUtil> {
+
+	    protected void onPostExecute(WeatherUtil weather) {
+	    	Debug.d("done loading url");
+	    	doSpeech(weather);
+	    }
+
+		@Override
+		protected WeatherUtil doInBackground(Double... params) {
+			return new WeatherUtil(params[0], params[1]);
+		}
+	}
+	
+	// read out the time and weather.
+	public void doSpeech(WeatherUtil weather) {
+		// get time.
+		String time = TextToSpeechUtil.getCurrentTime();
+	
+		String s = weather.getSummary();
+		Debug.d("Simmary: " + s);
+		
+		tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is " + s, TextToSpeech.QUEUE_FLUSH, null);
+	}
 	
 	// called when tts has been fully initialized. 
 	@Override
 	public void onInit(int status) {
 		Debug.d("done initi tts");
 		
+		// Configure tts 
 		TextToSpeechUtil.setBestLanguage(tts, this);
 		TextToSpeechUtil.config(tts);
 		
-		// get time.
-		String time = TextToSpeechUtil.getCurrentTime();
-	
-		final Location location = currentLocation;
-		
-      	final WeatherUtil util  =new WeatherUtil();
-		
-		// you can't do networking on the main thread in android. 
-		/*thread = new Thread(new Runnable(){
-		    @Override
-		    public void run() {
-		        try {
-		        	util.init(location.getLatitude(), location.getLongitude());
-		        } catch (Exception e) {
-		            e.printStackTrace();
-		        }
-		    }
-		});
-		thread.start();*/
-		
-		
-		/*Debug.d("summary: " + util.getSummary());
-		
-		Debug.d("longtide:  " + currentLocation.getLatitude() + " : " + this.currentLocation.getLongitude());
-		
-	*/	tts.speak("Hello, master, it's time to wake up. The time is: " + time + " and the weather is ", TextToSpeech.QUEUE_FLUSH, null);
+		// fetch the json weather data. 
+		new WeatherDataTask().execute(currentLocation.getLatitude(), currentLocation.getLongitude());
 	}
 	
 	static Thread thread;
