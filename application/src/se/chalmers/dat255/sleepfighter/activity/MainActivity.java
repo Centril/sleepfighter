@@ -54,6 +54,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -124,6 +125,7 @@ public class MainActivity extends Activity {
 		else {
 			toggleImage.setImageResource(R.drawable.challenge_untoggled);
 			pointImage.setImageResource(R.drawable.sun_disabled);
+			findViewById(R.id.mainChallengePoints).setEnabled(false);
 		}
 		
 		toggleImage.setOnClickListener(new View.OnClickListener() {
@@ -134,13 +136,14 @@ public class MainActivity extends Activity {
 					((ImageView) v).setImageResource(R.drawable.challenge_untoggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(false);
 					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_disabled);
+					Toast.makeText(MainActivity.this, "Challenges disabled", Toast.LENGTH_SHORT).show();
 				}
 				else {
 					app().getPrefs().setChallengesActivated(true);
 					((ImageView) v).setImageResource(R.drawable.challenge_toggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(true);
-
 					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_enabled);
+					Toast.makeText(MainActivity.this, "Challenges enabled", Toast.LENGTH_SHORT).show();
 				}
 			}
 			
