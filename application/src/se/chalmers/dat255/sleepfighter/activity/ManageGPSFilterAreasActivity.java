@@ -26,8 +26,12 @@ import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea.Field;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
+import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -42,6 +46,8 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -64,11 +70,39 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	private Animation splashFadeOut;
 	private ViewGroup splashInfoContainer;
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupActionBar() {
+		if ( Build.VERSION.SDK_INT >= 11 ) {
+			// add the custom view to the action bar.
+			ActionBar actionBar = getActionBar();
+			actionBar.setCustomView( R.layout.gpsfilter_manage_actionbar );
+			actionBar.setDisplayOptions( ActionBar.DISPLAY_SHOW_HOME
+					| ActionBar.DISPLAY_HOME_AS_UP
+					| ActionBar.DISPLAY_SHOW_CUSTOM );
+
+			View customView = actionBar.getCustomView();
+
+			final GlobalPreferencesManager manager = SFApplication.get().getPrefs();
+
+			// Setup enabled switch.
+			CompoundButton activatedSwitch = (CompoundButton) customView.findViewById( R.id.manage_gpsfilter_toggle );
+			activatedSwitch.setChecked( manager.isLocationFilterEnabled() );
+			activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+					manager.setLocationFilterEnabled( isChecked );
+				}
+			} );
+		}
+	}
+
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 
 		this.setContentView( R.layout.activity_manage_gpsfilter_areas );
+
+		this.setupActionBar();
 
 		this.set = SFApplication.get().getGPSSet();
 		this.set.getMessageBus().subscribe( this );
@@ -229,6 +263,14 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		this.set.clear();
 	}
 
+	/**
+	 * Moves the user to global options > location filter.
+	 */
+	private void gotoSettings() {
+		Intent i = new Intent( this, GlobalSettingsActivity.class );
+		this.startActivity( i );
+	}
+
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -282,10 +324,15 @@ public class ManageGPSFilterAreasActivity extends Activity {
 			this.clearAreas();
 			return true;
 
+		case R.id.action_gpsfilter_settings:
+			this.gotoSettings();
+			return true;
+
 		default:
 			return super.onOptionsItemSelected( item );
 		}
 	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

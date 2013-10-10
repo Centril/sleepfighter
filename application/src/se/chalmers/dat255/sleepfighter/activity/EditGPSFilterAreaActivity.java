@@ -204,6 +204,10 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 			this.moveCameraToPolygon( true );
 			return true;
 
+		case R.id.action_gpsfilter_settings:
+			this.gotoSettings();
+			return true;
+
 		default:
 			return super.onOptionsItemSelected( item );
 		}
@@ -234,6 +238,14 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		this.setupBottomUndo();
 
 		this.area.getMessageBus().subscribe( this );
+	}
+
+	/**
+	 * Moves the user to global options > location filter.
+	 */
+	private void gotoSettings() {
+		Intent i = new Intent( this, GlobalSettingsActivity.class );
+		this.startActivity( i );
 	}
 
 	/**

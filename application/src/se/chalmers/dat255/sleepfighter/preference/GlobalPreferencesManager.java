@@ -101,4 +101,24 @@ public class GlobalPreferencesManager {
 		edit.putBoolean("challenges_activated", isActivated);
 		edit.commit();
 	}
+
+	/**
+	 * Returns whether or not the location filter feature is enabled.
+	 *
+	 * @return true if it is enabled.
+	 */
+	public boolean isLocationFilterEnabled() {
+		return this.prefs.getBoolean( "pref_location_filter_enabled", true );
+	}
+
+	/**
+	 * Sets whether or not the location filter feature is enabled.
+	 *
+	 * @param enabled true if it is enabled.
+	 */
+	public void setLocationFilterEnabled( boolean enabled ) {
+		Editor edit = prefs.edit();
+		edit.putBoolean("pref_location_filter_enabled", enabled );
+		edit.commit();
+	}
 }

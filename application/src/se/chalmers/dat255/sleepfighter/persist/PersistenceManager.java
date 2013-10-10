@@ -137,6 +137,7 @@ public class PersistenceManager {
 	 */
 	@Handler
 	public void handleAudioConfigChange( AudioConfig.ChangeEvent evt ) {
+		Log.d( TAG, "handleAudioConfigChange #1" );
 		this.updateAudioConfig( evt );
 	}
 	
@@ -369,12 +370,16 @@ public class PersistenceManager {
 		// Set AudioConfig to each alarm.
 		for ( AudioConfig config : audioConfigSetList ) {
 			int alarmIndex = audioConfigLookup.get( config.getId() );
+			Alarm alarm = alarms.get( alarmIndex );
+			config.setMessageBus( alarm.getMessageBus() );
 			alarms.get( alarmIndex ).setFetched( config );
 		}
 
 		for ( SnoozeConfig config : snoozeConfigSetList ) {
 			int alarmIndex = snoozeConfigLookup.get( config.getId() );
-			alarms.get( alarmIndex ).setFetched( config );
+			Alarm alarm = alarms.get( alarmIndex );
+			config.setMessageBus( alarm.getMessageBus() );
+			alarm.setFetched( config );
 		}
 
 		/*
@@ -399,7 +404,9 @@ public class PersistenceManager {
 		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
 			// Bind challenge config set to alarm.
 			int alarmIndex = challengeSetLookup.get( challengeSet.getId() );
-			alarms.get( alarmIndex ).setChallenges( challengeSet );
+			Alarm alarm = alarms.get( alarmIndex );
+			challengeSet.setMessageBus( alarm.getMessageBus() );
+			alarm.setChallenges( challengeSet );
 		}
 
 		// 2) Read all challenge config:s and set to each set.
@@ -487,9 +494,12 @@ public class PersistenceManager {
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) throws PersistenceException {
+		Log.d( TAG, "updateAudioConfig #1" );
 		OrmHelper helper = this.getHelper();
 
+		Log.d( TAG, "updateAudioConfig #2" );
 		helper.getAudioConfigDao().update( evt.getAudioConfig() );
+		Log.d( TAG, "updateAudioConfig #3" );
 	}
 
 	/**

@@ -37,4 +37,7 @@
     <string name="developers_title">Developers</string>
     <string name="developers_summary" tools:ignore="MissingTranslation">Danny Lam\nEric Arnebäck\nJohan Hasselqvist\nLaszlo Sall Vesselenyi\nMazdak Farrokhzad\nNiklas Helmertz</string>
 
+    <string name="pref_location_filter">Location Settings</string>
+    <string name="pref_location_filter_enabled">Enabled</string>
+    <string name="pref_location_filter_enabled_summary">Switch this off when you want to override location filter, disabling it.</string>
 </resources>

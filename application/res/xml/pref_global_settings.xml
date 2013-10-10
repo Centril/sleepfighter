@@ -41,6 +41,19 @@
         android:persistent="false"
         android:title="@string/pref_global_preset_alarm" />
 
+	<PreferenceCategory
+        android:key="pref_location_filter"
+        android:persistent="false"
+        android:title="@string/pref_location_filter" >
+
+	    <CheckBoxPreference
+            android:key="pref_location_filter_enabled"
+            android:title="@string/pref_location_filter_enabled"
+            android:summary="@string/pref_location_filter_enabled_summary"
+            android:defaultValue="true" />
+
+	</PreferenceCategory>
+
     <PreferenceCategory android:title="@string/pref_about" >
 
         <Preference
