@@ -246,7 +246,7 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 			public boolean onPreferenceClick(Preference preference) {
 				Debug.d("speech sample here");
 				// TODO: ask the user if he/she wants to install vox or something. 
-				tts.speak("Hello. I am the sexiest voice in the world", TextToSpeech.QUEUE_FLUSH, null);
+				tts.speak("Wake up motherfucker!", TextToSpeech.QUEUE_FLUSH, null);
 				return true;
 			}
 		});

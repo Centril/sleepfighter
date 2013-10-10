@@ -155,11 +155,9 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 				
-		setupGooglePlay();
-		locationClient = new LocationClient(this, this, this);
 		
-		TextToSpeechUtil.checkTextToSpeech(this);
-
+		
+		
 		// Turn and/or Keep screen on.
 		this.setScreenFlags();
 
@@ -170,6 +168,12 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		// Fetch alarm Id.
 		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
 		this.alarm = app.getPersister().fetchAlarmById(alarmId);
+		
+		if(alarm.isSpeech()) {
+			setupGooglePlay();
+			locationClient = new LocationClient(this, this, this);
+			TextToSpeechUtil.checkTextToSpeech(this);
+		}
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
@@ -354,7 +358,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		super.onStart();
 	
 		// Connect the client.
-        locationClient.connect();
+        if(alarm.isSpeech())
+        	locationClient.connect();
 
 		
 		timer = new Timer("SFTimer");
@@ -387,7 +392,9 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	@Override
 	protected void onStop() {
 		super.onStop();
-        locationClient.disconnect();
+		
+		if(alarm.isSpeech())
+			locationClient.disconnect();
 
 		timer.cancel();
 		timer.purge();
