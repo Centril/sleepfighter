@@ -140,7 +140,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
                 		flippedCard = null; 
                 		waitingForCardsToFlipOver = false;
                     }
-                }, 1000);
+                }, 400);
      
         	}
         		 
