@@ -125,11 +125,11 @@ public class MainActivity extends Activity {
 		
 		if (app().getPrefs().isChallengesActivated()) {
 			toggleImage.setImageResource(R.drawable.ic_action_challenge_toggled);
-			pointImage.setImageResource(R.drawable.sun_enabled);
+			pointImage.setImageResource(R.drawable.ic_sun_enabled);
 		}
 		else {
 			toggleImage.setImageResource(R.drawable.ic_action_challenge_untoggled);
-			pointImage.setImageResource(R.drawable.sun_disabled);
+			pointImage.setImageResource(R.drawable.ic_sun_disabled);
 			findViewById(R.id.mainChallengePoints).setEnabled(false);
 		}
 		
@@ -140,14 +140,14 @@ public class MainActivity extends Activity {
 					app().getPrefs().setChallengesActivated(false);
 					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_untoggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(false);
-					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_disabled);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_disabled);
 					Toast.makeText(MainActivity.this, "Challenges disabled", Toast.LENGTH_SHORT).show();
 				}
 				else {
 					app().getPrefs().setChallengesActivated(true);
 					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_toggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(true);
-					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_enabled);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_enabled);
 					Toast.makeText(MainActivity.this, "Challenges enabled", Toast.LENGTH_SHORT).show();
 				}
 			}
