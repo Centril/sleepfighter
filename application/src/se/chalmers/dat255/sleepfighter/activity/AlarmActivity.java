@@ -66,16 +66,15 @@ import android.widget.Toast;
 public class AlarmActivity extends Activity {
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
-	
+
 	public static final int CHALLENGE_REQUEST_CODE = 1;
 
 	private static final int WINDOW_FLAGS_SCREEN_ON = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 			| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
 			| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
-	
+
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-	
-	
+
 	private Parameters p;
 	private TextView tvName, tvTime;
 	private Button btnChallenge, btnSnooze;
@@ -90,7 +89,7 @@ public class AlarmActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Turn and/or Keep screen on.
+		// Turn and/or keep screen on.
 		this.setScreenFlags();
 		this.setContentView(R.layout.activity_alarm_prechallenge);
 		SFApplication app = SFApplication.get();
@@ -132,54 +131,6 @@ public class AlarmActivity extends Activity {
 
 	}
 
-	// Start the flashlight
-	private void startFlash() {
-		camera = Camera.open();
-		// Check if there is any camera. If not found, return nothing.
-		Context context = this;
-		PackageManager pm = context.getPackageManager();
-
-		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-			Log.e("err", "No flashlight detected!");
-			return;
-		}
-
-		// If camera found, set flash mode ON.
-		if (!isFlashOn) {
-			Log.i("info", "The flashlight is on.");
-			p = camera.getParameters();
-			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-			camera.setParameters(p);
-			isFlashOn = true;
-		} else {
-			p = camera.getParameters();
-			Log.i("info", "The flashlight is off.");
-			p.setFlashMode(Parameters.FLASH_MODE_OFF);
-			camera.setParameters(p);
-			isFlashOn = false;
-		}
-	}
-
-	private void startAnimate() {
-		
-		// Setting animation
-		Animation fadeLong = new AlphaAnimation(1, 0);
-		fadeLong.setDuration(7000);
-		fadeLong.setInterpolator(new LinearInterpolator());
-		fadeLong.setRepeatCount(Animation.INFINITE);
-		fadeLong.setRepeatMode(Animation.REVERSE);
-
-		Animation fadeShort = new AlphaAnimation(1, 0);
-		fadeShort.setDuration(200);
-		fadeShort.setInterpolator(new LinearInterpolator());
-		fadeShort.setRepeatCount(Animation.INFINITE);
-		fadeShort.setRepeatMode(Animation.REVERSE);
-		
-		// Set the components with animation
-		btnSnooze.startAnimation(fadeLong);
-		tvTime.startAnimation(fadeShort);
-	}
-
 	private void onStopClick() {
 		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
 		if (challengeEnabled) {
@@ -206,8 +157,6 @@ public class AlarmActivity extends Activity {
 	 * Stops alarm temporarily and sends a snooze command to the server.
 	 */
 	private void startSnooze() {
-		// Should the user complete a challenge before snoozing?
-
 		stopAudio();
 
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
@@ -245,6 +194,32 @@ public class AlarmActivity extends Activity {
 				AlarmPlannerService.call(app, Command.CREATE, at.getAlarm()
 						.getId());
 			}
+		}
+	}
+	
+	/**
+	 * What will happen when you complete a challenge or press back.
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Check if result is from a challenge
+		if (requestCode == CHALLENGE_REQUEST_CODE) {
+			if (resultCode == Activity.RESULT_OK) {
+				Toast.makeText(getApplicationContext(),
+						getResources().getString(R.string.deactivate),
+						Toast.LENGTH_LONG).show();
+				Debug.d("done with challenge");
+
+				// If completed, stop the alarm
+				stopAlarm();
+			} else {
+				Toast.makeText(getApplicationContext(),
+						getResources().getString(R.string.returned),
+						Toast.LENGTH_LONG).show();
+			}
+
+		} else {
+			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
 
@@ -290,32 +265,6 @@ public class AlarmActivity extends Activity {
 	}
 
 	/**
-	 * What will happen when you complete a challenge or press back.
-	 */
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// Check if result is from a challenge
-		if (requestCode == CHALLENGE_REQUEST_CODE) {
-			if (resultCode == Activity.RESULT_OK) {
-				Toast.makeText(getApplicationContext(),
-						getResources().getString(R.string.deactivate),
-						Toast.LENGTH_LONG).show();
-				Debug.d("done with challenge");
-
-				// If completed, stop the alarm
-				stopAlarm();
-			} else {
-				Toast.makeText(getApplicationContext(),
-						getResources().getString(R.string.returned),
-						Toast.LENGTH_LONG).show();
-			}
-
-		} else {
-			super.onActivityResult(requestCode, resultCode, data);
-		}
-	}
-
-	/**
 	 * Stop the current alarm sound and vibration
 	 */
 	public void stopAlarm() {
@@ -334,7 +283,9 @@ public class AlarmActivity extends Activity {
 		SFApplication.get().setAudioDriver(null);
 	}
 
-	//
+	/**
+	 * Start and show the current time on display
+	 */ 
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -358,11 +309,7 @@ public class AlarmActivity extends Activity {
 		}, calendar.get(Calendar.MILLISECOND), 1000);
 	}
 
-	/*
-	 * Use to stop the timer and release the camera (non-Javadoc)
-	 * 
-	 * @see android.app.Activity#onStop()
-	 */
+	// Use to stop the timer and release the camera
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -385,5 +332,60 @@ public class AlarmActivity extends Activity {
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int minute = cal.get(Calendar.MINUTE);
 		return String.format("%02d:%02d", hour, minute);
+	}
+	
+
+	/**
+	 * Start the camera's flashlight if found
+	 */
+	private void startFlash() {
+		camera = Camera.open();
+
+		// Check if there is any camera. If not found, return nothing.
+		Context context = this;
+		PackageManager pm = context.getPackageManager();
+
+		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+			Log.e("err", "No flashlight detected!");
+			return;
+		}
+
+		// If camera found, set flash mode ON.
+		if (!isFlashOn) {
+			Log.i("info", "The flashlight is on.");
+			p = camera.getParameters();
+			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+			camera.setParameters(p);
+			isFlashOn = true;
+		} else {
+			p = camera.getParameters();
+			Log.i("info", "The flashlight is off.");
+			p.setFlashMode(Parameters.FLASH_MODE_OFF);
+			camera.setParameters(p);
+			isFlashOn = false;
+		}
+	}
+
+	/**
+	 * Declaring new animations and sets to components
+	 */
+	private void startAnimate() {
+
+		// Setting animation
+		Animation fadeLong = new AlphaAnimation(1, 0);
+		fadeLong.setDuration(7000);
+		fadeLong.setInterpolator(new LinearInterpolator());
+		fadeLong.setRepeatCount(Animation.INFINITE);
+		fadeLong.setRepeatMode(Animation.REVERSE);
+
+		Animation fadeShort = new AlphaAnimation(1, 0);
+		fadeShort.setDuration(200);
+		fadeShort.setInterpolator(new LinearInterpolator());
+		fadeShort.setRepeatCount(Animation.INFINITE);
+		fadeShort.setRepeatMode(Animation.REVERSE);
+
+		// Set the components with animation
+		btnSnooze.startAnimation(fadeLong);
+		tvTime.startAnimation(fadeShort);
 	}
 }
