@@ -31,43 +31,12 @@
             android:key="pref_enabled_days"
             android:summary="summary summary..."
             android:title="@string/pref_alarm_enabled_days" />
-    </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/ringer_category_title">
- 
-        <Preference
-            android:title="@string/perf_alarm_ringtone"
-            android:key="perf_alarm_ringtone"
-            android:persistent="false" />
-
-        <se.chalmers.dat255.sleepfighter.android.preference.VolumePreference 
-            android:title="@string/pref_volume"
-            android:key="pref_volume" />
-        
-    </PreferenceCategory>
-
-	<PreferenceCategory android:title="@string/challenge_category_title" >
-	    <se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference
-	        android:key="pref_challenge"
-	        android:title="@string/pref_challenge" />
-
-	</PreferenceCategory>
-    
-	<PreferenceCategory android:title="Speech"   >   
         <CheckBoxPreference
-            android:title="Use Speech"
-              android:summary="Read out time and weather when the alarm goes off"
-      
-            android:key="pref_alarm_speech"
-            android:defaultValue="false" />
-        <Preference
-            android:title="Sample"
-            android:key="pref_speech_sample" />
-	</PreferenceCategory>
-	
-		<PreferenceCategory android:title="@string/misc_category_title" 
-	    android:key="pref_category_misc"  >
-
+            android:defaultValue="false"
+            android:key="pref_alarm_repeat"
+            android:title="@string/pref_alarm_repeat" />
+        
         <!-- NOTE: EditTextPreference accepts EditText attributes. -->
         <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
         <EditTextPreference
@@ -80,34 +49,63 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_alarm_name" />
-        
-        <CheckBoxPreference
-            android:title="@string/pref_alarm_repeat"
-            android:key="pref_alarm_repeat"
-            android:defaultValue="false" />
-   
-        <CheckBoxPreference
-            android:title="@string/pref_alarm_vibration"
-            android:key="pref_alarm_vibration"
-            android:defaultValue="true" />
-        
-        <CheckBoxPreference
-            android:title="@string/pref_alarm_snooze_enabled"
-            android:key="pref_alarm_snooze_enabled"
-            android:defaultValue="true" />
-        
-        <EditTextPreference
-            android:title="@string/pref_alarm_snooze_time"
-            android:key="pref_alarm_snooze_time"
-            android:selectAllOnFocus="true"
-            android:maxLength="2"
-            android:inputType="number" />
-        
-        <Preference
-            android:id="@+id/pref_delete_alarm"
-            android:title="@string/pref_delete_alarm"
-            android:key="pref_delete_alarm" />
     </PreferenceCategory>
     
+    <PreferenceCategory android:title="@string/ringer_category_title" >
+        <Preference
+            android:key="perf_alarm_ringtone"
+            android:persistent="false"
+            android:title="@string/perf_alarm_ringtone" />
+
+        <se.chalmers.dat255.sleepfighter.android.preference.VolumePreference
+            android:key="pref_volume"
+            android:title="@string/pref_volume" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_alarm_vibration"
+            android:title="@string/pref_alarm_vibration" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/challenge_category_title" >
+        <se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference
+            android:key="pref_challenge"
+            android:title="@string/pref_challenge" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Snooze" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_alarm_snooze_enabled"
+            android:title="@string/pref_alarm_snooze_enabled" />
+
+        <EditTextPreference
+            android:inputType="number"
+            android:key="pref_alarm_snooze_time"
+            android:maxLength="2"
+            android:selectAllOnFocus="true"
+            android:title="@string/pref_alarm_snooze_time" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="Speech" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_alarm_speech"
+            android:summary="Read out time and weather when the alarm goes off"
+            android:title="Use Speech" />
+
+        <Preference
+            android:key="pref_speech_sample"
+            android:title="Sample" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="pref_category_misc"
+        android:title="@string/misc_category_title" >
+        <Preference
+            android:id="@+id/pref_delete_alarm"
+            android:key="pref_delete_alarm"
+            android:title="@string/pref_delete_alarm" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

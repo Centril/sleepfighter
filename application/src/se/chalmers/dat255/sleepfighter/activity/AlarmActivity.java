@@ -94,6 +94,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	private static final int EMERGENCY_COST = 100;
 	private static final int SNOOZE_COST = 5;
 
+	private boolean ttsInitialized = false;
+	private boolean locationServicesInitialized = false;
 	
     Location currentLocation;
 	
@@ -126,6 +128,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		
 		String s = String.format(format, time, weatherStr);
 		
+		// replace weather conditions using the locale stored in tts 
+		
 		tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
@@ -133,12 +137,19 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	@Override
 	public void onInit(int status) {
 		Debug.d("done initi tts");
+		ttsInitialized = true;
 		
 		// Configure tts 
 		TextToSpeechUtil.setBestLanguage(tts, this);
 		TextToSpeechUtil.config(tts);
 		
 		// fetch the json weather data. 
+		if(this.ttsInitialized && this.locationServicesInitialized)
+			fetchWeatherData();
+		
+	}
+	
+	public void fetchWeatherData() {
 		new WeatherDataTask().execute(currentLocation.getLatitude(), currentLocation.getLongitude());
 	}
 	
@@ -493,11 +504,16 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
      */
     @Override
     public void onConnected(Bundle dataBundle) {
+    	this.locationServicesInitialized = true;
         // Display the connection status
         Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 
         currentLocation = locationClient.getLastLocation();
 	    Debug.d("current location: " + currentLocation);
+	    
+		// fetch the json weather data. 
+		if(this.ttsInitialized && this.locationServicesInitialized)
+			fetchWeatherData();
     }
     
     /*
