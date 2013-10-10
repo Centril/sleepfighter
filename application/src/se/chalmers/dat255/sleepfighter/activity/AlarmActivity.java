@@ -552,5 +552,14 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
                     Toast.LENGTH_SHORT).show();
         }
     }
-
+    
+	@Override
+	protected void onDestroy() {
+	    //Close the Text to Speech Library
+	    if(tts != null) {
+	        tts.stop();
+	        tts.shutdown();
+	    }
+	    super.onDestroy();
+	}
 }
