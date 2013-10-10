@@ -245,7 +245,7 @@ public class Model {
 				if (modelTime >= (snakeSegments.get(0).getRadius() * 2)) {
 					snakeSegments.add(new Segment(startX, startY, snakeWidth,
 							snakePaint));
-					modelTime -= snakeSegments.get(0).getRadius() * 2;
+					modelTime = 0;
 				}
 			}
 
