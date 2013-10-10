@@ -177,6 +177,13 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 		}
 	}
 	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void removeAlarmToggle() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().getCustomView().findViewById(R.id.alarm_actionbar_toggle).setVisibility(View.INVISIBLE);
+		}
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -198,6 +205,7 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 			removeDeleteButton();
 			removeEditName();
 			removeEditTitle();
+			removeAlarmToggle();
 		}
 	}
 
