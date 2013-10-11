@@ -114,7 +114,9 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 			obtainedLocation = true;
 			
 			locationManager.removeUpdates(locationListener);
-
+			
+			Debug.d("obtained location from location change");
+			
 			currentLocation = l;
 			
 			if(ttsInitialized && obtainedLocation) {
@@ -145,6 +147,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 
 		@Override
 		protected WeatherDataFetcher doInBackground(Double... params) {
+			Debug.d("now executing weather data task");
+			
 			return new WeatherDataFetcher(params[0], params[1]);
 		}
 	}
@@ -182,6 +186,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	}
 	
 	public void fetchWeatherData() {
+		Debug.d("about to execute WeatherDataTask");
+		
 		new WeatherDataTask().execute(currentLocation.getLatitude(), currentLocation.getLongitude());
 	}
 	
@@ -544,22 +550,35 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
     @Override
     public void onConnected(Bundle dataBundle) {
     	
+    	
+    	
     	// if we had already obtained the location we don't need to do anything here. 
     	if(this.obtainedLocation) {
     		return;
     	}
     	
+    	
+    	
     	this.obtainedLocation = true;
         // Display the connection status
 
         currentLocation = locationClient.getLastLocation();
-        if(currentLocation == null)
+        if(currentLocation == null) {
         	obtainedLocation = false;
-	    Debug.d("current location: " + currentLocation);
+        	return;
+        }
+		
+        Debug.d("obtained last location");
+		
+        
+		// we already have the location. 
+		locationManager.removeUpdates(locationListener);
 	    
 		// fetch the json weather data. 
-		if(this.ttsInitialized && this.obtainedLocation)
+		if(this.ttsInitialized && this.obtainedLocation) { 
+			
 			fetchWeatherData(); 
+		}
     }
     
     /*

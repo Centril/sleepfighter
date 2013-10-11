@@ -37,11 +37,18 @@ public class WeatherDataFetcher {
 	// build the url used to access the weather data, given latitudes and longitudes. 
 	public WeatherDataFetcher(double lat, double lon) {
 			// fetch the json data form forecast.io
+	
+		Debug.d("about to fetch json data");
+		
 			jsonData = httpGET(buildUrl(lat, lon));
+			
+			Debug.d("done fetching json data");
+
 	}
 	
 	// get a summary of the weather condition
 	public String getSummary() {
+		
 		
 		// For some reason JSONObject threw an exception when parsing the data. 
 		// But we are really only interested in one piece of information in this json data.
