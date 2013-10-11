@@ -86,6 +86,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		if ( !locationReq.isSatisfied( app ) )  {
 			return false;
 		}
+		app.releaseGPSSet();
 
 		return true;
 	}

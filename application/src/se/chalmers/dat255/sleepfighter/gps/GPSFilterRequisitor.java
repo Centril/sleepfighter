@@ -25,6 +25,7 @@ import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
+import android.util.Log;
 
 /**
  * GPSFilterRequisitor is responsible for checking that the user:s<br/>
@@ -35,6 +36,8 @@ import android.location.Location;
  * @since Oct 8, 2013
  */
 public class GPSFilterRequisitor {
+	private static final String TAG = GPSFilterRequisitor.class.getSimpleName();
+
 	private GPSFilterAreaSet set;
 	private GlobalPreferencesManager prefs;
 
@@ -52,8 +55,11 @@ public class GPSFilterRequisitor {
 	 * @return true if requirements are met.
 	 */
 	public boolean isSatisfied( Context context ) {
+		Log.d( TAG, "isSatisfied #1" );
+
 		// Not globally enabled or no enabled and valid areas? Then we're satisfied!
-		if ( this.prefs.isLocationFilterEnabled() || !this.set.hasEnabledAndValid() ) {
+		if ( !(this.prefs.isLocationFilterEnabled() && this.set.hasEnabledAndValid()) ) {
+			Log.d( TAG, "isSatisfied #2" );
 			return true;
 		}
 
@@ -66,6 +72,7 @@ public class GPSFilterRequisitor {
 			long locAge = System.currentTimeMillis() - loc.getTime();
 			if ( locAge > maxAge * 60000 ) {
 				// Last known location is too old, skip location filter.
+				Log.d( TAG, "isSatisfied #3" );
 				return true;
 			}
 		}
@@ -78,21 +85,25 @@ public class GPSFilterRequisitor {
 		// Exclude areas first.
 		for ( GPSFilterArea area : partition[0] ) {
 			if ( area.contains( pos ) ) {
+				Log.d( TAG, "isSatisfied #4" );
 				return false;
 			}
 		}
 
 		// Include areas now.
 		if ( partition[1].isEmpty() ) {
+			Log.d( TAG, "isSatisfied #5" );
 			return true;
 		} else {
 			// At least one match needed.
 			for ( GPSFilterArea area : partition[1] ) {
 				if ( area.contains( pos ) ) {
+					Log.d( TAG, "isSatisfied #6" );
 					return true;
 				}
 			}
 
+			Log.d( TAG, "isSatisfied #7" );
 			return false;
 		}
 	}
@@ -114,11 +125,11 @@ public class GPSFilterRequisitor {
 
 			// Partition current area.
 			switch ( area.getMode() ) {
-			case EXCLUDE:
+			case INCLUDE:
 				includes.add( area );
 				break;
 
-			case INCLUDE:
+			case EXCLUDE:
 				excludes.add( area );
 				break;
 			}
