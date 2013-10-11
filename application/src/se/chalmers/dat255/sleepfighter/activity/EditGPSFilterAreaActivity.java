@@ -475,12 +475,6 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		// For some weird reason, NullPointerException will happen if we don't do this.
 		this.set.setMessageBus( SFApplication.get().getBus() );
 
-		Log.d( TAG, "set bus: " + this.set.getMessageBus().toString() );
-		Log.d( TAG, "set size: " + this.set.size() );
-		for ( GPSFilterArea area : this.set ) {
-			Log.d( TAG, "area bus: " + area.getMessageBus().toString() );
-		}
-
 		// Find area in set.
 		this.area = this.set.getById( id );
 
