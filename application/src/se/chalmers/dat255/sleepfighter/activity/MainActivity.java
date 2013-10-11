@@ -367,13 +367,7 @@ public class MainActivity extends Activity {
 
 		case R.id.action_start_challenge:
 			startDebugChallenge();
-			return true;
-
-		case R.id.action_speech:
-			Debug.d("speech");
-	
-			return true;
-			
+			return true;	
 		case R.id.action_gpsfilter_area_edit:
 			this.startGPSFilterAreaEdit();
 			return true;

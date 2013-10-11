@@ -41,6 +41,7 @@ import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -49,6 +50,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -94,6 +97,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	private static final int EMERGENCY_COST = 100;
 	private static final int SNOOZE_COST = 5;
 
+	private boolean ttsInitialized = false;
+	private boolean obtainedLocation = false;
 	
     Location currentLocation;
 	
@@ -101,6 +106,35 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 
 	private TextToSpeech tts;
 	
+
+	private LocationManager locationManager;
+	private LocationListener locationListener = new LocationListener() {
+		@Override
+		public synchronized void onLocationChanged(Location l) {
+			obtainedLocation = true;
+			
+			locationManager.removeUpdates(locationListener);
+
+			currentLocation = l;
+			
+			if(ttsInitialized && obtainedLocation) {
+				fetchWeatherData();
+			}
+		}
+
+		@Override
+		public void onProviderDisabled(String provider) {
+		}
+
+		@Override
+		public void onProviderEnabled(String provider) {
+		}
+
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+		}
+	};
+
 	
 	class WeatherDataTask extends AsyncTask<Double, Void, WeatherDataFetcher> {
 
@@ -126,6 +160,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		
 		String s = String.format(format, time, weatherStr);
 		
+		// replace weather conditions using the locale stored in tts 
+		
 		tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
@@ -133,12 +169,19 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	@Override
 	public void onInit(int status) {
 		Debug.d("done initi tts");
+		ttsInitialized = true;
 		
 		// Configure tts 
 		TextToSpeechUtil.setBestLanguage(tts, this);
 		TextToSpeechUtil.config(tts);
 		
 		// fetch the json weather data. 
+		if(this.ttsInitialized && this.obtainedLocation)
+			fetchWeatherData();
+		
+	}
+	
+	public void fetchWeatherData() {
 		new WeatherDataTask().execute(currentLocation.getLatitude(), currentLocation.getLongitude());
 	}
 	
@@ -178,6 +221,13 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 			setupGooglePlay();
 			locationClient = new LocationClient(this, this, this);
 			TextToSpeechUtil.checkTextToSpeech(this);
+			
+			locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			//locationSettings = new LocationSettings(this);
+
+			locationManager.requestLocationUpdates(
+					LocationManager.NETWORK_PROVIDER, 0, 0,locationListener);
+
 		}
 
 		// Get the name and time of the current ringing alarm
@@ -493,11 +543,23 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
      */
     @Override
     public void onConnected(Bundle dataBundle) {
+    	
+    	// if we had already obtained the location we don't need to do anything here. 
+    	if(this.obtainedLocation) {
+    		return;
+    	}
+    	
+    	this.obtainedLocation = true;
         // Display the connection status
-        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
 
         currentLocation = locationClient.getLastLocation();
+        if(currentLocation == null)
+        	obtainedLocation = false;
 	    Debug.d("current location: " + currentLocation);
+	    
+		// fetch the json weather data. 
+		if(this.ttsInitialized && this.obtainedLocation)
+			fetchWeatherData(); 
     }
     
     /*
@@ -536,5 +598,19 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
                     Toast.LENGTH_SHORT).show();
         }
     }
+    
+	@Override
+	protected void onDestroy() {
+	    //Close the Text to Speech Library
+	    if(tts != null) {
+	        tts.stop();
+	        tts.shutdown();
+	    }
 
+	    if(locationManager != null)
+	    	locationManager.removeUpdates(locationListener);
+
+	    
+	    super.onDestroy();
+	}
 }

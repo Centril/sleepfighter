@@ -462,4 +462,16 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
+	
+	@Override
+	protected void onDestroy() {
+
+
+	    //Close the Text to Speech Library
+	    if(tts != null) {
+	        tts.stop();
+	        tts.shutdown();
+	    }
+	    super.onDestroy();
+	}
 }

@@ -21,11 +21,13 @@ package se.chalmers.dat255.sleepfighter.challenge;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import se.chalmers.dat255.sleepfighter.R;
@@ -36,6 +38,8 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
  * A challenge where the user have to shake the device to complete it.
  */
 public class ShakeChallenge implements Challenge {
+
+	private static final String TAG = "ShakeChallenge";
 
 	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
 		setType(ChallengeType.SHAKE);
@@ -76,7 +80,18 @@ public class ShakeChallenge implements Challenge {
 		if(state != null) {
 			this.progress = state.getFloat(KEY_PROGRESS_FLOAT);
 		}
-	
+
+		// Check if required sensor is available
+		boolean hasAccelerometer = activity.getPackageManager()
+				.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+		if(!hasAccelerometer) {
+			// Complete right away, for now. Checking if device has required
+			// hardware could perhaps be done before the challenge is started.
+			Log.e(TAG, "Device lacks required sensor for ShakeChallenge");
+			activity.complete();
+			return;
+		}
+
 		// Register to get acceleration events
 		this.sensorManager = (SensorManager) activity
 				.getSystemService(Context.SENSOR_SERVICE);

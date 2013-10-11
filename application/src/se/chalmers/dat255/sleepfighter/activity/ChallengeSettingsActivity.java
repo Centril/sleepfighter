@@ -137,7 +137,12 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	 */
 	protected void gotoPreferencesSettings( ChallengeType type ) {
 		Intent i = new Intent( this, ChallengeParamsSettingsActivity.class );
-		new IntentUtils( i ).setAlarmId( alarm );
+		IntentUtils intentUtils = new IntentUtils(i);
+		if (this.alarm.isPresetAlarm()) {
+			intentUtils.setSettingPresetAlarm(true);
+		} else {
+			intentUtils.setAlarmId(alarm);
+		}
 
 		i.putExtra( ChallengeParamsSettingsActivity.EXTRAS_CHALLENGE_TYPE, type );
 
