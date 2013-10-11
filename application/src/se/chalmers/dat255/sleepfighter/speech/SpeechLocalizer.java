@@ -27,7 +27,7 @@ public class SpeechLocalizer {
 		return TimeFormatter.formatTime(hour, min);
 	}
 
-	private String getWakeUp() {
+	public String getWakeUp() {
 		return context.getResources().getString(R.string.speech_wake_up_format);
 	}
 	

@@ -19,7 +19,6 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 

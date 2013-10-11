@@ -33,6 +33,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.AudioChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
@@ -252,7 +253,10 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 			public boolean onPreferenceClick(Preference preference) {
 				Debug.d("speech sample here");
 				// TODO: ask the user if he/she wants to install vox or something. 
-				tts.speak("It's time to wake up.", TextToSpeech.QUEUE_FLUSH, null);
+				
+				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getWakeUp();
+				tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
+				
 				return true;
 			}
 		});
