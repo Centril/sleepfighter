@@ -127,7 +127,6 @@ public class SnakeController {
 
 		public void setRunning(boolean isRunning) {
 			this.isRunning = isRunning;
-			Debug.d("SET RUNNING " + isRunning);
 		}
 
 		@Override
