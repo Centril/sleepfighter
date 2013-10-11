@@ -23,7 +23,6 @@
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_alarm_header_general">一般</string>
     <string name="pref_alarm_time">時刻</string>
     <string name="pref_alarm_name">名前</string>
     <string name="pref_alarm_default_name">名前なしアラーム</string>

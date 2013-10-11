@@ -28,7 +28,6 @@
     <string name="pref_alarm_name">Név</string>
     <string name="pref_alarm_default_name">Névtelen riasztó</string>
     <string name="pref_alarm_enabled_days">Napok</string>
-    <string name="time_category_title">Idő</string>
     <string name="misc_category_title">Egyéb</string>
     <string name="ringer_category_title">Csengőhang beállítások</string>
 

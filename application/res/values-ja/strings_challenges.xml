@@ -20,14 +20,12 @@
 <resources>
 
     <string-array name="challenge_names">
-        <item>Test</item>
         <item>数学</item>
         <item>神経衰弱</item>
         <item>数字をソート</item>
         <item>ヘビのゲーム</item>
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>A test challenge</item>
         <item>数学の問題を解く</item>
         <item>文字のカードを組む神経衰弱</item>
         <item>大きさで数字をソートするチャレンジ</item>
