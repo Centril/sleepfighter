@@ -21,6 +21,10 @@ package se.chalmers.dat255.sleepfighter.gps;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSLatLng;
+import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
+import android.content.Context;
+import android.location.Criteria;
+import android.location.Location;
 
 /**
  * GPSFilterRequisitor is responsible for checking that the user:s<br/>
@@ -32,12 +36,14 @@ import se.chalmers.dat255.sleepfighter.model.gps.GPSLatLng;
  */
 public class GPSFilterRequisitor {
 	private GPSFilterAreaSet set;
+	private GlobalPreferencesManager prefs;
 
 	/**
 	 * Constructs the GPSFilterRequisitor given a set of areas.
 	 */
-	public GPSFilterRequisitor( GPSFilterAreaSet set ) {
+	public GPSFilterRequisitor( GPSFilterAreaSet set, GlobalPreferencesManager prefManager ) {
 		this.set = set;
+		this.prefs = prefManager;
 	}
 
 	/**
@@ -45,11 +51,26 @@ public class GPSFilterRequisitor {
 	 *
 	 * @return true if requirements are met.
 	 */
-	public boolean isSatisfied( GPSLatLng pos ) {
-		// No areas? Then we're satisfied!
-		if ( this.set.isEmpty() ) {
+	public boolean isSatisfied( Context context ) {
+		// Not globally enabled or no enabled and valid areas? Then we're satisfied!
+		if ( this.prefs.isLocationFilterEnabled() || !this.set.hasEnabledAndValid() ) {
 			return true;
 		}
+
+		// Get last known location.
+		GPSFilterLocationRetriever locRet = new GPSFilterLocationRetriever( new Criteria() );
+		Location loc = locRet.getLocation( context );
+
+		int maxAge = this.prefs.getLocationMaxAge();
+		if ( maxAge > 0 ) {
+			long locAge = System.currentTimeMillis() - loc.getTime();
+			if ( locAge > maxAge * 60000 ) {
+				// Last known location is too old, skip location filter.
+				return true;
+			}
+		}
+
+		GPSLatLng pos = new GPSLatLng( loc.getLatitude(), loc.getLongitude() );
 
 		// Partition!
 		GPSFilterAreaSet[] partition = this.modePartitionSet();
