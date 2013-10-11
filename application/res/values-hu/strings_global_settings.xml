@@ -29,4 +29,11 @@
     <string name="pref_about">Info</string>
     <string name="pref_version">Változat</string>
     
+    <string name="display_when_next_alarm_rings">Következő riasztót kiírni</string>
+    <string name="display_when_next_alarm_rings_summary">Kiírja, mikor fog a következő riasztó szolni, ahelyett, hogy mennyi idő mulva</string>
+
+    <string name="pref_global_preset_alarm">Alapriasztó</string>
+
+    <string name="developers_title">Fejlesztők</string>
+    
 </resources>

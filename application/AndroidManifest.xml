@@ -29,6 +29,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CAMERA" />
+	<uses-feature android:name="android.hardware.camera" />
 
     <!-- START	Google Maps Android API v2 -->
 	<uses-permission android:name="android.permission.INTERNET"/>
@@ -159,9 +161,10 @@
             android:name="se.chalmers.dat255.sleepfighter.audio.AudioService"
             android:exported="false" >
             <intent-filter>
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY" />
+                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_TRACK" />
                 <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.STOP" />
                 <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.VOLUME" />
+                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_PLAYLIST" />
             </intent-filter>
         </service>
     </application>

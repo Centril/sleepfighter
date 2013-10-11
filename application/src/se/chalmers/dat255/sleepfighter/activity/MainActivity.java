@@ -33,12 +33,10 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -78,6 +76,8 @@ public class MainActivity extends Activity {
 		return SFApplication.get();
 	}
 
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -94,6 +94,8 @@ public class MainActivity extends Activity {
 		this.setupChallengeToggle();
 		this.updateChallengePoints();
 		this.updateEarliestText();
+		
+		
 	}
 
 	@Override
@@ -119,12 +121,12 @@ public class MainActivity extends Activity {
 		ImageView pointImage = (ImageView) findViewById(R.id.challenge_points_icon);
 		
 		if (app().getPrefs().isChallengesActivated()) {
-			toggleImage.setImageResource(R.drawable.challenge_toggled);
-			pointImage.setImageResource(R.drawable.sun_enabled);
+			toggleImage.setImageResource(R.drawable.ic_action_challenge_toggled);
+			pointImage.setImageResource(R.drawable.ic_sun_enabled);
 		}
 		else {
-			toggleImage.setImageResource(R.drawable.challenge_untoggled);
-			pointImage.setImageResource(R.drawable.sun_disabled);
+			toggleImage.setImageResource(R.drawable.ic_action_challenge_untoggled);
+			pointImage.setImageResource(R.drawable.ic_sun_disabled);
 			findViewById(R.id.mainChallengePoints).setEnabled(false);
 		}
 		
@@ -133,16 +135,16 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				if (app().getPrefs().isChallengesActivated()) {
 					app().getPrefs().setChallengesActivated(false);
-					((ImageView) v).setImageResource(R.drawable.challenge_untoggled);
+					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_untoggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(false);
-					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_disabled);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_disabled);
 					Toast.makeText(MainActivity.this, "Challenges disabled", Toast.LENGTH_SHORT).show();
 				}
 				else {
 					app().getPrefs().setChallengesActivated(true);
-					((ImageView) v).setImageResource(R.drawable.challenge_toggled);
+					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_toggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(true);
-					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.sun_enabled);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_enabled);
 					Toast.makeText(MainActivity.this, "Challenges enabled", Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -252,7 +254,6 @@ public class MainActivity extends Activity {
 		}
 
 		this.manager.add(alarm);
-		this.startAlarmEdit(alarm, isAdded);
 	}
 
 	/**
@@ -360,10 +361,6 @@ public class MainActivity extends Activity {
 			this.startGlobalSettings();
 			return true;
 
-		case R.id.action_start_challenge:
-			startDebugChallenge();
-			return true;
-
 		case R.id.action_gpsfilter_area_edit:
 			this.startGPSFilterAreaEdit();
 			return true;
@@ -372,36 +369,5 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	/**
-	 * Debug method for launching dialog where any challenge defined in
-	 * {@link ChallengeType} can be started.
-	 */
-	private void startDebugChallenge() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		final ChallengeType[] types = ChallengeType.values();
-
-		// Making string array "copy" of types for use with standard dialog
-		String[] items = new String[types.length];
-		for (int i = 0; i < types.length; i++) {
-			items[i] = types[i].name();
-		}
-
-		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// The clicked challenge type
-				ChallengeType type = types[which];
-
-				// Start the selected challenge
-				Intent i = new Intent(MainActivity.this, ChallengeActivity.class);
-				new IntentUtils( i ).setAlarmId( SFApplication.get().getFromPresetFactory().getPreset() ).setSettingPresetAlarm( true );
-				i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
-				startActivity(i);
-			}
-		};
-		builder.setItems(items, listener);
-		AlertDialog dialog = builder.create();
-		dialog.show();
-	}
+	
 }

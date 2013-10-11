@@ -20,8 +20,9 @@
 <resources>
     <string name="title_alarm_ringer_settings">Ringsignal Inställningar</string>
 
+    <string name="ringer_action_test">Testa</string>
+    <string name="ringer_action_cancel">Avbryt</string>
     <string name="audio_source_category_title">Ljud</string>
-
     <string name="perf_ringtone_picker">Ringsignal</string>
     <string name="perf_ringtone_picker_summary">Välj en ringsignal från din telefon</string>
     <string name="alarm_audiosource_summary_name_title">Vald:</string>

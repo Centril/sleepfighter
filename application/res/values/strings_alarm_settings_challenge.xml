@@ -25,5 +25,6 @@
     <string name="title_alarm_challenge_settings">Challenge settings</string>
 
     <string name="challenge_params_title">Settings</string>
-
+    <string name="challenge_test">Test</string>
+    
 </resources>

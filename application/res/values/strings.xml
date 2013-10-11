@@ -28,7 +28,6 @@
     <string name="X">X</string>
     <string name="confirm_delete">Do you really want to delete this alarm?"</string>
     <string name="pre_chal_act">A wild challenge appears!</string>
-    <string name="memory_chal_act">Memory</string>
     <string name="snooze">Snooze</string>
     <string name="alarm_emergency_stop">Emergency Stop</string>
     <string name="alarm_emergency_dialog">Sure you want to stop? You will lose %1$s (but this alarm will not ring again).</string>
@@ -39,15 +38,16 @@
     	
     <!-- Challenges -->
     <string name="start_challenge">Stop the madness!</string>
-    <string name="btn_answer">Answer</string>
     <string name="btn_complete" tools:ignore="MissingTranslation">Complete!</string>
     <string name="btn_fail" tools:ignore="MissingTranslation">Fail!</string>
     <string name="challenge_points">Challenge Points</string>
     <string name="challenge_toggle_content_desc">Toggle challenges</string>
+    <string name="deactivate">Alarm deactivated!</string>
+     <string name="returned">Returned from uncompleted challenge.</string>
 
     <!-- Alarm name & time, these should be overwritten -->
-    <string name="alarm_name" tools:ignore="MissingTranslation">Alarm name</string>
-    <string name="alarm_time" tools:ignore="MissingTranslation">00:00</string>
+    <string name="alarm_name" tools:ignore="MissingTranslation"></string>
+    <string name="alarm_time" tools:ignore="MissingTranslation"></string>
 
     <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">

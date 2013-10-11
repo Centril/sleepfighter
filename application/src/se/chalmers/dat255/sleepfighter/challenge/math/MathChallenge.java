@@ -37,7 +37,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -183,14 +182,11 @@ public class MathChallenge implements Challenge {
 		return outState;
 	}
 	
-	
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi", "InlinedApi" })
 	private void setupWebview(final Activity activity) {
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
 		w.getSettings().setJavaScriptEnabled(true);
 		
-		// make rendering faster.
-		w.getSettings().setRenderPriority(RenderPriority.HIGH);
 		w.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 		
 		if(Build.VERSION.SDK_INT >= 11) {
