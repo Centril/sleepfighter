@@ -16,8 +16,10 @@
   You should have received a copy of the GNU General Public License
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto" >
+
     <CheckBoxPreference
         android:key="pref_alarm_turn_screen_on"
         android:title="@string/pref_alarm_turn_screen_on"
@@ -51,6 +53,42 @@
             android:title="@string/pref_location_filter_enabled"
             android:summary="@string/pref_location_filter_enabled_summary"
             android:defaultValue="true" />
+
+	    <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+	        android:key="pref_location_filter_ttff"
+			android:title="@string/pref_location_filter_ttff"
+			android:defaultValue="15"
+			android:dialogMessage="@string/pref_location_filter_ttff_message"
+			android:summary="@string/pref_location_filter_ttff_message"
+			android:max="60"
+			custom:min="0" />
+
+	    <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+	        android:key="pref_location_filter_refresh_interval"
+			android:title="@string/pref_location_filter_refresh_interval"
+			android:defaultValue="1"
+			android:dialogMessage="@string/pref_location_filter_refresh_interval_message"
+			android:summary="@string/pref_location_filter_refresh_interval_message"
+			android:max="5"
+			custom:min="0" />
+
+	    <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+	        android:key="pref_location_filter_min_distance"
+			android:title="@string/pref_location_filter_min_distance"
+			android:defaultValue="100"
+			android:dialogMessage="@string/pref_location_filter_min_distance_message"
+			android:summary="@string/pref_location_filter_min_distance_message"
+			android:max="5000"
+			custom:min="0" />
+
+	    <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+	        android:key="pref_location_filter_location_max_age"
+			android:title="@string/pref_location_filter_max_age"
+			android:defaultValue="20"
+			android:dialogMessage="@string/pref_location_filter_max_age_message"
+			android:summary="@string/pref_location_filter_max_age_message"
+			android:max="240"
+			custom:min="0" />
 
 	</PreferenceCategory>
 

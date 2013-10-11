@@ -121,4 +121,41 @@ public class GlobalPreferencesManager {
 		edit.putBoolean("pref_location_filter_enabled", enabled );
 		edit.commit();
 	}
+
+	/**
+	 * Returns the "first request time delta" value.
+	 *
+	 * @return the time in minutes, default is 15 atm.
+	 */
+	public int getLocationFRTD() {
+		return this.prefs.getInt( "pref_location_filter_ttff", 15 );
+	}
+
+	/**
+	 * Returns the refresh interval time in minutes.
+	 *
+	 * @return the time in minutes, default is 1 atm.
+	 */
+	public int getLocationRefreshInterval() {
+		return this.prefs.getInt( "pref_location_filter_refresh_interval", 1 );
+	}
+
+	/**
+	 * Returns the minimum distance in meters a user has to move before location update.
+	 *
+	 * @return the minimum distance in meters.
+	 */
+	public int getLocationMinDistance() {
+		return this.prefs.getInt( "pref_location_filter_min_distance", 100 );
+	}
+
+	/**
+	 * Returns the maximum age of the last known location in minutes.<br/>
+	 * If the age exceeds this, location filter won't run. 0 is unbounded max age.
+	 *
+	 * @return the minimum distance in meters.
+	 */
+	public int getLocationMaxAge() {
+		return this.prefs.getInt( "pref_location_filter_max_age", 20 );
+	}
 }

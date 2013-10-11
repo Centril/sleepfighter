@@ -40,4 +40,19 @@
     <string name="pref_location_filter">Location Settings</string>
     <string name="pref_location_filter_enabled">Enabled</string>
     <string name="pref_location_filter_enabled_summary">Switch this off when you want to override location filter, disabling it.</string>
+ 
+    <string name="pref_location_filter_ttff">Time before first location check.</string>
+    <string name="pref_location_filter_ttff_message">
+        Select how many minutes before an alarm your location should be checked for.
+        Use 0 to disable checking beforehand, however do note that the location data may be inaccurate.
+    </string>
+
+    <string name="pref_location_filter_refresh_interval">Refresh inverval</string>
+    <string name="pref_location_filter_refresh_interval_message">Refresh inverval in minutes after first time. Use 0 to disable refreshing.</string>
+
+    <string name="pref_location_filter_min_distance">Minimum distance</string>
+    <string name="pref_location_filter_min_distance_message">Minimum distance in meters moved before refreshing location. Use 0 to disable minimum distance.</string>
+ 
+    <string name="pref_location_filter_max_age">Last known location max age</string>
+    <string name="pref_location_filter_max_age_message">The maximum age of the last known location in minutes. If the age exceeds this, location filter won\'t run. Use 0 for unbounded max age.</string>
 </resources>
