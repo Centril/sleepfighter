@@ -44,7 +44,7 @@ import android.widget.Toast;
  */
 public class ChallengeActivity extends Activity {
 	public static final String BUNDLE_CHALLENGE_TYPE = "bundle_challenge_type";
-	private static final String BUNDLE_CHALLENGE_DATA = null;
+	private static final String BUNDLE_CHALLENGE_DATA = "bundle_challenge_data";
 
 	private Alarm alarm;
 	private ChallengeConfigSet challengeSet;
