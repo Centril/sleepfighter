@@ -55,7 +55,6 @@ import android.view.MenuItem;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -78,6 +77,7 @@ import com.google.android.gms.location.LocationClient;
  * @version 1.0
  * @since Sep 20, 2013
  */
+@SuppressWarnings("deprecation")
 public class AlarmActivity extends Activity implements TextToSpeech.OnInitListener, 
 GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener,
 TextToSpeech.OnUtteranceCompletedListener {
@@ -112,8 +112,6 @@ TextToSpeech.OnUtteranceCompletedListener {
 	private LocationClient locationClient;
 
 	private TextToSpeech tts;
-	
-	private float originalVolume;
 	
 	private LocationManager locationManager;
 	private LocationListener locationListener = new LocationListener() {
@@ -665,21 +663,4 @@ TextToSpeech.OnUtteranceCompletedListener {
 		driver.play(alarm.getAudioConfig());
 	}
 	
-	
-	// lower the volume a bit so that the speech can be heard.
-	/*private void lowerVolume() {
-		// if a song is playing. 
-		if(SFApplication.get().getMediaPlayer() != null) {
-			this.originalVolume = SFApplication.get().getVolume();
-
-			Debug.d("lowering volume: " + this.originalVolume );
-			SFApplication.get().getMediaPlayer().setVolume(this.originalVolume/4, this.originalVolume/4);
-		}
-	}
-	
-	private void restoreVolume() {
-		if(SFApplication.get().getMediaPlayer() != null) {
-			SFApplication.get().getMediaPlayer().setVolume(this.originalVolume, this.originalVolume);
-		}
-	}*/
 }
