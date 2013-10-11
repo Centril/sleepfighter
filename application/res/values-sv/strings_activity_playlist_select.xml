@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (c) 2013 See AUTHORS file.
   
@@ -18,16 +17,5 @@
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-    
-    <string name="matrix_challenge_desc">Beräkna determinanten av %s</string>
-    <string name="differentiation_challenge_desc">Beräkna %s avrundat till sitt närmsta heltal</string>
-    <string name="gdc_challenge_desc">Finn den största gemensamma delaren till %1$s och %2$s</string>
-    <string name="prime_factor_challenge_desc">"Finn den största primtalsfaktorn av %s</string>
-
-    <!-- Math challenge setings -->
-    <string name="challenge_math_settings_title">Inställningar för matte</string>
-
-    <string name="challenge_math_hard_problems_title">Svåra mattetal. </string>
-    <string name="challenge_math_hard_problems_summary">Används svårare mattetal på gymnasienivå.</string>
-
+    <string name="title_activity_playlist_select">Välj en spellista</string>
 </resources>

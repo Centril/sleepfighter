@@ -29,14 +29,12 @@
     <string name="pref_alarm_default_name">Namnlöst Alarm</string>
 
     <string name="pref_alarm_enabled_days">Dagar</string>
-    
+
     <string name="time_category_title">Tid</string>
     <string name="misc_category_title">Övrigt</string>
-    
+
     <string name="ringer_category_title">Ringsignal inställningar</string>
-    
- 
-    
+
     <string-array name="week_days">
         <item>Måndag</item>
         <item>Tisdag</item>
@@ -46,8 +44,7 @@
         <item>Lördag</item>
         <item>Söndag</item>
     </string-array>
-    
-    
+
     <string-array name="default_week_days">
         <item>true</item>
         <item>true</item>
@@ -57,34 +54,22 @@
         <item>true</item>
         <item>true</item>
     </string-array>
-  
-  
     
     <string name="pref_alarm_repeat">Upprepa</string>
     <string name="pref_delete_alarm">Radera alarm</string>
-    
     <string name="perf_alarm_ringtone">Ringsignal</string>
-    
-	  <string name="pref_alarm_vibration">Vibration</string>
-	  
-	
-	  <string name="pref_alarm_snooze_enabled">Sätt på snooze</string>
+    <string name="pref_alarm_vibration">Vibration</string>
+    <string name="pref_alarm_snooze_enabled">Sätt på snooze</string>
     <string name="pref_alarm_snooze_time">Snoozelängd</string>
-	  
-      <string name="pref_challenge_enabled">Sätt på utmaningar</string>
+    <string name="pref_challenge_enabled">Sätt på utmaningar</string>
     <string name="pref_challenge_select">Välj utmaningar</string>
-  
-      <string name="pref_volume">Ljudvolym</string>
-      
-      
+    <string name="pref_volume">Ljudvolym</string>
     <string name="challenge_category_title">Utmaning</string>
     <string name="challenge_category_title_plural">Utmaningar</string>
-   
     <string name="challenge_params_title">Inställningar</string>
-    
     <string name="pref_challenge">Utmaningar</string>
-  
-        <string name="title_alarm_challenge_settings">Utmaningsinställningar</string>
-    
-    
+    <string name="title_alarm_challenge_settings">Utmaningsinställningar</string>
+    <string name="alarm_settings_action_remove">Ta bort</string>
+    <string name="alarm_settings_action_toggle">Växla på/av</string>
+
 </resources>

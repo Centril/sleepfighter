@@ -39,4 +39,6 @@
         <item>En utmaning där du behöver skaka din enhet</item>
     </string-array>
 
+    <string name="fluidSnakeTitle">Tryck för att styra ormen!</string>
+
 </resources>
