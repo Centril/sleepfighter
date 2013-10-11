@@ -119,7 +119,7 @@ public class SnakeController {
 	 * Call when activity/game resumes.
 	 */
 	public void resume() {
-		this.thread.setRunning(true);
+		this.thread = new SnakeThread();
 	}
 
 	private class SnakeThread extends Thread {
