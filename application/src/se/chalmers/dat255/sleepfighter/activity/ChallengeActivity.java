@@ -33,7 +33,6 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.Toast;
 
 /**
  * An activity for different types of challenges.<br/>
@@ -149,8 +148,6 @@ public class ChallengeActivity extends Activity {
 	 * Called by a challenge when it's completed.
 	 */
 	public void complete() {
-		Toast.makeText(this, "DEBUG: Completed challenge", Toast.LENGTH_SHORT)
-				.show();
 		setResult(Activity.RESULT_OK);
 		
 		SFApplication.get().getPrefs().addChallengePoints(5);
