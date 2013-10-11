@@ -254,7 +254,6 @@ public class MainActivity extends Activity {
 		}
 
 		this.manager.add(alarm);
-		this.startAlarmEdit(alarm, isAdded);
 	}
 
 	/**
