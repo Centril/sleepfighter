@@ -59,7 +59,7 @@ public class SFApplication extends Application {
 	private FromPresetAlarmFactory fromPresetFactory;
 
 	private GPSFilterAreaSet gpsAreaManaged;
-
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -223,7 +223,7 @@ public class SFApplication extends Application {
 
 		return this.audioDriverFactory;
 	}
-
+	
 	/**
 	 * Fetches the set of areas and manages it in application.<br/>
 	 * Call {@link #releaseGPSSet()} to release reference to it in application.

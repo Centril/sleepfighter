@@ -104,7 +104,7 @@ public class WeatherDataFetcher {
 			// the data we need is in the beginning, and it is rather short, so we only 
 			// need about the first 200 characters. 
 			// this speeds things up a bit. 
-			//connection.setRequestProperty("Content-Length", "" + 200);
+			connection.setRequestProperty("Content-Length", "" + 200);
 			connection.connect();
 		
 			if(connection.getResponseCode() == 400){

@@ -23,7 +23,6 @@
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_alarm_header_general">Allgemeine</string>
     <string name="pref_alarm_time">Zeit</string>
     <string name="pref_alarm_name">Name</string>
     <string name="pref_alarm_default_name">Namenloser Alarm</string>

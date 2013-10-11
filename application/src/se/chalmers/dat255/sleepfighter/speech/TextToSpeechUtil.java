@@ -22,18 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.joda.time.DateTime;
-
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
-import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 
 public class TextToSpeechUtil {

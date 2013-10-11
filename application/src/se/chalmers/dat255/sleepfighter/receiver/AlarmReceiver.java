@@ -21,7 +21,6 @@ package se.chalmers.dat255.sleepfighter.receiver;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
-import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -90,7 +89,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @param extras extras to pass on.
 	 */
 	private void startAlarm( Alarm alarm, Bundle extras ) {
-		startAudio(alarm);
 
 		// start vibration.
 		if (alarm.getAudioConfig().getVibrationEnabled()) {
@@ -113,14 +111,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		showNotification(alarm, activityIntent);
 	}
 
-	private void startAudio(Alarm alarm) {
-		SFApplication app = SFApplication.get();
-		AudioDriver driver = app.getAudioDriverFactory().produce(app,
-				alarm.getAudioSource());
-		app.setAudioDriver(driver);
-
-		driver.play(alarm.getAudioConfig());
-	}
+	
 
 	/**
 	 * Launches notification showing that the alarm has gone off.

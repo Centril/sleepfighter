@@ -156,6 +156,13 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 			}
 		}
 	}
+	
+	@Handler
+	public void handleRingerChange(AudioChangeEvent e) {
+		if (e.getModifiedField() == Field.AUDIO_SOURCE) {
+			updateRingerSummary();
+		}
+	}
 
 	private void removeDeleteButton() {
 		Preference pref = (Preference) findPreference(DELETE);
