@@ -31,13 +31,6 @@
             android:key="pref_enabled_days"
             android:summary="summary summary..."
             android:title="@string/pref_alarm_enabled_days" />
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/ringer_category_title">
-        <Preference
-            android:title="@string/pref_alarm_ringtone"
-            android:key="perf_alarm_ringtone"
-            android:persistent="false" />
 
         <CheckBoxPreference
             android:defaultValue="false"
