@@ -18,17 +18,11 @@
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-   
-    <string name="matrix_challenge_desc">Compute the determinant of %s</string>
-    <string name="differentiation_challenge_desc">Find %s rounded to its nearest integer</string>
-    <string name="gdc_challenge_desc">Find the greatest common divisor of %1$s and %2$s</string>
-    <string name="prime_factor_challenge_desc">"Find the largest prime factor of %s</string>
+    <string name="challenge_sort_ascending">Alacsonyról magasra</string>
+    <string name="challenge_sort_descending">Magasról alacsonyra</string>
+    <string name="challenge_sort_done">Kész!</string>
 
-    <!-- Math challenge setings --> 
-    <string name="challenge_math_settings_title">Math Settings</string>
- 
-    <string name="challenge_math_hard_problems_title">Give hard math problems</string>
-    <string name="challenge_math_hard_problems_summary">Give more difficult, university level math problems.</string>
-    
-   
+    <string name="challenge_sort_settings_title">Kihívás: Számrendezési beállítások</string>
+    <string name="challenge_sort_color_confusion_title">Szín zavarás</string>
+    <string name="challenge_sort_color_confusion_summary">Ha be van kapcsolva, a számok háttere szabálytalanul lesznek beszínezve, hogy nagyobb legyen a zürzavar.</string>
 </resources>

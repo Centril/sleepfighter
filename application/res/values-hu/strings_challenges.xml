@@ -25,7 +25,7 @@
         <item>Memory</item>
         <item>Számrendezés</item>
         <item>Szabad Snake</item>
-        <item>Forgó Snake</item>
+        <item>RotoSnake</item>
         <item>Rázás</item>
     </string-array>
     <string-array name="challenge_descriptions">
@@ -40,4 +40,5 @@
 
     
     <string name="fluidSnakeTitle">Érintsed meg a képernyőt!</string>
+    <string name="rotoSnakeTitle">Forgassad a készüléket!</string>
 </resources>

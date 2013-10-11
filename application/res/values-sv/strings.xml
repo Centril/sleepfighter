@@ -43,6 +43,8 @@
     <string name="btn_answer">Svara</string>
     <string name="challenge_points">Utmaningspoäng</string>
     <string name="challenge_toggle_content_desc">Sätt på/av utmaningar</string>
+     <string name="deactivate">Alarm avaktiverad!</string>
+      <string name="returned">Returnerad från oavslutad utmaning.</string>
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>

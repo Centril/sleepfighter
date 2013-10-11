@@ -41,10 +41,12 @@
     <string name="btn_fail" tools:ignore="MissingTranslation">Fail!</string>
     <string name="challenge_points">Challenge Points</string>
     <string name="challenge_toggle_content_desc">Toggle challenges</string>
+    <string name="deactivate">Alarm deactivated!</string>
+     <string name="returned">Returned from uncompleted challenge.</string>
 
     <!-- Alarm name & time, these should be overwritten -->
-    <string name="alarm_name" tools:ignore="MissingTranslation">Alarm name</string>
-    <string name="alarm_time" tools:ignore="MissingTranslation">00:00</string>
+    <string name="alarm_name" tools:ignore="MissingTranslation"></string>
+    <string name="alarm_time" tools:ignore="MissingTranslation"></string>
 
     <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">
