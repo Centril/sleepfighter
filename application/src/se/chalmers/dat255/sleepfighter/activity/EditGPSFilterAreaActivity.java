@@ -24,6 +24,7 @@ import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.location.LocationAdapter;
+import se.chalmers.dat255.sleepfighter.gps.GPSFilterLocationRetriever;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
@@ -40,12 +41,12 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -95,6 +96,8 @@ import com.google.common.collect.Lists;
  * @since Oct 6, 2013
  */
 public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMapClickListener, OnMarkerDragListener, OnMarkerClickListener {
+	private static final String TAG = EditGPSFilterAreaActivity.class.getSimpleName();
+
 	public static final String EXTRAS_AREA_ID = "gpsfilter_area_id";
 	public static final String EXTRAS_AREA_IS_NEW = "gpsfilter_are_isnew";
 
@@ -201,6 +204,10 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 			this.moveCameraToPolygon( true );
 			return true;
 
+		case R.id.action_gpsfilter_settings:
+			this.gotoSettings();
+			return true;
+
 		default:
 			return super.onOptionsItemSelected( item );
 		}
@@ -234,37 +241,38 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	}
 
 	/**
+	 * Moves the user to global options > location filter.
+	 */
+	private void gotoSettings() {
+		Intent i = new Intent( this, GlobalSettingsActivity.class );
+		this.startActivity( i );
+	}
+
+	/**
 	 * Moves the user to its current location.
 	 */
 	private void moveToCurrentLocation() {
-		// Getting LocationManager object from System Service LOCATION_SERVICE
-		LocationManager manager = (LocationManager) this.getSystemService( Context.LOCATION_SERVICE );
+		GPSFilterLocationRetriever retriever = new GPSFilterLocationRetriever( new Criteria() );
+		Location loc = retriever.getLocation( this );
 
-		// Creating a criteria object to retrieve provider
-		Criteria criteria = new Criteria();
-
-		// Getting the name of the best provider
-		String provider = manager.getBestProvider( criteria, true );
-
-		if ( provider == null ) {
+		if ( loc == null ) {
 			// User turned off GPS, send it to device location settings.
 			Intent i = new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
 			this.startActivity( i );
 		} else {
 			// First move to the last known location..
-			Location loc =  manager.getLastKnownLocation( provider );
 			this.moveCameraToLocation( loc, false );
 
 			// Check if location fix is out dated, if it is, request a new location, ONCE.
 			long elapsedTime = System.currentTimeMillis() - loc.getTime();
 			if ( elapsedTime > MAX_LOCATION_FIX_AGE ) {
-				// Therefore, we request a single 
-				manager.requestSingleUpdate( provider, new LocationAdapter() {
+				// Therefore, we request a single fix.
+				retriever.requestSingleUpdate( this, new LocationAdapter() {
 					@Override
 					public void onLocationChanged( Location loc ) {
 						moveCameraToLocation( loc, true );
 					}
-				}, null );
+				} );
 			}
 		}
 	}
@@ -464,8 +472,13 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		// Get the set from application.
 		this.set = SFApplication.get().getGPSSet();
 
+		// For some weird reason, NullPointerException will happen if we don't do this.
+		this.set.setMessageBus( SFApplication.get().getBus() );
+
 		// Find area in set.
 		this.area = this.set.getById( id );
+
+		Log.d( TAG, this.area.toString() );
 
 		if ( this.area == null ) {
 			Toast.makeText( this, "The area ID provided did not exist in set.", Toast.LENGTH_LONG ).show();
@@ -636,7 +649,9 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		this.markers.remove( this.markers.size() - 1 ).remove();
 		this.commitPolygon();
 
-		this.moveCameraToPolygon( true );
+		if ( this.markers.size() > 1 ) {
+			this.moveCameraToPolygon( true );
+		}
 
 		this.disableIfDissatisfied();
 	}

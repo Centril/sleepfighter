@@ -24,7 +24,6 @@ package se.chalmers.dat255.sleepfighter.utils.geometry;
  * Original author Mazdak, modified by Laszlo for SleepFighter
  */
 public class Dimension {
-
 	private int width, height;
 	
 	/**

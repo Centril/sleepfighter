@@ -30,7 +30,6 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfig;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
-import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaAlarm;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -80,9 +79,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	// Dao for GPSFilterArea.
 	private PersistenceExceptionDao<GPSFilterArea, Integer> gpsFilterAreaDao;
 
-	// Dao for GPSFilterAreaAlarm.
-	private PersistenceExceptionDao<GPSFilterAreaAlarm, Integer> gpsFilterAreaAlarmDao;
-
 	/**
 	 * Constructs the helper from a given context.
 	 *
@@ -112,7 +108,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.createTable( connectionSource, ChallengeParam.class );
 
 			TableUtils.createTable(connectionSource, GPSFilterArea.class);
-			TableUtils.createTable(connectionSource, GPSFilterAreaAlarm.class);
 		} catch ( SQLException e ) {
 			Log.e( OrmHelper.class.getName(), "Can't create database", e );
 			throw new PersistenceException( e );
@@ -142,7 +137,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
 
 			TableUtils.dropTable(connectionSource, GPSFilterArea.class, true );
-			TableUtils.dropTable(connectionSource, GPSFilterAreaAlarm.class, true );
 
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -282,19 +276,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
-	 * Returns DAO for GPSFilterAreaAlarm model.<br/>
-	 * It either creates or returns a cached object.
-	 *
-	 * @return the DAO for GPSFilterAreaAlarm model.
-	 */
-	public PersistenceExceptionDao<GPSFilterAreaAlarm, Integer> getGPSFilterAreaAlarmDao() {
-		if (this.gpsFilterAreaAlarmDao == null) {
-			this.gpsFilterAreaAlarmDao = this.getExceptionDao(GPSFilterAreaAlarm.class);
-		}
-		return this.gpsFilterAreaAlarmDao;
-	}
-
-	/**
 	 * Get a PersistenceExceptionDao for given class. This uses the {@link DaoManager} to cache the DAO for future gets.
 	 *
 	 * @param clazz the class object to get Dao for.
@@ -319,6 +300,4 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 		this.alarmDao = null;
 	}
-
-
 }

@@ -90,4 +90,19 @@ public class GPSFilterAreaSet extends ObservableList<GPSFilterArea> {
 
 		super.fireEvent( e );
 	}
+
+	/**
+	 * Returns whether or not there's an area that is both valid and enabled.
+	 *
+	 * @return true if there's one.
+	 */
+	public boolean hasEnabledAndValid() {
+		for ( GPSFilterArea area : this ) {
+			if ( area.isEnabled() && area.isValid() ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
