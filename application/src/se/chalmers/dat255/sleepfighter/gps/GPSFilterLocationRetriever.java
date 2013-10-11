@@ -18,12 +18,12 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.gps;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Looper;
 
 /**
  * GPSFilterLocation is responsible for retrieving the users last known location.
@@ -66,7 +66,7 @@ public class GPSFilterLocationRetriever {
 	 */
 	public String getBestProvider( Context context ) {
 		if ( this.provider == null ) {
-			this.getManager( context ).getBestProvider( this.criteria, true );
+			this.provider = this.getManager( context ).getBestProvider( this.criteria, true );
 		}
 
 		return this.provider;
@@ -89,9 +89,31 @@ public class GPSFilterLocationRetriever {
 	 *
 	 * @param context android context.
 	 * @param listener the listener to be notified of location.
-	 * @param looper the looper instance, or null to run on calling thread.
 	 */
-	public void requestSingleUpdate( Context context, Looper looper, LocationListener listener ) {
-		this.getManager( context ).requestSingleUpdate( this.getBestProvider( context ), listener, looper );
+	public void requestSingleUpdate( Context context, LocationListener listener ) {
+		this.getManager( context ).requestSingleUpdate( this.getBestProvider( context ), listener, null );
+	}
+
+	/**
+	 * Requests a single location fix/update given context, listener, and a looper 
+	 *
+	 * @param context android context.
+	 * @param intent the pending intent that gets updates.
+	 */
+	public void requestSingleUpdate( Context context, PendingIntent intent ) {
+		this.getManager( context ).requestSingleUpdate( this.getBestProvider( context ), intent );
+	}
+
+	/**
+	 * Requests for pending location fixes/updates given context, looper, pending intent, minimum interval and minimum distance.
+	 *
+	 * @param context android context.
+	 * @param intent the pending intent that gets updates.
+	 * @param minInterval the minimum interval between updates.
+	 * @param minDistance the minimum distance before an update is made.
+	 */
+	public void requestUpdates( Context context, PendingIntent intent, long minInterval, float minDistance ) {
+		LocationManager manager = this.getManager( context );
+		manager.requestLocationUpdates( minInterval, minDistance, this.criteria, intent );
 	}
 }

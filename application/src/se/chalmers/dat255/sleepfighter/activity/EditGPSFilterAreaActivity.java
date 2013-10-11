@@ -267,7 +267,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 			long elapsedTime = System.currentTimeMillis() - loc.getTime();
 			if ( elapsedTime > MAX_LOCATION_FIX_AGE ) {
 				// Therefore, we request a single fix.
-				retriever.requestSingleUpdate( this, null, new LocationAdapter() {
+				retriever.requestSingleUpdate( this, new LocationAdapter() {
 					@Override
 					public void onLocationChanged( Location loc ) {
 						moveCameraToLocation( loc, true );
@@ -646,7 +646,9 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		this.markers.remove( this.markers.size() - 1 ).remove();
 		this.commitPolygon();
 
-		this.moveCameraToPolygon( true );
+		if ( this.markers.size() > 1 ) {
+			this.moveCameraToPolygon( true );
+		}
 
 		this.disableIfDissatisfied();
 	}

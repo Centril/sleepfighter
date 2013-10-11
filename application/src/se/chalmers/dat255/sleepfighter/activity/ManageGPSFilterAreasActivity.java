@@ -18,15 +18,19 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
+import org.joda.time.DateTime;
+
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.GPSFilterAreaAdapter;
+import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea.Field;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
+import se.chalmers.dat255.sleepfighter.receiver.GPSFilterRefreshReceiver;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -96,6 +100,21 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void updateActionBarEnabled() {
+		if ( Build.VERSION.SDK_INT >= 11 ) {
+			// add the custom view to the action bar.
+			ActionBar actionBar = getActionBar();
+			View customView = actionBar.getCustomView();
+
+			final GlobalPreferencesManager manager = SFApplication.get().getPrefs();
+
+			// Setup enabled switch.
+			CompoundButton activatedSwitch = (CompoundButton) customView.findViewById( R.id.manage_gpsfilter_toggle );
+			activatedSwitch.setChecked( manager.isLocationFilterEnabled() );
+		}
+	}
+
 	@Override
 	protected void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
@@ -115,6 +134,8 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
+		this.updateActionBarEnabled();
 
 		this.setupSplash();
 	}
@@ -205,6 +226,8 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	 */
 	@Handler
 	public void handleChange( GPSFilterArea.ChangeEvent evt ) {
+		this.scheduleFix();
+
 		// We're not interested in POLYGON change.
 		if ( evt.getModifiedField() == Field.POLYGON ) {
 			return;
@@ -222,6 +245,21 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	@Handler
 	public void handleListChange( GPSFilterAreaSet.Event evt ) {
 		this.setAdapter.notifyDataSetChanged();
+
+		this.scheduleFix();
+	}
+
+	/**
+	 * Schedules a location fix if needed.
+	 */
+	private void scheduleFix() {
+		// Schedule fix if needed.
+		AlarmTimestamp at = SFApplication.get().getAlarms().getEarliestAlarm( new DateTime().getMillis() );
+		if ( at == AlarmTimestamp.INVALID ) {
+			return;
+		}
+
+		GPSFilterRefreshReceiver.scheduleFix( this, at.getMillis() );
 	}
 
 	/**
