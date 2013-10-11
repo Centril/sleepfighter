@@ -27,7 +27,6 @@ import se.chalmers.dat255.sleepfighter.challenge.snake.CircleEntity;
 import se.chalmers.dat255.sleepfighter.challenge.snake.RectEntity;
 import se.chalmers.dat255.sleepfighter.challenge.snake.Segment;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 
 /**
@@ -66,16 +65,16 @@ public class Model {
 	public Model() {
 		// set the colors
 		snakePaint = new Paint();
-		snakePaint.setColor(Color.rgb(255, 255, 0));
+		snakePaint.setColor(SnakeConstants.SNAKE_COLOR);
 
 		obstaclePaint = new Paint();
-		obstaclePaint.setColor(Color.rgb(200, 200, 200));
+		obstaclePaint.setColor(SnakeConstants.OBSTACLE_COLOR);
 
 		sphereFruitPaint = new Paint();
-		sphereFruitPaint.setColor(Color.rgb(255, 40, 0));
+		sphereFruitPaint.setColor(SnakeConstants.FRUIT_COLOR);
 
 		exitPaint = new Paint();
-		exitPaint.setColor(Color.rgb(30, 255, 40));
+		exitPaint.setColor(SnakeConstants.EXIT_COLOR);
 
 		modelTime = 0;
 

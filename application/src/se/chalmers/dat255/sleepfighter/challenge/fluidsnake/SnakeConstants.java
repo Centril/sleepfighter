@@ -1,5 +1,7 @@
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
+import android.graphics.Color;
+
 public class SnakeConstants {
 
 	// How fast the game should try to update and render
@@ -32,6 +34,12 @@ public class SnakeConstants {
 	
 	// Radius of the sphere fruits
 	public static final int FRUIT_WIDTH = 10;
+	
+	// Colors of the entities
+	public static final int SNAKE_COLOR = Color.rgb(255, 255, 0);
+	public static final int OBSTACLE_COLOR = Color.rgb(200, 200, 200);
+	public static final int FRUIT_COLOR = Color.rgb(255, 40, 0);
+	public static final int EXIT_COLOR = Color.rgb(30, 255, 40);
 	
 	// Don't create an instance of this class
 	private SnakeConstants() { }
