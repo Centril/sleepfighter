@@ -35,9 +35,9 @@ import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
+import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.speech.WeatherDataFetcher;
-import se.chalmers.dat255.sleepfighter.speech.WeatherTranslator;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
@@ -157,21 +157,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	
 	// read out the time and weather.
 	public void doSpeech(WeatherDataFetcher weather) {
-		// get time.
-		String time = TextToSpeechUtil.getCurrentTime();
-	
-		String weatherStr = weather.getSummary();
-		
-		//Locale current = getResources().getConfiguration().locale;
-		//String localizedWeatherStr = new WeatherTranslator(current).translate(weatherStr); 
-	
-		String format = this.getResources().getString(R.string.speech_format);
-		
-		String s = String.format(format, time, weatherStr);
-		
-		// replace weather conditions using the locale stored in tts 
-		
-		tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
+		String s = new SpeechLocalizer(tts, this).getSpeech(weather);
+ 		tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
 	}
 	
 	// called when tts has been fully initialized. 
@@ -181,7 +168,7 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		ttsInitialized = true;
 		
 		// Configure tts 
-		TextToSpeechUtil.setBestLanguage(tts, this);
+		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
 		TextToSpeechUtil.config(tts);
 		
 		// fetch the json weather data. 

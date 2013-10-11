@@ -252,7 +252,7 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 			public boolean onPreferenceClick(Preference preference) {
 				Debug.d("speech sample here");
 				// TODO: ask the user if he/she wants to install vox or something. 
-				tts.speak("Wake up motherfucker!", TextToSpeech.QUEUE_FLUSH, null);
+				tts.speak("It's time to wake up.", TextToSpeech.QUEUE_FLUSH, null);
 				return true;
 			}
 		});
@@ -450,7 +450,7 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 	// called when the text to speech engine is initialized. 
 	@Override
 	public void onInit(int status) {
-		TextToSpeechUtil.setBestLanguage(tts, this);
+		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
 		TextToSpeechUtil.config(tts);
 	}
 	

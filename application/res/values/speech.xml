@@ -19,7 +19,8 @@
 -->
 <resources>
    
-     <string name="speech_format">Hello, master, it is time to wake up. The time is %1$s and the weather is %2$s</string>
+     <string name="speech_wake_up_format">Hello, it is time to wake up.</string>
+     <string name="speech_time_format">The time is %s</string>
+     <string name="speech_weather_format"> and the weather is %s</string>
  
-    
 </resources>

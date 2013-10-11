@@ -26,9 +26,14 @@ import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 
 public class TextToSpeechUtil {
@@ -54,17 +59,11 @@ public class TextToSpeechUtil {
 	/*
 	 * Returns whether there exists an installed voice for the locale on the current device. 
 	 */
-	/*public boolean localeHasLanguage(Locale locale) {
-		
+	public static boolean languageHasVoice(Locale locale, TextToSpeech tts, Context context) {
+		return getBestLanguage(tts, context).getLanguage() == locale.getLanguage();
 	}
 	
-	private static Locale getBestLanguage() {
-		
-	}*/
-	
-	
-	public static void setBestLanguage(TextToSpeech tts, Context context) {
-		
+	public static Locale getBestLanguage(TextToSpeech tts, Context context) {
 		Locale[] locales = Locale.getAvailableLocales();
 		List<Locale> localeList = new ArrayList<Locale>();
 		for (Locale locale : locales) {
@@ -82,8 +81,7 @@ public class TextToSpeechUtil {
 		// exact match?
 		for(Locale locale : localeList) {
 			if(locale.equals(current)) {
-				tts.setLanguage(locale);
-				return;
+				return locale;
 			}
 		}
 		
@@ -91,23 +89,10 @@ public class TextToSpeechUtil {
 		// different countries, but same language?
 		for(Locale locale : localeList) {	
 			if(locale.getLanguage() == current.getLanguage()) {
-				tts.setLanguage(locale);
-				return;
+				return locale;
 			}
 		}
 		
-		// if we found no match, we'll have to default to English. 
-		tts.setLanguage(Locale.ENGLISH);
+		return Locale.ENGLISH;
 	}
-	
-	// time and in the temperate
-	
-	// get the time string to read out. 
-	public static String getCurrentTime() {
-		DateTime time =  new DateTime();
-		int min = time.getMinuteOfHour();
-		int hour = time.getHourOfDay();
-		return TimeFormatter.formatTime(hour, min);
-	}
-
 }

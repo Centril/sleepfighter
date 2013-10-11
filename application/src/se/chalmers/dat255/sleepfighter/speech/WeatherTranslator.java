@@ -3,7 +3,7 @@ package se.chalmers.dat255.sleepfighter.speech;
 import java.util.Locale;
 
 // used for localizing weather summaries. 
-public class WeatherTranslator {
+class WeatherTranslator {
 
 	private final Locale currentLocale;
 	
