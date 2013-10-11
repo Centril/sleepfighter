@@ -23,7 +23,6 @@
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_alarm_header_general">一般</string>
     <string name="pref_alarm_time">時刻</string>
     <string name="pref_alarm_name">名前</string>
     <string name="pref_alarm_default_name">名前なしアラーム</string>
@@ -60,9 +59,23 @@
     <string name="pref_alarm_repeat">繰り返し</string>
     <string name="pref_delete_alarm">削除</string>
     
-	<string name="perf_alarm_ringtone">着信音</string>
-	
+	<string name="pref_alarm_ringtone">着信音</string>
 	
 	  <string name="pref_alarm_vibration">バイブレーション</string>
+	  
+	  <string name="pref_alarm_snooze_enabled">スヌーズをオンにする</string>
+    <string name="pref_alarm_snooze_time">スヌーズの長さ</string>
+	
+     <string name="pref_volume">音量</string>
+     
+    <string name="challenge_category_title">チャレンジ</string>
+    <string name="challenge_category_title_plural">チャレンジ</string>
+   
+     
+    <string name="challenge_params_title">設定</string>
+    
+     <string name="pref_challenge">チャレンジ</string>
+  
+     <string name="title_alarm_challenge_settings">チャレンジ設定</string>  
 	
 </resources>

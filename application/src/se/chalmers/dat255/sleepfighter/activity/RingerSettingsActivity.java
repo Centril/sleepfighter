@@ -29,7 +29,6 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -47,7 +46,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * RingerSettingsActivity handles alarm instance settings related to ringing, i.e AudioSource.
@@ -342,8 +340,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 			}
 		} else {
 			if(ID.MUSIC_PICKER.ordinal() == requestCode) {
-				// TODO: localize message.
-				DialogUtils.showMessageDialog("Please install Google Play Music", this);
+				DialogUtils.showMessageDialog(getResources().getString(R.string.install_google_play_music_message), this);
 			}
 		
 		}
@@ -359,14 +356,10 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	 * Fetch the alarm from list or {@link #finish()} if not found.
 	 */
 	private void fetchAlarm() {
-		SFApplication app = SFApplication.get();
-
-		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
-		alarm = intentUtils.isSettingPresetAlarm() ? app.getFromPresetFactory().getPreset() : app.getAlarms().getById( intentUtils.getAlarmId() );
+		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 
 		if (this.alarm == null) {
-			// TODO: Better handling for final product
-			Toast.makeText(this, "Alarm is null (ID: " + alarm.getId() + ")", Toast.LENGTH_SHORT).show();
+			// TODO: Better handling
 			this.finish();
 		}
 

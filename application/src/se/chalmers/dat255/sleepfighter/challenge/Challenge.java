@@ -19,7 +19,7 @@
 package se.chalmers.dat255.sleepfighter.challenge;
 
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-
+import android.os.Bundle;
 
 /**
  * Interface implemented by challenges.
@@ -31,13 +31,48 @@ import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
  */
 public interface Challenge {
 	/**
-	 * Method called from the outside when the challenge is to be started.
+	 * <p>Called from the outside when the challenge is to be started from scratch.</p>
 	 * 
-	 * Here should at least {@code setContentView()},
-	 * or similar method in ChallengeActivity, be called.
+	 * <p>Here should at least {@code setContentView()},<br/>
+	 * or similar method in ChallengeActivity, be called.</p>
 	 * 
-	 * @param activity
-	 *            the ChallengeActivity that the Challenge modifies
+	 * @param activity the ChallengeActivity that the Challenge modifies.
+	 * @param params the resolved params (may have no params defined).
 	 */
-	void start(ChallengeActivity activity);
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params );
+
+	/**
+	 * <p>Called from the outside when the challenge is to be started again.</p>
+	 * 
+	 * <p>Here should at least {@code setContentView()},<br/>
+	 * or similar method in ChallengeActivity, be called.</p>
+	 * 
+	 * @param activity the ChallengeActivity that the Challenge modifies
+	 * @param params the resolved params (may have no params defined).
+	 * @param state the state that was saved by Challenge before.
+	 */
+	public void start(ChallengeActivity activity, ChallengeResolvedParams params, Bundle state);
+
+	/**
+	 * Called when challenge must save its state.
+	 *
+	 * @return a Bundle wherein the challenge's state should have been saved.
+	 */
+	public Bundle savedState();
+
+	/**
+	 * Called when the leaves the activity.
+	 */
+	public void onPause();
+
+	/**
+	 * Called when a users enters the activity, either the first time or when
+	 * returning.
+	 */
+	public void onResume();
+
+	/**
+	 * Called when the activity is destroyed.
+	 */
+	public void onDestroy();
 }

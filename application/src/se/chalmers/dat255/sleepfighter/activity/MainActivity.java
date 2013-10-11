@@ -33,12 +33,9 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -51,8 +48,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -60,11 +59,16 @@ public class MainActivity extends Activity {
 	private AlarmAdapter alarmAdapter;
 
 	/**
-	 * <p>Returns the SFApplication.</p>
-	 *
-	 * <p>Thank the genius programmers @ google for making<br/>
-	 * {@link #getApplication()} final removing the option of covariant return type.</p>
-	 *
+	 * <p>
+	 * Returns the SFApplication.
+	 * </p>
+	 * 
+	 * <p>
+	 * Thank the genius programmers @ google for making<br/>
+	 * {@link #getApplication()} final removing the option of covariant return
+	 * type.
+	 * </p>
+	 * 
 	 * @return the SFApplication.
 	 */
 	public SFApplication app() {
@@ -83,7 +87,9 @@ public class MainActivity extends Activity {
 		this.app().getBus().subscribe(this);
 
 		this.setupListView();
-
+		
+		this.setupChallengeToggle();
+		this.updateChallengePoints();
 		this.updateEarliestText();
 	}
 
@@ -91,6 +97,7 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
+		this.updateChallengePoints();
 		this.updateEarliestText();
 	}
 
@@ -102,6 +109,43 @@ public class MainActivity extends Activity {
 		// Register to get context menu events associated with listView
 		this.registerForContextMenu(listView);
 	}
+	
+	private void setupChallengeToggle() {
+		
+		ImageView toggleImage = (ImageView) findViewById(R.id.challenge_toggle);
+		ImageView pointImage = (ImageView) findViewById(R.id.challenge_points_icon);
+		
+		if (app().getPrefs().isChallengesActivated()) {
+			toggleImage.setImageResource(R.drawable.ic_action_challenge_toggled);
+			pointImage.setImageResource(R.drawable.ic_sun_enabled);
+		}
+		else {
+			toggleImage.setImageResource(R.drawable.ic_action_challenge_untoggled);
+			pointImage.setImageResource(R.drawable.ic_sun_disabled);
+			findViewById(R.id.mainChallengePoints).setEnabled(false);
+		}
+		
+		toggleImage.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (app().getPrefs().isChallengesActivated()) {
+					app().getPrefs().setChallengesActivated(false);
+					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_untoggled);
+					findViewById(R.id.mainChallengePoints).setEnabled(false);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_disabled);
+					Toast.makeText(MainActivity.this, "Challenges disabled", Toast.LENGTH_SHORT).show();
+				}
+				else {
+					app().getPrefs().setChallengesActivated(true);
+					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_toggled);
+					findViewById(R.id.mainChallengePoints).setEnabled(true);
+					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_enabled);
+					Toast.makeText(MainActivity.this, "Challenges enabled", Toast.LENGTH_SHORT).show();
+				}
+			}
+			
+		});
+	}
 
 	private long getNow() {
 		return new DateTime().getMillis();
@@ -109,105 +153,95 @@ public class MainActivity extends Activity {
 
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		@Override
-
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Alarm clickedAlarm = MainActivity.this.alarmAdapter.getItem(position);
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Alarm clickedAlarm = MainActivity.this.alarmAdapter
+					.getItem(position);
 			startAlarmEdit(clickedAlarm, false);
 
 		}
 	};
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.mainAlarmsList) {
-			String[] menuItems = getResources().getStringArray(R.array.main_list_context_menu);
+			String[] menuItems = getResources().getStringArray(
+					R.array.main_list_context_menu);
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
-			// temporarily add an extra context menu item for starting an alarm
-			// TODO remove
-			menu.add(0, menuItems.length, menuItems.length, "Start alarm");
 		}
 	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
+				.getMenuInfo();
 		Alarm selectedAlarm = (alarmAdapter.getItem(info.position));
 
 		switch (item.getOrder()) {
-			case 0:
-				startAlarmEdit(selectedAlarm, false);
-				return true;
-			case 1:
-				deleteAlarm(selectedAlarm);
-				return true;
-			case 2:
-				copyAlarm(selectedAlarm);
-				return true;
-			case 3:
-				// TODO remove case
-				startAlarm(selectedAlarm);
-				return true;
-			default:
-				return false;
+		case 0:
+			startAlarmEdit(selectedAlarm, false);
+			return true;
+		case 1:
+			deleteAlarm(selectedAlarm);
+			return true;
+		case 2:
+			copyAlarm(selectedAlarm);
+			return true;
+		default:
+			return false;
 
 		}
 	}
 
-	private void startAlarmEdit( Alarm alarm, boolean isNew ) {
-		Intent intent = new Intent(this, AlarmSettingsActivity.class );
-		new IntentUtils( intent ).setAlarmId( alarm );
+	private void startAlarmEdit(Alarm alarm, boolean isNew) {
+		Intent intent = new Intent(this, AlarmSettingsActivity.class);
+		new IntentUtils(intent).setAlarmId(alarm);
 
-		intent.putExtra( AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew );
+		intent.putExtra(AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew);
 
-		startActivity( intent );
+		startActivity(intent);
 	}
 
-	private void startAlarm(Alarm alarm) {
-		// Send intent directly to receiver
-		Intent intent = new Intent(this, AlarmReceiver.class);
-		new IntentUtils(intent).setAlarmId(alarm.getId());
-		sendBroadcast(intent);
-	}
-
-	private void startGlobalSettings( ) {
-		Intent intent = new Intent(this, GlobalSettingsActivity.class );
-		startActivity( intent );
+	private void startGlobalSettings() {
+		Intent intent = new Intent(this, GlobalSettingsActivity.class);
+		startActivity(intent);
 	}
 
 	private void deleteAlarm(final Alarm alarm) {
 		String message = getString(R.string.confirm_delete);
 		DialogUtils.showConfirmationDialog(message, this,
 				new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				MainActivity.this.manager.remove(alarm);
-			}
-		});
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						MainActivity.this.manager.remove(alarm);
+					}
+				});
 	}
 
-	private void copyAlarm( Alarm alarm ) {
-		this.newAlarm( new Alarm( alarm ), false );
+	private void copyAlarm(Alarm alarm) {
+		this.newAlarm(new Alarm(alarm), false);
 	}
 
 	private void addAlarm() {
-		this.newAlarm( app().getFromPresetFactory().createAlarm(), true );
+		this.newAlarm(app().getFromPresetFactory().createAlarm(), true);
 	}
 
-	private void newAlarm( Alarm alarm, boolean isAdded ) {
-		if ( alarm.isUnnamed() ) {
-			alarm.setUnnamedPlacement(  this.manager.findLowestUnnamedPlacement() );
+	private void newAlarm(Alarm alarm, boolean isAdded) {
+		if (alarm.isUnnamed()) {
+			alarm.setUnnamedPlacement(this.manager.findLowestUnnamedPlacement());
 		}
 
-		this.manager.add( alarm );
-		this.startAlarmEdit( alarm, isAdded );
+		this.manager.add(alarm);
 	}
 
 	/**
 	 * Handles a change to an alarm's name by refreshing the list.
 	 * 
-	 * @param event the event
+	 * @param event
+	 *            the event
 	 */
 	@Handler
 	public void handleAlarmNameChange(Alarm.MetaChangeEvent event) {
@@ -223,10 +257,11 @@ public class MainActivity extends Activity {
 	/**
 	 * Handles a change in time related data in any alarm.
 	 * 
-	 * @param evt the event.
+	 * @param evt
+	 *            the event.
 	 */
 	@Handler
-	public void handleScheduleChange( ScheduleChangeEvent evt ) {
+	public void handleScheduleChange(ScheduleChangeEvent evt) {
 		final MainActivity self = this;
 		this.runOnUiThread(new Runnable() {
 			@Override
@@ -240,14 +275,16 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Handles a change in the list of alarms (the list itself, deletion, insertion, etc, not edits in an alarm).
-	 *
-	 * @param evt the event.
+	 * Handles a change in the list of alarms (the list itself, deletion,
+	 * insertion, etc, not edits in an alarm).
+	 * 
+	 * @param evt
+	 *            the event.
 	 */
 	@Handler
-	public void handleListChange( AlarmList.Event evt ) {
+	public void handleListChange(AlarmList.Event evt) {
 		final MainActivity self = this;
-		this.runOnUiThread( new Runnable() {
+		this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				self.updateEarliestText();
@@ -262,15 +299,28 @@ public class MainActivity extends Activity {
 	private void updateEarliestText() {
 		long now = this.getNow();
 
-		TextView earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
-		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
+		TextView earliestTimeText = (TextView) findViewById(R.id.earliestTimeText);
+		AlarmTimestamp stamp = this.manager.getEarliestAlarm(now);
 
 		Resources res = this.getResources();
-		String text = this.app().getPrefs().displayPeriodOrTime()
-					? DateTextUtils.getTime( res, now, stamp, Locale.getDefault() )
-					: DateTextUtils.getTimeToText( res, now,  stamp);
+		String text = this.app().getPrefs().displayPeriodOrTime() ? DateTextUtils
+				.getTime(res, now, stamp, Locale.getDefault()) : DateTextUtils
+				.getTimeToText(res, now, stamp);
 
 		earliestTimeText.setText(text);
+	}
+
+	private void updateChallengePoints() {
+		TextView cpText = (TextView) findViewById(R.id.mainChallengePoints);
+		cpText.setText(this.app().getPrefs().getChallengePoints() + " ");
+	}
+	
+	/**
+	 * Sends the user to the activity for editing GPSFilterArea:s.
+	 */
+	private void startGPSFilterAreaEdit() {
+		Intent i = new Intent( this, ManageGPSFilterAreasActivity.class );
+		this.startActivity( i );
 	}
 
 	@Override
@@ -281,63 +331,23 @@ public class MainActivity extends Activity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected( MenuItem item ) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-		switch ( item.getItemId() ) {
+		switch (item.getItemId()) {
 		case R.id.action_add:
 			this.addAlarm();
 			return true;
+
 		case R.id.action_settings:
 			this.startGlobalSettings();
 			return true;
-		case R.id.action_start_challenge:
-			startDebugChallenge();
+
+		case R.id.action_gpsfilter_area_edit:
+			this.startGPSFilterAreaEdit();
 			return true;
+
 		default:
-			return super.onOptionsItemSelected( item );
-		}	
-	}
-	/*
-	public void startAlarm(View view) {
-		// Create intent & re-put extras.
-		Intent activityIntent;
-		activityIntent = new Intent( this, AlarmActivity.class );
-		activityIntent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
-	//	activityIntent.putExtras( null );
-		
-		
-		// Start activity!
-		this.startActivity( activityIntent );
-	}*/
-
-	/**
-	 * Debug method for launching dialog where any challenge defined in {@link ChallengeType} can be
-	 * started.
-	 */
-	private void startDebugChallenge() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		final ChallengeType[] types = ChallengeType.values();
-
-		// Making string array "copy" of types for use with standard dialog
-		String[] items = new String[types.length];
-		for(int i = 0; i < types.length; i++) {
-			items[i] = types[i].name();
+			return super.onOptionsItemSelected(item);
 		}
-
-		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// The clicked challenge type
-				ChallengeType type = types[which];
-				
-				// Start the selected challenge
-				Intent i = new Intent(MainActivity.this, ChallengeActivity.class);
-				i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
-				startActivity(i);
-			}
-		};
-		builder.setItems(items, listener);
-		AlertDialog dialog = builder.create();
-		dialog.show();
 	}
 }

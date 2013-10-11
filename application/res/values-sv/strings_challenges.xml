@@ -20,18 +20,23 @@
 <resources>
 
     <string-array name="challenge_names">
-        <item>Test</item>
         <item>Matte</item>
         <item>Memory</item>
         <item>Sortera nummer</item>
         <item>Flytande snake</item>
+        <item>Roto snake</item>
+        <item>Skaka</item>
+        
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>Testutmaning</item>
-        <item>Utmaning där man utför en algebraisk beräkning</item>
+        <item>Lös ett matteproblem</item>
         <item>Memoryutmaning där man ska matcha bokstäver</item>
         <item>Utmaning där nummer sorteras baserat på storlek</item>
         <item>Version av snake där ormen ej är bunden till ett rutnät</item>
+        <item>Version av snake där ormen styrs genom att enheten roteras</item>
+        <item>En utmaning där du behöver skaka din enhet</item>
     </string-array>
+
+    <string name="fluidSnakeTitle">Tryck för att styra ormen!</string>
 
 </resources>

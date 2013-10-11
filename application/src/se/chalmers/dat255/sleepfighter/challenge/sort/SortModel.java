@@ -24,6 +24,9 @@ import static se.chalmers.dat255.sleepfighter.utils.collect.PrimitiveArrays.shuf
 import java.util.Arrays;
 import java.util.Random;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * SortModel is the model for SortChallenge.<br/>
  * <strong>NOTE:</strong> the implementation is <strong>NOT</strong> thread safe.
@@ -32,7 +35,8 @@ import java.util.Random;
  * @version 1.0
  * @since Sep 30, 2013
  */
-public class SortModel {
+public class SortModel implements Parcelable {
+
 	/**
 	 * Enumeration of sorting orders<br/>
 	 * There are two, {@link #ASCENDING} and {@link #DESCENDING}.
@@ -83,6 +87,12 @@ public class SortModel {
 	 * Public interface.
 	 * --------------------------------
 	 */
+
+	/**
+	 * Default constructor.
+	 */
+	public SortModel() {
+	}
 
 	/**
 	 * Sets the size of the generated numbers list.<br/>
@@ -183,4 +193,38 @@ public class SortModel {
 	public Order getSortOrder() {
 		return this.sortOrder;
 	}
+
+
+	/* --------------------------------
+	 * Parcelable stuff.
+	 * --------------------------------
+	 */
+
+	public SortModel( Parcel in ) {
+		this.size = in.readInt();
+		this.stepIndex = in.readInt();
+		in.readIntArray( this.generatedList );
+		this.sortOrder = (Order) in.readSerializable();
+	}
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt( this.size );
+        out.writeInt( this.stepIndex );
+        out.writeIntArray( this.generatedList );
+        out.writeSerializable( this.sortOrder );
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<SortModel> CREATOR = new Parcelable.Creator<SortModel>() {
+        public SortModel createFromParcel(Parcel in) {
+            return new SortModel(in);
+        }
+
+        public SortModel[] newArray(int size) {
+            return new SortModel[size];
+        }
+    };
 }

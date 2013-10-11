@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    
+    <string name="speech_wake_up_format">Godmorgon, det är dags att vakna.</string>
+     <string name="speech_time_format">Klockan är %s</string>
+     <string name="speech_weather_format">och vädret är %s</string>
+ 
+     <!--  
+      "clear": "clear",
+  "possible-very-light-rain": "possible drizzle",
+  "very-light-rain": "drizzle",
+  "possible-light-rain": "possible light rain",
+  "light-rain": "light rain",
+  "medium-rain": "rain",
+  "heavy-rain": "heavy rain",
+  "possible-very-light-sleet": "possible light sleet",
+  "very-light-sleet": "light sleet",
+  "possible-light-sleet": "possible light sleet",
+  "light-sleet": "light sleet",
+  "medium-sleet": "sleet",
+  "heavy-sleet": "heavy sleet",
+  "possible-very-light-snow": "possible flurries",
+  "very-light-snow": "flurries",
+  "possible-light-snow": "possible light snow",
+  "light-snow": "light snow",
+  "medium-snow": "snow",
+  "heavy-snow": "heavy snow",
+  "light-wind": "breezy",
+  "medium-wind": "windy",
+  "heavy-wind": "dangerously windy",
+  "low-humidity": "dry",
+  "high-humidity": "humid",
+  "fog": "foggy",
+  "light-clouds": "partly cloudy",
+  "medium-clouds": "mostly cloudy",
+  "heavy-clouds": "overcast",
+     -->
+     
+</resources>

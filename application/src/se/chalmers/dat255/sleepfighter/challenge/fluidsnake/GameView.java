@@ -21,6 +21,10 @@ package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
 import java.util.List;
 
+import se.chalmers.dat255.sleepfighter.challenge.snake.CircleEntity;
+import se.chalmers.dat255.sleepfighter.challenge.snake.RectEntity;
+import se.chalmers.dat255.sleepfighter.challenge.snake.Segment;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -87,7 +91,6 @@ public class GameView extends SurfaceView implements Callback {
 
 	/**
 	 * Will try to render the model on the canvas provided
-	 * 
 	 */
 	public void render() {
 		if (isSurfaceCreated) {
@@ -107,8 +110,8 @@ public class GameView extends SurfaceView implements Callback {
 					List<CircleEntity> sphereFruits = model.getSphereFruits();
 					List<Segment> snakeSegments = model.getSnakeSegments();
 
-					float scaleX = c.getWidth() * 1f / model.boardWidth;
-					float scaleY = c.getHeight() * 1f / model.boardHeight;
+					float scaleX = c.getWidth() * 1f / SnakeConstants.BOARD_WIDTH;
+					float scaleY = c.getHeight() * 1f / SnakeConstants.BOARD_HEIGHT;
 
 					// draw obstacles
 					for (int i = 0; i < obstacles.size(); i++) {

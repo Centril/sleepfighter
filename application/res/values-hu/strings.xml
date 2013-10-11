@@ -15,12 +15,10 @@
   See the GNU General Public License for more details.
   
   You should have received a copy of the GNU General Public License
-  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string name="pre_chal_act">Elfogadod a kihívást?!</string>
-    <string name="math_chal_act">Oldjad meg a feladot!</string>
     <string name="app_name">SleepFighter</string>
     <string name="action_settings">Beállítások</string>
     <string name="add">Hozzá rakni</string>
@@ -28,37 +26,49 @@
     <string name="yes">Igen</string>
     <string name="no">Nem</string>
     <string name="confirm_delete">Biztos, hogy a riasztót ki akarod törölni?</string>
+    <string name="pre_chal_act">Elfogadod a kihívást?!</string>
+    <string name="snooze">Szundít</string>
+    <string name="alarm_emergency_stop">Vészleállitás</string>
+    <string name="alarm_emergency_dialog">Biztos, hogy le akarod állítani? %1$s elveszitesz (de ez a riasztó nem szól megint).</string>
+
+    <plurals name="alarm_emergency_cost">
+        <item quantity="other">%d points</item>
+    </plurals>
 
     <!-- Challenges -->
-
+    <string name="start_challenge">A zűrzavart leállítani!</string>
     <string name="btn_complete">Siker!</string>
     <string name="btn_fail">Kudarc!</string>
-    <string name="start_challenge">A hangzavart leállítani!</string>
-    <string name="btn_answer">Válaszolni</string>
-    <string name="challengeBtn">Kihívás</string>
+    <string name="challenge_points">Kihíváspontok</string>
+    <string name="challenge_toggle_content_desc">Kihívásokat átkapcsolni</string>
 
+    <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">
-        <item>Nincs aktív riasztó</item>
-        <item>Om &lt; 1 perc</item>
-        <item>Om %1$s</item>
-        <item>Om %1$s och %2$s</item>
-        <item>Om %1$s, %2$s och %3$s</item>
+        <item>Nincs riasztó jelen</item>
+        <item>&lt; 1 perc mulva</item>
+        <item>%1$s mulva</item>
+        <item>%1$s és %2$s mulva</item>
+        <item>%1$s, %2$s és %3$s mulva</item>
     </string-array>
     <string-array name="earliest_time_formats_parts">
         <item>%1$dn</item>
         <item>%2$dó</item>
         <item>%3$dp</item>
     </string-array>
+    <string-array name="exact_time_formats">
+        <item>Ma %1$s</item>
+        <item>Holnap %1$s</item>
+        <item>%2$s %1$s</item>
+ <!-- %2$s = [Monday, ...] -->
+    </string-array>
     <string-array name="main_list_context_menu">
         <item>Riasztót beállítani</item>
         <item>Riasztót kitörölni</item>
-
-        <!-- for debugging purposes. -->
-        <item>start alarm sound</item>
-        <item>stop alarm sound</item>
-        <item>start vibration</item>
-        <item>stop vibration</item>
-        <item>Kopiera alarm</item>
+        <item>Riasztót lemásolni</item>
     </string-array>
+
+    <!-- Exclude Area (GPS) -->
+    <string name="action_gpsfilter_area_edit">Területet kihagyni/GPS</string>
+    <string name="install_google_play_music_message">Legyen szives installálja be a Google Play Music-et</string>
 
 </resources>

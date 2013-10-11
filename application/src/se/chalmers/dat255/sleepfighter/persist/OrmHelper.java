@@ -29,6 +29,7 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfig;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -52,7 +53,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 15;
+	private static final int DATABASE_VERSION = 19;
 
 	// Dao for Alarm.
 	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;
@@ -74,6 +75,9 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 	// Dao for SnoozeConfig.
 	private PersistenceExceptionDao<SnoozeConfig, Integer> snoozeConfigDao = null;
+
+	// Dao for GPSFilterArea.
+	private PersistenceExceptionDao<GPSFilterArea, Integer> gpsFilterAreaDao;
 
 	/**
 	 * Constructs the helper from a given context.
@@ -97,11 +101,13 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 			TableUtils.createTable( connectionSource, AudioSource.class );
 			TableUtils.createTable( connectionSource, AudioConfig.class );
+			TableUtils.createTable(connectionSource, SnoozeConfig.class);
 
 			TableUtils.createTable( connectionSource, ChallengeConfigSet.class );
 			TableUtils.createTable( connectionSource, ChallengeConfig.class );
 			TableUtils.createTable( connectionSource, ChallengeParam.class );
-			TableUtils.createTable(connectionSource, SnoozeConfig.class);
+
+			TableUtils.createTable(connectionSource, GPSFilterArea.class);
 		} catch ( SQLException e ) {
 			Log.e( OrmHelper.class.getName(), "Can't create database", e );
 			throw new PersistenceException( e );
@@ -124,12 +130,13 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 			TableUtils.dropTable( connectionSource, AudioSource.class, true );
 			TableUtils.dropTable( connectionSource, AudioConfig.class, true );
+			TableUtils.dropTable( connectionSource, SnoozeConfig.class, true );
 
 			TableUtils.dropTable( connectionSource, ChallengeConfigSet.class, true );
 			TableUtils.dropTable( connectionSource, ChallengeConfig.class, true );
 			TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
 
-			TableUtils.dropTable( connectionSource, SnoozeConfig.class, true );
+			TableUtils.dropTable(connectionSource, GPSFilterArea.class, true );
 
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -253,6 +260,19 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			this.snoozeConfigDao = this.getExceptionDao(SnoozeConfig.class);
 		}
 		return this.snoozeConfigDao;
+	}
+
+	/**
+	 * Returns DAO for GPSFilterArea model.<br/>
+	 * It either creates or returns a cached object.
+	 *
+	 * @return the DAO for GPSFilterArea model.
+	 */
+	public PersistenceExceptionDao<GPSFilterArea, Integer> getGPSFilterAreaDao() {
+		if (this.gpsFilterAreaDao == null) {
+			this.gpsFilterAreaDao = this.getExceptionDao(GPSFilterArea.class);
+		}
+		return this.gpsFilterAreaDao;
 	}
 
 	/**

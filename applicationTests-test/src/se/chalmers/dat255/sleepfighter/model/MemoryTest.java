@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model;
 
+import se.chalmers.dat255.sleepfighter.challenge.memory.Memory;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -48,7 +49,7 @@ public class MemoryTest extends TestCase {
 		// Requirement 1: there should not be any onoccupied spaces.
 		for(int i = 0; i < rows; ++i) {
 			for(int j = 0; j < cols; ++j) {
-				if(mem.getCard(i, j) == Memory.UNOCCUPIED) {
+				if(mem.isUnoccupied(i, j)) {
 					return false;
 				}
 			}

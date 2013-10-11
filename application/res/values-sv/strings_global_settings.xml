@@ -29,10 +29,10 @@
     <string name="display_when_next_alarm_rings">Visa tid för nästa alarm</string>
     <string name="display_when_next_alarm_rings_summary">Tiden för nästa alarm visas istället för hur lång tid det är kvar</string>
 
+    <string name="pref_global_preset_alarm">Förvalt Alarm</string>
+
     <string name="pref_about">Om</string>
     <string name="pref_version">Version</string>
+    <string name="developers_title">Utvecklare</string>
 
-    
-    <string name="pref_global_preset_alarm">Förvalt Alarm</string>
-    
 </resources>

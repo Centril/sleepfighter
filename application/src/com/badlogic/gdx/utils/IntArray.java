@@ -1,3 +1,11 @@
+/**
+ * SleepFighter Note:
+ * 
+ * This class is from libGDX.
+ * 
+ * Reference to AUTHORS file below is to libGDX's Authors file that can be found at
+ * https://github.com/libgdx/libgdx.
+ */
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  * 

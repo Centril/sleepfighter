@@ -21,8 +21,8 @@ package se.chalmers.dat255.sleepfighter.receiver;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
-import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
+import se.chalmers.dat255.sleepfighter.gps.GPSFilterRequisitor;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
@@ -78,7 +78,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @return true if requirements are met.
 	 */
 	private boolean isRequirementsMet( int alarmId ) {
-		// TODO: Do something fancy with alarmId, i.e check GPS to see if we should actually start Alarm.
+		SFApplication app = SFApplication.get();
+
+		// Perform location filter.
+		GPSFilterRequisitor locationReq = new GPSFilterRequisitor( app.getGPSSet(), app.getPrefs() );
+		if ( !locationReq.isSatisfied( app ) )  {
+			return false;
+		}
+		app.releaseGPSSet();
+
 		return true;
 	}
 
@@ -90,7 +98,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @param extras extras to pass on.
 	 */
 	private void startAlarm( Alarm alarm, Bundle extras ) {
-		startAudio(alarm);
 
 		// start vibration.
 		if (alarm.getAudioConfig().getVibrationEnabled()) {
@@ -113,14 +120,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		showNotification(alarm, activityIntent);
 	}
 
-	private void startAudio(Alarm alarm) {
-		SFApplication app = SFApplication.get();
-		AudioDriver driver = app.getAudioDriverFactory().produce(app,
-				alarm.getAudioSource());
-		app.setAudioDriver(driver);
-
-		driver.play(alarm.getAudioConfig());
-	}
+	
 
 	/**
 	 * Launches notification showing that the alarm has gone off.

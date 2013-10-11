@@ -28,8 +28,9 @@ import se.chalmers.dat255.sleepfighter.factory.FromPresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.factory.PresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
-import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesReader;
+import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
@@ -43,7 +44,7 @@ public class SFApplication extends Application {
 
 	private static SFApplication app;
 
-	private GlobalPreferencesReader prefs;
+	private GlobalPreferencesManager prefs;
 
 	private AlarmList alarmList;
 	private MessageBus<Message> bus;
@@ -57,12 +58,14 @@ public class SFApplication extends Application {
 
 	private FromPresetAlarmFactory fromPresetFactory;
 
+	private GPSFilterAreaSet gpsAreaManaged;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		app = this;
 
-		this.prefs = new GlobalPreferencesReader( this );
+		this.prefs = new GlobalPreferencesManager( this );
 
 		this.persistenceManager = new PersistenceManager( this );
 		this.getBus().subscribe( this.persistenceManager );
@@ -85,7 +88,7 @@ public class SFApplication extends Application {
 	 *
 	 * @return the GlobalPreferencesReader.
 	 */
-	public synchronized GlobalPreferencesReader getPrefs() {
+	public synchronized GlobalPreferencesManager getPrefs() {
 		return this.prefs;
 	}
 
@@ -219,5 +222,27 @@ public class SFApplication extends Application {
 		}
 
 		return this.audioDriverFactory;
+	}
+	
+	/**
+	 * Fetches the set of areas and manages it in application.<br/>
+	 * Call {@link #releaseGPSSet()} to release reference to it in application.
+	 */
+	public synchronized GPSFilterAreaSet getGPSSet() {
+		if ( this.gpsAreaManaged == null ) {
+			this.gpsAreaManaged = this.getPersister().fetchGPSFilterAreas();
+			this.gpsAreaManaged.setMessageBus( this.getBus() );
+		}
+
+		return this.gpsAreaManaged;
+	}
+
+	/**
+	 * Clears the reference the application holds to any {@link GPSFilterAreaSet}
+	 * 
+	 * @return the set, or null if no set is managed.
+	 */
+	public synchronized void releaseGPSSet() {
+		this.gpsAreaManaged = null;
 	}
 }

@@ -41,6 +41,7 @@ public class RandomMath {
 		while ( (r = nextRandomRanged( rng, min, max )) % 10 == 0 );
 		return r;
 	}
+	
 
 	/**
 	 * Calculates random number in range [min, max]
@@ -53,6 +54,24 @@ public class RandomMath {
 	public static int nextRandomRanged( Random rng, int min, int max ) {
 		// Maybe use nextGaussian here instead?
 		return min + (int) (rng.nextDouble() * ((max - min) + 1));
+	}
+	
+	/**
+	 * Calculates random number in range [min, max], but the value exclude is never 
+	 * returned by this function 
+	 *
+	 * @param rng the random number generator.
+	 * @param min the minimum number, inclusive.
+	 * @param max the maximum number, inclusive.
+	 * @param exclude this value will never be returned by this function
+	 * @return the randomly generated number.
+	 */
+	public static int nextRandomRanged( Random rng, int min, int max, int exclude ) {
+		int n;
+		do {
+			n = min + (int) (rng.nextDouble() * ((max - min) + 1));
+		}while(n == exclude);
+		return n;
 	}
 
 	/**
@@ -107,4 +126,10 @@ public class RandomMath {
 		while ( (r = nextGaussianRanged( rng, min, max, maxIterations, deviations )) % 10 == 0 );
 		return r;
 	}
+	
+	// get a random enum value. 
+    public static <T extends Enum<?>> T randomEnum(Random rng, Class<T> clazz){
+        int x = rng.nextInt(clazz.getEnumConstants().length);
+        return clazz.getEnumConstants()[x];
+    }
 }

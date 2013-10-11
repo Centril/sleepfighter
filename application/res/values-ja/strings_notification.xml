@@ -22,4 +22,7 @@
     <string name="notification_pending_message">%sで鳴ります</string>
     <string name="notification_ringing_title">「%s」が鳴っています</string>
     <string name="notification_ringing_message">オフにするために、ここにタップしてください</string>
+<string name="notification_snooze_title">「%s」がスヌーズしています</string>
+    <string name="notification_snooze_message">%sでまた鳴ります</string>
+    
 </resources>

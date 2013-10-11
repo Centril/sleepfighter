@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.activity;
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.MultiSelectListPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.VolumePreference;
@@ -32,9 +33,12 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.AudioChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
+import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
+import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
@@ -48,10 +52,12 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.speech.tts.TextToSpeech;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -65,7 +71,7 @@ import android.widget.TextView.OnEditorActionListener;
  * @author Hassel
  *
  */
-public class AlarmSettingsActivity extends PreferenceActivity {
+public class AlarmSettingsActivity extends PreferenceActivity implements TextToSpeech.OnInitListener {
 
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
@@ -76,17 +82,22 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private static final String DELETE = "pref_delete_alarm";
 	private static final String VIBRATION = "pref_alarm_vibration";	
 	private static final String RINGER_SUBSCREEN = "perf_alarm_ringtone";
-	private static final String CHALLENGE_ENABLED = "pref_challenge_enable";
-	private static final String CHALLENGE_SELECT = "pref_challenge_select";
+	private static final String CHALLENGE = "pref_challenge";
 	private static final String VOLUME = "pref_volume";
 	private static final String ENABLE_SNOOZE = "pref_alarm_snooze_enabled";
 	private static final String SNOOZE_TIME = "pref_alarm_snooze_time";
+	
+	private static final String SPEECH = "pref_alarm_speech";
+	private static final String SPEECH_SAMPLE = "pref_speech_sample";
 	
 	private Preference ringerPreference;
 
 	private Alarm alarm;
 	private AlarmList alarmList;
 
+	private TextToSpeech tts;
+	
+	
 	private SFApplication app() {
 		return SFApplication.get();
 	}
@@ -145,6 +156,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			}
 		}
 	}
+	
+	@Handler
+	public void handleRingerChange(AudioChangeEvent e) {
+		if (e.getModifiedField() == Field.AUDIO_SOURCE) {
+			updateRingerSummary();
+		}
+	}
 
 	private void removeDeleteButton() {
 		Preference pref = (Preference) findPreference(DELETE);
@@ -167,16 +185,24 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 	}
 	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void removeAlarmToggle() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().getCustomView().findViewById(R.id.alarm_actionbar_toggle).setVisibility(View.INVISIBLE);
+		}
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+				
+		TextToSpeechUtil.checkTextToSpeech(this);
 		
 		alarmList = app().getAlarms();
 		app().getBus().subscribe(this);
 
-		IntentUtils intentUtils = new IntentUtils( this.getIntent() );
-		alarm = intentUtils.isSettingPresetAlarm() ? app().getFromPresetFactory().getPreset() : alarmList.getById( intentUtils.getAlarmId() );
-			
+		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
+
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
 		setupActionBar();
@@ -187,6 +213,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			removeDeleteButton();
 			removeEditName();
 			removeEditTitle();
+			removeAlarmToggle();
 		}
 	}
 
@@ -215,10 +242,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(REPEAT));
 		bindPreferenceSummaryToValue(findPreference(VIBRATION));
 		bindPreferenceSummaryToValue(findPreference(VOLUME));
-		bindPreferenceSummaryToValue(findPreference(CHALLENGE_ENABLED));
-		bindPreferenceSummaryToValue(findPreference(CHALLENGE_SELECT));
+		bindPreferenceSummaryToValue(findPreference(CHALLENGE));
 		bindPreferenceSummaryToValue(findPreference(ENABLE_SNOOZE));
 		bindPreferenceSummaryToValue(findPreference(SNOOZE_TIME));
+		bindPreferenceSummaryToValue(findPreference(SPEECH));
 
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
@@ -227,17 +254,40 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				return true;
 			}
 		});
-		findPreference(CHALLENGE_SELECT).setOnPreferenceClickListener(new OnPreferenceClickListener() {
+
+		findPreference(SPEECH_SAMPLE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
-				new IntentUtils(i).setAlarmId(alarm);
-				startActivity(i);
+				Debug.d("speech sample here");
+				// TODO: ask the user if he/she wants to install vox or something. 
+				
+				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getWakeUp();
+				tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
+				
 				return true;
 			}
 		});
+		
+		this.bindChallengeAdvancedButton();
 
 		this.setupRingerPreferences();
+	}
+	
+
+	private void bindChallengeAdvancedButton() {
+		((EnablePlusSettingsPreference) findPreference(CHALLENGE)).setOnButtonClickListener(new OnClickListener() {
+			@Override
+			public void onClick( View v ) {
+				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
+				IntentUtils intentUtils = new IntentUtils(i);
+				if (AlarmSettingsActivity.this.alarm.isPresetAlarm()) {
+					intentUtils.setSettingPresetAlarm(true);
+				} else {
+					intentUtils.setAlarmId(alarm);
+				}
+				startActivity(i);
+			}
+		});
 	}
 
 	private void deleteAlarm() {
@@ -334,10 +384,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				alarm.getAudioConfig().setVolume(Integer.parseInt(stringValue));
 				preference.setSummary(stringValue + "%");
 			}
-			else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
+			else if (CHALLENGE.equals(preference.getKey())) {
 				boolean enabled = (Boolean) value;
-				AlarmSettingsActivity.this.alarm.getChallengeSet().setEnabled(
-						enabled);
+				AlarmSettingsActivity.this.alarm.getChallengeSet().setEnabled( enabled );
 			}
 			else if (ENABLE_SNOOZE.equals(preference.getKey())) {
 				alarm.getSnoozeConfig().setSnoozeEnabled("true".equals(stringValue) ? true : false);
@@ -349,6 +398,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				alarm.getSnoozeConfig().setSnoozeTime(Integer.parseInt(stringValue));
 				preference.setSummary(stringValue);
 			}
+			else if (SPEECH.equals(preference.getKey())) {
+				alarm.setSpeech(("true".equals(stringValue)) ? true : false);
+			}
+			
 			return true;
 		}
 	};
@@ -379,7 +432,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			((VolumePreference) preference).setVolume(vol);
 			preference.setSummary(vol + "%");
 		}
-		else if (CHALLENGE_ENABLED.equals(preference.getKey())) {
+		else if (CHALLENGE.equals(preference.getKey())) {
 			boolean enabled = this.alarm.getChallengeSet().isEnabled();
 			((CheckBoxPreference) preference).setChecked(enabled);
 		}
@@ -392,6 +445,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			EditTextPreference pref = ((EditTextPreference) preference);
 			pref.setText(time + "");
 			pref.setSummary(time + "");
+		}else if (SPEECH.equals(preference.getKey())) {
+			((CheckBoxPreference) preference).setChecked(alarm.isSpeech());
 		}
 
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
@@ -400,5 +455,34 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private void initiateTimePicker(TimepickerPreference tp) {
 		tp.setHour(alarm.getHour());
 		tp.setMinute(alarm.getMinute());
+	}
+	
+
+	// called when the text to speech engine is initialized. 
+	@Override
+	public void onInit(int status) {
+		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
+		TextToSpeechUtil.config(tts);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == TextToSpeechUtil.CHECK_TTS_DATA_REQUEST_CODE) {   
+			tts = new TextToSpeech(this, this);
+		}else {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+
+
+	    //Close the Text to Speech Library
+	    if(tts != null) {
+	        tts.stop();
+	        tts.shutdown();
+	    }
+	    super.onDestroy();
 	}
 }

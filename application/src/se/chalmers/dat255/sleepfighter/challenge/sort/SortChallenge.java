@@ -25,9 +25,13 @@ import java.util.Random;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortModel.Order;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -38,6 +42,21 @@ import android.widget.TextView;
 import com.google.common.collect.Lists;
 
 public class SortChallenge implements Challenge {
+	/**
+	 * PrototypeDefinition for SortChallenge.
+	 *
+	 * @version 1.0
+	 * @since Oct 5, 2013
+	 */
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.SORT );
+		add( "color_confusion", PrimitiveValueType.BOOLEAN, true );
+	}}
+
+	private static final String STATE_HUES = "hues";
+	private static final String STATE_SHUFFLED_NUMBERS = "numbers";
+	private static final String STATE_MODEL = "model";
+
 	private static final int HSV_MAX_HUE = 360;
 	private static final int HSV_MIN_HUE = 0;
 	private static final float HSV_SATURATION = 0.20f;
@@ -59,33 +78,74 @@ public class SortChallenge implements Challenge {
 
 	private int[] currentHues;
 
+	private int[] shuffledNumbers;
+
 	private Random rng;
 
 	@Override
-	public void start( ChallengeActivity activity ) {
-		this.activity = activity;
-		this.activity.setContentView( R.layout.challenge_sort );
-
-		this.bindButtons();
+	public void start( ChallengeActivity activity, ChallengeResolvedParams params ) {
+		this.startCommon( activity );
 
 		this.setupModel();
 
-		this.description = (TextView) this.activity.findViewById( R.id.challenge_sort_description );
+		this.updateNumbers();
+	}
+
+	@Override
+	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
+		this.startCommon( activity );
+
+		// Read stuff from state.
+		this.model = state.getParcelable( STATE_MODEL );
+		this.shuffledNumbers = state.getIntArray( STATE_SHUFFLED_NUMBERS );
+		this.currentHues = state.getIntArray( STATE_HUES );
 
 		this.setNumbers();
+	}
+
+	/**
+	 * Performs common startup stuff.
+	 *
+	 * @param activity the ChallengeActivity.
+	 */
+	private void startCommon( ChallengeActivity activity ) {
+		this.activity = activity;
+		this.activity.setContentView( R.layout.challenge_sort );
+
+		this.description = (TextView) this.activity.findViewById( R.id.challenge_sort_description );
+
+		this.bindButtons();
+
+		this.rng = new Random();
+	}
+
+	@Override
+	public Bundle savedState() {
+		Bundle outState = new Bundle();
+
+		outState.putParcelable( STATE_MODEL, this.model );
+		outState.putIntArray( STATE_SHUFFLED_NUMBERS, this.shuffledNumbers );
+		outState.putIntArray( STATE_HUES, this.currentHues );
+
+		return outState;
 	}
 
 	/**
 	 * Sets up the model.
 	 */
 	private void setupModel() {
-		this.rng = new Random();
-
-		ClusteredGaussianListGenerator gen = new ClusteredGaussianListGenerator();
-
 		this.model = new SortModel();
 		this.model.setSize( NUMBERS_COUNT );
-		this.model.setGenerator( gen );
+		this.model.setGenerator( this.makeGenerator() );
+	}
+
+	/**
+	 * Makes and returns a NumberListGenerator to use.
+	 *
+	 * @return the made generator.
+	 */
+	private NumberListGenerator makeGenerator() {
+		return new ClusteredGaussianListGenerator();
 	}
 
 	/**
@@ -117,20 +177,25 @@ public class SortChallenge implements Challenge {
 	/**
 	 * Generates a list of numbers from model and sets a shuffled version of them.
 	 */
-	private void setNumbers() {
+	private void updateNumbers() {
 		this.model.generateList( rng );
+		this.shuffledNumbers = this.model.getShuffledList();
+		this.currentHues = this.selectHues( this.shuffledNumbers.length );
 
+		this.setNumbers();
+	}
+
+	/**
+	 * Sets the numbers stored in {@link #shuffledNumbers} and updates the description from model.
+	 */
+	private void setNumbers() {
 		this.updateDescription();
 
-		int[] shuffledNumbers = this.model.getShuffledList();
-
-		this.currentHues = this.selectHues( shuffledNumbers.length );
-
-		for ( int i = 0; i < shuffledNumbers.length; ++i ) {
+		for ( int i = 0; i < this.shuffledNumbers.length; ++i ) {
 			Button button = this.buttons.get( i );
 			button.setEnabled( true );
 
-			button.setText( Integer.toString( shuffledNumbers[i]) );
+			button.setText( Integer.toString( this.shuffledNumbers[i]) );
 			button.setBackgroundColor( this.computeHSVWithHue( this.currentHues[i] ) );
 		}
 	}
@@ -171,7 +236,7 @@ public class SortChallenge implements Challenge {
 				this.challengeCompleted();
 			}
 		} else {
-			this.setNumbers();
+			this.updateNumbers();
 		}
 	}
 
@@ -200,8 +265,8 @@ public class SortChallenge implements Challenge {
 	 * Called when a number button is clicked.
 	 */
 	private void bindButtons() {
-		View button_container = this.activity.findViewById( R.id.challenge_sort_button_container );
-		ArrayList<View> touchables = button_container.getTouchables();
+		View buttonContainer = this.activity.findViewById( R.id.challenge_sort_button_container );
+		ArrayList<View> touchables = buttonContainer.getTouchables();
 
 		this.buttons = Lists.newArrayListWithCapacity( touchables.size() );
 
@@ -213,4 +278,17 @@ public class SortChallenge implements Challenge {
 			button.setOnTouchListener( this.onButtonPressListener );
 		}
 	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
+	}
+
 }

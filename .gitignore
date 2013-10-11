@@ -61,3 +61,6 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+# Other stuff #
+*keystore_txt

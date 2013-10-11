@@ -25,6 +25,7 @@ import org.joda.time.MutableDateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
 import se.chalmers.dat255.sleepfighter.activity.MainActivity;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -32,6 +33,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
+import se.chalmers.dat255.sleepfighter.receiver.GPSFilterRefreshReceiver;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.AlarmManager;
@@ -188,8 +190,10 @@ public class AlarmPlannerService extends IntentService {
 	 *            the alarm's ID
 	 */
 	private void create( int alarmId ) {
+		SFApplication app = SFApplication.get();
+
 		// Fetch alarm.
-		Alarm alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
+		Alarm alarm = app.getPersister().fetchAlarmById( alarmId );
 		if ( alarm == null ) {
 			throw new IllegalArgumentException( "No alarm was found with given id" );
 		}
@@ -199,10 +203,12 @@ public class AlarmPlannerService extends IntentService {
 		if ( scheduleTime == null ) {
 			return;
 		}
+
+		GPSFilterRefreshReceiver.scheduleFix( app, scheduleTime );
 		
 		schedule(scheduleTime, alarm);
 
-		showNotification(alarm, alarm.getTimeString());
+		showPendingNotification(alarm);
 	}
 
 	/**
@@ -231,13 +237,14 @@ public class AlarmPlannerService extends IntentService {
 	 * @param alarm
 	 *            the alarm
 	 */
-	private void showNotification(Alarm alarm, String time) {
+	private void showPendingNotification(Alarm alarm) {
 		Intent mainActIntent = new Intent(getApplicationContext(),
 				MainActivity.class);
 		PendingIntent mainActPI = PendingIntent.getActivity(this, 0,
 				mainActIntent, 0);
 
 		String name = MetaTextUtils.printAlarmName(this, alarm);
+		String time = alarm.getTimeString();
 
 		// Localized strings which we inserts current time and name into
 		String titleFormat = getString(R.string.notification_pending_title);
@@ -250,6 +257,36 @@ public class AlarmPlannerService extends IntentService {
 	}
 
 	/**
+	 * Shows a notification for an alarm when snoozing has been done.
+	 * 
+	 * The user can click on it to get to {@link AlarmActivity}, where it can be
+	 * disabled.
+	 * 
+	 * @param alarm
+	 *            the alarm
+	 * @param time
+	 *            the new time the alarm will go off, as a string
+	 */
+	private void showSnoozingNotification(Alarm alarm, String time) {
+		Intent alarmIntent = new Intent(getApplicationContext(),
+				AlarmActivity.class);
+		new IntentUtils(alarmIntent).setAlarmId(alarm);
+		PendingIntent alarmPI = PendingIntent.getActivity(this, 0,
+				alarmIntent, 0);
+
+		String name = MetaTextUtils.printAlarmName(this, alarm);
+
+		// Localized strings which we inserts current time and name into
+		String titleFormat = getString(R.string.notification_snooze_title);
+		String messageFormat = getString(R.string.notification_snooze_message);
+
+		String title = String.format(titleFormat, name);
+		String message = String.format(messageFormat, time);
+
+		NotificationHelper.showNotification(this, title, message, alarmPI);
+	}
+
+	/**
 	 * Cancels any scheduled alarm.
 	 */
 	private void cancel() {
@@ -258,6 +295,9 @@ public class AlarmPlannerService extends IntentService {
 
 		// Remove app's sticky notification
 		NotificationHelper.removeNotification(this);
+
+		// Unschedule any location fixes.
+		GPSFilterRefreshReceiver.unscheduleFix( SFApplication.get() );
 	}
 
 	/**
@@ -282,7 +322,7 @@ public class AlarmPlannerService extends IntentService {
 
 		long scheduleTime = dateTime.getMillis();
 		schedule(scheduleTime, alarm);
-		showNotification(alarm, dateTime.toString("HH:mm"));
+		showSnoozingNotification(alarm, dateTime.toString("HH:mm"));
 	}
 
 	private AlarmManager getAlarmManager() {

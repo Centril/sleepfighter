@@ -24,9 +24,11 @@ import java.util.List;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.model.Memory;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
-import android.content.pm.ActivityInfo;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -41,36 +43,43 @@ import android.widget.Toast;
  */
 
 public class MemoryChallenge implements Challenge, View.OnClickListener {
+	/**
+	 * PrototypeDefinition for MemoryChallenge.
+	 *
+	 * @version 1.0
+	 * @since Oct 5, 2013
+	 */
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.MEMORY );
+	}}
 
 	private ChallengeActivity act;
-	
+
 	private Memory mem;
-	
+
 	private MemoryCardView flippedCard = null;
-	
+
 	private final static int COLS = 2;
 
 	private final static int ROWS = 4;
-	
-	private int remainingPairs;
 
 	private Handler handler = new Handler();
+
+	MemoryCardImageDatabase database;
 	
 	// true when you are waiting for the cards the user has selected to flip over and become hidden again
 	// when the user has selected two cards that are different, the user is given
 	// some seconds to view the cards. 
 	private boolean waitingForCardsToFlipOver = false;
 	private boolean waitingForLastCardsToBeRemoved = false;
-	
-	
+
 	private void fadeOutRemove(View v) {
 		// fade out and remove
         v.startAnimation(AnimationUtils.loadAnimation(act, android.R.anim.fade_out));
         v.setVisibility(View.INVISIBLE);
         
 	}
-	
-	
+
 	public void onClick(View v) {
        // Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
       
@@ -96,13 +105,14 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
         	if(mem.getCard(card.getPosition())  == mem.getCard(flippedCard.getPosition())) {
         		// remove cards
         		
+        		// remove form model
+        		mem.matchPair(card.getPosition(), flippedCard.getPosition());
         		
-        		
+        		// remove from the gui
         		fadeOutRemove(card);
         		fadeOutRemove(flippedCard);
         		flippedCard = null;
-        		--this.remainingPairs;
-        		if(this.remainingPairs == 0) {
+        		if(this.mem.isGameOver()) {
         			
         			// we will wait some seconds before finishing the game,
         			// otherwise we won't get to see the cool fade out animation 
@@ -130,7 +140,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
                 		flippedCard = null; 
                 		waitingForCardsToFlipOver = false;
                     }
-                }, 1000);
+                }, 400);
      
         	}
         		 
@@ -141,7 +151,12 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
     }
 
 	// assign the buttons their listeners. 
-	private void setupCards() {
+	private void commonStart(int flippedCardPosition) {
+		
+		
+		act.setContentView(R.layout.activity_alarm_challenge_memory);
+		
+		
 		List<MemoryCardView> cards = new ArrayList<MemoryCardView>();
 		//R.id.challenge_memory_button_1;
 		
@@ -154,38 +169,81 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_7));
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_8));
 		
-		MemoryCardImageDatabase database = new MemoryCardImageDatabase(mem);
 	
 		int pos = 0;
 		for ( MemoryCardView card : cards ) {
-			card.setOnClickListener( this );
-			
-			card.setPosition(pos);
-	        
-			String image = database.getImage(pos);
-	        card.setImage(image);
-	        
+			if(mem.isUnoccupied(pos)) {
+				// already removed cards should not be shown. 
+				 card.setVisibility(View.INVISIBLE);
+			} else {
+				card.setOnClickListener( this );
+
+				card.setPosition(pos);
+
+				String image = database.getImage( mem.getCard(pos));
+				card.setImage(image);
+			}
 	        ++pos;
+		}
+		
+		if(flippedCardPosition != -1) {
+			this.flippedCard = cards.get(flippedCardPosition);
+			this.flippedCard.show();
 		}
 	}
 	
-	@Override
-	public void start(final ChallengeActivity act) {
-		this.act = act;
+	private final String MEMORY = "memory";
+	private final String MEMORY_CARD_IMAGE_DATABASE = "memory_card_image_database";
 	
-		act.setContentView(R.layout.activity_alarm_challenge_memory);
-		
-		// Lock to portrait orientation for now
-		// TODO remove if landscape works
-		act.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		
+	private final String FLIPPED_CARD_POSITION = "flipped_card_position";
+
+	@Override
+	public void start(final ChallengeActivity act, ChallengeResolvedParams params) {
+		this.act = act;
+
 		mem = new Memory(ROWS, COLS);
 		Debug.d(mem.toString());
-		this.remainingPairs = mem.getNumPairs();
-		
-		
-		setupCards();
+		this.database = new MemoryCardImageDatabase(mem);
+
+		commonStart(-1);
 	}
 
-}
+	@Override
+	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
+		this.act = activity;
 
+		this.mem = state.getParcelable(MEMORY);
+		this.database = state.getParcelable(MEMORY_CARD_IMAGE_DATABASE);
+		
+		commonStart(state.getInt(FLIPPED_CARD_POSITION));
+	}
+
+	@Override
+	public Bundle savedState() {
+		Bundle outState = new Bundle();
+
+		outState.putParcelable(MEMORY, mem);
+		outState.putParcelable(MEMORY_CARD_IMAGE_DATABASE, this.database);
+			
+		// if one card is flipped over when we rotate, then that card should obviously also be visible after
+		// the rotation is over. 
+		if(this.flippedCard != null && !waitingForCardsToFlipOver)
+			outState.putInt(FLIPPED_CARD_POSITION, this.flippedCard.getPosition());
+		else
+			outState.putInt(FLIPPED_CARD_POSITION, -1);
+		
+		return outState;
+	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onDestroy() {
+	}
+}
