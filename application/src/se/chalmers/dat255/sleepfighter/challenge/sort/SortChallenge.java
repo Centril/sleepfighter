@@ -51,15 +51,16 @@ public class SortChallenge implements Challenge {
 	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
 		setType( ChallengeType.SORT );
 		add( "color_confusion", PrimitiveValueType.BOOLEAN, true );
+		add( "color_saturation_confusion", PrimitiveValueType.BOOLEAN, true );
 	}}
 
-	private static final String STATE_HUES = "hues";
+	private static final String STATE_COLORS = "hues";
 	private static final String STATE_SHUFFLED_NUMBERS = "numbers";
 	private static final String STATE_MODEL = "model";
 
 	private static final int HSV_MAX_HUE = 360;
 	private static final int HSV_MIN_HUE = 0;
-	private static final float HSV_SATURATION = 0.20f;
+	private static final float HSV_SATURATION_MIN = 0.20f;
 	private static final float HSV_VALUE = 1f;
 
 	// Unfortunately, colors must be hard-coded since it is dynamic.
@@ -74,17 +75,22 @@ public class SortChallenge implements Challenge {
 
 	private List<Button> buttons;
 
+	private Random rng;
+
+	// Model states.
 	private SortModel model;
 
-	private int[] currentHues;
+	private int[] currentColors;
 
 	private int[] shuffledNumbers;
 
-	private Random rng;
+	// Config param variables:
+	private boolean colorConfusion;
+	private boolean saturationConfusion;
 
 	@Override
 	public void start( ChallengeActivity activity, ChallengeResolvedParams params ) {
-		this.startCommon( activity );
+		this.startCommon( activity, params );
 
 		this.setupModel();
 
@@ -93,12 +99,15 @@ public class SortChallenge implements Challenge {
 
 	@Override
 	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
-		this.startCommon( activity );
+		this.startCommon( activity, params );
 
 		// Read stuff from state.
 		this.model = state.getParcelable( STATE_MODEL );
 		this.shuffledNumbers = state.getIntArray( STATE_SHUFFLED_NUMBERS );
-		this.currentHues = state.getIntArray( STATE_HUES );
+
+		if ( this.colorConfusion ) {
+			this.currentColors = state.getIntArray( STATE_COLORS );
+		}
 
 		this.setNumbers();
 	}
@@ -107,8 +116,14 @@ public class SortChallenge implements Challenge {
 	 * Performs common startup stuff.
 	 *
 	 * @param activity the ChallengeActivity.
+	 * @param params the resolved config params.
 	 */
-	private void startCommon( ChallengeActivity activity ) {
+	private void startCommon( ChallengeActivity activity, ChallengeResolvedParams params ) {
+		// Store all interesting params.
+		this.colorConfusion = params.getBoolean( "color_confusion" );
+		this.saturationConfusion = params.getBoolean( "color_saturation_confusion" );
+
+		// Init activity, buttons, etc.
 		this.activity = activity;
 		this.activity.setContentView( R.layout.challenge_sort );
 
@@ -125,7 +140,10 @@ public class SortChallenge implements Challenge {
 
 		outState.putParcelable( STATE_MODEL, this.model );
 		outState.putIntArray( STATE_SHUFFLED_NUMBERS, this.shuffledNumbers );
-		outState.putIntArray( STATE_HUES, this.currentHues );
+
+		if ( this.colorConfusion ) {
+			outState.putIntArray( STATE_COLORS, this.currentColors );
+		}
 
 		return outState;
 	}
@@ -149,29 +167,42 @@ public class SortChallenge implements Challenge {
 	}
 
 	/**
-	 * Randomizes an array of hues (in HSV) with size.
+	 * Randomizes an array of colors (in HSV) with size.
 	 *
 	 * @param size the size of array.
-	 * @return the array of hues of size.
+	 * @return the array of colors of size.
 	 */
-	private int[] selectHues( int size ) {
-		int[] hues = new int[size];
+	private int[] selectColors( int size ) {
+		int[] colors = new int[size];
 
-		for ( int i = 0; i < hues.length; ++i ) {
-			hues[i] = RandomMath.nextRandomRanged( this.rng, HSV_MIN_HUE, HSV_MAX_HUE / 36 ) * 36;
+		for ( int i = 0; i < colors.length; ++i ) {
+			// Generate hue.
+			int hue = RandomMath.nextRandomRanged( this.rng, HSV_MIN_HUE, HSV_MAX_HUE / 36 ) * 36;
+
+			// Generate saturation.
+			float saturation;
+			if ( this.saturationConfusion ) {
+				int minSat = (int) (HSV_SATURATION_MIN * 100);
+				saturation = RandomMath.nextRandomRanged( this.rng, minSat, 100 - minSat ) / 100f;
+			} else {
+				saturation = HSV_SATURATION_MIN;
+			}
+
+			colors[i] = this.computeHSVWithHue( hue, saturation );
 		}
 
-		return hues;
+		return colors;
 	}
 
 	/**
-	 * Completes a hue with hard coded saturation & value making an ARGB color.
+	 * Completes a hue and saturation with hard coded value making an ARGB color.
 	 *
 	 * @param hue the hue to use in color.
+	 * @param saturation the saturation to use in color.
 	 * @return the color.
 	 */
-	private int computeHSVWithHue( int hue ) {
-		return Color.HSVToColor( new float[] { hue, HSV_SATURATION, HSV_VALUE } );
+	private int computeHSVWithHue( int hue, float saturation ) {
+		return Color.HSVToColor( new float[] { hue, saturation, HSV_VALUE } );
 	}
 
 	/**
@@ -180,7 +211,10 @@ public class SortChallenge implements Challenge {
 	private void updateNumbers() {
 		this.model.generateList( rng );
 		this.shuffledNumbers = this.model.getShuffledList();
-		this.currentHues = this.selectHues( this.shuffledNumbers.length );
+
+		if ( this.colorConfusion ) {
+			this.currentColors = this.selectColors( this.shuffledNumbers.length );
+		}
 
 		this.setNumbers();
 	}
@@ -196,7 +230,10 @@ public class SortChallenge implements Challenge {
 			button.setEnabled( true );
 
 			button.setText( Integer.toString( this.shuffledNumbers[i]) );
-			button.setBackgroundColor( this.computeHSVWithHue( this.currentHues[i] ) );
+
+			if ( this.colorConfusion ) {
+				button.setBackgroundColor( this.currentColors[i] );
+			}
 		}
 	}
 
@@ -290,5 +327,4 @@ public class SortChallenge implements Challenge {
 	@Override
 	public void onDestroy() {
 	}
-
 }
