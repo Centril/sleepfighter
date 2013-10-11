@@ -39,6 +39,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.view.MenuItem;
 
 /**
  * ChallengeParamsSettingsActivity is the activity for configuring the parameters/settings for one ChallengeType.
@@ -90,6 +91,17 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 		this.setupActionBar();
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+
+		case android.R.id.home:
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
 	/**
 	 * Sets up the preference category to add preferences to.
 	 */
