@@ -51,6 +51,18 @@ public class TextToSpeechUtil {
 		activity.startActivityForResult(checkIntent, CHECK_TTS_DATA_REQUEST_CODE);
 	}
 	
+	/*
+	 * Returns whether there exists an installed voice for the locale on the current device. 
+	 */
+	/*public boolean localeHasLanguage(Locale locale) {
+		
+	}
+	
+	private static Locale getBestLanguage() {
+		
+	}*/
+	
+	
 	public static void setBestLanguage(TextToSpeech tts, Context context) {
 		
 		Locale[] locales = Locale.getAvailableLocales();
@@ -66,8 +78,6 @@ public class TextToSpeechUtil {
 		
 		Locale current = context.getResources().getConfiguration().locale;
 		Debug.d("current locale: " + current);
-		
-		tts.setLanguage(Locale.ENGLISH);
 		
 		// exact match?
 		for(Locale locale : localeList) {

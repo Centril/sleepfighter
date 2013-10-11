@@ -100,7 +100,13 @@ public class WeatherDataFetcher {
 			connection.setUseCaches(false);
 			connection.setDoInput(true);
 			connection.setDoOutput(false);
+			
+			// the data we need is in the beginning, and it is rather short, so we only 
+			// need about the first 200 characters. 
+			// this speeds things up a bit. 
+			//connection.setRequestProperty("Content-Length", "" + 200);
 			connection.connect();
+		
 			if(connection.getResponseCode() == 400){
 				System.out.println("Bad Responde. Maybe an invalid location was provided.\n");
 				return null;

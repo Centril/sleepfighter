@@ -19,6 +19,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,6 +37,7 @@ import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.speech.WeatherDataFetcher;
+import se.chalmers.dat255.sleepfighter.speech.WeatherTranslator;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
@@ -159,6 +161,9 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		String time = TextToSpeechUtil.getCurrentTime();
 	
 		String weatherStr = weather.getSummary();
+		
+		//Locale current = getResources().getConfiguration().locale;
+		//String localizedWeatherStr = new WeatherTranslator(current).translate(weatherStr); 
 	
 		String format = this.getResources().getString(R.string.speech_format);
 		
