@@ -124,10 +124,6 @@ public class AlarmActivity extends Activity {
 		} else {
 			btnSnooze.setVisibility(View.GONE);
 		}
-		
-		// Start animation
-		startAnimate();
-
 
 	}
 
@@ -284,7 +280,7 @@ public class AlarmActivity extends Activity {
 	}
 
 	/**
-	 * Start and show the current time on display
+	 * Start flash, animation and show the current time on display
 	 */
 	@Override
 	protected void onStart() {
@@ -307,6 +303,8 @@ public class AlarmActivity extends Activity {
 			}
 		}, calendar.get(Calendar.MILLISECOND), 1000);
 		
+		// Start animation and flash
+		startAnimate();
 		startFlash();
 	}
 
