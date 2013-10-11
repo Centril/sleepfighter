@@ -24,7 +24,6 @@
 
 
     <!-- Example General settings -->
-    <string name="pref_alarm_header_general">General</string>
     <string name="pref_alarm_time">Time</string>
     <string name="pref_alarm_name">Name</string>
     <string name="pref_alarm_default_name">Untitled Alarm</string>
