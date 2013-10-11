@@ -138,7 +138,7 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				motionControl.unregisterSensorListener();
+				pause();
 				activity.complete();
 			}
 		});

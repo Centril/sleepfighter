@@ -127,13 +127,14 @@ public class SnakeController {
 
 		public void setRunning(boolean isRunning) {
 			this.isRunning = isRunning;
+			Debug.d("SET RUNNING " + isRunning);
 		}
 
 		@Override
 		public void run() {
 			while (isRunning) {
-				update();
 				if (!model.isGameOver()) {
+					update();
 					view.render();
 				}
 				try {
