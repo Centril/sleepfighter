@@ -30,7 +30,11 @@
     <string name="confirm_delete">Är du säker på att du vill ta bort alarmet?"</string>
     <string name="snooze">Snooze</string>
     <string name="alarm_emergency_stop">Nödstopp</string>
-    <string name="alarm_emergency_dialog">Säker på att du vill stoppa alarmet? Du kommer förlora %1$s poäng.</string>
+    <string name="alarm_emergency_dialog">Säker på att du vill stoppa alarmet? Du kommer förlora %1$s.</string>
+    <plurals name="alarm_emergency_cost">
+        <item quantity="one">en poäng</item>
+        <item quantity="other">%d poäng</item>
+    </plurals>
 
     <!-- Challenges -->
     <string name="btn_complete">Lyckas!</string>
