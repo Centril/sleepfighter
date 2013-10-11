@@ -110,8 +110,8 @@ public class GameView extends SurfaceView implements Callback {
 					List<CircleEntity> sphereFruits = model.getSphereFruits();
 					List<Segment> snakeSegments = model.getSnakeSegments();
 
-					float scaleX = c.getWidth() * 1f / model.boardWidth;
-					float scaleY = c.getHeight() * 1f / model.boardHeight;
+					float scaleX = c.getWidth() * 1f / SnakeConstants.BOARD_WIDTH;
+					float scaleY = c.getHeight() * 1f / SnakeConstants.BOARD_HEIGHT;
 
 					// draw obstacles
 					for (int i = 0; i < obstacles.size(); i++) {

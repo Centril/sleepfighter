@@ -78,7 +78,7 @@ public class GlobalPreferencesManager {
 	 * @return the number of challenge points stored in the shared preferences
 	 */
 	public int getChallengePoints() {
-		return this.prefs.getInt("challenge_points", 100);
+		return Math.min(this.prefs.getInt("challenge_points", 0), 9999);
 	}
 	
 	/**
@@ -87,8 +87,14 @@ public class GlobalPreferencesManager {
 	 * @param points the number of points to be added
 	 */
 	public void addChallengePoints(int points) {
+		int stored = prefs.getInt("challenge_points", 0);
+		if (stored + points >= 9999) {
+			stored = 9999;
+			points = 0;
+		}
+		
 		Editor edit = prefs.edit();
-		edit.putInt("challenge_points", prefs.getInt("challenge_points", 100) + points);
+		edit.putInt("challenge_points", stored + points);
 		edit.commit();
 	}
 	

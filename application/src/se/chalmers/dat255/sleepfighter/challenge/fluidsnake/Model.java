@@ -37,34 +37,6 @@ import android.graphics.Paint;
  * 
  */
 public class Model {
-	// size of the game board in the model
-	public final int boardWidth = 200;
-	public final int boardHeight = 400;
-
-	// multiplier for how fast the game should run
-	public final float speedFactor = 2;
-
-	// Snake length and width
-	public final int maxSegments = 6;
-	public final int snakeWidth = 15;
-
-	// spawn point for the snake
-	public final int startX = boardWidth / 2;
-	public final int startY = 300;
-
-	// how wide obstacles will be
-	public final int obstacleWidth = 15;
-
-	// what margin the snake should have when getting close to the wall before
-	// losing
-	public final int obstacleMargin = 8;
-
-	// radius of the sphere fruits
-	public final int sphereFruitWidth = 10;
-
-	// number of fruits
-	public final int nbrOfSphereFruits = 3;
-
 	// Lists containing entities
 	private List<Segment> snakeSegments;
 	private List<RectEntity> obstacles;
@@ -109,30 +81,52 @@ public class Model {
 
 		// initialize the snake and add the head segment
 		snakeSegments = new ArrayList<Segment>();
-		snakeSegments.add(new Segment(startX, startY, snakeWidth, snakePaint));
+		snakeSegments
+				.add(new Segment(SnakeConstants.START_X,
+						SnakeConstants.START_Y, SnakeConstants.SNAKE_WIDTH,
+						snakePaint));
 
-		// initialize and add obstacles
+		// initialize and add obstacles (walls)
 		obstacles = new ArrayList<RectEntity>();
-		obstacles.add(new RectEntity(0, 0, boardWidth, obstacleWidth,
+		obstacles.add(new RectEntity(
+				0,
+				0,
+				SnakeConstants.BOARD_WIDTH,
+				SnakeConstants.OBSTACLE_WIDTH,
 				obstaclePaint));
-		obstacles.add(new RectEntity(0, 0, obstacleWidth, boardHeight,
+		obstacles.add(new RectEntity(
+				0,
+				0,
+				SnakeConstants.OBSTACLE_WIDTH,
+				SnakeConstants.BOARD_HEIGHT,
 				obstaclePaint));
-		obstacles.add(new RectEntity(boardWidth - obstacleWidth, 0,
-				obstacleWidth, boardHeight, obstaclePaint));
-		obstacles.add(new RectEntity(0, boardHeight - obstacleWidth,
-				boardWidth, obstacleWidth, obstaclePaint));
+		obstacles.add(new RectEntity(
+				SnakeConstants.BOARD_WIDTH - SnakeConstants.OBSTACLE_WIDTH,
+				0,
+				SnakeConstants.OBSTACLE_WIDTH, SnakeConstants.BOARD_HEIGHT,
+				obstaclePaint));
+		obstacles.add(new RectEntity(
+				0,
+				SnakeConstants.BOARD_HEIGHT - SnakeConstants.OBSTACLE_WIDTH,
+				SnakeConstants.BOARD_WIDTH,
+				SnakeConstants.OBSTACLE_WIDTH,
+				obstaclePaint));
 
 		// initialize and add randomized fruit entities
 		sphereFruits = new ArrayList<CircleEntity>();
 		Random rand = new Random();
-		for (int i = 0; i < nbrOfSphereFruits; i++) {
-			sphereFruits.add(new CircleEntity(rand.nextInt(boardWidth - 2
-					* (obstacleWidth + sphereFruitWidth))
-					+ obstacleWidth + sphereFruitWidth, rand
-					.nextInt(boardHeight - 2
-							* (obstacleWidth + sphereFruitWidth))
-					+ obstacleWidth + sphereFruitWidth, sphereFruitWidth,
-					sphereFruitPaint));
+		for (int i = 0; i < SnakeConstants.FRUITS; i++) {
+			sphereFruits
+					.add(new CircleEntity(
+							rand.nextInt(SnakeConstants.BOARD_WIDTH
+									- 2 * (SnakeConstants.OBSTACLE_WIDTH + SnakeConstants.FRUIT_WIDTH))
+									+ SnakeConstants.OBSTACLE_WIDTH
+									+ SnakeConstants.FRUIT_WIDTH,
+							rand.nextInt(SnakeConstants.BOARD_HEIGHT
+									- 2 * (SnakeConstants.OBSTACLE_WIDTH + SnakeConstants.FRUIT_WIDTH))
+									+ SnakeConstants.OBSTACLE_WIDTH
+									+ SnakeConstants.FRUIT_WIDTH,
+							SnakeConstants.FRUIT_WIDTH, sphereFruitPaint));
 		}
 
 		started = false;
@@ -171,8 +165,8 @@ public class Model {
 
 		// exact location on the gameboard of where the snake should head
 		// towards
-		float nextX = touchX * boardWidth;
-		float nextY = touchY * boardHeight;
+		float nextX = touchX * SnakeConstants.BOARD_WIDTH;
+		float nextY = touchY * SnakeConstants.BOARD_HEIGHT;
 
 		// difference of the snake location and target location
 		float relativeX = nextX - segX;
@@ -208,7 +202,7 @@ public class Model {
 			if (delta >= 5) {
 				delta = 5;
 			}
-			delta *= speedFactor;
+			delta *= SnakeConstants.SPEED_MULT;
 
 			// update the snake head's position
 			snakeSegments.get(0).setX(snakeSegments.get(0).getX() + dx * delta);
@@ -236,14 +230,15 @@ public class Model {
 			snakeSegments.get(0).iter();
 
 			// do this only if all snake segments have not been spawned
-			if (snakeSegments.size() < maxSegments) {
+			if (snakeSegments.size() < SnakeConstants.SEGMENTS) {
 				// update the model time
 				modelTime += delta;
 
 				// if the model time is high enough we spawn a new segment and
 				// reset the model time
 				if (modelTime >= (snakeSegments.get(0).getRadius() * 2)) {
-					snakeSegments.add(new Segment(startX, startY, snakeWidth,
+					snakeSegments.add(new Segment(SnakeConstants.START_X,
+							SnakeConstants.START_Y, SnakeConstants.SNAKE_WIDTH,
 							snakePaint));
 					modelTime = 0;
 				}
@@ -258,7 +253,8 @@ public class Model {
 
 		// if the last segment is outside the top of the map, that means the
 		// player won
-		if (snakeSegments.get(snakeSegments.size() - 1).getY() + snakeWidth <= 0) {
+		if (snakeSegments.get(snakeSegments.size() - 1).getY()
+				+ SnakeConstants.SNAKE_WIDTH <= 0) {
 			won = true;
 		}
 
@@ -286,13 +282,15 @@ public class Model {
 			// check for obstacle collision
 			for (int i = 0; i < obstacles.size(); i++) {
 				RectEntity o = obstacles.get(i);
-				if (obstacleMargin < head.getX() + head.getRadius() - o.getX()
-						&& obstacleMargin < o.getX() + o.getWidth()
-								+ head.getRadius() - head.getX()
-						&& obstacleMargin < head.getY() + head.getRadius()
-								- o.getY()
-						&& obstacleMargin < o.getY() + o.getHeight()
-								+ head.getRadius() - head.getY()) {
+				if (SnakeConstants.OBSTACLE_MARGIN < head.getX()
+						+ head.getRadius() - o.getX()
+						&& SnakeConstants.OBSTACLE_MARGIN < o.getX()
+								+ o.getWidth() + head.getRadius() - head.getX()
+						&& SnakeConstants.OBSTACLE_MARGIN < head.getY()
+								+ head.getRadius() - o.getY()
+						&& SnakeConstants.OBSTACLE_MARGIN < o.getY()
+								+ o.getHeight() + head.getRadius()
+								- head.getY()) {
 					lost = true;
 					break;
 				}
@@ -312,7 +310,8 @@ public class Model {
 
 		// if there are no fruits left, spawn the exit
 		if (sphereFruits.isEmpty() && exit == null) {
-			exit = new RectEntity(boardWidth / 2, 0, 50, 30, exitPaint);
+			exit = new RectEntity(SnakeConstants.BOARD_WIDTH / 2, 0, 50, 30,
+					exitPaint);
 		}
 	}
 
