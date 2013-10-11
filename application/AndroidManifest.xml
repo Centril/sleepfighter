@@ -54,7 +54,7 @@
 
     	<!-- START	GPS related stuff -->
     	<!-- START	Google Maps Android API v2 -->
-		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCXipd3PKrLWrVWn9gHl67VaLKjBH5RseY"/>
+		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyB7342NDGWqblGnheVBFQ7Po3xaUcQEESw"/>
     	<!-- END	Google Maps Android API v2 -->
         <activity
             android:name="se.chalmers.dat255.sleepfighter.activity.ManageGPSFilterAreasActivity"
