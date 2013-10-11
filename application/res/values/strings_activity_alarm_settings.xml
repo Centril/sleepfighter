@@ -29,9 +29,9 @@
     <string name="pref_alarm_name">Name</string>
     <string name="pref_alarm_default_name">Untitled Alarm</string>
     <string name="pref_alarm_enabled_days">Days</string>
-    <string name="time_category_title">Time</string>
+    <string name="general_category_title">General</string>
     <string name="misc_category_title">Miscellaneous</string>
-    <string name="ringer_category_title">Ring tone settings</string>
+    <string name="ringer_category_title">Ringtone</string>
 
     <string-array name="week_days">
         <item>Monday</item>
