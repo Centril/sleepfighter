@@ -25,7 +25,7 @@
         <item>Memory</item>
         <item>Sort Numbers</item>
         <item>Fluid Snake</item>
-        <item>Roto Snake</item>
+        <item>RotoSnake</item>
         <item>Shake</item>
     </string-array>
     <string-array name="challenge_descriptions">
@@ -40,4 +40,5 @@
 
     
     <string name="fluidSnakeTitle">Touch to move the snake!</string>
+    <string name="rotoSnakeTitle">Rotate the device to control the snake!</string>
 </resources>

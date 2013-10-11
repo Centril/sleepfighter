@@ -22,6 +22,7 @@ package se.chalmers.dat255.sleepfighter.challenge.rotosnake;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
@@ -62,7 +63,7 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 		this.activity = activity;
 		this.activity
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		this.activity.setTitle("Rotate the device to control the snake!");
+		this.activity.setTitle(R.string.rotoSnakeTitle);
 
 		try {
 			this.motionControl = new RotationControl(this.activity);
