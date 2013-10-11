@@ -24,7 +24,6 @@
 
 
     <!-- Example General settings -->
-    <string name="pref_alarm_header_general">Általános</string>
     <string name="pref_alarm_time">Idő</string>
     <string name="pref_alarm_name">Név</string>
     <string name="pref_alarm_default_name">Névtelen riasztó</string>

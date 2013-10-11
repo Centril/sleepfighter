@@ -60,8 +60,6 @@
     <string name="pref_alarm_vibration">Vibration</string>
     <string name="pref_alarm_snooze_enabled">Tillåt snooze</string>
     <string name="pref_alarm_snooze_time">Snoozelängd</string>
-    <string name="pref_challenge_enabled">Aktivera utmaningar</string>
-    <string name="pref_challenge_select">Välj utmaningar</string>
     <string name="pref_volume">Ljudvolym</string>
     <string name="pref_challenge">Utmaningar</string>
     <string name="alarm_settings_action_remove">Ta bort</string>

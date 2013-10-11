@@ -23,8 +23,6 @@
      <string name="speech_time_format">Klockan är %s</string>
      <string name="speech_weather_format">och vädret är %s</string>
  
-     <string name="clear">klart</string>
-     
      <!--  
       "clear": "clear",
   "possible-very-light-rain": "possible drizzle",

@@ -27,7 +27,6 @@
     <string name="pref_alarm_name">Name</string>
     <string name="pref_alarm_default_name">Namenloser Alarm</string>
     <string name="pref_alarm_enabled_days">Tage</string>
-    <string name="time_category_title">Zeit</string>
     <string name="misc_category_title">Übrige</string>
     <string name="ringer_category_title">Klingelton Einstellungen</string>
     
