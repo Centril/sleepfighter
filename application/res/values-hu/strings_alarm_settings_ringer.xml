@@ -25,8 +25,8 @@
     
     <string name="audio_source_category_title">Hang</string>
 
-    <string name="perf_ringtone_picker">Csengőhang</string>
-    <string name="perf_ringtone_picker_summary">Válassz egy csengőhangot a telefonodbol</string>
+    <string name="pref_ringtone_picker">Csengőhang</string>
+    <string name="pref_ringtone_picker_summary">Válassz egy csengőhangot a telefonodbol</string>
     <string name="alarm_audiosource_summary_name_title">Választott:</string>
     <string name="alarm_audiosource_summary_type_label">Forrás:</string>
     <string name="alarm_audiosource_summary_name_none">Semmi</string>
