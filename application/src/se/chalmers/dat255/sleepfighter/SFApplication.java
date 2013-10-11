@@ -35,6 +35,7 @@ import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
+import android.media.MediaPlayer;
 
 /**
  * A custom implementation of Application for SleepFighter.
@@ -59,7 +60,10 @@ public class SFApplication extends Application {
 	private FromPresetAlarmFactory fromPresetFactory;
 
 	private GPSFilterAreaSet gpsAreaManaged;
-
+	
+	private MediaPlayer mediaPlayer;
+	private float volume;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -223,7 +227,23 @@ public class SFApplication extends Application {
 
 		return this.audioDriverFactory;
 	}
+	
+	public void setMediaPlayer(MediaPlayer mediaPlayer) {
+		this.mediaPlayer = mediaPlayer;
+	}
 
+	public MediaPlayer getMediaPlayer() {
+		return this.mediaPlayer;
+	}
+	
+	public void setVolume(float volume) {
+		this.volume = volume;
+	}
+	
+	public float getVolume() {
+		return this.volume;
+	}
+	
 	/**
 	 * Fetches the set of areas and manages it in application.<br/>
 	 * Call {@link #releaseGPSSet()} to release reference to it in application.

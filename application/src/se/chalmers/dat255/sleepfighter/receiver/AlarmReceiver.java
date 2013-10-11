@@ -90,7 +90,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * @param extras extras to pass on.
 	 */
 	private void startAlarm( Alarm alarm, Bundle extras ) {
-		startAudio(alarm);
 
 		// start vibration.
 		if (alarm.getAudioConfig().getVibrationEnabled()) {
@@ -113,14 +112,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		showNotification(alarm, activityIntent);
 	}
 
-	private void startAudio(Alarm alarm) {
-		SFApplication app = SFApplication.get();
-		AudioDriver driver = app.getAudioDriverFactory().produce(app,
-				alarm.getAudioSource());
-		app.setAudioDriver(driver);
-
-		driver.play(alarm.getAudioConfig());
-	}
+	
 
 	/**
 	 * Launches notification showing that the alarm has gone off.

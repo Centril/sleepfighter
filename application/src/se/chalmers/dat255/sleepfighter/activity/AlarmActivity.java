@@ -19,6 +19,7 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,6 +28,7 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -53,6 +55,7 @@ import android.view.MenuItem;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -76,7 +79,8 @@ import com.google.android.gms.location.LocationClient;
  * @since Sep 20, 2013
  */
 public class AlarmActivity extends Activity implements TextToSpeech.OnInitListener, 
-GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener{
+GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener,
+TextToSpeech.OnUtteranceCompletedListener {
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
 
@@ -107,7 +111,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 
 	private TextToSpeech tts;
 	
-
+	private float originalVolume;
+	
 	private LocationManager locationManager;
 	private LocationListener locationListener = new LocationListener() {
 		@Override
@@ -156,8 +161,14 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	
 	// read out the time and weather.
 	public void doSpeech(WeatherDataFetcher weather) {
+	//	this.lowerVolume();
+
 		String s = new SpeechLocalizer(tts, this).getSpeech(weather);
- 		tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
+		
+		
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,"stringId");
+ 		tts.speak(s, TextToSpeech.QUEUE_FLUSH, params);
 	}
 	
 	// called when tts has been fully initialized. 
@@ -165,6 +176,8 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	public void onInit(int status) {
 		Debug.d("done initi tts");
 		ttsInitialized = true;
+		
+		tts.setOnUtteranceCompletedListener(this);
 		
 		// Configure tts 
 		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
@@ -224,7 +237,9 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 
 			locationManager.requestLocationUpdates(
 					LocationManager.NETWORK_PROVIDER, 0, 0,locationListener);
-
+		} else {
+			// for speech the audio is started once the speech is over. 
+			startAudio(alarm);
 		}
 
 		// Get the name and time of the current ringing alarm
@@ -609,6 +624,7 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
         }
     }
     
+    
 	@Override
 	protected void onDestroy() {
 	    //Close the Text to Speech Library
@@ -623,4 +639,38 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	    
 	    super.onDestroy();
 	}
+
+	@Override
+	public void onUtteranceCompleted(String arg0) {
+		// now start playing the music now that the speech is over.
+		Debug.d("utterance completed.");
+		startAudio(alarm);
+	}
+	
+	private void startAudio(Alarm alarm) {
+		SFApplication app = SFApplication.get();
+		AudioDriver driver = app.getAudioDriverFactory().produce(app,
+				alarm.getAudioSource());
+		app.setAudioDriver(driver);
+
+		driver.play(alarm.getAudioConfig());
+	}
+	
+	
+	// lower the volume a bit so that the speech can be heard.
+	/*private void lowerVolume() {
+		// if a song is playing. 
+		if(SFApplication.get().getMediaPlayer() != null) {
+			this.originalVolume = SFApplication.get().getVolume();
+
+			Debug.d("lowering volume: " + this.originalVolume );
+			SFApplication.get().getMediaPlayer().setVolume(this.originalVolume/4, this.originalVolume/4);
+		}
+	}
+	
+	private void restoreVolume() {
+		if(SFApplication.get().getMediaPlayer() != null) {
+			SFApplication.get().getMediaPlayer().setVolume(this.originalVolume, this.originalVolume);
+		}
+	}*/
 }

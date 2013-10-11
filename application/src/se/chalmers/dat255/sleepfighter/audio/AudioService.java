@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.audio;
 
+import se.chalmers.dat255.sleepfighter.SFApplication;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -125,7 +126,8 @@ public class AudioService extends Service implements OnPreparedListener,
 
 		// Makes MediaPlayer hold a wake lock while playing
 		this.player.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
-
+		SFApplication.get().setMediaPlayer(this.player);
+		
 		this.state = State.STOPPED;
 	}
 
@@ -310,6 +312,8 @@ public class AudioService extends Service implements OnPreparedListener,
 		if (volume > 1 || volume < 0) {
 			throw new IllegalArgumentException("No valid volume bundled");
 		}
+		
+		SFApplication.get().setVolume(volume);
 		this.player.setVolume(volume, volume);
 	}
 

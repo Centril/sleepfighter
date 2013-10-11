@@ -13,5 +13,6 @@ class WeatherTranslator {
 	
 	public void translate(String weatherSummary) {
 		
+		
 	}
 }
