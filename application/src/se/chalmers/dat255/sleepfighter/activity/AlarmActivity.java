@@ -83,7 +83,7 @@ public class AlarmActivity extends Activity {
 	private Camera camera;
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
-	private boolean isFlashOn = false;
+	private boolean isFlashOn = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class AlarmActivity extends Activity {
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
 		tvName.setText(alarm.getName());
 		tvTime = (TextView) findViewById(R.id.tvAlarmTime);
-
+		
 		// Connect the challenge button with XML
 		btnChallenge = (Button) findViewById(R.id.btnChallenge);
 		btnChallenge.setOnClickListener(new OnClickListener() {
@@ -124,10 +124,10 @@ public class AlarmActivity extends Activity {
 		} else {
 			btnSnooze.setVisibility(View.GONE);
 		}
-
-		// Start animation and flash
+		
+		// Start animation
 		startAnimate();
-		startFlash();
+
 
 	}
 
@@ -292,7 +292,6 @@ public class AlarmActivity extends Activity {
 		timer = new Timer("SFTimer");
 		Calendar calendar = Calendar.getInstance();
 
-		// Get the current time
 		final Runnable updateTask = new Runnable() {
 			public void run() {
 				// Set the current time on the text view
@@ -307,6 +306,8 @@ public class AlarmActivity extends Activity {
 				runOnUiThread(updateTask);
 			}
 		}, calendar.get(Calendar.MILLISECOND), 1000);
+		
+		startFlash();
 	}
 
 	// Use to stop the timer and release the camera
@@ -350,7 +351,7 @@ public class AlarmActivity extends Activity {
 		}
 
 		// If camera found, set flash mode ON.
-		if (!isFlashOn) {
+		if (isFlashOn) {
 			Log.i("info", "The flashlight is on.");
 			p = camera.getParameters();
 			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
