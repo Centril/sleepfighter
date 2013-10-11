@@ -78,7 +78,7 @@ public class GlobalPreferencesManager {
 	 * @return the number of challenge points stored in the shared preferences
 	 */
 	public int getChallengePoints() {
-		return Math.min(this.prefs.getInt("challenge_points", 0), 9999);
+		return this.prefs.getInt("challenge_points", 0);
 	}
 	
 	/**
@@ -90,6 +90,10 @@ public class GlobalPreferencesManager {
 		int stored = prefs.getInt("challenge_points", 0);
 		if (stored + points >= 9999) {
 			stored = 9999;
+			points = 0;
+		}
+		else if (stored + points <= -999) {
+			stored = -999;
 			points = 0;
 		}
 		
