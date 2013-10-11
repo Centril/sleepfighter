@@ -26,12 +26,16 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -70,6 +74,24 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 			Preference p = makeChallengePreference(type);
 			pc.addPreference(p);
 		}
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.challenge_settings_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		case R.id.action_test_challenge:
+			startTestChallengePicker();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
@@ -188,5 +210,65 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 			return "";
 		}
 		return this.descriptions[ordinal];
+	}
+
+	/**
+	 * Launch dialog where any challenge can be picked and started, for the user
+	 * to try them out.
+	 */
+	private void startTestChallengePicker() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		final ChallengeType[] types = ChallengeType.values();
+
+		String[] items = new String[types.length];
+
+		if (this.names == null) {
+			this.names = getResources().getStringArray(R.array.challenge_names);
+		}
+
+		for (int i = 0; i < types.length; i++) {
+			// Use translated name if available
+			if (i < names.length) {
+				items[i] = this.names[i];
+			} else {
+				items[i] = types[i].name();
+			}
+		}
+
+		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// The clicked challenge type
+				ChallengeType type = types[which];
+				testChallenge(type);
+			}
+
+		};
+		builder.setItems(items, listener);
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+	
+	/**
+	 * Launches the challenge without an alarm going of, for the user to be able
+	 * to test it.
+	 * 
+	 * @param type
+	 *            the type of the challenge
+	 */
+	private void testChallenge(ChallengeType type) {
+		Intent i = new Intent(ChallengeSettingsActivity.this,
+				ChallengeActivity.class);
+
+		// Bundle in type and what alarm it's for (for params)
+		IntentUtils intentUtils = new IntentUtils(i);
+		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
+		if (ChallengeSettingsActivity.this.alarm.isPresetAlarm()) {
+			intentUtils.setSettingPresetAlarm(true);
+		} else {
+			intentUtils.setAlarmId(alarm);
+		}
+
+		startActivity(i);		
 	}
 }

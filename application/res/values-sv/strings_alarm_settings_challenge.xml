@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (c) 2013 See AUTHORS file.
   
@@ -16,23 +17,14 @@
   You should have received a copy of the GNU General Public License
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<resources>
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
-    <item	
-        android:id="@+id/action_add"
-        android:icon="@android:drawable/ic_menu_add"
-        android:showAsAction="ifRoom"
-        android:title="@string/add"/>
-
-    <item	
-        android:id="@+id/action_gpsfilter_area_edit"
-        android:icon="@android:drawable/ic_menu_myplaces"
-        android:showAsAction="always"
-        android:title="@string/action_gpsfilter_area_edit"/>
+    <string name="challenge_category_title">Utmaning</string>
+    <string name="challenge_category_title_plural">Utmaningar</string>
     
-</menu>
+    <string name="title_alarm_challenge_settings">Utmaningsinställningar</string>
+
+    <string name="challenge_params_title">Inställningar</string>
+    <string name="challenge_test">Testa</string>
+    
+</resources>

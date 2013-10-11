@@ -33,13 +33,10 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -365,9 +362,6 @@ public class MainActivity extends Activity {
 			this.startGlobalSettings();
 			return true;
 
-		case R.id.action_start_challenge:
-			startDebugChallenge();
-			return true;	
 		case R.id.action_gpsfilter_area_edit:
 			this.startGPSFilterAreaEdit();
 			return true;
@@ -376,38 +370,5 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	/**
-	 * Debug method for launching dialog where any challenge defined in
-	 * {@link ChallengeType} can be started.
-	 */
-	private void startDebugChallenge() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		final ChallengeType[] types = ChallengeType.values();
-
-		// Making string array "copy" of types for use with standard dialog
-		String[] items = new String[types.length];
-		for (int i = 0; i < types.length; i++) {
-			items[i] = types[i].name();
-		}
-
-		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// The clicked challenge type
-				ChallengeType type = types[which];
-
-				// Start the selected challenge
-				Intent i = new Intent(MainActivity.this, ChallengeActivity.class);
-				new IntentUtils( i ).setAlarmId( SFApplication.get().getFromPresetFactory().getPreset() ).setSettingPresetAlarm( true );
-				i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
-				startActivity(i);
-			}
-		};
-		builder.setItems(items, listener);
-		AlertDialog dialog = builder.create();
-		dialog.show();
-	}
-
 	
 }
