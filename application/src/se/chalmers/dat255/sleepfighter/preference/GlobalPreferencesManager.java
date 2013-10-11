@@ -89,7 +89,8 @@ public class GlobalPreferencesManager {
 	public void addChallengePoints(int points) {
 		long now = System.currentTimeMillis();
 		
-		if (now - prefs.getLong("lastChallengePointsGained", 0) >= 6*60*60*1000) {
+		if (now - prefs.getLong("lastChallengePointsGained", 0) >= 6*60*60*1000
+				|| points < 0) {
 			int stored = prefs.getInt("challenge_points", 0);
 			if (stored + points >= 9999) {
 				stored = 9999;
@@ -102,7 +103,9 @@ public class GlobalPreferencesManager {
 			
 			Editor edit = prefs.edit();
 			edit.putInt("challenge_points", stored + points);
-			edit.putLong("lastChallengePointsGained", now);
+			if (points > 0) {
+				edit.putLong("lastChallengePointsGained", now);
+			}
 			edit.commit();
 		}
 	}
