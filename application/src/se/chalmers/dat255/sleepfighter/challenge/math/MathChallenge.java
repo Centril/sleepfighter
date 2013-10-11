@@ -187,7 +187,6 @@ public class MathChallenge implements Challenge {
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
 		w.getSettings().setJavaScriptEnabled(true);
 		
-		// make rendering faster.
 		w.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 		
 		if(Build.VERSION.SDK_INT >= 11) {
