@@ -95,9 +95,11 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	private Alarm alarm;
 	public Timer timer;
 
-	private static final int EMERGENCY_COST = 100;
-	private static final int SNOOZE_COST = 5;
-
+	private static final int EMERGENCY_COST = 50;
+	private static final int EMERGENCY_PERCENTAGE_COST = 20;
+	private static final int SNOOZE_COST = 10;
+	private static final int SNOOZE_PERCENTAGE_COST = 5;
+	
 	private boolean ttsInitialized = false;
 	private boolean obtainedLocation = false;
 	
@@ -248,7 +250,11 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 				public void onClick(View v) {
 					startSnooze();
 					if (SFApplication.get().getPrefs().isChallengesActivated()) {
-						SFApplication.get().getPrefs().addChallengePoints(-SNOOZE_COST);
+						GlobalPreferencesManager prefs = SFApplication.get().getPrefs();
+						
+						int snoozeCost = Math.max(SNOOZE_COST, 
+								prefs.getChallengePoints()/(100/SNOOZE_PERCENTAGE_COST));
+						prefs.addChallengePoints(-snoozeCost);
 					}
 				}
 			});
@@ -260,7 +266,7 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 				&& this.alarm.getChallengeSet().isEnabled()) {
 			TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
 			pointText.setText(SFApplication.get().getPrefs().getChallengePoints()
-					+ " Challenge points.");
+					+ " Challenge points");
 		}
 		else {
 			findViewById(R.id.preChallengeFooter).setVisibility(View.INVISIBLE);
@@ -304,13 +310,16 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 	 * skipped by showing confirmation dialog.
 	 */
 	private void skipChallengeConfirm() {
+		final int emergencyCost = Math.max(EMERGENCY_COST,
+				SFApplication.get().getPrefs().getChallengePoints()/(100/EMERGENCY_PERCENTAGE_COST));
+		
 		// Show confirmation dialog where the user has to confirm skipping the
 		// challenge, and in turn lose a lot of points
 		DialogInterface.OnClickListener yesAction = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				SFApplication.get().getPrefs()
-						.addChallengePoints(-EMERGENCY_COST);
+						.addChallengePoints(-emergencyCost);
 				stopAlarm();
 			}
 		};
@@ -320,7 +329,7 @@ GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnect
 		DialogUtils.showConfirmationDialog(String.format(res
 				.getString(R.string.alarm_emergency_dialog), res
 				.getQuantityString(R.plurals.alarm_emergency_cost,
-						EMERGENCY_COST, EMERGENCY_COST)), this, yesAction);
+						emergencyCost, emergencyCost)), this, yesAction);
 
 	}
 
