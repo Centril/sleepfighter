@@ -27,15 +27,10 @@
     <string name="pref_alarm_time">Zeit</string>
     <string name="pref_alarm_name">Name</string>
     <string name="pref_alarm_default_name">Namenloser Alarm</string>
-
     <string name="pref_alarm_enabled_days">Tage</string>
-    
     <string name="time_category_title">Zeit</string>
     <string name="misc_category_title">Übrige</string>
-    
     <string name="ringer_category_title">Klingelton Einstellungen</string>
-    
- 
     
     <string-array name="week_days">
         <item>Montag</item>
@@ -46,8 +41,6 @@
         <item>Samstag</item>
         <item>Sonntag</item>
     </string-array>
-    
-    
     <string-array name="default_week_days">
         <item>true</item>
         <item>true</item>
@@ -57,12 +50,17 @@
         <item>true</item>
         <item>true</item>
     </string-array>
-  
-  
     
     <string name="pref_alarm_repeat">Wiederholen</string>
     <string name="pref_delete_alarm">Alarm löschen</string>
-    
     <string name="pref_alarm_ringtone">Klingelton</string>
+    <string name="pref_alarm_vibration">Vibration</string>
+    <string name="pref_challenge">Herausforderungen</string>
+    <string name="alarm_settings_action_remove">Löschen</string>
+    <string name="alarm_settings_action_toggle">Umschalten</string>
+    <string name="pref_alarm_snooze_enabled">Schlummer aktivieren</string>
+    <string name="pref_alarm_snooze_time">Schlummerlänge</string>
+    
+    <string name="pref_volume">Lautstärke</string>
 	
 </resources>
