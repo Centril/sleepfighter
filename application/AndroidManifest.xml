@@ -66,6 +66,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="se.chalmers.dat255.sleepfighter.activity.EditGPSFilterAreaActivity" />
         </activity>
+        <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.GPSFilterRefreshReceiver" />
     	<!-- END	GPS related stuff -->
 
         <activity
