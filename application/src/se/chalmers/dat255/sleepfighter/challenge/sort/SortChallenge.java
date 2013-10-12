@@ -41,6 +41,13 @@ import android.widget.TextView;
 
 import com.google.common.collect.Lists;
 
+/**
+ * SortChallenge is a challenge where user sorts generated numbers ASC/DESC.
+ *
+ * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+ * @version 1.0
+ * @since Oct 6, 2013
+ */
 public class SortChallenge implements Challenge {
 	/**
 	 * PrototypeDefinition for SortChallenge.
@@ -154,7 +161,6 @@ public class SortChallenge implements Challenge {
 	private void setupModel() {
 		this.model = new SortModel();
 		this.model.setSize( NUMBERS_COUNT );
-		this.model.setGenerator( this.makeGenerator() );
 	}
 
 	/**
@@ -163,7 +169,7 @@ public class SortChallenge implements Challenge {
 	 * @return the made generator.
 	 */
 	private NumberListGenerator makeGenerator() {
-		return new ClusteredGaussianListGenerator();
+		return this.rng.nextBoolean() ? new ClusteredGaussianListGenerator() : new PermutatingListGenerator();
 	}
 
 	/**
@@ -209,6 +215,7 @@ public class SortChallenge implements Challenge {
 	 * Generates a list of numbers from model and sets a shuffled version of them.
 	 */
 	private void updateNumbers() {
+		this.model.setGenerator( this.makeGenerator() );
 		this.model.generateList( rng );
 		this.shuffledNumbers = this.model.getShuffledList();
 

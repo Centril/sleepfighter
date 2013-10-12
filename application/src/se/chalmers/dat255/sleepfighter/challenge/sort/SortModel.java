@@ -119,6 +119,7 @@ public class SortModel implements Parcelable {
 	 * <p>Before generating the list, you must call {@link #setSize(int)}.</p>
 	 */
 	public void generateList( Random rng ) {
+		this.generator.setNumDigits( 3 );
 		int[] numbers = this.generator.generateList( rng, size );
 
 		this.stepIndex = 0;
@@ -193,7 +194,6 @@ public class SortModel implements Parcelable {
 	public Order getSortOrder() {
 		return this.sortOrder;
 	}
-
 
 	/* --------------------------------
 	 * Parcelable stuff.
