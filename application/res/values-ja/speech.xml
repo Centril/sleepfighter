@@ -24,27 +24,8 @@
     <string name="speech_wake_up_format">おはようございます。お目覚めの時間です。</string>
      <string name="speech_time_format">時刻は　%s　です。</string>
      <string name="speech_weather_format">天気は　%s　です。</string>
-  
-     <string name="speech_time_format_string"></string>
- 
-
-          <!-- 
-          References: 
-          http://ja.wikipedia.org/wiki/%E5%A4%A9%E6%B0%97
-          http://ja.wikipedia.org/wiki/%E9%9B%A8
-          http://ja.wikipedia.org/wiki/%E9%9B%AA
-          http://www.jma.go.jp/jma/kishou/know/yougo_hp/kaze.html
-          http://www6.ocn.ne.jp/~ayc1991/2009kanaji.htm
-          http://www.jma.go.jp/jma/kishou/know/faq/faq2.html
-    
-          http://www3.nhk.or.jp/weather/
-          http://tenki.jp/
-          http://okwave.jp/qa/q2631683.html
-          http://ja.wikipedia.org/wiki/%E9%9B%B2%E9%87%8F
-    	      
-      -->
       
-      <string name="clear">晴れました　晴れて</string>
+      <string name="clear">晴れています　晴れていて</string>
      
      <string name="possible_very_light_rain">霧雨の可能性です 霧雨の可能性で</string>
      <string name="very_light_rain">霧雨です 霧雨で</string>
