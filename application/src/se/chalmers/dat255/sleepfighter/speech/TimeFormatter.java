@@ -20,19 +20,39 @@ package se.chalmers.dat255.sleepfighter.speech;
 
 import java.util.Locale;
 
-// Utility for formatting times to strings:
-// 9:45 will be formatted to quarter to ten
-// 6:10 will be formatted to 
+// Utility for formatting times to strings to be read out by the speech feature:
+// For example, 9:45 will be formatted to "quarter to 10"
 public class TimeFormatter {
 	
 	private final Locale locale;
 	private final String am;
 	private final String pm;
+	private final String past;
+	private final String to;
+	private final String quarter;
+	private final String halfPast;
+	
+	private final static Locale SWEDISH = new Locale("sv", "SE");
 	
 	public TimeFormatter(final Locale locale) {
 		this.locale = locale;
-		this.am = "a. m. ";
-		this.pm = "p. m. ";
+		if(locale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
+			this.am = "a. m. ";
+			this.pm = "p. m. ";
+			past = "past";
+			to = "to";
+			quarter = "quarter";
+			halfPast = "half past";
+		} else if(locale.getLanguage().equals(SWEDISH.getLanguage())) {
+			this.am = "på förmiddagen";
+			this.pm = "på eftermiddagen";	
+			to = "i";
+			past = "över";
+			quarter = "kvart";
+			halfPast = "halv";
+		} else {
+			throw new IllegalArgumentException("The locale is not supported: "+ locale);
+		}
 	}
 
 	// round the minutes to its nearest five minutes
@@ -69,7 +89,7 @@ public class TimeFormatter {
 		} else if(min == 10) {
 			return "10";
 		} else if(min == 15) {
-			return "quarter";
+			return quarter;
 		} else if(min == 20) {
 			return "20";
 		} else if(min == 25) {
@@ -81,16 +101,27 @@ public class TimeFormatter {
 	
 	private String minuteToString(int min) {
 		if(min == 30) {
-			return "half past";
+			return halfPast;
+		}
+		
+
+		if(locale.getLanguage().equals(SWEDISH.getLanguage())) {
+
+			// because for example "25 past 3" becomes "5 i half fyra" in Swedish. 
+			if(min == 25) {
+				return "5 " + to + " " + halfPast; 
+			} else if(min == 35) {
+				return "5 " + past + " " + halfPast;
+			}
 		}
 		
 		// is either the value "past" or "to"
 		String pastOrTo;
 		if(min > 30) {
-			pastOrTo ="to";
+			pastOrTo =to;
 			min = 60 -min;
 		} else {
-			pastOrTo = "past";
+			pastOrTo = past;
 		}
 		
 		return minuteToStringUtil(min) + " " + pastOrTo;
@@ -132,11 +163,29 @@ public class TimeFormatter {
 		} else {
 			
 			int h;
-			if(min <= 30) {
-				h = hour;
+			
+			
+			/*
+			 * "half past" and "halv" works differently. For example,
+			 * "Half past ten" becomes "halv elva"
+			 */
+			if(locale.getLanguage().equals(SWEDISH.getLanguage())) {
+				
+				if(min < 30 &&
+						// because for example "25 past 3" becomes "5 i half fyra" in Swedish. 
+						min != 25) {
+					h = hour;
+				} else {
+					h = (1+hour);
+				}
 			} else {
-				h = (1+hour);
+				if(min <= 30) {
+					h = hour;
+				} else {
+					h = (1+hour);
+				}
 			}
+	
 			
 			if(h == 13) {
 				h = 1;
