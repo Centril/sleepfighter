@@ -19,9 +19,13 @@
 -->
 <resources>
     
+ 
+
     <string name="speech_wake_up_format">おはようございます。お目覚めの時間です。</string>
      <string name="speech_time_format">時刻は　%s　です。</string>
      <string name="speech_weather_format">天気は　%s　です。</string>
+  
+     <string name="speech_time_format_string"></string>
  
 
           <!-- 

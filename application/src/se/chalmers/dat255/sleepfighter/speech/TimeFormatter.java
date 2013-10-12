@@ -20,6 +20,8 @@ package se.chalmers.dat255.sleepfighter.speech;
 
 import java.util.Locale;
 
+import se.chalmers.dat255.sleepfighter.R;
+
 // Utility for formatting times to strings to be read out by the speech feature:
 // For example, 9:45 will be formatted to "quarter to 10"
 public class TimeFormatter {
@@ -50,7 +52,15 @@ public class TimeFormatter {
 			past = "över";
 			quarter = "kvart";
 			halfPast = "halv";
-		} else {
+		} else if(locale.getLanguage().equals(Locale.JAPANESE.getLanguage())) {
+			// These are not needed in the Japanese version. 
+			this.am = null;
+			this.pm = null;	
+			to = null;
+			past = null;
+			quarter = null;
+			halfPast = null;
+		}   else {
 			throw new IllegalArgumentException("The locale is not supported: "+ locale);
 		}
 	}
@@ -125,13 +135,18 @@ public class TimeFormatter {
 		}
 		
 		return minuteToStringUtil(min) + " " + pastOrTo;
-	}
+	}	
 	
 	// returns a string formatted the way humans read it.
 	// if the language is English, then for 10:30 it will return "half past ten"
 	// for 6:10 it will return "ten past six"
 	public String formatTime(int hour, int originalMin) {
+	
 		int min = roundMinute(originalMin);
+		
+		if(locale.getLanguage().equals(Locale.JAPANESE.getLanguage())) {
+			return String.format("%1$s時%2$s分", hour, min);
+		}
 		
 		// if we rounded to the next hour
 		if(min == 60 && originalMin > 55) {
