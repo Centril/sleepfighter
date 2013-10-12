@@ -61,4 +61,16 @@
 
     <string name="btn_complete">成功!</string>
     <string name="btn_fail">失敗</string>
+    
+        <string name="snooze">スヌーズ</string>
+    
+            <string name="challenge_points">チャレンジポイント</string>
+        
+       
+    <string name="alarm_emergency_stop">緊急中止</string>
+    <string name="alarm_emergency_dialog">アラームを止めてもよろしいですか? そうすると、%1$sを失います。ただし、このアラームはまた鳴りません。</string>
+    <plurals name="alarm_emergency_cost">
+        <item quantity="other">%dポイント</item>
+    </plurals>
+            
 </resources>

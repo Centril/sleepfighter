@@ -26,6 +26,7 @@
 	</string>
     <string name="edit_gpsfilter_area_unnamed">Unnamed</string>
 
+    
     <string name="action_edit_gpsfilter_area_help">Help</string>
     <string name="action_edit_gpsfilter_area_rename">Rename</string>
     <string name="action_edit_gpsfilter_area_undo">Undo</string>

@@ -74,5 +74,6 @@
     
     <string name="install_google_play_music_message">Vänligen installera Google Play Music</string>
     
+    <string name="challenge_points">Utmaningspoäng</string>
 
 </resources>

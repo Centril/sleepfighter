@@ -292,9 +292,12 @@ public class AlarmActivity extends Activity implements
 		if (SFApplication.get().getPrefs().isChallengesActivated()
 				&& this.alarm.getChallengeSet().isEnabled()) {
 			TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
+			
+			
+			String challengePointsStr = this.getResources().getString(R.string.challenge_points);	
 			pointText.setText(SFApplication.get().getPrefs()
 					.getChallengePoints()
-					+ " Challenge points");
+					+ " " + challengePointsStr);
 		} else {
 			findViewById(R.id.preChallengeFooter).setVisibility(View.INVISIBLE);
 		}
