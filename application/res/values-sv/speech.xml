@@ -25,6 +25,50 @@
  
      <string name="clear">klart</string>
      
+     <!-- 
+     These pages were used as references when translating the various weather conditions:
+     http://www.smhi.se/kunskapsbanken/meteorologi/vaderspraket-1.3847
+     http://www.smhi.se/kunskapsbanken/meteorologi/skalor-for-vindhastighet-1.252
+     http://sv.wikipedia.org/wiki/Molnm%C3%A4ngd
+     
+      -->
+     
+     <string name="possible_very_light_rain">möjligt duggregn</string>
+     <string name="very_light_rain">duggregn</string>
+     <string name="possible_light_rain">möjligt lätt regn</string>
+     <string name="light_rain">lätt regn</string>
+     <string name="medium_rain">regn</string>
+     <string name="heavy_rain">kraftigt regn</string>
+    
+     	  	
+     <!-- Translate sleet conditions here -->
+     
+     
+     <!-- light-snow is flurries in English. And
+     "A snow flurry is a brief instance of light snow, with very little or no accumulation of snow on the ground. -->
+      <string name="possible_very_light_snow">möjligt lätt snöfall</string>
+      <string name="very_light_snow">lätt snöfall</string>
+    
+      
+      <string name="possible_light_snow">möjligt måttligt snöfall</string>
+      <string name="light_snow">måttligt snöfall</string>
+    
+      <string name="medium_snow">snöfall</string>
+      <string name="heavy_snow">kraftigt snöfall</string>
+      
+      <string name="light_wind">svag vind</string>
+      <string name="medium_wind">måttlig vind</string> 
+      <string name="heavy_wind">blåsigt</string>
+      
+      <string name="low_humidity">torrt</string> 
+      <string name="high_humidity">fuktigt</string> 
+      <string name="fog">dimma</string> 
+      
+      <string name="light-clouds">delvis monligt</string> 
+      <string name="medium-clouds">monligt</string> 
+      <string name="heavy-clouds">mulet</string> 
+      
+      
      <!--  
       "clear": "clear",
   "possible-very-light-rain": "possible drizzle",
@@ -33,21 +77,26 @@
   "light-rain": "light rain",
   "medium-rain": "rain",
   "heavy-rain": "heavy rain",
+  
   "possible-very-light-sleet": "possible light sleet",
   "very-light-sleet": "light sleet",
   "possible-light-sleet": "possible light sleet",
   "light-sleet": "light sleet",
   "medium-sleet": "sleet",
   "heavy-sleet": "heavy sleet",
+  
   "possible-very-light-snow": "possible flurries",
   "very-light-snow": "flurries",
   "possible-light-snow": "possible light snow",
   "light-snow": "light snow",
   "medium-snow": "snow",
   "heavy-snow": "heavy snow",
+  
   "light-wind": "breezy",
   "medium-wind": "windy",
   "heavy-wind": "dangerously windy",
+  
+  
   "low-humidity": "dry",
   "high-humidity": "humid",
   "fog": "foggy",
