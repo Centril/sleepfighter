@@ -261,7 +261,7 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 				Debug.d("speech sample here");
 				// TODO: ask the user if he/she wants to install vox or something. 
 				
-				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getWakeUp();
+				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getSpeech();
 				tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
 				
 				return true;

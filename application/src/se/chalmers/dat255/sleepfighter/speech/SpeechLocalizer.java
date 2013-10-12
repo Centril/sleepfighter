@@ -20,11 +20,11 @@ public class SpeechLocalizer {
 		this.context = context;
 	}
 		
-	private static String getCurrentTime() {
+	private String getCurrentTime() {
 		DateTime time =  new DateTime();
 		int min = time.getMinuteOfHour();
 		int hour = time.getHourOfDay();
-		return TimeFormatter.formatTime(hour, min);
+		return new TimeFormatter(locale).formatTime(hour, min);
 	}
 
 	public String getWakeUp() {
