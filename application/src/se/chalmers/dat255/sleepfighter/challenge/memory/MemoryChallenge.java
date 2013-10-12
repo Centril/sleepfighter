@@ -152,14 +152,11 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 
 	// assign the buttons their listeners. 
 	private void commonStart(int flippedCardPosition) {
-		
-		
 		act.setContentView(R.layout.activity_alarm_challenge_memory);
-		
-		
+	
 		List<MemoryCardView> cards = new ArrayList<MemoryCardView>();
 		//R.id.challenge_memory_button_1;
-		
+
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_1));
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_2));
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_3));
@@ -168,8 +165,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_6));
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_7));
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_8));
-		
-	
+
 		int pos = 0;
 		for ( MemoryCardView card : cards ) {
 			if(mem.isUnoccupied(pos)) {
@@ -226,11 +222,12 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		outState.putParcelable(MEMORY_CARD_IMAGE_DATABASE, this.database);
 			
 		// if one card is flipped over when we rotate, then that card should obviously also be visible after
-		// the rotation is over. 
-		if(this.flippedCard != null && !waitingForCardsToFlipOver)
+		// the rotation is over.
+		if(this.flippedCard != null && !waitingForCardsToFlipOver) {
 			outState.putInt(FLIPPED_CARD_POSITION, this.flippedCard.getPosition());
-		else
+		} else {
 			outState.putInt(FLIPPED_CARD_POSITION, -1);
+		}
 		
 		return outState;
 	}

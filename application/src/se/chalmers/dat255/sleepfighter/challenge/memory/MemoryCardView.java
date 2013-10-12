@@ -18,9 +18,9 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge.memory;
 
+import se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.Button;
 
 /**
  * Represents a memory card graphically
@@ -30,18 +30,17 @@ import android.widget.Button;
  * @since Sep 28, 2013
  */
 
-public class MemoryCardView extends Button {
+public class MemoryCardView extends FontFitButton {
 
 	// what to show when the memory card is flipped over and hidden.
   	private static String HIDDEN =  "";
   	// what to show when the memory card s flipped over and shown.
   	private String SHOWN;
-  	
+
   	private int position;
-  	
+
   	private String currentImage;
-    
-  	
+
     public MemoryCardView(Context context) {
         super(context);
     }
@@ -49,41 +48,42 @@ public class MemoryCardView extends Button {
     public MemoryCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-	
+
 	public void hide() {
 		currentImage = HIDDEN;
 		super.setText(currentImage);
 		super.setClickable(true);
 	}
-	
+
 	public void show() {
 		currentImage = SHOWN;
 		super.setText(currentImage);
-		
+
 		// it should not be clickable when it is flipped. 
 		super.setClickable(false);
 	}
-	
+
 	public boolean isHidden() {
 		return this.currentImage.equals(HIDDEN);
 	}
-	
+
 	public boolean isShown() {
 		return !isHidden();
 	}
-	
+
 	public void flip() {
 		if(isHidden()) {
 			this.show();
-		} else
+		} else {
 			this.hide();
+		}
 	}
-	
+
 	public void setImage(String image) {
 		//super.setBackgroundResource(android.R.color.white);
 
 		SHOWN = image;
-		
+
 		// all cards are hidden by default. 
 		hide();
 	}
@@ -91,7 +91,7 @@ public class MemoryCardView extends Button {
 	public void setPosition(int position) {
 		this.position = position;
 	}
-	
+
 	public int getPosition() {
 		return this.position;
 	}
