@@ -58,7 +58,7 @@
       
       <string name="light_wind">svag vind</string>
       <string name="medium_wind">måttlig vind</string> 
-      <string name="heavy_wind">blåsigt</string>
+      <string name="heavy_wind">hård vind</string>
       
       <string name="low_humidity">torrt</string> 
       <string name="high_humidity">fuktigt</string> 
@@ -67,7 +67,6 @@
       <string name="light-clouds">delvis monligt</string> 
       <string name="medium-clouds">monligt</string> 
       <string name="heavy-clouds">mulet</string> 
-      
       
      <!--  
       "clear": "clear",
