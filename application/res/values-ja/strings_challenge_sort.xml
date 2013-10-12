@@ -24,6 +24,13 @@
     
        <string name="challenge_sort_settings_title">ソート設定</string>
     <string name="challenge_sort_color_confusion_title">カラー混乱</string>
-    <string name="challenge_sort_color_confusion_summary">オンにすると、それぞれの数字の背景式がランダムカラーになります。</string>
+    <string name="challenge_sort_color_confusion_summary">オンにすると、それぞれの数字の背景式がランダムなカラーになります。</string>
+    
+    
+    <string name="challenge_sort_color_saturation_confusion_title">彩度混乱</string>
+    <string name="challenge_sort_color_saturation_confusion_summary">オンニスルトそれぞれの数字の背景式がランダムな彩度になります。
+        カラー混乱がオンにする必要があります。
+
+    </string>
     
 </resources>

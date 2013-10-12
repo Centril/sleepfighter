@@ -59,4 +59,6 @@
     
     <string name="install_google_play_music_message">「Google Play Music」をインストールしてください</string>
 
+    <string name="btn_complete">成功!</string>
+    <string name="btn_fail">失敗</string>
 </resources>

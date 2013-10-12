@@ -87,4 +87,6 @@
      <string name="pref_use_speech_title">読み上げをオンにします</string>
      <string name="pref_speech_sample">見本</string>
    
+     <string name="challenge_test">見本</string>
+    
 </resources>

@@ -20,18 +20,28 @@
 <resources>
 
     <string-array name="challenge_names">
-        <item>Test</item>
+        <item>テスト</item>
         <item>数学</item>
         <item>神経衰弱</item>
         <item>数字をソート</item>
-        <item>ヘビのゲーム</item>
+        <item>フリーフォームへびのゲーム</item>
+        <item>回転へび</item>
+        <item>振って!</item>
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>A test challenge</item>
-        <item>数学の問題を解く</item>
-        <item>文字のカードを組む神経衰弱</item>
-        <item>大きさで数字をソートするチャレンジ</item>
-        <item>フリーフォームへびのゲーム</item>
+        <item>テストチャレンジです</item>
+        <item>数学の問題を解きます</item>
+        <item>文字のカードを組む神経衰弱です</item>
+        <item>大きさで数字をソートするチャレンジです</item>
+        <item>思うままにヘービを操ることができるへびのゲームです</item>
+        <item>携帯を回転するとヘービを操ることができるヘービのゲームです</item>
+        <item>携帯を振るチャレンジです</item>
+    
     </string-array>
+
+    <string name="fluidSnakeTitle">ヘービを操るためにタップしてください</string>
+    
+<string name="rotoSnakeTitle">ヘービを操るために携帯を回転してください</string>
+        
 
 </resources>
