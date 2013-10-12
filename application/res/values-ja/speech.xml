@@ -23,7 +23,7 @@
      <string name="speech_time_format">時刻は　%s　です。</string>
      <string name="speech_weather_format">天気は　%s　です。</string>
  
-     
+
           <!-- 
           References: 
           http://ja.wikipedia.org/wiki/%E5%A4%A9%E6%B0%97
@@ -36,7 +36,7 @@
           http://www3.nhk.or.jp/weather/
           http://tenki.jp/
           http://okwave.jp/qa/q2631683.html
-
+          http://ja.wikipedia.org/wiki/%E9%9B%B2%E9%87%8F
     	      
       -->
       
@@ -50,10 +50,7 @@
      <string name="heavy_rain">強い雨</string>
     
      <!-- Translate sleet conditions here -->
-     
-     
-     <!-- light-snow is flurries in English. And
-     "A snow flurry is a brief instance of light snow, with very little or no accumulation of snow on the ground. -->
+        
       <string name="possible_very_light_snow">薄雪が可能性がある</string>
       <string name="very_light_snow">薄雪</string>
   
@@ -71,9 +68,9 @@
       <string name="high_humidity">湿気が多い</string> 
       <string name="fog">霧</string> 
       
-      <string name="light-clouds">少し曇っていた</string> 
-      <string name="medium-clouds">曇っていた</string> 
-      <string name="heavy-clouds">曇っていた</string> 
+      <string name="light_clouds">少し曇っていた</string> 
+      <string name="medium_clouds">曇っていた</string> 
+      <string name="heavy_clouds">曇っていた</string> 
       
      <!--  
       "clear": "clear",

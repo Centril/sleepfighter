@@ -23,7 +23,6 @@
      <string name="speech_time_format">Klockan är %s</string>
      <string name="speech_weather_format">och vädret är %s</string>
  
-     <string name="clear">klart</string>
      
      <!-- 
      These pages were used as references when translating the various weather conditions:
@@ -32,6 +31,8 @@
      http://sv.wikipedia.org/wiki/Molnm%C3%A4ngd
      
       -->
+     
+     
      
      <string name="possible_very_light_rain">möjligt duggregn</string>
      <string name="very_light_rain">duggregn</string>
@@ -58,15 +59,15 @@
       
       <string name="light_wind">svag vind</string>
       <string name="medium_wind">måttlig vind</string> 
-      <string name="heavy_wind">hård vind</string>
+      <string name="heavy_wind">h</string>
       
       <string name="low_humidity">torrt</string> 
       <string name="high_humidity">fuktigt</string> 
       <string name="fog">dimma</string> 
       
-      <string name="light-clouds">delvis monligt</string> 
-      <string name="medium-clouds">monligt</string> 
-      <string name="heavy-clouds">mulet</string> 
+      <string name="light_clouds">delvis monligt</string> 
+      <string name="medium_clouds">monligt</string> 
+      <string name="heavy_clouds">mulet</string> 
       
      <!--  
       "clear": "clear",
