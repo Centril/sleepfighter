@@ -24,7 +24,57 @@
      <string name="speech_weather_format">天気は　%s　です。</string>
  
      
+          <!-- 
+          References: 
+          http://ja.wikipedia.org/wiki/%E5%A4%A9%E6%B0%97
+          http://ja.wikipedia.org/wiki/%E9%9B%A8
+          http://ja.wikipedia.org/wiki/%E9%9B%AA
+          http://www.jma.go.jp/jma/kishou/know/yougo_hp/kaze.html
+          http://www6.ocn.ne.jp/~ayc1991/2009kanaji.htm
+          http://www.jma.go.jp/jma/kishou/know/faq/faq2.html
+    
+          http://www3.nhk.or.jp/weather/
+          http://tenki.jp/
+          http://okwave.jp/qa/q2631683.html
+
+    	      
+      -->
+      
+      <string name="clear">晴れた</string>
      
+     <string name="possible_very_light_rain">霧雨が可能性がある</string>
+     <string name="very_light_rain">霧雨</string>
+     <string name="possible_light_rain">弱い雨が可能性がある</string>
+     <string name="light_rain">弱い雨</string>
+     <string name="medium_rain">雨</string>
+     <string name="heavy_rain">強い雨</string>
+    
+     <!-- Translate sleet conditions here -->
+     
+     
+     <!-- light-snow is flurries in English. And
+     "A snow flurry is a brief instance of light snow, with very little or no accumulation of snow on the ground. -->
+      <string name="possible_very_light_snow">薄雪が可能性がある</string>
+      <string name="very_light_snow">薄雪</string>
+  
+      <string name="possible_light_snow">小雪が可能性がある</string>
+      <string name="light_snow">小雪</string>
+    
+      <string name="medium_snow">雪</string>
+      <string name="heavy_snow">大雪</string>
+      
+      <string name="light_wind">弱い風</string>
+      <string name="medium_wind">やや強い風</string> 
+      <string name="heavy_wind">強い風</string>
+      
+      <string name="low_humidity">乾燥</string> 
+      <string name="high_humidity">湿気が多い</string> 
+      <string name="fog">霧</string> 
+      
+      <string name="light-clouds">少し曇っていた</string> 
+      <string name="medium-clouds">曇っていた</string> 
+      <string name="heavy-clouds">曇っていた</string> 
+      
      <!--  
       "clear": "clear",
   "possible-very-light-rain": "possible drizzle",
@@ -33,21 +83,26 @@
   "light-rain": "light rain",
   "medium-rain": "rain",
   "heavy-rain": "heavy rain",
+  
   "possible-very-light-sleet": "possible light sleet",
   "very-light-sleet": "light sleet",
   "possible-light-sleet": "possible light sleet",
   "light-sleet": "light sleet",
   "medium-sleet": "sleet",
   "heavy-sleet": "heavy sleet",
+  
   "possible-very-light-snow": "possible flurries",
   "very-light-snow": "flurries",
   "possible-light-snow": "possible light snow",
   "light-snow": "light snow",
   "medium-snow": "snow",
   "heavy-snow": "heavy snow",
+  
   "light-wind": "breezy",
   "medium-wind": "windy",
   "heavy-wind": "dangerously windy",
+  
+  
   "low-humidity": "dry",
   "high-humidity": "humid",
   "fog": "foggy",
@@ -55,5 +110,7 @@
   "medium-clouds": "mostly cloudy",
   "heavy-clouds": "overcast",
      -->
+     
+    
      
 </resources>
