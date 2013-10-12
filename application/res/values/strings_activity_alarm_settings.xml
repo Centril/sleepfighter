@@ -63,4 +63,11 @@
 
     <string name="pref_volume">Volume</string>
     
+    <string name="snooze_category_title">Snooze</string>
+   
+     <string name="speech_category_title">Speech</string> 
+     <string name="pref_use_speech_summary">Read out the time and weather when the alarm goes off</string>
+     <string name="pref_use_speech_title">Use Speech</string>
+     <string name="pref_speech_sample">Sample</string>
+   
 </resources>

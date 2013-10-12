@@ -64,7 +64,7 @@
 	
 	  <string name="pref_alarm_vibration">バイブレーション</string>
 	  
-	  <string name="pref_alarm_snooze_enabled">スヌーズをオンにする</string>
+	  <string name="pref_alarm_snooze_enabled">スヌーズをオンにします</string>
     <string name="pref_alarm_snooze_time">スヌーズの長さ</string>
 	
      <string name="pref_volume">音量</string>
@@ -79,4 +79,12 @@
   
      <string name="title_alarm_challenge_settings">チャレンジ設定</string>  
 	
+       <string name="general_category_title">一般</string>
+      <string name="snooze_category_title">スヌーズ</string>
+   
+      <string name="speech_category_title">読み上げ</string> 
+     <string name="pref_use_speech_summary">アラームが鳴ってい時に、時刻と本日の天気予報を読み上げます</string>
+     <string name="pref_use_speech_title">読み上げをオンにします</string>
+     <string name="pref_speech_sample">見本</string>
+   
 </resources>

@@ -73,7 +73,7 @@
             android:title="@string/pref_challenge" />
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="Snooze" >
+    <PreferenceCategory android:title="@string/snooze_category_title" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_alarm_snooze_enabled"
@@ -87,16 +87,16 @@
             android:title="@string/pref_alarm_snooze_time" />
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="Speech" >
+    <PreferenceCategory android:title="@string/speech_category_title" >
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_alarm_speech"
-            android:summary="Read out time and weather when the alarm goes off"
-            android:title="Use Speech" />
+            android:summary="@string/pref_use_speech_summary"
+            android:title="@string/pref_use_speech_title" />
 
         <Preference
             android:key="pref_speech_sample"
-            android:title="Sample" />
+            android:title="@string/pref_speech_sample" />
     </PreferenceCategory>
     
     <PreferenceCategory

@@ -52,8 +52,15 @@
      <string name="light_rain">弱い雨</string>
      <string name="medium_rain">雨</string>
      <string name="heavy_rain">強い雨</string>
-    
-     <!-- Translate sleet conditions here -->
+     
+  
+     <!--TODO:  Translate sleet conditions here -->
+     <string name="possible_very_light_sleet">möjligt lätt snöblandat regn</string>
+     <string name="very_light_sleet">lätt snöblandat regn</string>
+     <string name="possible_light_sleet">möjligt lätt snöblandat regn</string>
+     <string name="light_sleet">lätt snöblandat regn</string>
+     <string name="medium_sleet">snöblandat regn</string>
+     <string name="heavy_sleet">kraftigt snöblandat regn</string>
         
       <string name="possible_very_light_snow">薄雪が可能性がある</string>
       <string name="very_light_snow">薄雪</string>

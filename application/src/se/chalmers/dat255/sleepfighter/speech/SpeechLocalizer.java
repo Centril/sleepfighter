@@ -38,10 +38,14 @@ public class SpeechLocalizer {
 	}
 	
 	private String getWeather(WeatherDataFetcher weather) {
+		return getWeather(weather.getSummary());
+	}
+	
+	private String getWeather(String weather) {
 		String weatherFormat = context.getResources().getString(R.string.speech_weather_format);
-		//Locale current = getResources().getConfiguration().locale;
-		//String localizedWeatherStr = new WeatherTranslator(current).translate(weatherStr); 
-		return String.format(weatherFormat, weather.getSummary());
+		
+		String w = new WeatherTranslator(locale, context).translate(weather);
+		return String.format(weatherFormat, w);
 			
 	}
 	

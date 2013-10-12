@@ -44,7 +44,12 @@
     
      	  	
      <!-- Translate sleet conditions here -->
-     
+     <string name="possible_very_light_sleet">möjligt lätt snöblandat regn</string>
+     <string name="very_light_sleet">lätt snöblandat regn</string>
+     <string name="possible_light_sleet">möjligt lätt snöblandat regn</string>
+     <string name="light_sleet">lätt snöblandat regn</string>
+     <string name="medium_sleet">snöblandat regn</string>
+     <string name="heavy_sleet">kraftigt snöblandat regn</string>     
      
      <!-- light-snow is flurries in English. And
      "A snow flurry is a brief instance of light snow, with very little or no accumulation of snow on the ground. -->
