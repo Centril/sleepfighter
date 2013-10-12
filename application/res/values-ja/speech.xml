@@ -44,44 +44,43 @@
     	      
       -->
       
-      <string name="clear">晴れた</string>
+      <string name="clear">晴れました　晴れて</string>
      
-     <string name="possible_very_light_rain">霧雨が可能性がある</string>
-     <string name="very_light_rain">霧雨</string>
-     <string name="possible_light_rain">弱い雨が可能性がある</string>
-     <string name="light_rain">弱い雨</string>
-     <string name="medium_rain">雨</string>
-     <string name="heavy_rain">強い雨</string>
+     <string name="possible_very_light_rain">霧雨の可能性です 霧雨の可能性で</string>
+     <string name="very_light_rain">霧雨です 霧雨で</string>
+     <string name="possible_light_rain">弱い雨の可能性です　弱い雨の可能性で</string>
+     <string name="light_rain">弱い雨です　弱い雨で</string>
+     <string name="medium_rain">雨です　雨で</string>
+     <string name="heavy_rain">強い雨です　強い雨で</string>
      
-  
      <!--TODO:  Translate sleet conditions here -->
-     <string name="possible_very_light_sleet">möjligt lätt snöblandat regn</string>
-     <string name="very_light_sleet">lätt snöblandat regn</string>
-     <string name="possible_light_sleet">möjligt lätt snöblandat regn</string>
-     <string name="light_sleet">lätt snöblandat regn</string>
-     <string name="medium_sleet">snöblandat regn</string>
-     <string name="heavy_sleet">kraftigt snöblandat regn</string>
+     <string name="possible_very_light_sleet">とても弱いみぞれの可能性です とても弱いみぞれの可能性で</string>
+     <string name="very_light_sleet">とても弱いみぞれです とても弱いみぞれで</string>
+     <string name="possible_light_sleet">弱いみぞれの可能性です 弱いみぞれの可能性で</string>
+     <string name="light_sleet">弱いみぞれです 弱いみぞれで</string>
+     <string name="medium_sleet">みぞれです　みぞれで</string>
+     <string name="heavy_sleet">強いみぞれです　強いみぞれで</string>
         
-      <string name="possible_very_light_snow">薄雪が可能性がある</string>
-      <string name="very_light_snow">薄雪</string>
+      <string name="possible_very_light_snow">とても弱い雪の可能性です　とても弱い雪の可能性で</string>
+      <string name="very_light_snow">とても弱い雪です　とても弱い雪で</string>
   
-      <string name="possible_light_snow">小雪が可能性がある</string>
-      <string name="light_snow">小雪</string>
+      <string name="possible_light_snow">弱い雪の可能性です　弱い雪の可能性で</string>
+      <string name="light_snow">弱い雪です　弱い雪で</string>
     
-      <string name="medium_snow">雪</string>
-      <string name="heavy_snow">大雪</string>
+      <string name="medium_snow">雪です　雪で</string>
+      <string name="heavy_snow">強い雪です　強い雪で</string>
       
-      <string name="light_wind">弱い風</string>
-      <string name="medium_wind">やや強い風</string> 
-      <string name="heavy_wind">強い風</string>
+      <string name="light_wind">弱い風です　弱い風で</string>
+      <string name="medium_wind">やや強い風です　やや強い風で</string> 
+      <string name="heavy_wind">強い風です　強い風で</string>
       
-      <string name="low_humidity">乾燥</string> 
-      <string name="high_humidity">湿気が多い</string> 
-      <string name="fog">霧</string> 
+      <string name="low_humidity">乾燥しています　乾燥していて</string> 
+      <string name="high_humidity">湿っています　湿っていて</string> 
+      <string name="fog">霧です　霧で</string> 
       
-      <string name="light_clouds">少し曇っていた</string> 
-      <string name="medium_clouds">曇っていた</string> 
-      <string name="heavy_clouds">曇っていた</string> 
+      <string name="light_clouds">やや曇っています　やや曇っていて</string> 
+      <string name="medium_clouds">曇っています　曇っていて</string> 
+      <string name="heavy_clouds">曇っています　曇っていて</string> 
       
      <!--  
       "clear": "clear",
