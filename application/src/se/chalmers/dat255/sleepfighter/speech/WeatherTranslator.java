@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -86,8 +87,9 @@ class WeatherTranslator {
 	
 
 		// convert to lowercase.
-		weatherSummary = Character.toLowerCase(weatherSummary.charAt(0)) + weatherSummary.substring(1);
+		weatherSummary = weatherSummary.toLowerCase(Locale.ENGLISH);
 		
+		Debug.d("weather summary: " + weatherSummary);
 		
 		if(TextToSpeechUtil.isJapanese(this.locale)) {
 			return translateToJapanese(weatherSummary);

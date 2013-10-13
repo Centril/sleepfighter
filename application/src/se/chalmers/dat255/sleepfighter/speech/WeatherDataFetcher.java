@@ -70,7 +70,7 @@ public class WeatherDataFetcher {
 		// find the end of the data.
 		int endI = jsonData.indexOf("\"", i) + 1;
 		
-		return (String) jsonData.subSequence(i, endI);
+		return (String) jsonData.subSequence(i, endI-1);
 	}
 	
 	private String buildUrl(double lat, double lon) {
@@ -104,7 +104,7 @@ public class WeatherDataFetcher {
 			// the data we need is in the beginning, and it is rather short, so we only 
 			// need about the first 200 characters. 
 			// this speeds things up a bit. 
-			connection.setRequestProperty("Content-Length", "" + 200);
+			//connection.setRequestProperty("Content-Length", "" + 200);
 			connection.connect();
 		
 			if(connection.getResponseCode() == 400){
