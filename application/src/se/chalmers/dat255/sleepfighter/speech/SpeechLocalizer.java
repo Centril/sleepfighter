@@ -20,8 +20,7 @@ public class SpeechLocalizer {
 	private Locale ttsLocale;
 	private TextToSpeech tts;
 	
-	private Resources resources;
-	
+
 	public SpeechLocalizer(TextToSpeech tts, Activity activity) {
 		this.activity = activity;
 		this.ttsLocale = tts.getLanguage();
@@ -75,7 +74,7 @@ public class SpeechLocalizer {
 		DisplayMetrics metrics = new DisplayMetrics();
 		
 		activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		this.resources = new Resources(activity.getAssets(), metrics, conf);
+		new Resources(activity.getAssets(), metrics, conf);
 	}
 
 	// now we restore the original locale used by the device.
@@ -109,15 +108,4 @@ public class SpeechLocalizer {
 		restoreLocale();
 		return s;
 	}
-
-	
-	
-
-	// the text to be read out. The time is only read out, not the time.
-	/*public String getSpeech() {
-		switchToBestLocale();
-		String s = getWakeUp()  + " " +  getTime();	
-		restoreLocale();
-		return s;
-	}*/
 }

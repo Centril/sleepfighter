@@ -12,8 +12,8 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 
 // used for localizing weather summaries. 
 class WeatherTranslator {
@@ -79,6 +79,7 @@ class WeatherTranslator {
 	}
 	
 
+	@SuppressLint("DefaultLocale")
 	public String translate(String weatherSummary) {
 		if(TextToSpeechUtil.isEnglish(locale)) {
 			// Language of forecast.io is English, so we don't need to translate it.
