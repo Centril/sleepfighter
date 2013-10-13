@@ -141,14 +141,20 @@ public class TimeFormatter {
 	
 		int min = roundMinute(originalMin);
 		
-		if(TextToSpeechUtil.isJapanese(locale)) {
-			return String.format("%1$s時%2$s分", hour, min);
-		}
+		
 		
 		// if we rounded to the next hour
 		if(min == 60 && originalMin > 55) {
 			hour = (hour + 1) % 24;
 			min = 0;
+		}
+		
+		if(TextToSpeechUtil.isJapanese(locale)) {
+			if(min == 0) {
+				return String.format("%1$s時", hour);
+			} else {
+				return String.format("%1$s時%2$s分", hour, min);
+			}
 		}
 				
 		String ampm;

@@ -56,6 +56,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
+	
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
