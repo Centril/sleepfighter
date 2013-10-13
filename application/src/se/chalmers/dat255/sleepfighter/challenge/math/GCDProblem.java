@@ -33,8 +33,8 @@ public class GCDProblem implements MathProblem {
 	final Context context;
 	
 	// ranges of the numbers to compute the gcd of. 
-	final static int MIN = 100;
-	final static int MAX = 5000;
+	final static int MIN = 1000;
+	final static int MAX = 7000;
 	
 	private int solution;
 	private int number1;
@@ -65,7 +65,10 @@ public class GCDProblem implements MathProblem {
 			this.number2 = RandomMath.nextRandomRanged(rng, MIN, MAX);
 		}
 		
+		
 		this.solution = gcd(number1, number2);
+
+		
 	}
 	
 	// compute the gcd of two numbers using Euclid's algorithm

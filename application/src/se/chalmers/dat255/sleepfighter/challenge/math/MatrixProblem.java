@@ -28,6 +28,7 @@ import android.content.Context;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.MatrixUtil;
+import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 
 /*
  * Challenge: compute the matrix product of two 3x3 matrices. Then compute the determinant of the product.
@@ -37,6 +38,7 @@ public class MatrixProblem implements MathProblem {
 	private final Context context;
 	
 	private static final int MAX_INT = 7;
+	private static final int MIN_INT = -3;
 	
 	// we use 3x3 matrices.
 	private static final int MATRIX_SIZE = 3;
@@ -56,12 +58,9 @@ public class MatrixProblem implements MathProblem {
 		return this.solution;
 	}
 	
-	
-	// for now determinant. 
-	
 	private int randomSmallInt() {
-		// we don't want to big integers. 
-		return rng.nextInt(MAX_INT);
+		// we don't want too big integers. 
+		return RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT);
 	}
 	
 	private RealMatrix createRandomMatrix() {

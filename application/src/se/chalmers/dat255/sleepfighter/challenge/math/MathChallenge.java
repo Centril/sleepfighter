@@ -96,6 +96,7 @@ public class MathChallenge implements Challenge {
 		}else if(problemType == ProblemType.matrix) {
 			problem = new MatrixProblem(context);			
 		}
+		problem = new MatrixProblem(context);
 		
 		problem.newProblem();
 		this.problemString = problem.render();
