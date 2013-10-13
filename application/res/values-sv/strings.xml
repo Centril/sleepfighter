@@ -76,4 +76,13 @@
     
     <string name="challenge_points">Utmaningspoäng</string>
 
+    <string name="do_not_show_again">Visa inte igen</string>
+    
+    <string name="no_voice_installed_title">Ingen röst installerad</string>
+    <string name="no_voice_installed_message">Det finns ingen röst för ditt språk,
+         så engelska kommer att användas istället.
+         Om du vill ha en röst för ditt språk, installera vänligen den via en app
+         som SVOX</string>
+    
+    
 </resources>

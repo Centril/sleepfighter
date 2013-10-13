@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.content.Context;
@@ -52,7 +53,7 @@ public class TextToSpeechUtil {
 	 * Returns whether there exists an installed voice for the locale on the current device. 
 	 */
 	public static boolean languageHasVoice(Locale locale, TextToSpeech tts, Context context) {
-		return getBestLanguage(tts, context).getLanguage() == locale.getLanguage();
+		return getBestLanguage(tts, context).getLanguage().equals(locale.getLanguage());
 	}
 	
 	public static Locale getBestLanguage(TextToSpeech tts, Context context) {
@@ -70,10 +71,16 @@ public class TextToSpeechUtil {
 		Locale current = context.getResources().getConfiguration().locale;
 		Debug.d("current locale: " + current);
 		
+		
+		
+		
 		// exact match?
 		for(Locale locale : localeList) {
 			if(locale.equals(current)) {
-				return locale;
+				// the translation of speech.xml must also be 100% complete
+				//Otherwise speech_translation_done should be set to false. 
+				if(context.getResources().getString( R.string.speech_translation_done).equals("true"))
+					return locale;
 			}
 		}
 		
@@ -86,5 +93,17 @@ public class TextToSpeechUtil {
 		}
 		
 		return Locale.ENGLISH;
+	}
+	
+	public static boolean isEnglish(Locale locale) {
+		return locale.getLanguage().equals("en") || locale.getLanguage().equals("eng");
+	}
+	
+	public static boolean isSwedish(Locale locale) {
+		return locale.getLanguage().equals("sv") || locale.getLanguage().equals("swe");
+	}
+	
+	public static boolean isJapanese(Locale locale) {
+		return locale.getLanguage().equals("jp") || locale.getLanguage().equals("jpn");
 	}
 }

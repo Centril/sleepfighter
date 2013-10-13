@@ -31,6 +31,7 @@ public class GlobalSettingsActivity extends PreferenceActivity   {
 	
 	private final String GLOBAL_PRESET_ALARM_SUBSCREEN = "perf_global_preset_alarm";
 
+	
 	// Needs to support API level 9
 	@SuppressWarnings("deprecation")
 	@Override

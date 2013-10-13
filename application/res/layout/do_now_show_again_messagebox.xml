@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<linearlayout 
+<LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android" 
     android:id="@+id/layout_root"
     android:orientation="horizontal" 
@@ -7,9 +7,9 @@
      android:layout_height="fill_parent" 
      android:padding="10dp">
 	     
-    	    <checkbox android:text="Do not show again" android:id="@+id/skip" 
+    	    <CheckBox android:text="@string/do_not_show_again" android:id="@+id/skip" 
     	        android:layout_width="wrap_content" 
     	        android:layout_height="wrap_content">
     	        
-    	    </checkbox>	
-</linearlayout>
+    	    </CheckBox>	
+</LinearLayout>

@@ -19,12 +19,13 @@
 -->
 <resources>
     
+    <string name="speech_translation_done">true</string>
+    
     <string name="speech_wake_up_format">Godmorgon, det är dags att vakna.</string>
      <string name="speech_time_format">Klockan är %s</string>
      <string name="speech_weather_format">och vädret är %s</string>
  
  
-     
      <!-- 
      These pages were used as references when translating the various weather conditions:
      http://www.smhi.se/kunskapsbanken/meteorologi/vaderspraket-1.3847
@@ -32,8 +33,10 @@
      http://sv.wikipedia.org/wiki/Molnm%C3%A4ngd
      
       -->
+      <string name="and_word">och</string>
      
      
+      <string name="clear_weather">klart</string>
      
      <string name="possible_very_light_rain">möjligt duggregn</string>
      <string name="very_light_rain">duggregn</string>
@@ -43,7 +46,6 @@
      <string name="heavy_rain">kraftigt regn</string>
     
      	  	
-     <!-- Translate sleet conditions here -->
      <string name="possible_very_light_sleet">möjligt lätt snöblandat regn</string>
      <string name="very_light_sleet">lätt snöblandat regn</string>
      <string name="possible_light_sleet">möjligt lätt snöblandat regn</string>

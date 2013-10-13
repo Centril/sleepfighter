@@ -72,5 +72,14 @@
     <plurals name="alarm_emergency_cost">
         <item quantity="other">%dポイント</item>
     </plurals>
-            
+    
+    <string name="do_not_show_again">今後このメッセージを表示しません</string>
+    
+     <string name="no_voice_installed_title">声優がありません</string>
+   
+    <string name="no_voice_installed_message">
+        この携帯にはあなたの言語の声優がありませんので、
+        その代わりに英語を使用します。
+      	声優が欲しいなら、SVOXなどのアプリで声優をインストールしてください。</string>
+    
 </resources>

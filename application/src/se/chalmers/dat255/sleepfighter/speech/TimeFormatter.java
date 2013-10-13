@@ -20,8 +20,6 @@ package se.chalmers.dat255.sleepfighter.speech;
 
 import java.util.Locale;
 
-import se.chalmers.dat255.sleepfighter.R;
-
 // Utility for formatting times to strings to be read out by the speech feature:
 // For example, 9:45 will be formatted to "quarter to 10"
 public class TimeFormatter {
@@ -34,25 +32,24 @@ public class TimeFormatter {
 	private final String quarter;
 	private final String halfPast;
 	
-	private final static Locale SWEDISH = new Locale("sv", "SE");
-	
 	public TimeFormatter(final Locale locale) {
 		this.locale = locale;
-		if(locale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {
+			
+		if(TextToSpeechUtil.isEnglish(locale)) {
 			this.am = "a. m. ";
 			this.pm = "p. m. ";
 			past = "past";
 			to = "to";
 			quarter = "quarter";
 			halfPast = "half past";
-		} else if(locale.getLanguage().equals(SWEDISH.getLanguage())) {
+		} else if(TextToSpeechUtil.isSwedish(locale)) {
 			this.am = "på förmiddagen";
 			this.pm = "på eftermiddagen";	
 			to = "i";
 			past = "över";
 			quarter = "kvart";
 			halfPast = "halv";
-		} else if(locale.getLanguage().equals(Locale.JAPANESE.getLanguage())) {
+		} else if(TextToSpeechUtil.isJapanese(locale)) {
 			// These are not needed in the Japanese version. 
 			this.am = null;
 			this.pm = null;	
@@ -115,7 +112,7 @@ public class TimeFormatter {
 		}
 		
 
-		if(locale.getLanguage().equals(SWEDISH.getLanguage())) {
+		if(TextToSpeechUtil.isSwedish(locale)) {
 
 			// because for example "25 past 3" becomes "5 i half fyra" in Swedish. 
 			if(min == 25) {
@@ -144,7 +141,7 @@ public class TimeFormatter {
 	
 		int min = roundMinute(originalMin);
 		
-		if(locale.getLanguage().equals(Locale.JAPANESE.getLanguage())) {
+		if(TextToSpeechUtil.isJapanese(locale)) {
 			return String.format("%1$s時%2$s分", hour, min);
 		}
 		
@@ -184,7 +181,7 @@ public class TimeFormatter {
 			 * "half past" and "halv" works differently. For example,
 			 * "Half past ten" becomes "halv elva"
 			 */
-			if(locale.getLanguage().equals(SWEDISH.getLanguage())) {
+			if(TextToSpeechUtil.isSwedish(locale)) {
 				
 				if(min < 30 &&
 						// because for example "25 past 3" becomes "5 i half fyra" in Swedish. 

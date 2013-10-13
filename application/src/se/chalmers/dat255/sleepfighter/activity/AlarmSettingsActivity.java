@@ -18,6 +18,8 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
+import java.util.Locale;
+
 import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
@@ -259,9 +261,10 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Debug.d("speech sample here");
-				// TODO: ask the user if he/she wants to install vox or something. 
 				
-				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getSpeech();
+				languageHasNoVoice();
+				
+				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getSpeech("Dry and mostly cloudy");
 				tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
 				
 				return true;
@@ -271,6 +274,22 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 		this.bindChallengeAdvancedButton();
 
 		this.setupRingerPreferences();
+	}
+	
+	// if the user's current language doesn't have a voice installed
+	// notify the user that the English voice will used instead.
+	// also recommend the user to install a voice for his/her language. 
+	public void languageHasNoVoice() {
+		Locale deviceLocale = Locale.getDefault();
+		if(!TextToSpeechUtil.languageHasVoice(deviceLocale, tts, this)) {
+			DialogUtils.showDoNotShowAgainMessageBox(this, 
+					 getResources().getString(R.string.no_voice_installed_title),
+			 getResources().getString(R.string.no_voice_installed_message),
+
+					"no_voice_installed_for_language");
+
+		}
+		
 	}
 	
 
@@ -399,6 +418,7 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 				preference.setSummary(stringValue);
 			}
 			else if (SPEECH.equals(preference.getKey())) {
+				languageHasNoVoice();
 				alarm.setSpeech(("true".equals(stringValue)) ? true : false);
 			}
 			

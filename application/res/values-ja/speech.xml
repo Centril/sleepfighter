@@ -20,12 +20,15 @@
 <resources>
     
  
+    <string name="speech_translation_done">true</string>
+    
 
+    
     <string name="speech_wake_up_format">おはようございます。お目覚めの時間です。</string>
      <string name="speech_time_format">時刻は　%s　です。</string>
-     <string name="speech_weather_format">天気は　%s　です。</string>
+     <string name="speech_weather_format">天気は　%s。</string>
       
-      <string name="clear">晴れています　晴れていて</string>
+      <string name="clear_weather">晴れています　晴れていて</string>
      
      <string name="possible_very_light_rain">霧雨の可能性です 霧雨の可能性で</string>
      <string name="very_light_rain">霧雨です 霧雨で</string>
@@ -34,7 +37,6 @@
      <string name="medium_rain">雨です　雨で</string>
      <string name="heavy_rain">強い雨です　強い雨で</string>
      
-     <!--TODO:  Translate sleet conditions here -->
      <string name="possible_very_light_sleet">とても弱いみぞれの可能性です とても弱いみぞれの可能性で</string>
      <string name="very_light_sleet">とても弱いみぞれです とても弱いみぞれで</string>
      <string name="possible_light_sleet">弱いみぞれの可能性です 弱いみぞれの可能性で</string>
