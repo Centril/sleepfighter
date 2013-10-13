@@ -42,6 +42,7 @@ public class MemoryCardView extends Button {
 
   	private String currentImage;
   	
+  	
   	private float FONT_SIZE = 40;
 
     public MemoryCardView(Context context) {

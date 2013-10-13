@@ -73,10 +73,7 @@ public class MathChallenge implements Challenge {
 
 	private Random rng = new Random();
 
-	private ChallengeResolvedParams params;
-	
-	public boolean getHardProblemsSetting() {
-		// TODO: for some reason it always returns false.
+	public boolean getHardProblemsSetting(ChallengeResolvedParams params) {
 		return params.getBoolean("hard_problems");
 	}
 	
@@ -95,8 +92,7 @@ public class MathChallenge implements Challenge {
 			problem = new SimpleProblem();			
 		}else if(problemType == ProblemType.matrix) {
 			problem = new MatrixProblem(context);			
-		}
-		problem = new MatrixProblem(context);
+		} 
 		
 		problem.newProblem();
 		this.problemString = problem.render();
@@ -107,11 +103,9 @@ public class MathChallenge implements Challenge {
 	public void start(final ChallengeActivity activity, ChallengeResolvedParams params) {
 		this.context = activity;
 		
-		// here we randomize a type.
+		boolean hardProblems =  getHardProblemsSetting(params);
+		Debug.d("hard problems: " +hardProblems);
 		
-		// TODO: for some reason getHardProblemsSetting is always false.
-		boolean hardProblems = true;// getHardProblemsSetting();
-			
 		if(!hardProblems) {
 			this.problemType = ProblemType.simple;
 		} else {
