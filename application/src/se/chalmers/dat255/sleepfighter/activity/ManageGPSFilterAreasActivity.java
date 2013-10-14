@@ -153,7 +153,6 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		TextView textView = (TextView) this.findViewById( R.id.manage_gpsfilter_what_splash_text );
 		textView.setText( Html.fromHtml( this.getString( R.string.manage_gpsfilter_what_splash_text ) ) );
 		
-		
 		textView.setMovementMethod(new ScrollingMovementMethod());
 
 		// Define fade out animation.
