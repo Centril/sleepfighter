@@ -563,7 +563,6 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 
 		TextView textView = (TextView) this.splashInfoContainer.findViewById( R.id.edit_gpsfilter_area_splash_text );
 		textView.setText( Html.fromHtml( this.getString( R.string.edit_gpsfilter_area_splash_text ) ) );
-		//textView.setMovementMethod(new ScrollingMovementMethod());
 
 		// Define fade out animation.
 		this.splashFadeOut = new AlphaAnimation( 1.00f, 0.00f );
