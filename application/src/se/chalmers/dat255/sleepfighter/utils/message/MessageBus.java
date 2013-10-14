@@ -18,6 +18,9 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.utils.message;
 
+import android.util.Log;
+import net.engio.mbassy.IPublicationErrorHandler;
+import net.engio.mbassy.PublicationError;
 import net.engio.mbassy.bus.BusConfiguration;
 import net.engio.mbassy.bus.MBassador;
 
@@ -29,11 +32,30 @@ import net.engio.mbassy.bus.MBassador;
  * @since September 19, 2013
  */
 public class MessageBus<T extends Message> extends MBassador<T> {
+
+	private static final String TAG = MessageBus.class.getSimpleName();
+	
+	/**
+	 * Forward exceptions gotten during publish to Logcat. 
+	 */
+	private static class LogCatErrorHandler implements IPublicationErrorHandler {
+
+		@Override
+		public void handleError(PublicationError error) {
+			Log.e(TAG, error.getMessage(), error.getCause());
+		}
+		
+	}
+	
 	/**
 	 * Constructs bus with default bus config.
 	 */
 	public MessageBus() {
 		this( BusConfiguration.Default() );
+
+		// Custom handler needed so that exceptions thrown during publish won't
+		// be swallowed
+		addErrorHandler(new LogCatErrorHandler());
 	}
 
 	/**
