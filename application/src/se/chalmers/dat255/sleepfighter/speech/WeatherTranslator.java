@@ -24,11 +24,11 @@ class WeatherTranslator {
 
 	private Map<String, String> lookupTable;
 	
-	public String rs(final int i) {
+	private String rs(final int i) {
 		return context.getResources().getString(i);		
 	}
 	
-	public String and() {
+	private String and() {
 		return context.getResources().getString(R.string.and_word);
 	}
 	

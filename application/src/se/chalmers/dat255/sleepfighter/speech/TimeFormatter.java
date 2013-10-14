@@ -21,7 +21,7 @@ package se.chalmers.dat255.sleepfighter.speech;
 import java.util.Locale;
 
 // Utility for formatting times to strings to be read out by the speech feature:
-// For example, 9:45 will be formatted to "quarter to 10"
+// For example, 9:45 will be formatted to "quarter to 10" if the Locale is English.
 public class TimeFormatter {
 	
 	private final Locale locale;
@@ -63,7 +63,7 @@ public class TimeFormatter {
 	}
 
 	// round the minutes to its nearest five minutes
-	// 2 should be rounded to 0, 23 to 25, 22 to 20
+	// For example, 2 should be rounded to 0, 23 to 25, and 22 to 20
 	private int roundMinute(int min) {
 		
 		//hämta entalssiffran.
@@ -121,8 +121,7 @@ public class TimeFormatter {
 				return "5 " + past + " " + halfPast;
 			}
 		}
-		
-		// is either the value "past" or "to"
+	
 		String pastOrTo;
 		if(min > 30) {
 			pastOrTo =to;
@@ -135,13 +134,11 @@ public class TimeFormatter {
 	}	
 	
 	// returns a string formatted the way humans read it.
-	// if the language is English, then for 10:30 it will return "half past ten"
-	// for 6:10 it will return "ten past six"
+	// if the language is English, then for 10:30 it will return "half past 10" and
+	// for 6:10 it will return "10 past 6"
 	public String formatTime(int hour, int originalMin) {
 	
 		int min = roundMinute(originalMin);
-		
-		
 		
 		// if we rounded to the next hour
 		if(min == 60 && originalMin > 55) {
@@ -180,9 +177,7 @@ public class TimeFormatter {
 			hourStr = Integer.toString(hour);
 		} else {
 			
-			int h;
-			
-			
+			int h;	
 			/*
 			 * "half past" and "halv" works differently. For example,
 			 * "Half past ten" becomes "halv elva"
@@ -204,7 +199,6 @@ public class TimeFormatter {
 				}
 			}
 	
-			
 			if(h == 13) {
 				h = 1;
 			}
@@ -212,7 +206,7 @@ public class TimeFormatter {
 			hourStr = Integer.toString(h);
 		}
 		if(min == 0) {
-			// minutes are 0, so only need to tell the hours. 
+			// minutes are 0, so we only need to tell the hours. 
 			return hourStr + " " + ampm;
 		}
 		String minStr = minuteToString(min);

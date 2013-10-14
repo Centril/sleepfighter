@@ -31,7 +31,7 @@ public class WeatherDataFetcher {
 	private static final String KEY = "cb8a0d4b48c35b562d1b427b3f77552d";
 	
 	// the json weather data.
-	String jsonData;
+	private String jsonData;
 
 	
 	// build the url used to access the weather data, given latitudes and longitudes. 
@@ -124,7 +124,7 @@ public class WeatherDataFetcher {
 		}
 
 		return response;
-	}//httpGET - end
+	}
 
 	
 }

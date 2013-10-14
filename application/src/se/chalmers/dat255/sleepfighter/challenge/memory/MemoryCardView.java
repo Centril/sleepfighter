@@ -18,7 +18,6 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge.memory;
 
-import se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Button;

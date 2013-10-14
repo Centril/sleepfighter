@@ -34,11 +34,11 @@ public class SpeechLocalizer {
 		return new TimeFormatter(ttsLocale).formatTime(hour, min);
 	}
 	
-	public String getString(int id) {
+	private String getString(int id) {
 		return activity.getResources().getString(id);
 	}
 
-	public String getWakeUp() {
+	private String getWakeUp() {
 		return getString(R.string.speech_wake_up_format);
 	}
 	
@@ -58,8 +58,7 @@ public class SpeechLocalizer {
 		return String.format(weatherFormat, w);		
 	}
 	
-	// switch to the tts locale.
-	public void switchToBestLocale() {
+	private void switchToBestLocale() {
 		// If there is no voice for the current language of the user, switch to English. 
 		
 		originalDeviceLocale = Locale.getDefault();
@@ -78,7 +77,7 @@ public class SpeechLocalizer {
 	}
 
 	// now we restore the original locale used by the device.
-	public void restoreLocale() {
+	private void restoreLocale() {
 		
 		if(TextToSpeechUtil.languageHasVoice(originalDeviceLocale, tts, activity)) {
 			return;
