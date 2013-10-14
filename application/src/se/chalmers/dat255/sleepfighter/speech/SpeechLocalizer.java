@@ -100,6 +100,14 @@ public class SpeechLocalizer {
 		return s;
 	}
 	
+	public String getSpeech() {
+		switchToBestLocale();
+		String s = getWakeUp()  + " " +  getTime();
+		restoreLocale();
+		return s;
+	}
+
+
 	// the text to be read out. Both the time and weather is read out. 
 	public String getSpeech(String weather) {
 		switchToBestLocale();

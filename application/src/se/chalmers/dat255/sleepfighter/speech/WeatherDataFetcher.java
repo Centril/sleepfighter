@@ -35,7 +35,7 @@ public class WeatherDataFetcher {
 
 	
 	// build the url used to access the weather data, given latitudes and longitudes. 
-	public WeatherDataFetcher(double lat, double lon) {
+	public WeatherDataFetcher(double lat, double lon) throws IOException {
 			// fetch the json data form forecast.io
 	
 		Debug.d("about to fetch json data");
@@ -79,12 +79,13 @@ public class WeatherDataFetcher {
 		return s;
 	}
 	
+	
 	private static String doubleToString(double d) {
 		return String.valueOf(d).replace(",", ".");
 	}
 	
 
-	private String httpGET(String requestURL) {
+	private String httpGET(String requestURL) throws IOException {
 
 		//Variables
 		URL request = null;
@@ -117,11 +118,9 @@ public class WeatherDataFetcher {
 				response = scanner.useDelimiter("\\Z").next();
 				scanner.close();
 			}
-		} catch (IOException e) {
-			Debug.e(e);		
-			response = null;
-		} finally {		
-			connection.disconnect();
+		}finally {	
+			if(connection != null)
+				connection.disconnect();
 		}
 
 		return response;

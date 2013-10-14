@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Timer;
@@ -110,7 +111,7 @@ public class AlarmActivity extends Activity implements
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 	private boolean isFlashOn = true;
-
+	
 	private static final int EMERGENCY_COST = 50;
 	private static final int EMERGENCY_PERCENTAGE_COST = 20;
 	private static final int SNOOZE_COST = 10;
@@ -166,7 +167,12 @@ public class AlarmActivity extends Activity implements
 		protected WeatherDataFetcher doInBackground(Double... params) {
 			Debug.d("now executing weather data task");
 
-			return new WeatherDataFetcher(params[0], params[1]);
+			try {
+				return new WeatherDataFetcher(params[0], params[1]);
+			} catch (IOException e) {
+				// If we couldn't connect we'll have to do without the weather.
+				return null;		
+			}
 		}
 	}
 
@@ -174,8 +180,13 @@ public class AlarmActivity extends Activity implements
 	public void doSpeech(WeatherDataFetcher weather) {
 		// this.lowerVolume();
 
-		String s = new SpeechLocalizer(tts, this).getSpeech(weather);
-
+		String s;
+		
+		if(weather == null) {
+			s =  new SpeechLocalizer(tts, this).getSpeech();
+		} else {
+			s = new SpeechLocalizer(tts, this).getSpeech(weather);
+		}
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "stringId");
 		tts.speak(s, TextToSpeech.QUEUE_FLUSH, params);

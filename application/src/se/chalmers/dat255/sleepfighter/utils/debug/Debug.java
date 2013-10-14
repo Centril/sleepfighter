@@ -118,7 +118,6 @@ public final class Debug{
 		System.exit(1);
 	}
 	
-
 	public static enum DebugLevel implements Comparable<DebugLevel> {
 		NONE,
 		ERROR,
