@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -129,6 +130,8 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		this.setAdapter = new GPSFilterAreaAdapter( this, this.set );
 
 		this.setupSetView();
+		
+		
 	}
 
 	@Override
@@ -149,6 +152,9 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		// Fix text layout.
 		TextView textView = (TextView) this.findViewById( R.id.manage_gpsfilter_what_splash_text );
 		textView.setText( Html.fromHtml( this.getString( R.string.manage_gpsfilter_what_splash_text ) ) );
+		
+		
+		textView.setMovementMethod(new ScrollingMovementMethod());
 
 		// Define fade out animation.
 		this.splashFadeOut = new AlphaAnimation( 1.00f, 0.00f );

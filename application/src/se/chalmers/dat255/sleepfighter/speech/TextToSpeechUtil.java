@@ -63,7 +63,6 @@ public class TextToSpeechUtil {
 		    int res = tts.isLanguageAvailable(locale);
 		    if (res == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
 		        localeList.add(locale);
-		//        Debug.d("locale: " + locale.toString());
 		    }
 		}
 		// localeList now contains the available locales for tts. 
