@@ -361,7 +361,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 
 		if (this.alarm == null) {
 			// TODO: Better handling for final product
-			Toast.makeText(this, "Alarm is null (ID: " + alarm.getId() + ")", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Alarm is null", Toast.LENGTH_SHORT).show();
 			this.finish();
 		}
 

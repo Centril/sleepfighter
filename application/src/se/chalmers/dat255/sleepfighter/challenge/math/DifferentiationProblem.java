@@ -54,7 +54,7 @@ public class DifferentiationProblem implements MathProblem {
 			this.f = this.f.add(term);
 			
 			String sign;
-			if(s != "") {
+			if(!s.equals("")) {
 				// If we don't do this, minus signs will look like this:
 				// " x + -x". Instead it should obviously be "x - x"
 				sign  = (termStr.charAt(0) == '-' ? " " : " + ");		
