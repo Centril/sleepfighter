@@ -278,7 +278,7 @@ public class AlarmActivity extends Activity implements
 			}
 		});
 
-		Button btnSnooze = (Button) findViewById(R.id.btnSnooze);
+		btnSnooze = (Button) findViewById(R.id.btnSnooze);
 
 		if (alarm.getSnoozeConfig().isSnoozeEnabled()) {
 			btnSnooze.setOnClickListener(new OnClickListener() {
@@ -534,7 +534,7 @@ public class AlarmActivity extends Activity implements
 		super.onStart();
 
 		// Start animation and flash
-		//startAnimate();
+		startAnimate();
 		startFlash();
 
 		// Connect the client.
@@ -726,7 +726,7 @@ public class AlarmActivity extends Activity implements
 	 * Declaring new animations and sets to components
 	 */
 
-	/*private void startAnimate() {
+	private void startAnimate() {
 
 		// Setting animation
 		Animation fadeLong = new AlphaAnimation(1, 0);
@@ -744,5 +744,5 @@ public class AlarmActivity extends Activity implements
 		// Set the components with animation
 		btnSnooze.startAnimation(fadeLong);
 		tvTime.startAnimation(fadeShort);
-	}*/
+	}
 }
