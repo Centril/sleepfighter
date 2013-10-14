@@ -86,7 +86,7 @@ public class TextToSpeechUtil {
 		
 		// different countries, but same language?
 		for(Locale locale : localeList) {	
-			if(locale.getLanguage() == current.getLanguage()) {
+			if(locale.getLanguage().equals(current.getLanguage())) {
 				return locale;
 			}
 		}
