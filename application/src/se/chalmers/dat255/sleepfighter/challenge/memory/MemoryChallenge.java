@@ -188,10 +188,10 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		}
 	}
 	
-	private final String MEMORY = "memory";
-	private final String MEMORY_CARD_IMAGE_DATABASE = "memory_card_image_database";
+	private static final String MEMORY = "memory";
+	private static final String MEMORY_CARD_IMAGE_DATABASE = "memory_card_image_database";
 	
-	private final String FLIPPED_CARD_POSITION = "flipped_card_position";
+	private static final String FLIPPED_CARD_POSITION = "flipped_card_position";
 
 	@Override
 	public void start(final ChallengeActivity act, ChallengeResolvedParams params) {

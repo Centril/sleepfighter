@@ -28,7 +28,7 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 // gets the current weather from forecast.io given the current coordinates. 
 public class WeatherDataFetcher {
 
-	private final String KEY = "cb8a0d4b48c35b562d1b427b3f77552d";
+	private static final String KEY = "cb8a0d4b48c35b562d1b427b3f77552d";
 	
 	// the json weather data.
 	String jsonData;

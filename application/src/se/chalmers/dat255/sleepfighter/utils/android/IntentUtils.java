@@ -30,8 +30,8 @@ import android.content.Intent;
  * @since Sep 24, 2013
  */
 public class IntentUtils {
-	private final String ALARM_EXTRA_ID = "alarm_id";
-	private final String SETTING_PRESET_ALARM = "setting_preset_alarm";
+	private static final String ALARM_EXTRA_ID = "alarm_id";
+	private static final String SETTING_PRESET_ALARM = "setting_preset_alarm";
 	
 	private final Intent intent;
 

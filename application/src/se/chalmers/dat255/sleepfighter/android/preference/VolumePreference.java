@@ -34,7 +34,7 @@ import android.widget.SeekBar;
 public class VolumePreference extends DialogPreference {
 
 	// maximum number of points the slider can stick to
-	private final int maxNbr = 7;
+	private static final int maxNbr = 7;
 	
 	SeekBar slider;
 	private int volume;
