@@ -50,7 +50,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 16, 2013
  */	
 @DatabaseTable(tableName = "alarm")
-public class Alarm implements Cloneable, IdProvider {
+public class Alarm implements IdProvider {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -710,13 +710,6 @@ public class Alarm implements Cloneable, IdProvider {
 
 		Alarm rhs = (Alarm) obj;
 		return this.id == rhs.id;
-	}
-
-	/**
-	 * @see Alarm#Alarm(Alarm)
-	 */
-	public Alarm clone() throws CloneNotSupportedException {
-		return new Alarm( this );
 	}
 
 	/**
