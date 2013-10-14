@@ -45,7 +45,7 @@ public class MatrixProblem implements MathProblem {
 	
 	private int solution;
 	
-	String renderedString;
+	private String renderedString;
 	
 	private Random rng = new Random();
 	

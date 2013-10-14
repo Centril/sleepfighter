@@ -100,15 +100,13 @@ public class DifferentiationProblem implements MathProblem {
 	
 	private int solution;
 	
-	String renderedString;
+	private String renderedString;
 	
 	// the value for which to calculate to derivative for. So the solution becomes f'(x)
 	private int x;
 	
 	private Random rng = new Random();
-	
 
-	
 	public String render() {
 		return this.renderedString;
 	}
