@@ -175,12 +175,11 @@ public class AudioService extends Service implements OnPreparedListener,
 	}
 
 	private void handlePlaylistPlay(Intent intent) {
-		Object o = intent.getStringArrayExtra(BUNDLE_PLAYLIST);
-		if (!(o instanceof String[])) {
+		String[] tracks = intent.getStringArrayExtra(BUNDLE_PLAYLIST);
+		if (tracks == null) {
 			throw new IllegalArgumentException(
 					"No String[] bundled with PLAY_PLAYLIST action");
 		}
-		String[] tracks = (String[]) o;
 		if (tracks.length == 0) {
 			throw new IllegalArgumentException(
 					"Empty String[] bundled with PLAY_PLAYLIST action");
