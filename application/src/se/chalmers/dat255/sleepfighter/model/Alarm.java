@@ -277,7 +277,7 @@ public class Alarm implements IdProvider {
 		this.second = rhs.second;
 		this.isActivated = rhs.isActivated;
 		this.enabledDays = rhs.enabledDays;
-		this.name = rhs.name == null ? null : new String( rhs.name );
+		this.name = rhs.name;
 		this.isRepeating = rhs.isRepeating;
 
 		this.unnamedPlacement = 0;

@@ -74,7 +74,7 @@ public class WeatherDataFetcher {
 	}
 	
 	private String buildUrl(double lat, double lon) {
-		String s =  new String("https://api.forecast.io/forecast/") + KEY + "/" +
+		String s = "https://api.forecast.io/forecast/" + KEY + "/" +
 				doubleToString(lat) + "," + doubleToString(lon);
 		return s;
 	}

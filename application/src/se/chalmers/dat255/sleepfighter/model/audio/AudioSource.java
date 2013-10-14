@@ -75,7 +75,7 @@ public class AudioSource implements IdProvider {
 	 */
 	public AudioSource( AudioSource rhs ) {
 		this.type = rhs.type;
-		this.uri = new String( rhs.uri );
+		this.uri = rhs.uri;
 	}
 
 
