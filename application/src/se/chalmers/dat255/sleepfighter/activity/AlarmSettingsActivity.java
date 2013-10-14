@@ -411,7 +411,7 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 				alarm.getSnoozeConfig().setSnoozeEnabled("true".equals(stringValue) ? true : false);
 			}
 			else if (SNOOZE_TIME.equals(preference.getKey())) {
-				if (stringValue == "" || stringValue == "0") {
+				if (stringValue.equals("") || stringValue.equals("0")) {
 					stringValue = preference.getSummary().toString();
 				}
 				alarm.getSnoozeConfig().setSnoozeTime(Integer.parseInt(stringValue));
