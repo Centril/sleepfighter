@@ -34,6 +34,7 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.receiver.GPSFilterRefreshReceiver;
+import se.chalmers.dat255.sleepfighter.receiver.LocationReceiver;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.AlarmManager;
@@ -205,6 +206,7 @@ public class AlarmPlannerService extends IntentService {
 		}
 
 		GPSFilterRefreshReceiver.scheduleFix( app, scheduleTime );
+		LocationReceiver.scheduleFix( app, scheduleTime );
 		
 		schedule(scheduleTime, alarm);
 
@@ -297,7 +299,7 @@ public class AlarmPlannerService extends IntentService {
 		NotificationHelper.removeNotification(this);
 
 		// Unschedule any location fixes.
-		GPSFilterRefreshReceiver.unscheduleFix( SFApplication.get() );
+		LocationReceiver.unscheduleFix( SFApplication.get() );
 	}
 
 	/**
@@ -313,6 +315,7 @@ public class AlarmPlannerService extends IntentService {
 			throw new IllegalArgumentException( "No alarm was found with given id" );
 		}
 
+		
 		// Determine which time to schedule at by adding offset minutes from alarm to current time
 		MutableDateTime dateTime = MutableDateTime.now();
 		
