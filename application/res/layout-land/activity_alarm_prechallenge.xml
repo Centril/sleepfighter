@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@+id/layoutMiddle"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical" >
@@ -42,16 +42,16 @@
         android:id="@+id/layoutButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:orientation="vertical" >
+        android:orientation="horizontal" >
 
         <!-- Button to start the challenge -->
 
         <Button
             android:id="@+id/btnChallenge"
-            android:layout_width="248dp"
-            android:layout_height="80dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="@string/start_challenge"
             android:textSize="20sp" />
 
@@ -59,9 +59,10 @@
 
         <Button
             android:id="@+id/btnSnooze"
-            android:layout_width="248dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="@string/snooze"
             android:textSize="20sp" />
 

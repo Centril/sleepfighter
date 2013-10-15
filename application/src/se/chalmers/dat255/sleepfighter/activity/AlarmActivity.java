@@ -38,6 +38,7 @@ import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
+import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
@@ -138,11 +139,6 @@ public class AlarmActivity extends Activity implements
 		SFApplication.get().setWeather(null);
 	}
 
-
-	static Thread thread;
-
-	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -167,7 +163,7 @@ public class AlarmActivity extends Activity implements
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
-		tvName.setText(alarm.getName());
+		tvName.setText(MetaTextUtils.printAlarmName(this, alarm));
 		tvTime = (TextView) findViewById(R.id.tvAlarmTime);
 
 		// Connect the challenge button with XML

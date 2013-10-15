@@ -45,10 +45,6 @@
     <string name="deactivate">Alarm deactivated!</string>
      <string name="returned">Returned from uncompleted challenge.</string>
 
-    <!-- Alarm name & time, these should be overwritten -->
-    <string name="alarm_name" tools:ignore="MissingTranslation"></string>
-    <string name="alarm_time" tools:ignore="MissingTranslation"></string>
-
     <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">
         <item>No alarm active</item>
