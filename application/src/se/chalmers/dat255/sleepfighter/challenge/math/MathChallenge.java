@@ -69,7 +69,7 @@ public class MathChallenge implements Challenge {
 	private String problemString;
 	private int problemSolution;
 	
-	private Context context;
+	private ChallengeActivity activity;
 
 	private Random rng = new Random();
 
@@ -83,15 +83,15 @@ public class MathChallenge implements Challenge {
 		MathProblem problem = null;
 		
 		if(problemType == ProblemType.differentiation) {
-			problem = new DifferentiationProblem(context);			
+			problem = new DifferentiationProblem(activity);			
 		} else if(problemType == ProblemType.gcd) {
-			problem = new GCDProblem(context);			
+			problem = new GCDProblem(activity);			
 		} else if(problemType == ProblemType.prime) {
-			problem = new PrimeFactorizationProblem(context);			
+			problem = new PrimeFactorizationProblem(activity);			
 		}else if(problemType == ProblemType.simple) {
 			problem = new SimpleProblem();			
 		}else if(problemType == ProblemType.matrix) {
-			problem = new MatrixProblem(context);			
+			problem = new MatrixProblem(activity);			
 		} 
 		
 		problem.newProblem();
@@ -101,7 +101,7 @@ public class MathChallenge implements Challenge {
 	
 	@Override
 	public void start(final ChallengeActivity activity, ChallengeResolvedParams params) {
-		this.context = activity;
+		this.activity = activity;
 		
 		boolean hardProblems =  getHardProblemsSetting(params);
 		Debug.d("hard problems: " +hardProblems);
@@ -158,7 +158,7 @@ public class MathChallenge implements Challenge {
 	@Override
 	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
 		
-		this.context = activity;
+		this.activity = activity;
 		this.problemString = state.getString(PROBLEM_STRING);
 		this.problemSolution = state.getInt(PROBLEM_SOLUTION);
 		this.problemType = (ProblemType) state.getSerializable(PROBLEM_TYPE);
@@ -259,5 +259,9 @@ public class MathChallenge implements Challenge {
 
 	@Override
 	public void onDestroy() {
+		WebView w = (WebView) activity.findViewById(R.id.math_webview);
+		if (w != null) {
+			w.destroy();
+		}
 	}
 }
