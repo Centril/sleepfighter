@@ -232,8 +232,6 @@ public class MathChallenge implements Challenge {
 			if (guess == solution) {
 				activity.complete();
 				correctAnswer = true;
-				Toast.makeText(activity.getBaseContext(), "Alarm deactivated!",
-						Toast.LENGTH_SHORT).show();
 			}
 		} catch (NumberFormatException e) {
 			// Handles exception when the user answer with empty strings

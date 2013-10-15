@@ -33,7 +33,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 /**
  * <p>AlarmReceiver is responsible for receiving broadcasts<br/>
@@ -103,10 +102,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 		if (alarm.getAudioConfig().getVibrationEnabled()) {
 			VibrationManager.getInstance().startVibrate(context.getApplicationContext());
 		}
-
-		Toast.makeText(context,
-				"Alarm #" + alarm.getId() + " is ringing! GET UP!",
-				Toast.LENGTH_LONG).show();
 
 		// Create intent & re-put extras.
 		Intent activityIntent;

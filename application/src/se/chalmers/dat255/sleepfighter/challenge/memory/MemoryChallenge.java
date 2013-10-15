@@ -32,7 +32,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 /**
  * Example implementation of Challenge.
@@ -121,9 +120,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
         			waitingForLastCardsToBeRemoved = true;
             		handler.postDelayed(new Runnable() {
                         public void run() {
-                    		// return to start menu. 
-                			Toast.makeText(act.getBaseContext(), "Alarm deactivated!",
-            						Toast.LENGTH_SHORT).show();		
+                    		// return to start menu.
                 			act.complete();	
                         }
                     }, 600);
