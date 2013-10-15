@@ -20,6 +20,7 @@ package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +34,7 @@ import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
@@ -232,12 +234,9 @@ public class AlarmActivity extends Activity implements
 	 * Handle what happens when the user presses the emergency stop.
 	 */
 	private void handleEmergencyStop() {
-		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
+		boolean skippingChallenges = useChallenges();
 
-		boolean globallyEnabled = SFApplication.get().getPrefs()
-				.isChallengesActivated();
-
-		if (challengeEnabled && globallyEnabled) {
+		if (skippingChallenges) {
 			skipChallengeConfirm();
 		} else {
 			stopAlarm();
@@ -274,9 +273,9 @@ public class AlarmActivity extends Activity implements
 	}
 
 	private void onStopClick() {
-		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled()
-				&& SFApplication.get().getPrefs().isChallengesActivated();
-		if (challengeEnabled) {
+		boolean showChallenge = useChallenges();
+
+		if (showChallenge) {
 			startChallenge();
 		} else {
 			stopAlarm();
@@ -447,6 +446,26 @@ public class AlarmActivity extends Activity implements
 			}
 		}, calendar.get(Calendar.MILLISECOND), 1000);
 
+	}
+
+	/**
+	 * Checks various settings to determine if a challenge should be shown when
+	 * trying to stop.
+	 * 
+	 * @return true if a challenge should be shown
+	 */
+	private boolean useChallenges() {
+		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
+
+		boolean globallyEnabled = SFApplication.get().getPrefs()
+				.isChallengesActivated();
+
+		// Checks if any of the individual challenges are enabled
+		Set<ChallengeType> enabledChallenges = this.alarm.getChallengeSet()
+				.getEnabledTypes();
+		boolean anyChallengeEnabled = !enabledChallenges.isEmpty();
+
+		return challengeEnabled && globallyEnabled && anyChallengeEnabled;
 	}
 
 	/*
