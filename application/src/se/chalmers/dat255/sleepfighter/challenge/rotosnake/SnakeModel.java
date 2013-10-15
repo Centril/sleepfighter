@@ -177,8 +177,8 @@ public class SnakeModel {
 		 * must then be reset to default.
 		 */
 		this.snakePos = new LinkedList<Position>();
-		this.addSnake(new Position((int) Math.ceil(size.getWidth() / 2),
-				(int) Math.ceil(size.getHeight() / 2)));
+		this.addSnake(new Position((int) Math.ceil(size.getWidth() / 2.0),
+				(int) Math.ceil(size.getHeight() / 2.0)));
 
 		int initLength = SnakeConstants.getInitialSnakeLength();
 		if (initLength > 1) {
