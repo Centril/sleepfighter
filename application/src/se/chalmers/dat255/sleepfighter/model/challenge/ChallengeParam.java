@@ -41,7 +41,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class ChallengeParam implements IdProvider {
 	public static final String CHALLENGE_ID_COLUMN = "challenge_id";
 
-	@DatabaseField(columnName = CHALLENGE_ID_COLUMN, generatedId = true, uniqueCombo = true, index = true)
+	@DatabaseField(columnName = CHALLENGE_ID_COLUMN, id = true, uniqueCombo = true, index = true)
 	private int challengeId;
 
 	@DatabaseField(uniqueCombo = true, index = true)
