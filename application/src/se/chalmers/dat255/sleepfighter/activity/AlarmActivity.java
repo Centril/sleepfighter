@@ -77,9 +77,7 @@ import android.widget.TextView;
  */
 @SuppressWarnings("deprecation")
 public class AlarmActivity extends Activity implements
-		TextToSpeech.OnInitListener,
-		
-		TextToSpeech.OnUtteranceCompletedListener {
+		TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
 
@@ -91,22 +89,111 @@ public class AlarmActivity extends Activity implements
 
 	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
+	private static final int EMERGENCY_COST = 100;
+	private static final int EMERGENCY_PERCENTAGE_COST = 20;
+	private static final int SNOOZE_COST = 10;
+	private static final int SNOOZE_PERCENTAGE_COST = 5;
+
 	private Parameters p;
 	private TextView tvName, tvTime;
-	private Button btnChallenge, btnSnooze;
+	private Button btnStop, btnSnooze;
 	private Alarm alarm;
 	private Timer timer;
 	private Camera camera;
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
-	
-	private static final int EMERGENCY_COST = 100;
-	private static final int EMERGENCY_PERCENTAGE_COST = 20;
-	private static final int SNOOZE_COST = 10;
-	private static final int SNOOZE_PERCENTAGE_COST = 5;
-	
+
 	private TextToSpeech tts;
 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Turn and/or keep screen on.
+		this.setScreenFlags();
+		this.setContentView(R.layout.activity_alarm);
+		SFApplication app = SFApplication.get();
+
+		// Fetch alarm Id.
+		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
+		this.alarm = app.getPersister().fetchAlarmById(alarmId);
+
+		if (alarm.isSpeech()) {
+			// start no musis until the speech is over. 
+			TextToSpeechUtil.checkTextToSpeech(this);
+
+		} else {
+			// for speech the audio is started once the speech is over.
+			startAudio(alarm);
+		}
+
+		// Get the name and time of the current ringing alarm
+		tvName = (TextView) findViewById(R.id.tvAlarmName);
+		tvName.setText(MetaTextUtils.printAlarmName(this, alarm));
+		tvTime = (TextView) findViewById(R.id.tvAlarmTime);
+
+		setupStopButton();
+		setupSnoozeButton();
+		setupFooter();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.alarm_activity_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_emergency_stop:
+			handleEmergencyStop();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void setupStopButton() {
+		// Connect the challenge button with XML
+		btnStop = (Button) findViewById(R.id.btnStop);
+		btnStop.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onStopClick();
+			}
+		});
+	}
+
+	private void setupSnoozeButton() {
+		btnSnooze = (Button) findViewById(R.id.btnSnooze);
+
+		if (alarm.getSnoozeConfig().isSnoozeEnabled()) {
+			btnSnooze.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startSnooze();
+				}
+			});
+		} else {
+			btnSnooze.setVisibility(View.GONE);
+		}
+	}
+
+	private void setupFooter() {
+		boolean usingChallenge = useChallenges();
+		if (usingChallenge) {
+			TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
+
+			String challengePointsStr = this.getResources().getString(
+					R.string.challenge_points);
+			pointText.setText(SFApplication.get().getPrefs()
+					.getChallengePoints()
+					+ " " + challengePointsStr);
+		} else {
+			findViewById(R.id.footer).setVisibility(View.INVISIBLE);
+		}
+	}
 
 	// read out the time and weather.
 	public void doSpeech(String weather) {
@@ -137,95 +224,6 @@ public class AlarmActivity extends Activity implements
 		
 		doSpeech(SFApplication.get().getWeather());
 		SFApplication.get().setWeather(null);
-	}
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		// Turn and/or keep screen on.
-		this.setScreenFlags();
-		this.setContentView(R.layout.activity_alarm_prechallenge);
-		SFApplication app = SFApplication.get();
-
-		// Fetch alarm Id.
-		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
-		this.alarm = app.getPersister().fetchAlarmById(alarmId);
-
-		if (alarm.isSpeech()) {
-			// start no musis until the speech is over. 
-			TextToSpeechUtil.checkTextToSpeech(this);
-
-		} else {
-			// for speech the audio is started once the speech is over.
-			startAudio(alarm);
-		}
-
-		// Get the name and time of the current ringing alarm
-		tvName = (TextView) findViewById(R.id.tvAlarmName);
-		tvName.setText(MetaTextUtils.printAlarmName(this, alarm));
-		tvTime = (TextView) findViewById(R.id.tvAlarmTime);
-
-		// Connect the challenge button with XML
-		btnChallenge = (Button) findViewById(R.id.btnChallenge);
-		btnChallenge.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onStopClick();
-			}
-		});
-
-		btnSnooze = (Button) findViewById(R.id.btnSnooze);
-
-		if (alarm.getSnoozeConfig().isSnoozeEnabled()) {
-			btnSnooze.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					startSnooze();
-					if (SFApplication.get().getPrefs().isChallengesActivated()) {
-						GlobalPreferencesManager prefs = SFApplication.get()
-								.getPrefs();
-
-						int snoozeCost = Math.max(SNOOZE_COST,
-								prefs.getChallengePoints()
-										/ (100 / SNOOZE_PERCENTAGE_COST));
-						prefs.addChallengePoints(-snoozeCost);
-					}
-				}
-			});
-		} else {
-			btnSnooze.setVisibility(View.GONE);
-		}
-
-		if (SFApplication.get().getPrefs().isChallengesActivated()
-				&& this.alarm.getChallengeSet().isEnabled()) {
-			TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
-			
-			
-			String challengePointsStr = this.getResources().getString(R.string.challenge_points);	
-			pointText.setText(SFApplication.get().getPrefs()
-					.getChallengePoints()
-					+ " " + challengePointsStr);
-		} else {
-			findViewById(R.id.preChallengeFooter).setVisibility(View.INVISIBLE);
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.alarm_activity_menu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_emergency_stop:
-			handleEmergencyStop();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
 	}
 
 	/**
@@ -306,6 +304,19 @@ public class AlarmActivity extends Activity implements
 
 		// Send snooze command to service
 		AlarmPlannerService.call(this, Command.SNOOZE, alarm.getId());
+
+		// Remove some challenge points if skipping challenge
+		boolean skippingChallenge = useChallenges();
+		if (skippingChallenge) {
+			GlobalPreferencesManager prefs = SFApplication.get()
+					.getPrefs();
+
+			int snoozeCost = Math.max(SNOOZE_COST,
+					prefs.getChallengePoints()
+							/ (100 / SNOOZE_PERCENTAGE_COST));
+			prefs.addChallengePoints(-snoozeCost);
+		}
+		
 		finish();
 	}
 

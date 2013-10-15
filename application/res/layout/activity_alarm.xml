@@ -48,7 +48,7 @@
         <!-- Button to start the challenge -->
 
         <Button
-            android:id="@+id/btnChallenge"
+            android:id="@+id/btnStop"
             android:layout_width="248dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
@@ -68,7 +68,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/preChallengeFooter"
+        android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/main_layout_bottom"
