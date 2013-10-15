@@ -147,7 +147,8 @@
         </activity>
 
         <service android:name="se.chalmers.dat255.sleepfighter.service.AlarmPlannerService"></service>
-
+        <service android:name="se.chalmers.dat255.sleepfighter.service.LocationService"></service>
+        
         <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.AlarmRebootSetter">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

@@ -18,8 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.receiver;
 
-import se.chalmers.dat255.sleepfighter.SFApplication;
-import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
+import se.chalmers.dat255.sleepfighter.service.LocationService;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.AlarmManager;
@@ -30,15 +29,50 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+
+/**
+ * Twenty seconds before an alarm goes off onReceiver is called for this class.
+ * In onReceive() LocationService is started, which fetches the current location and the weather of that location. 
+ */
 public class LocationReceiver extends BroadcastReceiver {
 
 	private static final int SECOND_TO_MS_FACTOR = 1000;
+	
+	private Context context;
+
+	/**
+	 * Sets up google play services. We need this to get the current location.
+	 */
+	private void setupGooglePlay() {
+		int status = GooglePlayServicesUtil
+				.isGooglePlayServicesAvailable(context);
+		if (status != ConnectionResult.SUCCESS) {
+			// Google Play Services are not available.
+			int requestCode = 10;
+			Debug.d("google play not available: " + requestCode);
+			/*GooglePlayServicesUtil.getErrorDialog(status, this, requestCode)
+					.show();*/
+		} else {
+			Debug.d("google maps is setup");
+			// google map is availabel
+		}
+	}
+	
 
 	@Override
 	public void onReceive( Context context, Intent intent ) {
 		
 		AlarmWakeLocker.acquire( context );
 		
+		this.context = context;
+		
+		setupGooglePlay();
+				
+		Intent serviceIntent = new Intent(context,LocationService.class);
+		this.context.startService(serviceIntent);
+
 		Debug.d("receive location receiver");
 	}
 
@@ -50,8 +84,6 @@ public class LocationReceiver extends BroadcastReceiver {
 	 * @param alarmTime the time of earliest alarm in Unix time.
 	 */
 	public static void scheduleFix( Context context, long alarmTime ) {
-		SFApplication app = SFApplication.get();
-		GlobalPreferencesManager manager = app.getPrefs();
 		
 		Debug.d("schedule fix location receiver");
 

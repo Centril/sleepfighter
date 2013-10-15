@@ -494,6 +494,8 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 		}
 	}
 	
+	
+	
 	@Override
 	protected void onDestroy() {
 

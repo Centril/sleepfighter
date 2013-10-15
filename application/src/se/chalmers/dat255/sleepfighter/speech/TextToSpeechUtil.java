@@ -40,6 +40,7 @@ public class TextToSpeechUtil {
 		tts.setPitch(1.2f);*/
 	}
 	
+	
 	public static final int CHECK_TTS_DATA_REQUEST_CODE = 2;
 
 	// check whether we have TTS data. 

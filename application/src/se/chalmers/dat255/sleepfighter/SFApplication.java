@@ -60,6 +60,8 @@ public class SFApplication extends Application {
 
 	private GPSFilterAreaSet gpsAreaManaged;
 	
+	private String weather;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -69,6 +71,7 @@ public class SFApplication extends Application {
 
 		this.persistenceManager = new PersistenceManager( this );
 		this.getBus().subscribe( this.persistenceManager );
+		this.weather = null;
 
 		// testing SortModel!
 		new SortChallenge();
@@ -244,5 +247,13 @@ public class SFApplication extends Application {
 	 */
 	public synchronized void releaseGPSSet() {
 		this.gpsAreaManaged = null;
+	}
+	
+	public void setWeather(String weather) {
+		this.weather = weather;
+	}
+	
+	public String getWeather() {
+		return this.weather;
 	}
 }
