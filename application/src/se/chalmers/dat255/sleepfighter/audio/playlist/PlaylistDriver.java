@@ -20,6 +20,7 @@ package se.chalmers.dat255.sleepfighter.audio.playlist;
 
 import java.util.List;
 
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.audio.AudioService;
 import se.chalmers.dat255.sleepfighter.audio.BaseAudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.utils.VolumeUtils;
@@ -61,6 +62,12 @@ public class PlaylistDriver extends BaseAudioDriver {
 	public String printSourceName() {
 		if ( this.playlist == null ) {
 			this.playlist = this.getProvider().getPlaylistFor( this.getContext(), this.getSource().getUri() );
+		}
+		// If null after lazy load, the playlist no longer exists on the device
+		if (this.playlist == null) {
+			// May be better if handled some other way, and somewhere other than
+			// here
+			return getContext().getString(R.string.pref_playlist_not_found);
 		}
 
 		return this.playlist.getName();
