@@ -504,8 +504,7 @@ public class AlarmActivity extends Activity implements
 	 * Start the camera's flashlight if found
 	 */
 	private void startFlash() {
-		camera = Camera.open();
-
+		
 		// Check if there is any camera. If not found, return nothing.
 		// If found, flash!
 		Context context = this;
@@ -515,6 +514,7 @@ public class AlarmActivity extends Activity implements
 			Log.e("err", "No flashlight detected!");
 			return;
 		}else{
+			camera = Camera.open();
 			Log.i("info", "The flashlight is on.");
 			p = camera.getParameters();
 			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
