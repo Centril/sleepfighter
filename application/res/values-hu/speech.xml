@@ -18,12 +18,57 @@
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
-    
-    <string name="speech_translation_done">false</string>
-    
    
-     <string name="speech_wake_up_format">Hello, it is time to wake up.</string>
-     <string name="speech_time_format">The time is %s</string>
-     <string name="speech_weather_format"> and the weather is %s</string>
+    <string name="speech_translation_done">true</string>
+    
+     <string name="speech_wake_up_format">Ideje felébredni.</string>
+     <string name="speech_time_format">Az idő %s</string>
+     <string name="speech_weather_format"> és az időjárás %s</string>
  
+     
+     <!-- These strings aren't actually used in the English version of the app.
+     But if they aren't included here, the app will crash for some reason when
+     accessing the weather strings.  -->
+     
+     <string name="and_word">és</string>
+    
+     <string name="clear_weather">tiszta</string>
+
+     <string name="possible_very_light_rain">lehetséges szitálás</string>
+     <string name="very_light_rain">szitálás</string>
+     <string name="possible_light_rain">lehetséges enyhe eső</string>
+     <string name="light_rain">enyhe eső</string>
+     <string name="medium_rain">eső</string>
+     <string name="heavy_rain">zápor</string>
+    
+     	  	
+     <string name="possible_very_light_sleet">lehetséges enyhe ónos eső</string>
+     <string name="very_light_sleet">enyhe ónos eső</string>
+     <string name="possible_light_sleet">lehetséges enyhe ónos eső</string>
+     <string name="light_sleet">enyhe ónos eső</string>
+     <string name="medium_sleet">ónos eső</string>
+     <string name="heavy_sleet">nehéz ónos eső</string>     
+     
+      <string name="possible_very_light_snow">lehetséges enyhe hóhullás</string>
+      <string name="very_light_snow">enyhe hóhullás</string>
+    
+      
+      <string name="possible_light_snow">lehetséges közepes hóhullás</string>
+      <string name="light_snow">közepes hóhullás</string>
+    
+      <string name="medium_snow">hóhullás</string>
+      <string name="heavy_snow">nehéz hóhullás</string>
+      
+      <string name="light_wind">enyhe szél</string>
+      <string name="medium_wind">közepes szél</string> 
+      <string name="heavy_wind">erős szél</string>
+      
+      <string name="low_humidity">száraz</string> 
+      <string name="high_humidity">nedves</string> 
+      <string name="fog">köd</string> 
+      
+      <string name="light_clouds">részben felhős</string> 
+      <string name="medium_clouds">közepesen felhős</string> 
+      <string name="heavy_clouds">felhős</string> 
+     
 </resources>
