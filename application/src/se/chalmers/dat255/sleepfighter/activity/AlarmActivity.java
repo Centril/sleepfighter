@@ -96,7 +96,6 @@ public class AlarmActivity extends Activity implements
 	private Camera camera;
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
-	private boolean isFlashOn = true;
 	
 	private static final int EMERGENCY_COST = 50;
 	private static final int EMERGENCY_PERCENTAGE_COST = 20;
@@ -512,27 +511,18 @@ public class AlarmActivity extends Activity implements
 		camera = Camera.open();
 
 		// Check if there is any camera. If not found, return nothing.
+		// If found, flash!
 		Context context = this;
 		PackageManager pm = context.getPackageManager();
 
 		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
 			Log.e("err", "No flashlight detected!");
 			return;
-		}
-
-		// If camera found, set flash mode ON.
-		if (isFlashOn) {
+		}else{
 			Log.i("info", "The flashlight is on.");
 			p = camera.getParameters();
 			p.setFlashMode(Parameters.FLASH_MODE_TORCH);
 			camera.setParameters(p);
-			isFlashOn = true;
-		} else {
-			p = camera.getParameters();
-			Log.i("info", "The flashlight is off.");
-			p.setFlashMode(Parameters.FLASH_MODE_OFF);
-			camera.setParameters(p);
-			isFlashOn = false;
 		}
 	}
 
@@ -543,11 +533,6 @@ public class AlarmActivity extends Activity implements
 	private void startAnimate() {
 
 		// Setting animation
-		Animation fadeLong = new AlphaAnimation(1, 0);
-		fadeLong.setDuration(7000);
-		fadeLong.setInterpolator(new LinearInterpolator());
-		fadeLong.setRepeatCount(Animation.INFINITE);
-		fadeLong.setRepeatMode(Animation.REVERSE);
 
 		Animation fadeShort = new AlphaAnimation(1, 0);
 		fadeShort.setDuration(200);
@@ -556,7 +541,6 @@ public class AlarmActivity extends Activity implements
 		fadeShort.setRepeatMode(Animation.REVERSE);
 
 		// Set the components with animation
-		btnSnooze.startAnimation(fadeLong);
 		tvTime.startAnimation(fadeShort);
 	}
 }
