@@ -104,11 +104,9 @@ public class AlarmActivity extends Activity implements
 	private static final int EMERGENCY_PERCENTAGE_COST = 20;
 	private static final int SNOOZE_COST = 10;
 	private static final int SNOOZE_PERCENTAGE_COST = 5;
-
 	
 	private TextToSpeech tts;
 
-	
 
 	// read out the time and weather.
 	public void doSpeech(String weather) {
@@ -427,7 +425,9 @@ public class AlarmActivity extends Activity implements
 		startAnimate();
 		startFlash();
 
-
+		// Cancel previously started timers
+		cancelTimer();
+		
 		timer = new Timer("SFTimer");
 		Calendar calendar = Calendar.getInstance();
 
@@ -439,13 +439,21 @@ public class AlarmActivity extends Activity implements
 		};
 
 		// Update the user interface
-		timer.scheduleAtFixedRate(new TimerTask() {
+		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
 				runOnUiThread(updateTask);
 			}
-		}, calendar.get(Calendar.MILLISECOND), 1000);
+		};
+		timer.scheduleAtFixedRate(timerTask,
+				calendar.get(Calendar.MILLISECOND), 1000);
+	}
 
+	private void cancelTimer() {
+		if (timer != null) {
+			timer.cancel();
+			timer = null;
+		}
 	}
 
 	/**
@@ -480,6 +488,8 @@ public class AlarmActivity extends Activity implements
 		if (camera != null) {
 			camera.release();
 		}
+
+		cancelTimer();
 	}
 
 	// Get the current time with the Calendar
