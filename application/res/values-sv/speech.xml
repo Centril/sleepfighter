@@ -24,8 +24,7 @@
     <string name="speech_wake_up_format">Godmorgon, det är dags att vakna.</string>
      <string name="speech_time_format">Klockan är %s</string>
      <string name="speech_weather_format">och vädret är %s</string>
- 
- 
+  
      <!-- 
      These pages were used as references when translating the various weather conditions:
      http://www.smhi.se/kunskapsbanken/meteorologi/vaderspraket-1.3847
@@ -76,7 +75,7 @@
       <string name="light_clouds">delvis monligt</string> 
       <string name="medium_clouds">monligt</string> 
       <string name="heavy_clouds">mulet</string> 
-      
+
      <!--  
       "clear": "clear",
   "possible-very-light-rain": "possible drizzle",

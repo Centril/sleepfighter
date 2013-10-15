@@ -45,8 +45,6 @@ public class ChallengeFactory {
 	 */
 	public static Challenge getChallenge(ChallengeType type) {
 		switch (type) {
-		case TEST:
-			return new TestChallenge();
 		case MATH:
 			return new MathChallenge();
 		case MEMORY:
@@ -73,9 +71,6 @@ public class ChallengeFactory {
 
 		if ( def == null ) {
 			switch ( type ) {
-			case TEST:
-				def = new TestChallenge.PrototypeDefinition();
-				break;
 
 			case MATH:
 				def = new MathChallenge.PrototypeDefinition();

@@ -20,7 +20,6 @@
 <resources>
 
     <string-array name="challenge_names">
-        <item>Test</item>
         <item>Matte</item>
         <item>Memory</item>
         <item>Sortera nummer</item>
@@ -30,7 +29,6 @@
         
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>Testutmaning</item>
         <item>Lös ett matteproblem</item>
         <item>Memoryutmaning där man ska matcha bokstäver</item>
         <item>Utmaning där nummer sorteras baserat på storlek</item>

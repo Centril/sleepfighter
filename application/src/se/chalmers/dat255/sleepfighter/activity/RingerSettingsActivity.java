@@ -46,7 +46,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * RingerSettingsActivity handles alarm instance settings related to ringing, i.e AudioSource.
@@ -360,8 +359,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 
 		if (this.alarm == null) {
-			// TODO: Better handling for final product
-			Toast.makeText(this, "Alarm is null", Toast.LENGTH_SHORT).show();
+			// TODO: Better handling
 			this.finish();
 		}
 

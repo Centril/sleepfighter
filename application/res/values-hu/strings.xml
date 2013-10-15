@@ -27,7 +27,6 @@
     <string name="no">Nem</string>
     <string name="confirm_delete">Biztos, hogy a riasztót ki akarod törölni?</string>
     <string name="pre_chal_act">Elfogadod a kihívást?!</string>
-    <string name="memory_chal_act">Memory</string>
     <string name="snooze">Szundít</string>
     <string name="alarm_emergency_stop">Vészleállitás</string>
     <string name="alarm_emergency_dialog">Biztos, hogy le akarod állítani? %1$s elveszitesz (de ez a riasztó nem szól megint).</string>
@@ -38,7 +37,6 @@
 
     <!-- Challenges -->
     <string name="start_challenge">A zűrzavart leállítani!</string>
-    <string name="btn_answer">Válaszolni</string>
     <string name="btn_complete">Siker!</string>
     <string name="btn_fail">Kudarc!</string>
     <string name="challenge_points">Kihíváspontok</string>

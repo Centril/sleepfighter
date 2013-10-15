@@ -33,7 +33,6 @@ import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
-import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
@@ -77,8 +76,6 @@ public class MainActivity extends Activity {
 		return SFApplication.get();
 	}
 
-	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -95,8 +92,6 @@ public class MainActivity extends Activity {
 		this.setupChallengeToggle();
 		this.updateChallengePoints();
 		this.updateEarliestText();
-		
-		
 	}
 
 	@Override
@@ -177,9 +172,6 @@ public class MainActivity extends Activity {
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
-			// temporarily add an extra context menu item for starting an alarm
-			// TODO remove
-			menu.add(0, menuItems.length, menuItems.length, "Start alarm");
 		}
 	}
 
@@ -199,10 +191,6 @@ public class MainActivity extends Activity {
 		case 2:
 			copyAlarm(selectedAlarm);
 			return true;
-		case 3:
-			// TODO remove case
-			startAlarm(selectedAlarm);
-			return true;
 		default:
 			return false;
 
@@ -216,13 +204,6 @@ public class MainActivity extends Activity {
 		intent.putExtra(AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew);
 
 		startActivity(intent);
-	}
-
-	private void startAlarm(Alarm alarm) {
-		// Send intent directly to receiver
-		Intent intent = new Intent(this, AlarmReceiver.class);
-		new IntentUtils(intent).setAlarmId(alarm.getId());
-		sendBroadcast(intent);
 	}
 
 	private void startGlobalSettings() {
@@ -370,5 +351,4 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
 }
