@@ -299,6 +299,7 @@ public class AlarmPlannerService extends IntentService {
 		NotificationHelper.removeNotification(this);
 
 		// Unschedule any location fixes.
+		GPSFilterRefreshReceiver.unscheduleFix( SFApplication.get() ); 
 		LocationReceiver.unscheduleFix( SFApplication.get() );
 	}
 
