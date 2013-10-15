@@ -98,7 +98,7 @@ public class AlarmActivity extends Activity implements
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 	
-	private static final int EMERGENCY_COST = 50;
+	private static final int EMERGENCY_COST = 100;
 	private static final int EMERGENCY_PERCENTAGE_COST = 20;
 	private static final int SNOOZE_COST = 10;
 	private static final int SNOOZE_PERCENTAGE_COST = 5;
