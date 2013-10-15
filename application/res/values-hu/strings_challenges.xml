@@ -20,7 +20,6 @@
 <resources>
 
     <string-array name="challenge_names">
-        <item>Próba</item>
         <item>Matek</item>
         <item>Memory</item>
         <item>Számrendezés</item>
@@ -29,7 +28,6 @@
         <item>Rázás</item>
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>Próbakihívas</item>
         <item>Oldjál meg egy matekfeladatot</item>
         <item>Egy "Memory" kihívás betűkkel</item>
         <item>Kihívás, amelyben számokat kell nagyság után rendezni</item>

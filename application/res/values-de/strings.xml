@@ -27,7 +27,6 @@
     <string name="no">Nein</string>
     <string name="confirm_delete">Sind Sie sicher, dass Sie den Alarm löschen möchte?"</string>
     <string name="pre_chal_act">Herausforderung annehmen?!</string>
-    <string name="memory_chal_act">Memory</string>
     <string name="snooze">Schlummern</string>
     <string name="alarm_emergency_stop">Notstopp</string>
     <string name="alarm_emergency_dialog">Bist du sicher? Du wirst %1$s verlieren (aber dieser Alarm klingelt nicht wieder).</string>
@@ -39,7 +38,6 @@
 
     <!-- Challenges -->
     <string name="start_challenge">Den Wahnsinn beendenen!</string>
-    <string name="btn_answer">Beantworten</string>
     <string name="btn_complete">Gelungen!</string>
     <string name="btn_fail">Misslungen!</string>
     <string name="challenge_points">Herausforderungspunkte</string>

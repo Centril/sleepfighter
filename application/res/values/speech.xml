@@ -20,8 +20,11 @@
 <resources>
    
     <string name="speech_translation_done">true</string>
-    
-     <string name="speech_wake_up_format">Good morning, it is time to wake up.</string>
+
+    <string name="and_word">and</string>
+
+    <string name="speech_wake_up_format">Good morning, it is time to wake up.</string>
+
      <string name="speech_time_format">The time is %s</string>
      <string name="speech_weather_format"> and the weather is %s</string>
  

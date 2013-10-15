@@ -23,7 +23,7 @@
     <string name="ringer_action_test">Próba</string>
     <string name="ringer_action_cancel">Lefúj</string>
     
-    <string name="audio_source_category_title">Hang forrás</string>
+    <string name="audio_source_category_title">Hang</string>
 	<string name="perf_ringtone_picker">Csengés</string>
     <string name="perf_ringtone_picker_summary">Válasszál egy hangot a telefonodrol</string>
     <string name="alarm_audiosource_summary_name_title">Választott:</string>

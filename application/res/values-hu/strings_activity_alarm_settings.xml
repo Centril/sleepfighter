@@ -65,7 +65,7 @@
     <string name="snooze_category_title">Szunditás</string>
    
      <string name="speech_category_title">Beszéd</string>
-     <string name="pref_use_speech_summary">Felolvassa az időt és az időjárást mikor a riasztó beindúl.Read out the time and weather when the alarm goes off</string>
+     <string name="pref_use_speech_summary">Felolvassa az időt és az időjárást mikor a riasztó beindúl.</string>
      <string name="pref_use_speech_title">Beszéd használása</string>
      <string name="pref_speech_sample">Proba</string>
 

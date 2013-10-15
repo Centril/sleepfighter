@@ -29,8 +29,6 @@
 
     <!-- challenge -->
     <string name="pre_chal_act">チャレンジ!</string>
-    <string name="btn_answer">解答</string>
-    <string name="memory_chal_act">神経衰弱</string>
     <string name="start_challenge">チャレンジ</string>
 
     <string-array name="earliest_time_formats">
