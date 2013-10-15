@@ -515,7 +515,7 @@ public class AlarmActivity extends Activity implements
 		Context context = this;
 		PackageManager pm = context.getPackageManager();
 
-		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+		if (!pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
 			Log.e("err", "No flashlight detected!");
 			return;
 		}else{
