@@ -132,7 +132,9 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			case 21:
 				this.getAlarmDao().executeRaw("ALTER TABLE 'alarm'" +
 						"ADD COLUMN 'isFlash' BOOLEAN DEFAULT false;");
-				break; // Break after the newest version
+				
+				// Break after the newest version
+				break; 
 			default:
 				// Just drop everything if the version is a pre-release version
 				if (oldVersion < 19) {
