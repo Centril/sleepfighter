@@ -147,7 +147,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 				}
 			}
 		} catch (SQLException e) {
-			Log.e(OrmHelper.class.getName(), "Can't drop databases", e);
+			Log.e(OrmHelper.class.getName(), "SQL exception during database upgrade", e);
 			throw new PersistenceException(e);
 		}
 	}
