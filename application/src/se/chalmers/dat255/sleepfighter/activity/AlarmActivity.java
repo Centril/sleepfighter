@@ -96,7 +96,6 @@ public class AlarmActivity extends Activity {
 	private Camera camera;
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
-	private boolean isFlash = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
