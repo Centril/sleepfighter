@@ -120,7 +120,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 * and this entails a changed model and therefore changed DB structure.</p>
 	 */
 	@Override
-	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
+	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource,
+			int oldVersion, int newVersion) {
 		try {
 			switch(oldVersion) {
 			// Only test on 19 and higher, since that is the Release version
@@ -129,11 +130,19 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 				TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
 				TableUtils.createTable( connectionSource, ChallengeParam.class );
 			case 21:
-				this.getAlarmDao().executeRaw("ALTER TABLE 'alarm' ADD COLUMN 'isFlash' BOOLEAN DEFAULT false;");
+				this.getAlarmDao().executeRaw("ALTER TABLE 'alarm'" +
+						"ADD COLUMN 'isFlash' BOOLEAN DEFAULT false;");
 				break; // Break after the newest version
 			default:
-				dropEverything(connectionSource);
-				onCreate(db, connectionSource);
+				// Just drop everything if the version is a pre-release version
+				if (oldVersion < 19) {
+					dropEverything(connectionSource);
+					onCreate(db, connectionSource);
+				}
+				else {
+					throw new RuntimeException("Strange Database Version in OrmHelper." +
+							"Check database version and switch/case.");
+				}
 			}
 		} catch (SQLException e) {
 			Log.e(OrmHelper.class.getName(), "Can't drop databases", e);
