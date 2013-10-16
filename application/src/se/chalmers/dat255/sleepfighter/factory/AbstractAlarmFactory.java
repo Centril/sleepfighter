@@ -46,6 +46,7 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 		alarm.setRepeat( this.createIsRepeatingFlag() );
 		alarm.setName( this.createName() );
 		alarm.setSpeech(this.createIsSpeech());
+		alarm.setFlash(this.createIsFlashEnabled());
 
 		// Set foreign objects.
 		alarm.setAudioSource( this.createAudioSource() );
@@ -79,6 +80,8 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 	protected abstract boolean createVibrationFlag();
 
 	protected abstract ChallengeConfigSet createChallenges();
+	
+	protected abstract boolean createIsFlashEnabled();
 
 
 	protected abstract boolean createIsSpeech();

@@ -114,4 +114,9 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 	protected boolean createIsSpeech() {
 		return false;
 	}
+	
+	@Override
+	protected boolean createIsFlashEnabled(){
+		return false;
+	}
 }

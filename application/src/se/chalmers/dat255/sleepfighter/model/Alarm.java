@@ -223,6 +223,9 @@ public class Alarm implements IdProvider {
 	@DatabaseField
 	private boolean isRepeating = false;
 	
+	@DatabaseField
+	private boolean isFlash = false;
+	
 	// whether this alarm is the preset alarm(the default alarm)
 	@DatabaseField
 	private boolean isPresetAlarm = false;
@@ -735,6 +738,29 @@ public class Alarm implements IdProvider {
 	public boolean isRepeating() {
 		return this.isRepeating;
 	}
+	
+	/**
+	 * Sets if the alarm is flashing or not.
+	 *
+	 * @param isFlash true if it is flashing.
+	 */
+	public void setFlash(boolean isFlash) {
+		if ( this.isFlash == isFlash ) {
+			return;
+		}
+
+		this.isFlash = isFlash;
+	}
+	
+	/**
+	 * Returns whether or not this alarm is flashing or not.
+	 *
+	 * @return true if it is flashing.
+	 */
+	public boolean isFlashEnabled(){
+		return this.isFlash;
+	}
+	
 	
 	// if true, then the time and weather will be read out when the alarm goes off.
 	public boolean isSpeech() {

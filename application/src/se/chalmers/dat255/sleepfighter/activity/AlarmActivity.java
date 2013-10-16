@@ -96,6 +96,7 @@ public class AlarmActivity extends Activity {
 	private Camera camera;
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
+	private boolean isFlash = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -387,8 +388,11 @@ public class AlarmActivity extends Activity {
 
 		// Start animation and flash
 		startAnimate();
-		startFlash();
-
+		
+		if(alarm.isFlashEnabled()){
+			startFlash();
+		}
+		
 		// Cancel previously started timers
 		cancelTimer();
 		
@@ -471,7 +475,7 @@ public class AlarmActivity extends Activity {
 	 * Start the camera's flashlight if found
 	 */
 	private void startFlash() {
-		
+
 		// Check if there is any camera. If not found, return nothing.
 		// If found, flash!
 		Context context = this;

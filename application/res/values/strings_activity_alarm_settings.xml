@@ -60,6 +60,7 @@
     <string name="alarm_settings_action_toggle">Toggle</string>
     <string name="pref_alarm_snooze_enabled">Enable snooze</string>
     <string name="pref_alarm_snooze_time">Snooze length</string>
+    <string name="pref_alarm_flash_enabled">Enable flash</string>
 
     <string name="pref_volume">Volume</string>
     

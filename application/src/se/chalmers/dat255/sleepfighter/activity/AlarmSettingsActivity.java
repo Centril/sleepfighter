@@ -92,6 +92,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private static final String SPEECH = "pref_alarm_speech";
 	private static final String SPEECH_SAMPLE = "pref_speech_sample";
 	
+	private static final String FLASH = "pref_alarm_flash_enabled";
+	
 	private Preference ringerPreference;
 
 	private Alarm alarm;
@@ -247,6 +249,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(ENABLE_SNOOZE));
 		bindPreferenceSummaryToValue(findPreference(SNOOZE_TIME));
 		bindPreferenceSummaryToValue(findPreference(SPEECH));
+		bindPreferenceSummaryToValue(findPreference(FLASH));
 
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
@@ -424,6 +427,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				languageHasNoVoice(tts);
 				alarm.setSpeech(("true".equals(stringValue)) ? true : false);
 			}
+			else if (FLASH.equals(preference.getKey())) {
+				alarm.setFlash(("true".equals(stringValue)) ? true : false);
+			}	
+			
 			
 			return true;
 		}
@@ -470,6 +477,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			pref.setSummary(time + "");
 		}else if (SPEECH.equals(preference.getKey())) {
 			((CheckBoxPreference) preference).setChecked(alarm.isSpeech());
+		}else if (FLASH.equals(preference.getKey())) {
+			((CheckBoxPreference) preference).setChecked(alarm.isFlashEnabled());
 		}
 
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
