@@ -30,7 +30,6 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
