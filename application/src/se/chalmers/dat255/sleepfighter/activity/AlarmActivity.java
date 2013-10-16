@@ -93,6 +93,7 @@ public class AlarmActivity extends Activity implements
 	private static final int EMERGENCY_PERCENTAGE_COST = 20;
 	private static final int SNOOZE_COST = 10;
 	private static final int SNOOZE_PERCENTAGE_COST = 5;
+	private static final int CHALLENGE_POINTS_GET = 5;
 
 	private Parameters p;
 	private TextView tvName, tvTime;
@@ -399,6 +400,9 @@ public class AlarmActivity extends Activity implements
 
 				// If completed, stop the alarm
 				stopAlarm();
+				
+				// Add points
+				SFApplication.get().getPrefs().addChallengePoints(CHALLENGE_POINTS_GET);
 			}
 		} else if (requestCode == TextToSpeechUtil.CHECK_TTS_DATA_REQUEST_CODE) {
 			tts = new TextToSpeech(this, this);
