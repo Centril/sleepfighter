@@ -33,6 +33,7 @@ import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
@@ -70,9 +71,11 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	// called when the text to speech engine is initialized. 
 	@Override
 	public void onInit(int status) {
+		Debug.d("on init tts");
 		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
 		TextToSpeechUtil.config(tts);
 	}
+	
 	
 	@Override
 	public void onCreate() {
@@ -89,6 +92,7 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 
 		// testing SortModel!
 		new SortChallenge();
+		Debug.d("on create application.");
 		
 	}
 

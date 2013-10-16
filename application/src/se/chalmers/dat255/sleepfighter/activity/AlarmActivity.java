@@ -76,8 +76,7 @@ import android.widget.TextView;
  * @since Sep 20, 2013
  */
 @SuppressWarnings("deprecation")
-public class AlarmActivity extends Activity implements
-		TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
+public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceCompletedListener {
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
 
@@ -103,9 +102,11 @@ public class AlarmActivity extends Activity implements
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 
-	private TextToSpeech tts;
-	
+
 	private int originalVolume;
+	
+	private String IS_SPEECH_RUNNING = "is_speech_running";
+	private String ORIGINAL_VOLUME = "original_volume";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,13 +121,12 @@ public class AlarmActivity extends Activity implements
 		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
 		this.alarm = app.getPersister().fetchAlarmById(alarmId);
 
-		if (alarm.isSpeech()) {
+		if (alarm.isSpeech() && savedInstanceState == null) {
 			// start no musis until the speech is over. 
-			TextToSpeechUtil.checkTextToSpeech(this);
-			
 			lowerVolume();
-
-		} 
+		}  else {
+			this.originalVolume = savedInstanceState.getInt(ORIGINAL_VOLUME);
+		}
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
@@ -136,6 +136,30 @@ public class AlarmActivity extends Activity implements
 		setupStopButton();
 		setupSnoozeButton();
 		setupFooter();
+		
+		
+		
+		if (alarm.isSpeech()) {
+			TextToSpeech tts = SFApplication.get().getTts();
+
+			if(savedInstanceState != null && savedInstanceState.getBoolean(IS_SPEECH_RUNNING, false)) {
+				// speech is already running, no need to start again. 
+			} else {
+				doSpeech(SFApplication.get().getWeather());
+				// TODO: is this correct?
+				SFApplication.get().setWeather(null);
+			}
+			tts.setOnUtteranceCompletedListener(this);
+		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		outState.putBoolean(IS_SPEECH_RUNNING, true);
+	
+		outState.putInt(ORIGINAL_VOLUME,this.originalVolume);
 	}
 
 	@Override
@@ -201,6 +225,9 @@ public class AlarmActivity extends Activity implements
 	
 		String s;
 		
+		TextToSpeech tts = SFApplication.get().getTts();
+		
+		
 		// weren't able to obtain any weather.
 		if(weather == null) {
 			s =  new SpeechLocalizer(tts, this).getSpeech();
@@ -212,20 +239,6 @@ public class AlarmActivity extends Activity implements
 		tts.speak(s, TextToSpeech.QUEUE_FLUSH, params);
 	}
 
-	// called when tts has been fully initialized.
-	@Override
-	public void onInit(int status) {
-		Debug.d("done initi tts");
-
-		tts.setOnUtteranceCompletedListener(this);
-
-		// Configure tts
-		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
-		TextToSpeechUtil.config(tts);
-		
-		doSpeech(SFApplication.get().getWeather());
-		SFApplication.get().setWeather(null);
-	}
 
 	/**
 	 * Handle what happens when the user presses the emergency stop.
@@ -400,9 +413,7 @@ public class AlarmActivity extends Activity implements
 				// If completed, stop the alarm
 				stopAlarm();
 			}
-		} else if (requestCode == TextToSpeechUtil.CHECK_TTS_DATA_REQUEST_CODE) {
-			tts = new TextToSpeech(this, this);
-		} else {
+		}  else {
 			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
@@ -511,18 +522,6 @@ public class AlarmActivity extends Activity implements
 		int hour = cal.get(Calendar.HOUR_OF_DAY);
 		int minute = cal.get(Calendar.MINUTE);
 		return String.format("%02d:%02d", hour, minute);
-	}
-
-
-	@Override
-	protected void onDestroy() {
-		// Close the Text to Speech Library
-		if (tts != null) {
-			tts.stop();
-			tts.shutdown();
-		}
-
-		super.onDestroy();
 	}
 
 	@Override

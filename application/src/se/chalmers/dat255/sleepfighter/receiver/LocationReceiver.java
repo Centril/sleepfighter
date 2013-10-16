@@ -33,7 +33,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 /**
- * Twenty seconds before an alarm goes off onReceiver is called for this class.
+ * 10 seconds before an alarm goes off onReceiver is called for this class.
  * In onReceive() LocationService is started, which fetches the current location and the weather of that location. 
  */
 public class LocationReceiver extends BroadcastReceiver {
@@ -87,7 +87,7 @@ public class LocationReceiver extends BroadcastReceiver {
 		
 		Debug.d("schedule fix location receiver");
 
-		long unixTime = alarmTime - 20 * SECOND_TO_MS_FACTOR;
+		long unixTime = alarmTime - 10 * SECOND_TO_MS_FACTOR;
 
 		// Make pending intent.
 		Bundle bundle = new Bundle();
