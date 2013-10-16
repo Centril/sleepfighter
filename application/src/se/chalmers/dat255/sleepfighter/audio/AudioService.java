@@ -18,6 +18,8 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.audio;
 
+import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -221,6 +223,16 @@ public class AudioService extends Service implements OnPreparedListener,
 		} catch (Exception e) {
 			handleException(e);
 		}
+
+		// Without using startForeground, audio playback will stop if the user
+		// closes the app from the app drawer.
+		// Doing this requires the service to supply a notification. If a
+		// notification is shown using NotificationHelper, that one is used.
+		Notification notification = NotificationHelper.getInstance()
+				.getNotification();
+		if(notification != null) {
+			startForeground(NotificationHelper.NOTIFICATION_ID, notification);
+		}
 	}
 
 	@Override
@@ -287,6 +299,9 @@ public class AudioService extends Service implements OnPreparedListener,
 		this.state = State.STOPPED;
 
 		setSourceType(null);
+
+		// Make sure audio service no longer keeps the app alive
+		stopForeground(false);
 	}
 
 	/**

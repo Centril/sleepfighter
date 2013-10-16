@@ -164,7 +164,7 @@ public class AlarmPlannerService extends IntentService {
 
 	@Override
 	protected void onHandleIntent( Intent intent ) {
-		final String action = intent.getAction();
+		String action = intent.getAction();
 
 		if ( !matcher.matchAction( action ) ) {
 			return;
@@ -255,7 +255,8 @@ public class AlarmPlannerService extends IntentService {
 		String title = String.format(titleFormat, name);
 		String message = String.format(messageFormat, time);
 
-		NotificationHelper.showNotification(this, title, message, mainActPI);
+		NotificationHelper.getInstance().showNotification(this, title, message,
+				mainActPI);
 	}
 
 	/**
@@ -285,7 +286,8 @@ public class AlarmPlannerService extends IntentService {
 		String title = String.format(titleFormat, name);
 		String message = String.format(messageFormat, time);
 
-		NotificationHelper.showNotification(this, title, message, alarmPI);
+		NotificationHelper.getInstance().showNotification(
+				getApplicationContext(), title, message, alarmPI);
 	}
 
 	/**
@@ -296,7 +298,8 @@ public class AlarmPlannerService extends IntentService {
 		Log.d( "AlarmPlannerService", "Cancelling!" );
 
 		// Remove app's sticky notification
-		NotificationHelper.removeNotification(this);
+		NotificationHelper.getInstance().removeNotification(
+				getApplicationContext());
 
 		// Unschedule any location fixes.
 		GPSFilterRefreshReceiver.unscheduleFix( SFApplication.get() ); 

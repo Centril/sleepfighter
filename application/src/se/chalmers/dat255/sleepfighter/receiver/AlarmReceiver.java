@@ -159,7 +159,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		String message = context
 				.getString(R.string.notification_ringing_message);
 
-		NotificationHelper.showNotification(context, title, message,
+		NotificationHelper.getInstance().showNotification(context.getApplicationContext(), title, message,
 				pendingIntent);
 	}
 

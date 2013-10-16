@@ -34,12 +34,20 @@ public class NotificationHelper {
 
 	// Having a constant ID makes sure only one notification entry from our app
 	// will be shown at a time
-	private static final int ID = 1;
+	public static final int NOTIFICATION_ID = 17;
 
-	/**
-	 * Prevent instantiation.
-	 */
+	private static NotificationHelper instance;
+
+	private Notification notification;
+
 	private NotificationHelper() {}
+
+	public static synchronized NotificationHelper getInstance() {
+		if (instance == null) {
+			instance = new NotificationHelper();
+		}
+		return instance;
+	}
 
 	/**
 	 * Shows a notification, with specified content, for SleepFighter.
@@ -56,7 +64,7 @@ public class NotificationHelper {
 	 * @param intent
 	 *            the PendingIntent to be launched when a user click
 	 */
-	public static void showNotification(Context context, String title,
+	public void showNotification(Context context, String title,
 			String message, PendingIntent intent) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				context);
@@ -86,11 +94,11 @@ public class NotificationHelper {
 		// Sets what will happen when the notification is clicked
 		builder.setContentIntent(intent);
 
-		Notification notification = builder.build();
+		this.notification = builder.build();
 
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.notify(ID, notification);
+		notificationManager.notify(NOTIFICATION_ID, this.notification);
 	}
 
 	/**
@@ -99,9 +107,27 @@ public class NotificationHelper {
 	 * @param context
 	 *            the context
 	 */
-	public static void removeNotification(Context context) {
+	public void removeNotification(Context context) {
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.cancel(ID);
+		notificationManager.cancel(NOTIFICATION_ID);
+		this.notification = null;
+	}
+
+	/**
+	 * Returns the last notification shown using this that has not been
+	 * canceled.
+	 * 
+	 * <p>
+	 * Please note that it's possible that a notification remains from previous
+	 * times that app has been running, and afterwards restarted, which can't be
+	 * returned here.
+	 * </p>
+	 * 
+	 * @return the last notification shown using this that has not been
+	 *         canceled, null if no notification has been shown using this
+	 */
+	public Notification getNotification() {
+		return notification;
 	}
 }

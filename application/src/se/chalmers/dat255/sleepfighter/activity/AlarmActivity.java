@@ -189,6 +189,7 @@ public class AlarmActivity extends Activity {
 			skipChallengeConfirm();
 		} else {
 			stopAlarm();
+			performRescheduling();
 		}
 	}
 
@@ -209,6 +210,7 @@ public class AlarmActivity extends Activity {
 				SFApplication.get().getPrefs()
 						.addChallengePoints(-emergencyCost);
 				stopAlarm();
+				performRescheduling();
 			}
 		};
 		Resources res = getResources();
@@ -228,6 +230,7 @@ public class AlarmActivity extends Activity {
 			startChallenge();
 		} else {
 			stopAlarm();
+			performRescheduling();
 		}
 	}
 
@@ -248,12 +251,7 @@ public class AlarmActivity extends Activity {
 	 * Stops alarm temporarily and sends a snooze command to the server.
 	 */
 	private void startSnooze() {
-		stopAudio();
-
-		VibrationManager.getInstance().stopVibrate(getApplicationContext());
-
-		// Remove notification saying alarm is ringing
-		NotificationHelper.removeNotification(this);
+		stopAlarm();
 
 		// Send snooze command to service
 		AlarmPlannerService.call(this, Command.SNOOZE, alarm.getId());
@@ -269,8 +267,6 @@ public class AlarmActivity extends Activity {
 							/ (100 / SNOOZE_PERCENTAGE_COST));
 			prefs.addChallengePoints(-snoozeCost);
 		}
-		
-		finish();
 	}
 
 	protected void onPause() {
@@ -351,6 +347,7 @@ public class AlarmActivity extends Activity {
 
 				// If completed, stop the alarm
 				stopAlarm();
+				performRescheduling();
 				
 				// Add points
 				SFApplication.get().getPrefs().addChallengePoints(CHALLENGE_POINTS_GET);
@@ -364,14 +361,14 @@ public class AlarmActivity extends Activity {
 	 * Stop the current alarm sound and vibration
 	 */
 	public void stopAlarm() {
-		this.stopAudio();
+		stopAudio();
 
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
 
 		// Remove notification saying alarm is ringing
-		NotificationHelper.removeNotification(this);
+		NotificationHelper.getInstance().removeNotification(
+				getApplicationContext());
 
-		this.performRescheduling();
 		finish();
 	}
 
