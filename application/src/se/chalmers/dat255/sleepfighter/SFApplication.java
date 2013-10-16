@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,6 +38,7 @@ import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
 import android.speech.tts.TextToSpeech;
+import android.view.ViewConfiguration;
 
 /**
  * A custom implementation of Application for SleepFighter.
@@ -88,6 +90,8 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		this.persistenceManager = new PersistenceManager( this );
 		this.getBus().subscribe( this.persistenceManager );
 		this.weather = null;
+
+		forceActionBarOverflow();
 	}
 
 	/**
@@ -97,6 +101,30 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 */
 	public static final SFApplication get() {
 		return app;
+	}
+
+	/**
+	 * Show the triple-dot action bar overflow icon even on devices with a
+	 * dedicated menu button.
+	 * 
+	 * <p>
+	 * Solution from stackoverflow post found 
+	 * <a href="http://stackoverflow.com/questions/9286822/
+	 * how-to-force-use-of-overflow-menu-on-devices-with-menu-button/
+	 * 11438245#11438245">here</a>.
+	 * </p>
+	 */
+	private void forceActionBarOverflow() {
+	    try {
+	        ViewConfiguration config = ViewConfiguration.get(this);
+	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+	        if(menuKeyField != null) {
+	            menuKeyField.setAccessible(true);
+	            menuKeyField.setBoolean(config, false);
+	        }
+	    } catch (Exception ex) {
+	        // Ignore
+	    }
 	}
 
 	/**
