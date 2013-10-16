@@ -579,8 +579,8 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceC
 		AudioDriver d = SFApplication.get().getAudioDriver();
 		this.originalVolume = d.getVolume();
 		Debug.d("original volume: " + this.originalVolume);
-		Debug.d("new: " + 1);
-		d.setVolume(1);
+		Debug.d("new volume: " + this.originalVolume/5);
+		d.setVolume(this.originalVolume/5);
 	}
 	
 	private void restoreVolume() {
