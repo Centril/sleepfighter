@@ -173,9 +173,9 @@ public class MainActivity extends Activity {
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
-		   // temporarily add an extra context menu item for starting an alarm
-			     // TODO remove
-			     menu.add(0, menuItems.length, menuItems.length, "Start alarm"); 
+			// temporarily add an extra context menu item for starting an alarm
+			// TODO remove
+			menu.add(0, menuItems.length, menuItems.length, "DEBUG: Start alarm");
 		}
 	}
 	
@@ -203,13 +203,10 @@ public class MainActivity extends Activity {
 		case 2:
 			copyAlarm(selectedAlarm);
 			return true;
-			   case 3:
-				     
-				   // TODO remove case
-				   
-				   startAlarm(selectedAlarm);
-				
-				     return true; 
+		case 3:
+			// TODO remove case
+			startAlarm(selectedAlarm);
+			return true;
 		default:
 			return false;
 
