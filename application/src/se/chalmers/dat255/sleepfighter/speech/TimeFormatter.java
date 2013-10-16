@@ -36,8 +36,8 @@ public class TimeFormatter {
 		this.locale = locale;
 			
 		if(TextToSpeechUtil.isEnglish(locale)) {
-			this.am = "a. m. ";
-			this.pm = "p. m. ";
+			this.am = "a.m. ";
+			this.pm = "p.m. ";
 			past = "past";
 			to = "to";
 			quarter = "quarter";
