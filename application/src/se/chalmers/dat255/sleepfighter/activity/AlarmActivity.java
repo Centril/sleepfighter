@@ -19,7 +19,6 @@
 package se.chalmers.dat255.sleepfighter.activity;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -29,7 +28,6 @@ import org.joda.time.DateTime;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
-import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -38,7 +36,6 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
-import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
@@ -53,7 +50,6 @@ import android.content.res.Resources;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,8 +70,7 @@ import android.widget.TextView;
  * @version 1.0
  * @since Sep 20, 2013
  */
-@SuppressWarnings("deprecation")
-public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceCompletedListener {
+public class AlarmActivity extends Activity {
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
 
@@ -102,12 +97,6 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceC
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 
-
-	private int originalVolume;
-	
-	private String IS_SPEECH_RUNNING = "is_speech_running";
-	private String ORIGINAL_VOLUME = "original_volume";
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -121,13 +110,6 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceC
 		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
 		this.alarm = app.getPersister().fetchAlarmById(alarmId);
 
-		if (alarm.isSpeech() && savedInstanceState == null) {
-			// start no musis until the speech is over. 
-			lowerVolume();
-		}  else {
-			this.originalVolume = savedInstanceState.getInt(ORIGINAL_VOLUME);
-		}
-
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
 		tvName.setText(MetaTextUtils.printAlarmName(this, alarm));
@@ -136,30 +118,6 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceC
 		setupStopButton();
 		setupSnoozeButton();
 		setupFooter();
-		
-		
-		
-		if (alarm.isSpeech()) {
-			TextToSpeech tts = SFApplication.get().getTts();
-
-			if(savedInstanceState != null && savedInstanceState.getBoolean(IS_SPEECH_RUNNING, false)) {
-				// speech is already running, no need to start again. 
-			} else {
-				doSpeech(SFApplication.get().getWeather());
-				// TODO: is this correct?
-				SFApplication.get().setWeather(null);
-			}
-			tts.setOnUtteranceCompletedListener(this);
-		}
-	}
-
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-
-		outState.putBoolean(IS_SPEECH_RUNNING, true);
-	
-		outState.putInt(ORIGINAL_VOLUME,this.originalVolume);
 	}
 
 	@Override
@@ -219,26 +177,6 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceC
 			findViewById(R.id.footer).setVisibility(View.INVISIBLE);
 		}
 	}
-
-	// read out the time and weather.
-	public void doSpeech(String weather) {
-	
-		String s;
-		
-		TextToSpeech tts = SFApplication.get().getTts();
-		
-		
-		// weren't able to obtain any weather.
-		if(weather == null) {
-			s =  new SpeechLocalizer(tts, this).getSpeech();
-		} else {
-			s = new SpeechLocalizer(tts, this).getSpeech(weather);
-		}
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "stringId");
-		tts.speak(s, TextToSpeech.QUEUE_FLUSH, params);
-	}
-
 
 	/**
 	 * Handle what happens when the user presses the emergency stop.
@@ -527,12 +465,6 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceC
 		return String.format("%02d:%02d", hour, minute);
 	}
 
-	@Override
-	public void onUtteranceCompleted(String arg0) {
-		// now start playing the music now that the speech is over.
-		Debug.d("utterance completed.");
-		restoreVolume();
-	}
 
 
 	/**
@@ -575,16 +507,4 @@ public class AlarmActivity extends Activity implements TextToSpeech.OnUtteranceC
 		tvTime.startAnimation(fadeShort);
 	}
 	
-	private void lowerVolume() {
-		AudioDriver d = SFApplication.get().getAudioDriver();
-		this.originalVolume = d.getVolume();
-		Debug.d("original volume: " + this.originalVolume);
-		Debug.d("new volume: " + this.originalVolume/5);
-		d.setVolume(this.originalVolume/5);
-	}
-	
-	private void restoreVolume() {
-		AudioDriver d = SFApplication.get().getAudioDriver();
-		d.setVolume(this.originalVolume);
-	}
 }

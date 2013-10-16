@@ -5,24 +5,23 @@ import java.util.Locale;
 import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.R;
-
-import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.speech.tts.TextToSpeech;
 import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 // localizes the text read out by the speech feature. 
 public class SpeechLocalizer {
 	
 	private Locale originalDeviceLocale;
-	private Activity activity;
+	private Context context;
 	private Locale ttsLocale;
 	private TextToSpeech tts;
-	
 
-	public SpeechLocalizer(TextToSpeech tts, Activity activity) {
-		this.activity = activity;
+	public SpeechLocalizer(TextToSpeech tts, Context context) {
+		this.context = context;
 		this.ttsLocale = tts.getLanguage();
 		this.tts = tts;
 	}
@@ -35,7 +34,7 @@ public class SpeechLocalizer {
 	}
 	
 	private String getString(int id) {
-		return activity.getResources().getString(id);
+		return context.getResources().getString(id);
 	}
 
 	private String getWakeUp() {
@@ -54,7 +53,7 @@ public class SpeechLocalizer {
 	private String getWeather(String weather) {
 		String weatherFormat =getString(R.string.speech_weather_format);
 		
-		String w = new WeatherTranslator(ttsLocale, activity).translate(weather);
+		String w = new WeatherTranslator(ttsLocale, context).translate(weather);
 		return String.format(weatherFormat, w);		
 	}
 	
@@ -63,33 +62,35 @@ public class SpeechLocalizer {
 		
 		originalDeviceLocale = Locale.getDefault();
 		
-		if(TextToSpeechUtil.languageHasVoice(originalDeviceLocale, tts, activity)) {
+		if(TextToSpeechUtil.languageHasVoice(originalDeviceLocale, tts, context)) {
 			return;
 			// we already have a voice, we don't need to switch locale. 
 		}
 			
-		Configuration conf = activity.getResources().getConfiguration();
+		Configuration conf = context.getResources().getConfiguration();
 		conf.locale = Locale.ENGLISH;
 		DisplayMetrics metrics = new DisplayMetrics();
 		
-		activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		new Resources(activity.getAssets(), metrics, conf);
+		WindowManager windowManager = (WindowManager) this.context.getSystemService(Context.WINDOW_SERVICE);
+		windowManager.getDefaultDisplay().getMetrics(metrics);
+		new Resources(context.getAssets(), metrics, conf);
 	}
 
 	// now we restore the original locale used by the device.
 	private void restoreLocale() {
 		
-		if(TextToSpeechUtil.languageHasVoice(originalDeviceLocale, tts, activity)) {
+		if(TextToSpeechUtil.languageHasVoice(originalDeviceLocale, tts, context)) {
 			return;
 		}
 		
 		
-		Configuration conf = activity.getResources().getConfiguration();
+		Configuration conf = context.getResources().getConfiguration();
 		conf.locale = originalDeviceLocale;
 		DisplayMetrics metrics = new DisplayMetrics();
-		
-		activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		new Resources(activity.getAssets(), metrics, conf);
+		WindowManager windowManager = (WindowManager) this.context.getSystemService(Context.WINDOW_SERVICE);
+
+		windowManager.getDefaultDisplay().getMetrics(metrics);
+		new Resources(context.getAssets(), metrics, conf);
 	}
 	
 	// the text to be read out. Both the time and weather is read out. 
