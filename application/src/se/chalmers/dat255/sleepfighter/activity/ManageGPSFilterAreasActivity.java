@@ -370,7 +370,10 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		case R.id.action_gpsfilter_settings:
 			this.gotoSettings();
 			return true;
-
+			
+		case android.R.id.home:
+			finish();
+			return true;
 		default:
 			return super.onOptionsItemSelected( item );
 		}

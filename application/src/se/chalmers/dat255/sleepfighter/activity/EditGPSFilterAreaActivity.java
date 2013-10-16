@@ -46,7 +46,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -181,6 +180,10 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
 		switch ( item.getItemId() ) {
+		case android.R.id.home:
+			finish();
+			return true;
+			
 		case R.id.action_edit_gpsfilter_area_help:
 			this.showSplash();
 			return true;
