@@ -94,6 +94,8 @@ public class MathChallenge implements Challenge {
 			problem = new MatrixProblem(activity);			
 		} 
 		
+		problem = new DifferentiationProblem(activity);			
+		
 		problem.newProblem();
 		this.problemString = problem.render();
 		this.problemSolution = problem.solution();

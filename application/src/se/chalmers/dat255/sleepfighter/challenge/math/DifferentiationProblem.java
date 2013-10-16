@@ -199,7 +199,7 @@ public class DifferentiationProblem implements MathProblem {
 		int a =  RandomMath.nextRandomRanged(rng, -5, 5, 0);	
 
 		// if a is 1 we don't need a string at all. Because the expression x looks better than 1x.
-		String aStr = (a != Math.abs(1) ? a + "" : "");
+		String aStr = (Math.abs(a) != 1 ? a + "" : "");
 
 		// Because x looks better than x^1
 		String xcStr = (c == 1 ? gStr : gStr + "^" + c);
