@@ -34,20 +34,19 @@ import android.widget.SeekBar;
 public class VolumePreference extends DialogPreference {
 
 	// maximum number of points the slider can stick to
-	private static final int maxNbr = 7;
-	
-	SeekBar slider;
+	private static final int maxNbr = 100;
+
+	private SeekBar slider;
 	private int volume;
-	
+
 	public VolumePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	@Override
 	public View onCreateDialogView() {
 		slider = new SeekBar(getContext());
 		slider.setMax(maxNbr);
-		
 		slider.setProgress(volume);
 		
 		return slider;
@@ -60,7 +59,7 @@ public class VolumePreference extends DialogPreference {
 		if (positiveResult) {
 			volume = slider.getProgress();
 			
-			if (callChangeListener(100*volume/maxNbr)) {
+			if (callChangeListener(volume)) {
 				persistInt(volume);
 			}
 		}
@@ -70,7 +69,7 @@ public class VolumePreference extends DialogPreference {
 	 * @param volume the volume (0-100)
 	 */
 	public void setVolume(int volume) {
-		this.volume = (int) Math.round((volume*maxNbr)/100.0);
+		this.volume = volume;
 	}
 	
 	/**
