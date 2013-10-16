@@ -18,8 +18,6 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.receiver;
 
-import java.util.HashMap;
-
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
@@ -29,6 +27,7 @@ import se.chalmers.dat255.sleepfighter.gps.GPSFilterRequisitor;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
+import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
@@ -175,11 +174,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 		} else {
 			s = new SpeechLocalizer(tts, this.context).getSpeech(weather);
 		}
-		HashMap<String, String> params = new HashMap<String, String>();
-		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "stringId");
-		
+
 		lowerVolume();
-		tts.speak(s, TextToSpeech.QUEUE_FLUSH, params);
+		TextToSpeechUtil.speakAlarm(tts, s);
 	}
 
 	private void startSpeech() {

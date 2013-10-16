@@ -19,6 +19,7 @@
 package se.chalmers.dat255.sleepfighter.speech;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,10 +28,14 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.speech.tts.TextToSpeech;
 
 public class TextToSpeechUtil {
 	
+	private static final String UTTERANCE_ID = "alarm_speech";
+	private static final int CHECK_TTS_DATA_REQUEST_CODE = 2;
+
 	private TextToSpeechUtil() {	
 	}
 
@@ -39,9 +44,22 @@ public class TextToSpeechUtil {
 /*		tts.setSpeechRate(1.8f);
 		tts.setPitch(1.2f);*/
 	}
-	
-	
-	public static final int CHECK_TTS_DATA_REQUEST_CODE = 2;
+
+	/**
+	 * Do text-to-speech through the alarm stream.
+	 * 
+	 * @param tts
+	 *            the TextToSpeech to speak through
+	 * @param string
+	 *            the String that is to be spoken
+	 */
+	public static void speakAlarm(TextToSpeech tts, String string) {
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+				String.valueOf(AudioManager.STREAM_ALARM));
+		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID);
+		tts.speak(string, TextToSpeech.QUEUE_FLUSH, params);
+	}
 
 	// check whether we have TTS data. 
 	public static void checkTextToSpeech(Activity activity) {

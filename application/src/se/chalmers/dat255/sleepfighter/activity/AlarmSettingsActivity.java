@@ -270,8 +270,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				
 				
 				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getSpeech("Dry and mostly cloudy");
-				tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
-				
+				TextToSpeechUtil.speakAlarm(tts, s);				
 				return true;
 			}
 		});
@@ -488,19 +487,4 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		tp.setHour(alarm.getHour());
 		tp.setMinute(alarm.getMinute());
 	}
-	
-
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		/*if(requestCode == TextToSpeechUtil.CHECK_TTS_DATA_REQUEST_CODE) {   
-		}else {
-			super.onActivityResult(requestCode, resultCode, data);
-		}*/
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-	
-	
-	
-
 }
