@@ -92,9 +92,7 @@ public class MathChallenge implements Challenge {
 		}else if(problemType == ProblemType.matrix) {
 			problem = new MatrixProblem(activity);			
 		} 
-		
-		problem = new DifferentiationProblem(activity);			
-		
+
 		problem.newProblem();
 		this.problemString = problem.render();
 		this.problemSolution = problem.solution();
