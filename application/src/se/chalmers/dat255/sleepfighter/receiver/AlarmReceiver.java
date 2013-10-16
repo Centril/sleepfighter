@@ -39,7 +39,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;;
 
 /**
  * <p>AlarmReceiver is responsible for receiving broadcasts<br/>
@@ -52,6 +52,8 @@ import android.speech.tts.UtteranceProgressListener;
  * @version 1.0
  * @since Sep 21, 2013
  */
+// UtteranceProgressListener not available in api < 15
+@SuppressWarnings("deprecation")
 public class AlarmReceiver extends BroadcastReceiver {
 	private Context context;
 	private Alarm alarm;
@@ -104,7 +106,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 	/**
 	 * Starts AlarmActivity, extras are passed on.
 	 * 
-	 * @param context android context.
 	 * @param extras extras to pass on.
 	 */
 	private void startAlarm( Bundle extras ) {
@@ -143,8 +144,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 	 * Clicking on it takes the user to AlarmActivity, where a challenge can be
 	 * started.
 	 * 
-	 * @param alarm
-	 *            the alarm
 	 * @param activityIntent
 	 *            the intent to be launched when the notification is clicked
 	 */
@@ -188,7 +187,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 		doSpeech(SFApplication.get().getWeather());
 		// TODO: is this correct?
 		SFApplication.get().setWeather(null);
-		tts.setOnUtteranceProgressListener(utteranceListener);
+		// UtteranceProgressListener not available in api < 15
+		tts.setOnUtteranceCompletedListener(utteranceListener);
 	}
 
 	private void lowerVolume() {
@@ -204,16 +204,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 		d.setVolume(origVolume);
 	}
 
-	private UtteranceProgressListener utteranceListener = new UtteranceProgressListener() {
-		
+	private OnUtteranceCompletedListener utteranceListener = new OnUtteranceCompletedListener() {
+
 		@Override
-		public void onStart(String utteranceId) {}
-		
-		@Override
-		public void onError(String utteranceId) {}
-		
-		@Override
-		public void onDone(String utteranceId) {
+		public void onUtteranceCompleted(String utteranceId) {
 			// now start playing the music now that the speech is over.
 			Debug.d("utterance completed.");
 			restoreVolume();
