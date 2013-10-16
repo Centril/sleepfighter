@@ -53,7 +53,7 @@
 
     <string name="pref_alarm_repeat">Repeat</string>
     <string name="pref_delete_alarm">Delete this alarm</string>
-    <string name="pref_alarm_ringtone">Ring tone</string>
+    <string name="pref_alarm_ringtone">Ringtone</string>
     <string name="pref_alarm_vibration">Vibration</string>
     <string name="pref_challenge">Challenges</string>
     <string name="alarm_settings_action_remove">Delete</string>
