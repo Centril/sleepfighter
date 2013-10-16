@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.receiver;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
+import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.gps.GPSFilterRequisitor;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
@@ -113,7 +114,19 @@ public class AlarmReceiver extends BroadcastReceiver {
 		context.startActivity( activityIntent );
 
 		showNotification(alarm, activityIntent);
+		
+		this.startAudio(alarm);
 	}
+	
+	private void startAudio(Alarm alarm) {
+		SFApplication app = SFApplication.get();
+		AudioDriver driver = app.getAudioDriverFactory().produce(app,
+				alarm.getAudioSource());
+		app.setAudioDriver(driver);
+
+		driver.play(alarm.getAudioConfig());
+	}
+
 
 	
 

@@ -40,6 +40,7 @@ public class PlaylistDriver extends BaseAudioDriver {
 	private PlaylistProviderFactory factory;
 	private PlaylistProvider provider;
 	private Playlist playlist;
+	private int  volume;
 
 	/**
 	 * Constructs a PlaylistDriver given a PlaylistProviderFactory.
@@ -84,6 +85,7 @@ public class PlaylistDriver extends BaseAudioDriver {
 	@Override
 	public void play( AudioConfig config ) {
 		super.play( config );
+		this.volume = config.getVolume();
 
 		float bundleVol = VolumeUtils
 				.convertUIToFloatVolume(config.getVolume());
@@ -119,10 +121,18 @@ public class PlaylistDriver extends BaseAudioDriver {
 
 	@Override
 	public void setVolume(int volume) {
+		this.volume = volume;
 		float bundleVol = VolumeUtils.convertUIToFloatVolume(volume);
 
 		Intent i = new Intent(AudioService.ACTION_VOLUME);
 		i.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
 		getContext().startService(i);
 	}
+
+	@Override
+	public int getVolume() {
+		return this.volume;
+	}
+	
+	
 }

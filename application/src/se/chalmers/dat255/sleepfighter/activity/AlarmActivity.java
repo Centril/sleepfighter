@@ -104,6 +104,8 @@ public class AlarmActivity extends Activity implements
 	private boolean bypassLockscreen = true;
 
 	private TextToSpeech tts;
+	
+	private int originalVolume;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,11 +123,10 @@ public class AlarmActivity extends Activity implements
 		if (alarm.isSpeech()) {
 			// start no musis until the speech is over. 
 			TextToSpeechUtil.checkTextToSpeech(this);
+			
+			lowerVolume();
 
-		} else {
-			// for speech the audio is started once the speech is over.
-			startAudio(alarm);
-		}
+		} 
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
@@ -528,17 +529,9 @@ public class AlarmActivity extends Activity implements
 	public void onUtteranceCompleted(String arg0) {
 		// now start playing the music now that the speech is over.
 		Debug.d("utterance completed.");
-		startAudio(alarm);
+		restoreVolume();
 	}
 
-	private void startAudio(Alarm alarm) {
-		SFApplication app = SFApplication.get();
-		AudioDriver driver = app.getAudioDriverFactory().produce(app,
-				alarm.getAudioSource());
-		app.setAudioDriver(driver);
-
-		driver.play(alarm.getAudioConfig());
-	}
 
 	/**
 	 * Start the camera's flashlight if found
@@ -578,5 +571,18 @@ public class AlarmActivity extends Activity implements
 
 		// Set the components with animation
 		tvTime.startAnimation(fadeShort);
+	}
+	
+	private void lowerVolume() {
+		AudioDriver d = SFApplication.get().getAudioDriver();
+		this.originalVolume = d.getVolume();
+		Debug.d("original volume: " + this.originalVolume);
+		Debug.d("new: " + this.originalVolume / 5);
+		d.setVolume(0);
+	}
+	
+	private void restoreVolume() {
+		AudioDriver d = SFApplication.get().getAudioDriver();
+		d.setVolume(this.originalVolume);
 	}
 }
