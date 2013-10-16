@@ -53,7 +53,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 21;
+	// IMPORTANT: If you update this, also add the old version to the switch/case
+	private static final int DATABASE_VERSION = 22;
 
 	// Dao for Alarm.
 	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;
@@ -117,32 +118,41 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	/**
 	 * <p>Called when application is updates from google play or something<br/>
 	 * and this entails a changed model and therefore changed DB structure.</p>
-	 *
-	 * <p>Migration should be handled here.<br/>
-	 * For now, the DB is just dropped and recreated so all info is lost.</p>
-	 *
-	 * TODO: don't drop info.
 	 */
 	@Override
 	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 		try {
-			TableUtils.dropTable( connectionSource, Alarm.class, true );
-
-			TableUtils.dropTable( connectionSource, AudioSource.class, true );
-			TableUtils.dropTable( connectionSource, AudioConfig.class, true );
-			TableUtils.dropTable( connectionSource, SnoozeConfig.class, true );
-
-			TableUtils.dropTable( connectionSource, ChallengeConfigSet.class, true );
-			TableUtils.dropTable( connectionSource, ChallengeConfig.class, true );
-			TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
-
-			TableUtils.dropTable(connectionSource, GPSFilterArea.class, true );
-
-			onCreate(db, connectionSource);
+			switch(oldVersion) {
+			// Only test on 19 and higher, since that is the Release version
+			case 19:
+			case 20:
+				TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
+				TableUtils.createTable( connectionSource, ChallengeParam.class );
+			case 21:
+				this.getAlarmDao().executeRaw("ALTER TABLE 'alarm' ADD COLUMN 'isFlash' BOOLEAN DEFAULT false;");
+				break; // Break after the newest version
+			default:
+				dropEverything(connectionSource);
+				onCreate(db, connectionSource);
+			}
 		} catch (SQLException e) {
 			Log.e(OrmHelper.class.getName(), "Can't drop databases", e);
 			throw new PersistenceException(e);
 		}
+	}
+	
+	private void dropEverything(ConnectionSource connectionSource) throws SQLException {
+		TableUtils.dropTable( connectionSource, Alarm.class, true );
+		
+		TableUtils.dropTable( connectionSource, AudioSource.class, true );
+		TableUtils.dropTable( connectionSource, AudioConfig.class, true );
+		TableUtils.dropTable( connectionSource, SnoozeConfig.class, true );
+
+		TableUtils.dropTable( connectionSource, ChallengeConfigSet.class, true );
+		TableUtils.dropTable( connectionSource, ChallengeConfig.class, true );
+		TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
+
+		TableUtils.dropTable(connectionSource, GPSFilterArea.class, true );
 	}
 
 	/**
