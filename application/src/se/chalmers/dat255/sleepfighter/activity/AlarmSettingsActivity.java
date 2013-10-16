@@ -73,7 +73,7 @@ import android.widget.TextView.OnEditorActionListener;
  * @author Hassel
  *
  */
-public class AlarmSettingsActivity extends PreferenceActivity implements TextToSpeech.OnInitListener {
+public class AlarmSettingsActivity extends PreferenceActivity {
 
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
@@ -97,7 +97,6 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 	private Alarm alarm;
 	private AlarmList alarmList;
 
-	private TextToSpeech tts;
 	
 	
 	private SFApplication app() {
@@ -261,8 +260,11 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
 				Debug.d("speech sample here");
+			
+				TextToSpeech tts = SFApplication.get().getTts();
 				
-				languageHasNoVoice();
+				languageHasNoVoice(tts);
+				
 				
 				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getSpeech("Dry and mostly cloudy");
 				tts.speak(s, TextToSpeech.QUEUE_FLUSH, null);
@@ -279,7 +281,7 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 	// if the user's current language doesn't have a voice installed
 	// notify the user that the English voice will used instead.
 	// also recommend the user to install a voice for his/her language. 
-	public void languageHasNoVoice() {
+	public void languageHasNoVoice(TextToSpeech tts ) {
 		Locale deviceLocale = Locale.getDefault();
 		if(!TextToSpeechUtil.languageHasVoice(deviceLocale, tts, this)) {
 			DialogUtils.showDoNotShowAgainMessageBox(this, 
@@ -418,7 +420,8 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 				preference.setSummary(stringValue);
 			}
 			else if (SPEECH.equals(preference.getKey())) {
-				languageHasNoVoice();
+				TextToSpeech tts = SFApplication.get().getTts();
+				languageHasNoVoice(tts);
 				alarm.setSpeech(("true".equals(stringValue)) ? true : false);
 			}
 			
@@ -478,33 +481,17 @@ public class AlarmSettingsActivity extends PreferenceActivity implements TextToS
 	}
 	
 
-	// called when the text to speech engine is initialized. 
-	@Override
-	public void onInit(int status) {
-		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
-		TextToSpeechUtil.config(tts);
-	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(requestCode == TextToSpeechUtil.CHECK_TTS_DATA_REQUEST_CODE) {   
-			tts = new TextToSpeech(this, this);
+		/*if(requestCode == TextToSpeechUtil.CHECK_TTS_DATA_REQUEST_CODE) {   
 		}else {
 			super.onActivityResult(requestCode, resultCode, data);
-		}
+		}*/
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	
 	
-	@Override
-	protected void onDestroy() {
 
-
-	    //Close the Text to Speech Library
-	    if(tts != null) {
-	        tts.stop();
-	        tts.shutdown();
-	    }
-	    super.onDestroy();
-	}
 }

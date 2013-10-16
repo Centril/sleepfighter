@@ -577,8 +577,8 @@ public class AlarmActivity extends Activity implements
 		AudioDriver d = SFApplication.get().getAudioDriver();
 		this.originalVolume = d.getVolume();
 		Debug.d("original volume: " + this.originalVolume);
-		Debug.d("new: " + this.originalVolume / 5);
-		d.setVolume(0);
+		Debug.d("new: " + 1);
+		d.setVolume(1);
 	}
 	
 	private void restoreVolume() {

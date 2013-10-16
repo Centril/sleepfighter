@@ -32,14 +32,16 @@ import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
+import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
+import android.speech.tts.TextToSpeech;
 
 /**
  * A custom implementation of Application for SleepFighter.
  */
-public class SFApplication extends Application {
+public class SFApplication extends Application implements TextToSpeech.OnInitListener {
 	private static final boolean CLEAN_START = false;
 
 	private static SFApplication app;
@@ -62,11 +64,23 @@ public class SFApplication extends Application {
 	
 	private String weather;
 	
+	private TextToSpeech tts;
+	
+
+	// called when the text to speech engine is initialized. 
+	@Override
+	public void onInit(int status) {
+		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
+		TextToSpeechUtil.config(tts);
+	}
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		app = this;
 
+		tts = new TextToSpeech(this, this);
+		
 		this.prefs = new GlobalPreferencesManager( this );
 
 		this.persistenceManager = new PersistenceManager( this );
@@ -75,6 +89,7 @@ public class SFApplication extends Application {
 
 		// testing SortModel!
 		new SortChallenge();
+		
 	}
 
 	/**
@@ -256,4 +271,18 @@ public class SFApplication extends Application {
 	public String getWeather() {
 		return this.weather;
 	}
+	
+	public TextToSpeech getTts() {
+		return this.tts;
+	}
+	
+	/*@Override
+	protected void onDestroy() {
+	    //Close the Text to Speech Library
+	    if(tts != null) {
+	        tts.stop();
+	        tts.shutdown();
+	    }
+	    super.onDestroy();
+	}*/
 }
