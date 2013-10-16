@@ -50,6 +50,7 @@ import android.content.res.Resources;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -376,6 +377,11 @@ public class AlarmActivity extends Activity {
 
 	private void stopAudio() {
 		SFApplication.get().setAudioDriver(null);
+
+		TextToSpeech tts = SFApplication.get().getTts();
+		if (tts != null) {
+			tts.stop();
+		}
 	}
 
 	/**
