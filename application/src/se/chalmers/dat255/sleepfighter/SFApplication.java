@@ -23,7 +23,6 @@ import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
-import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
 import se.chalmers.dat255.sleepfighter.factory.FromPresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.factory.PresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -89,11 +88,6 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		this.persistenceManager = new PersistenceManager( this );
 		this.getBus().subscribe( this.persistenceManager );
 		this.weather = null;
-
-		// testing SortModel!
-		new SortChallenge();
-		Debug.d("on create application.");
-		
 	}
 
 	/**
