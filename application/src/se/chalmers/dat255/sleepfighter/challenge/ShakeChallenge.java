@@ -46,6 +46,8 @@ public class ShakeChallenge implements Challenge {
 	}}
 
 	private static final float GOAL = 5000;
+	private static final double MIN_WORK = 100;
+
 	private static final String KEY_PROGRESS_FLOAT = "progress";
 
 	private ChallengeActivity activity;
@@ -57,6 +59,7 @@ public class ShakeChallenge implements Challenge {
 
 	private float progress = 0;
 	private Vector3D lastVector;
+	private long lastTime;
 
 	@Override
 	public void start(ChallengeActivity activity, ChallengeResolvedParams params) {
@@ -69,17 +72,11 @@ public class ShakeChallenge implements Challenge {
 		this.activity = activity;
 		this.activity.setContentView(R.layout.challenge_shake);
 
-
 		// Get view references
 		this.progressBar = (ProgressBar) this.activity
 				.findViewById(R.id.progressBar);
 		this.progressText = (TextView) this.activity
 				.findViewById(R.id.progressText);
-
-		// Get progress from bundle
-		if(state != null) {
-			this.progress = state.getFloat(KEY_PROGRESS_FLOAT);
-		}
 
 		// Check if required sensor is available
 		boolean hasAccelerometer = activity.getPackageManager()
@@ -97,17 +94,24 @@ public class ShakeChallenge implements Challenge {
 				.getSystemService(Context.SENSOR_SERVICE);
 		this.accelerometer = sensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		
+		// Get last progress from bundle, if it exists
+		if(state != null) {
+			this.progress = state.getFloat(KEY_PROGRESS_FLOAT);
+		}
+		updateProgress();
 	}
 	
 	private SensorEventListener sensorEventListener = new SensorEventListener() {
 
 		@Override
 		public void onSensorChanged(SensorEvent event) {
+			long time = System.nanoTime();
 			float x = event.values[0];
 			float y = event.values[1];
 			float z = event.values[2];
 			Vector3D vector = new Vector3D(x, y, z);
-			onAccelerationChange(vector);
+			onAccelerationChange(vector, time);
 		}
 
 		@Override
@@ -119,29 +123,44 @@ public class ShakeChallenge implements Challenge {
 	 * 
 	 * @param vector
 	 *            the current acceleration vector
+	 * @param time
+	 *            the time the acceleration vector was acquired, in nono
+	 *            seconds, since some time in the past defined by the system
 	 */
-	private void onAccelerationChange(Vector3D vector) {
+	private void onAccelerationChange(Vector3D vector, long time) {
 		// Only take vector difference into account, need a last vector
 		if (lastVector != null) {
 			// The difference of the vectors
 			Vector3D diff = vector.subtract(lastVector);
 
+			// Time difference in seconds
+			double timeDiff = (double)(time - lastTime) / 1000000000;
+						
 			// The one dimensional "size" of the difference, there are probably
 			// better things to measure
 			double work = diff.getNorm();
 
-			// Increase the accumulator
-			this.progress += work;
+			double workPerTime = work / timeDiff;
 
-			updateProgress();
+			// Only take effort above a set limit into account
+			// Simple way to sort out small movements
+			if (workPerTime > MIN_WORK) {
+				// Increase the accumulator
+				this.progress += work;
 
-			checkIfCompleted();
+				updateProgress();
+
+				checkIfCompleted();
+			}
 		}
 		this.lastVector = vector;
+		this.lastTime = time;
 	}
 
+	/**
+	 * Update the progress shown in the UI.
+	 */
 	private void updateProgress() {
-		// Change the progress bar and text to show how near completion
 		int percentage = Math.min(100, Math.round(100 * (progress / GOAL)));
 		this.progressBar.setProgress(percentage);
 		this.progressText.setText(percentage + "%");
