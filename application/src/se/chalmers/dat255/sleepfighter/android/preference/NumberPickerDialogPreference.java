@@ -1,6 +1,6 @@
 package se.chalmers.dat255.sleepfighter.android.preference;
 
-//import net.simonvt.numberpicker.NumberPicker;
+import net.simonvt.numberpicker.NumberPicker;
 import se.chalmers.dat255.sleepfighter.R;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
+import android.view.View;
+import android.widget.TextView;
 
 /**
  * sleepfighter note: credit goes to: http://www.lukehorvat.com/blog/android-numberpickerdialogpreference/
@@ -26,7 +28,7 @@ public class NumberPickerDialogPreference extends DialogPreference {
 	private int mMinValue;
 	private int mMaxValue;
 	private int mValue;
-	//private NumberPicker mNumberPicker;
+	private NumberPicker mNumberPicker;
 
 	public NumberPickerDialogPreference( Context context ) {
 		this( context, null );
@@ -67,7 +69,7 @@ public class NumberPickerDialogPreference extends DialogPreference {
 		return a.getInt( index, DEFAULT_VALUE );
 	}
 
-	/*@Override
+	@Override
 	protected void onBindDialogView( View view ) {
 		super.onBindDialogView( view );
 
@@ -79,7 +81,7 @@ public class NumberPickerDialogPreference extends DialogPreference {
 		mNumberPicker.setMinValue( mMinValue );
 		mNumberPicker.setMaxValue( mMaxValue );
 		mNumberPicker.setValue( mValue );
-	}*/
+	}
 
 	public int getMinValue() {
 		return mMinValue;
@@ -117,13 +119,13 @@ public class NumberPickerDialogPreference extends DialogPreference {
 	protected void onDialogClosed( boolean positiveResult ) {
 		super.onDialogClosed( positiveResult );
 
-	/*	// when the user selects "OK", persist the new value
+		// when the user selects "OK", persist the new value
 		if ( positiveResult ) {
 			int numberPickerValue = mNumberPicker.getValue();
 			if ( callChangeListener( numberPickerValue ) ) {
 				setValue( numberPickerValue );
 			}
-		}*/
+		}
 	}
 
 	@Override

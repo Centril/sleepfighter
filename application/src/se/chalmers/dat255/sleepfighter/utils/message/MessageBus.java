@@ -35,6 +35,7 @@ public class MessageBus<T extends Message> extends MBassador<T> {
 
 	private static final String TAG = MessageBus.class.getSimpleName();
 	
+	
 	/**
 	 * Forward exceptions gotten during publish to Logcat. 
 	 */
