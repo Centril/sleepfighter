@@ -56,7 +56,6 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 	private double angle, margin = 0.2;
 	private ChallengeActivity activity;
 	private SnakeController snakeController;
-	private NoSensorException exception = null;
 
 	@Override
 	public void start(ChallengeActivity activity, ChallengeResolvedParams params) {
