@@ -147,6 +147,17 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		return true;
 	}
 
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// If this is the preset alarm, the options menu won't be shown, only
+		// removing the "delete" menu might be appropriate if more options are
+		// added
+		if(this.alarm.isPresetAlarm()) {
+			return false;
+		}
+		return true;
+	}
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Handler
 	public void handleNameChange(MetaChangeEvent e) {
