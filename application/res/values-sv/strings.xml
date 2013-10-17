@@ -34,6 +34,10 @@
         <item quantity="one">en poäng</item>
         <item quantity="other">%d poäng</item>
     </plurals>
+    <plurals name="minute">
+        <item quantity="one">minut</item>
+        <item quantity="other">minuter</item>
+    </plurals>
 
     <!-- Challenges -->
     <string name="btn_complete">Lyckas!</string>

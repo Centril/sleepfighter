@@ -25,6 +25,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.MultiSelectListPreference;
+import se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.VolumePreference;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
@@ -429,8 +430,11 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				if (stringValue.equals("") || stringValue.equals("0")) {
 					stringValue = preference.getSummary().toString();
 				}
-				alarm.getSnoozeConfig().setSnoozeTime(Integer.parseInt(stringValue));
-				preference.setSummary(stringValue);
+				int time = Integer.parseInt(stringValue);
+				alarm.getSnoozeConfig().setSnoozeTime(time);
+				String summary = time + " " + getResources()
+						.getQuantityText(R.plurals.minute, time).toString();
+				preference.setSummary(summary);
 			}
 			else if (SPEECH.equals(preference.getKey())) {
 				TextToSpeech tts = SFApplication.get().getTts();
@@ -482,9 +486,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		else if (SNOOZE_TIME.equals(preference.getKey())) {
 			int time = this.alarm.getSnoozeConfig().getSnoozeTime();
-			EditTextPreference pref = ((EditTextPreference) preference);
-			pref.setText(time + "");
-			pref.setSummary(time + "");
+			NumberPickerDialogPreference pref = ((NumberPickerDialogPreference) preference);
+			pref.setValue(time);
+			String summary = time + " " + getResources().getQuantityText(R.plurals.minute, time).toString();
+			pref.setSummary(summary);
 		}else if (SPEECH.equals(preference.getKey())) {
 			((CheckBoxPreference) preference).setChecked(alarm.isSpeech());
 		}else if (FLASH.equals(preference.getKey())) {

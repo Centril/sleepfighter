@@ -16,7 +16,8 @@
   You should have received a copy of the GNU General Public License
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:custom="http://schemas.android.com/apk/res-auto" >
 
     <PreferenceCategory android:title="@string/general_category_title" >
         <se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference
@@ -79,12 +80,13 @@
             android:key="pref_alarm_snooze_enabled"
             android:title="@string/pref_alarm_snooze_enabled" />
 
-        <EditTextPreference
-            android:inputType="number"
+        <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+            android:defaultValue="9"
             android:key="pref_alarm_snooze_time"
-            android:maxLength="2"
-            android:selectAllOnFocus="true"
-            android:title="@string/pref_alarm_snooze_time" />
+            android:max="99"
+            android:title="@string/pref_alarm_snooze_time"
+            custom:min="1" />
+
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/speech_category_title" >
