@@ -51,6 +51,7 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	private GlobalPreferencesManager prefs;
 
 	private AlarmList alarmList;
+	private Alarm ringingAlarm;
 	private MessageBus<Message> bus;
 
 	private PersistenceManager persistenceManager;
@@ -67,7 +68,6 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	//private String weather;
 	
 	private TextToSpeech tts;
-	
 
 	// called when the text to speech engine is initialized. 
 	@Override
@@ -293,16 +293,28 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	public TextToSpeech getTts() {
 		return this.tts;
 	}
-	
-	
 
-	/*@Override
-	protected void onDestroy() {
-	    //Close the Text to Speech Library
-	    if(tts != null) {
-	        tts.stop();
-	        tts.shutdown();
-	    }
-	    super.onDestroy();
-	}*/
+	/**
+	 * Gets the currently ringing alarm.
+	 * 
+	 * @return the ringing alarm, null if no alarm is ringing
+	 */
+	public Alarm getRingingAlarm() {
+		return ringingAlarm;
+	}
+
+	/**
+	 * Sets the currently ringing alarm.
+	 * 
+	 * <p>
+	 * Added for being able to check from activities if an alarm is currently
+	 * ringing, to then redirect the user to AlarmActivity.
+	 * </p>
+	 * 
+	 * @param alarm
+	 *            the alarm to set as the ringing alarm
+	 */
+	public void setRingingAlarm(Alarm alarm) {
+		this.ringingAlarm = alarm;
+	}
 }

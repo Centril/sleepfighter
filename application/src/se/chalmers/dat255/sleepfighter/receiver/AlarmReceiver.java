@@ -27,7 +27,6 @@ import se.chalmers.dat255.sleepfighter.gps.GPSFilterRequisitor;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.service.FadeVolumeService;
-import se.chalmers.dat255.sleepfighter.service.LocationService;
 import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
@@ -128,6 +127,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 		showNotification(activityIntent);
 		
 		this.startAudio();
+
+		SFApplication.get().setRingingAlarm(alarm);
 	}
 	
 	private void startAudio() {

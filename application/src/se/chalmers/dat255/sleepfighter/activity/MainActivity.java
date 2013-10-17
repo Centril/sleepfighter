@@ -52,7 +52,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -76,6 +75,7 @@ public class MainActivity extends Activity {
 	public SFApplication app() {
 		return SFApplication.get();
 	}
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +93,7 @@ public class MainActivity extends Activity {
 		this.setupChallengeToggle();
 		this.updateChallengePoints();
 		this.updateEarliestText();
+
 	}
 
 	@Override
@@ -101,6 +102,15 @@ public class MainActivity extends Activity {
 
 		this.updateChallengePoints();
 		this.updateEarliestText();
+
+		// Check if an alarm is ringing, if so, send the user to AlarmActivity
+		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
+		if (ringingAlarm != null) {
+			Intent i = new Intent(this, AlarmActivity.class);
+			new IntentUtils(i).setAlarmId(ringingAlarm);
+			startActivity(i);
+			finish();
+		}
 	}
 
 	private void setupListView() {

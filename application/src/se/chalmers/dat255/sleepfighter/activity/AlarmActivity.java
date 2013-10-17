@@ -370,6 +370,9 @@ public class AlarmActivity extends Activity {
 		NotificationHelper.getInstance().removeNotification(
 				getApplicationContext());
 
+		// Removes the globally set ringing alarm
+		SFApplication.get().setRingingAlarm(null);
+
 		finish();
 	}
 
