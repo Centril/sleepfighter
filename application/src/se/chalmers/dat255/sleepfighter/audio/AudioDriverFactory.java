@@ -69,6 +69,8 @@ public class AudioDriverFactory {
 				Toast.makeText( context, "NOT IMPLEMENTED YET!", Toast.LENGTH_LONG ).show();
 				driver = new SilentAudioDriver();
 				break;
+			default:
+				throw new IllegalArgumentException("This should not happen");
 			}
 		}
 

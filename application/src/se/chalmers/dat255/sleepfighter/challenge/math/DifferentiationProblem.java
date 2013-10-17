@@ -43,7 +43,7 @@ public class DifferentiationProblem implements MathProblem {
 	private static final int ORDER = 1;
 	
 	// Used for storing a function and its string representatin. Utilized in DiffentiationProblem
-	public class Function {
+	private static class Function {
 		
 		public Function() {
 			s = "";

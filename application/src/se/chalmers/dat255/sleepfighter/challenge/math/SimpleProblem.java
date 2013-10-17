@@ -80,7 +80,10 @@ public class SimpleProblem implements MathProblem {
 			result = random.nextInt(8) + 2;
 			operand2 = random.nextInt(8) + 2;
 			operand1 = result * operand2;
-			break;
+			break;	
+		default:
+			throw new IllegalArgumentException("This should not happen");
+				
 		}
 	}
 
