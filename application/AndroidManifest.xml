@@ -148,6 +148,7 @@
 
         <service android:name="se.chalmers.dat255.sleepfighter.service.AlarmPlannerService"></service>
         <service android:name="se.chalmers.dat255.sleepfighter.service.LocationService"></service>
+        <service android:name="se.chalmers.dat255.sleepfighter.service.FadeVolumeService"></service>
         
         <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.AlarmRebootSetter">
             <intent-filter>

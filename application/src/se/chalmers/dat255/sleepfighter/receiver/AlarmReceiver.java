@@ -26,6 +26,8 @@ import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.gps.GPSFilterRequisitor;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import se.chalmers.dat255.sleepfighter.service.FadeVolumeService;
+import se.chalmers.dat255.sleepfighter.service.LocationService;
 import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
@@ -198,12 +200,25 @@ public class AlarmReceiver extends BroadcastReceiver {
 		d.setVolume(origVolume/5);
 	}
 	
+	
 	private void restoreVolume() {
-		AudioDriver d = SFApplication.get().getAudioDriver();
-		int origVolume = this.alarm.getAudioConfig().getVolume();
-		d.setVolume(origVolume);
+		// gradually restore the volume.		
+		Intent serviceIntent = new Intent(context,FadeVolumeService.class);
+		serviceIntent.putExtra("alarm_volume", AlarmReceiver.this.alarm.getAudioConfig().getVolume());
+		this.context.startService(serviceIntent);
+
+	
+		/*
+		
+        
+      */
+
+
+       //
+        
 	}
 
+	
 	private OnUtteranceCompletedListener utteranceListener = new OnUtteranceCompletedListener() {
 
 		@Override
