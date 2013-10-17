@@ -38,5 +38,5 @@
 
     
     <string name="fluidSnakeTitle">Touch to move the snake!</string>
-    <string name="rotoSnakeTitle">Rotate the device to control the snake!</string>
+    <string name="rotoSnakeTitle">Hold the device upright and rotate it to control the snake!</string>
 </resources>
