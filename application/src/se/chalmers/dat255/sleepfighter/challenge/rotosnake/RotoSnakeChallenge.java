@@ -28,10 +28,9 @@ import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
-import se.chalmers.dat255.sleepfighter.utils.motion.RotationControl;
 import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
+import se.chalmers.dat255.sleepfighter.utils.motion.RotationControl;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
