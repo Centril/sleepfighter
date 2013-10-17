@@ -190,6 +190,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		SFApplication.get().getPrefs().setWeather(null);
 		
 		// UtteranceProgressListener not available in api < 15
+		
 		tts.setOnUtteranceCompletedListener(utteranceListener);
 	}
 
@@ -206,18 +207,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 		Intent serviceIntent = new Intent(context,FadeVolumeService.class);
 		serviceIntent.putExtra("alarm_volume", AlarmReceiver.this.alarm.getAudioConfig().getVolume());
 		this.context.startService(serviceIntent);
-
-	
-		/*
-		
-        
-      */
-
-
-       //
-        
+ 
 	}
-
 	
 	private OnUtteranceCompletedListener utteranceListener = new OnUtteranceCompletedListener() {
 
