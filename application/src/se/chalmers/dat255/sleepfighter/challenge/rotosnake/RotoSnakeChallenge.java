@@ -65,8 +65,6 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		this.activity.setTitle(R.string.rotoSnakeTitle);
 
-		this.exception = null;
-
 		try {
 			this.motionControl = new RotationControl(this.activity);
 		} catch (NoSensorException e) {
@@ -74,17 +72,14 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 			// not having the required Sensor, complete the Challenge so as to
 			// not trap the user.
 			this.activity.complete();
-			this.exception = e;
+			return;
 		}
 
-		// If there was no NoSensorException, keep running.
-		if (this.exception == null) {
-			this.motionControl.addListener(this);
+		this.motionControl.addListener(this);
 
-			this.snakeController = new SnakeController(this,
-					this.activity.getBaseContext());
-			this.activity.setContentView(snakeController.getView());
-		}
+		this.snakeController = new SnakeController(this,
+				this.activity.getBaseContext());
+		this.activity.setContentView(snakeController.getView());
 	}
 
 	@Override
