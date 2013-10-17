@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.audio;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import android.app.Notification;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -208,8 +209,19 @@ public class AudioService extends Service implements OnPreparedListener,
 	}
 
 	private void handleVolumeAction(Intent intent) {
+		setMaxAlarmStreamVolume();
 		float volume = intent.getFloatExtra(BUNDLE_FLOAT_VOLUME, -1f);
 		setVolume(volume);
+	}
+
+	/**
+	 * Sets the alarm stream volume to its maximum, used since this controls its
+	 * volume through the MediaPlayer which offers more fine-tuning.
+	 */
+	private void setMaxAlarmStreamVolume() {
+		AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
+		audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxVol, 0);
 	}
 
 	/**
