@@ -70,7 +70,7 @@ public class GPSFilterRequisitor {
 		int maxAge = this.prefs.getLocationMaxAge();
 		if ( maxAge > 0 ) {
 			long locAge = System.currentTimeMillis() - loc.getTime();
-			if ( locAge > maxAge * 60000 ) {
+			if ( locAge > (long)maxAge * 60000 ) {
 				// Last known location is too old, skip location filter.
 				Log.d( TAG, "isSatisfied #3" );
 				return true;

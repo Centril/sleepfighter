@@ -557,7 +557,7 @@ public class Alarm implements IdProvider {
 	 *
 	 * @return true if the alarm can ring in the future.
 	 */
-	public boolean canHappen() {
+	public synchronized boolean canHappen() {
 		if ( !this.isActivated() ) {
 			return false;
 		}

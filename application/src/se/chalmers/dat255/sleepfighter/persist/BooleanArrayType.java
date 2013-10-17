@@ -19,6 +19,7 @@
 package se.chalmers.dat255.sleepfighter.persist;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import se.chalmers.dat255.sleepfighter.utils.math.Conversion;
 
@@ -50,7 +51,7 @@ public class BooleanArrayType extends BaseDataType {
 
 	@Override
 	public String[] getAssociatedClassNames() {
-		return associatedClassNames;
+		return Arrays.copyOf(associatedClassNames, associatedClassNames.length);
 	}
 
 	@Override
