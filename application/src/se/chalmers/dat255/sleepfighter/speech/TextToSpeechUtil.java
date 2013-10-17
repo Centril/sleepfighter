@@ -41,6 +41,8 @@ public class TextToSpeechUtil {
 
 	// set some miscellaneous settings for tts.
 	public static void config(TextToSpeech tts) {
+		// do nothing. The user can control the speechrate and pitch in the android settings,
+		// so we should not change these. 
 /*		tts.setSpeechRate(1.8f);
 		tts.setPitch(1.2f);*/
 	}
@@ -56,7 +58,7 @@ public class TextToSpeechUtil {
 	public static void speakAlarm(TextToSpeech tts, String string) {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
-				String.valueOf(AudioManager.STREAM_ALARM));
+				String.valueOf(AudioManager.STREAM_MUSIC));
 		params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID);
 		tts.speak(string, TextToSpeech.QUEUE_FLUSH, params);
 	}
