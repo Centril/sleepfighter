@@ -125,7 +125,7 @@ public class SortChallenge implements Challenge {
 	 * @param activity the ChallengeActivity.
 	 * @param params the resolved config params.
 	 */
-	private void startCommon( ChallengeActivity activity, ChallengeResolvedParams params ) {
+	private void startCommon( ChallengeActivity activity, ChallengeResolvedParams 	 ) {
 		// Store all interesting params.
 		this.colorConfusion = params.getBoolean( "color_confusion" );
 		this.saturationConfusion = params.getBoolean( "color_saturation_confusion" );

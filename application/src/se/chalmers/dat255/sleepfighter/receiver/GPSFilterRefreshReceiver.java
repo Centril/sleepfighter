@@ -88,7 +88,7 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 			long now = new DateTime().getMillis();
 			AlarmList list = SFApplication.get().getAlarms();
 			AlarmTimestamp at = list.getEarliestAlarm( now );
-			if ( at.getMillis() + interval * MINUTE_TO_MS_FACTOR > now ) {
+			if ( at.getMillis() + (long)interval * MINUTE_TO_MS_FACTOR > now ) {
 				if ( !reqSingle ) {
 					unscheduleUpdates( context );
 				}
@@ -132,7 +132,7 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 			return;
 		}
 
-		long unixTime = alarmTime + frtd * MINUTE_TO_MS_FACTOR;
+		long unixTime = alarmTime + (long)frtd * MINUTE_TO_MS_FACTOR;
 
 		// Make pending intent.
 		Bundle bundle = new Bundle();

@@ -118,14 +118,14 @@ public class LocationService extends Service implements GooglePlayServicesClient
 		return null;
 	}
 	
-	public void fetchWeatherData(Location location) {
+	private void fetchWeatherData(Location location) {
 		Debug.d("about to execute WeatherDataTask");
 
 		new WeatherDataTask().execute(location.getLatitude(),
 				location.getLongitude());
 	}
 	
-	class WeatherDataTask extends AsyncTask<Double, Void, WeatherDataFetcher> {
+	private static class WeatherDataTask extends AsyncTask<Double, Void, WeatherDataFetcher> {
 
 		protected void onPostExecute(WeatherDataFetcher weather) {
 			Debug.d("done loading url");
