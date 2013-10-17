@@ -237,8 +237,6 @@ public class MathChallenge implements Challenge {
 		}
 		if (!correctAnswer) {
 			// somehow reload here. 
-			Toast.makeText(activity.getBaseContext(), "Wrong answer!",
-					Toast.LENGTH_SHORT).show();
 			runChallenge();
 		
 			renderMathProblem(activity);
