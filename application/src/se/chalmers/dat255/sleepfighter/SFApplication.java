@@ -64,7 +64,7 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 
 	private GPSFilterAreaSet gpsAreaManaged;
 	
-	private String weather;
+	//private String weather;
 	
 	private TextToSpeech tts;
 	
@@ -89,7 +89,6 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 
 		this.persistenceManager = new PersistenceManager( this );
 		this.getBus().subscribe( this.persistenceManager );
-		this.weather = null;
 
 		forceActionBarOverflow();
 	}
@@ -290,18 +289,13 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		this.gpsAreaManaged = null;
 	}
 	
-	public void setWeather(String weather) {
-		this.weather = weather;
-	}
-	
-	public String getWeather() {
-		return this.weather;
-	}
 	
 	public TextToSpeech getTts() {
 		return this.tts;
 	}
 	
+	
+
 	/*@Override
 	protected void onDestroy() {
 	    //Close the Text to Speech Library

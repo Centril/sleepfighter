@@ -80,7 +80,6 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 	}
 
 	public void onClick(View v) {
-       // Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
       
 		Debug.d("button click");
 		

@@ -40,7 +40,7 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
+
 
 /**
  * A Class for randomly generating simple arithmetic challenges.

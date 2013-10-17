@@ -130,11 +130,10 @@ public class LocationService extends Service implements GooglePlayServicesClient
 		protected void onPostExecute(WeatherDataFetcher weather) {
 			Debug.d("done loading url");
 			
-			SFApplication app = SFApplication.get();
 			if(weather == null) {
-				app.setWeather(null);
+				SFApplication.get().getPrefs().setWeather(null);
 			} else {
-				app.setWeather(weather.getSummary());
+				SFApplication.get().getPrefs().setWeather(weather.getSummary());
 			}
 		}
 

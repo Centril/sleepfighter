@@ -181,9 +181,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 	private void startSpeech() {
 		TextToSpeech tts = SFApplication.get().getTts();
-		doSpeech(SFApplication.get().getWeather());
-		// TODO: is this correct?
-		SFApplication.get().setWeather(null);
+		
+		doSpeech(SFApplication.get().getPrefs().getWeather());
+		
+		// Remove the old weather information 
+		SFApplication.get().getPrefs().setWeather(null);
+		
 		// UtteranceProgressListener not available in api < 15
 		tts.setOnUtteranceCompletedListener(utteranceListener);
 	}
