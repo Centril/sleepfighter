@@ -97,5 +97,7 @@ public class SimpleProblem implements MathProblem {
 		nextOp();
 		nextInts();
 	}
+	
+	
 
 }

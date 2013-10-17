@@ -362,7 +362,8 @@ public class AlarmActivity extends Activity {
 	 */
 	public void stopAlarm() {
 		stopAudio();
-
+		SFApplication.get().getTts().stop();
+		
 		VibrationManager.getInstance().stopVibrate(getApplicationContext());
 
 		// Remove notification saying alarm is ringing

@@ -86,7 +86,7 @@ public class MathChallenge implements Challenge {
 		} else if(problemType == ProblemType.gcd) {
 			problem = new GCDProblem(activity);			
 		} else if(problemType == ProblemType.prime) {
-			problem = new PrimeFactorizationProblem(activity);			
+			problem = new PrimeFactorizationProblem(activity, new Random());			
 		}else if(problemType == ProblemType.simple) {
 			problem = new SimpleProblem();			
 		}else if(problemType == ProblemType.matrix) {

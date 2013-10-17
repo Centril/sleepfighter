@@ -44,7 +44,7 @@ public class PrimeFactorizationProblem implements MathProblem {
 	
 	private String renderedString;
 	
-	private Random rng = new Random();
+	private Random rng;
 
 	public String render() {
 		return this.renderedString;
@@ -92,8 +92,9 @@ public class PrimeFactorizationProblem implements MathProblem {
 		Debug.d(solution + "");
 	}
 	
-	public PrimeFactorizationProblem(final Context context) {
+	public PrimeFactorizationProblem(final Context context, final Random random) {
 		this.context = context;
+		this.rng =random;
 	}
 	
 }
