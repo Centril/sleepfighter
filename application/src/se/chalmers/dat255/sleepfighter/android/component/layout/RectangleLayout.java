@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 /**
- * Used for laying out a 2X4(width 2, height 4) memory game
+ * Used for laying out a rectangular layout.
  */
 public class RectangleLayout extends LinearLayout {
 	public RectangleLayout( Context context ) {
@@ -28,12 +28,9 @@ public class RectangleLayout extends LinearLayout {
 		for (int i = 0; i < N; ++i)
 		{
 			int attr = a.getIndex(i);
-			switch (attr)
-			{
-			case R.styleable.RectangleLayout_scale:
+			
+			if(attr == R.styleable.RectangleLayout_scale) {
 				this.mScale = Double.parseDouble(a.getString(attr));
-				break;
-
 			}
 		}
 		a.recycle();
@@ -41,8 +38,6 @@ public class RectangleLayout extends LinearLayout {
 
 	@Override
 	protected void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
-//		double mScale = 0.5; // because 4/2 = 2
-
 		int width = MeasureSpec.getSize( widthMeasureSpec );
 		int height = MeasureSpec.getSize( heightMeasureSpec );
 
