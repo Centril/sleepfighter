@@ -40,14 +40,18 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "challenge_params", daoClass = ChallengeParamDao.class)
 public class ChallengeParam implements IdProvider {
 	public static final String CHALLENGE_ID_COLUMN = "challenge_id";
+	public static final String CHALLENGE_VALUE_COLUMN = "value";
 
-	@DatabaseField(columnName = CHALLENGE_ID_COLUMN, id = true, uniqueCombo = true, index = true)
+	@DatabaseField(generatedId = true)
+	private int id;
+
+	@DatabaseField(columnName = CHALLENGE_ID_COLUMN, uniqueCombo = true, index = true)
 	private int challengeId;
 
 	@DatabaseField(uniqueCombo = true, index = true)
 	private String key;
 
-	@DatabaseField
+	@DatabaseField(columnName = CHALLENGE_VALUE_COLUMN)
 	private String value;
 
 	/**
