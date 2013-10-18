@@ -36,11 +36,11 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
+import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -467,15 +467,10 @@ public class AlarmActivity extends Activity {
 	}
 
 	// Get the current time with the Calendar
-	@SuppressLint("DefaultLocale")
 	public String getCurrentTime() {
-		Calendar cal = Calendar.getInstance();
-		int hour = cal.get(Calendar.HOUR_OF_DAY);
-		int minute = cal.get(Calendar.MINUTE);
-		return String.format("%02d:%02d", hour, minute);
+		DateTime time = new DateTime();
+		return DateTextUtils.joinTime( time.getHourOfDay(), time.getMinuteOfHour() );
 	}
-
-
 
 	/**
 	 * Start the camera's flashlight if found
@@ -502,7 +497,6 @@ public class AlarmActivity extends Activity {
 	/**
 	 * Declaring new animations and sets to components
 	 */
-
 	private void startAnimate() {
 
 		// Setting animation
@@ -516,5 +510,4 @@ public class AlarmActivity extends Activity {
 		// Set the components with animation
 		tvTime.startAnimation(fadeShort);
 	}
-	
 }
