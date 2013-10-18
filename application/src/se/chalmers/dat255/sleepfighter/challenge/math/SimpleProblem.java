@@ -20,16 +20,23 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 
 import java.util.Random;
 
+import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import android.content.Context;
+import android.graphics.Color;
+
 public class SimpleProblem implements MathProblem {
 
 	private int operand1 = 0;
 	private int operand2 = 0;
 	private int operation = 0;
 	private int result = 0;
+	private Context context;
 
 	private Random random = new Random();
 
-	public SimpleProblem() {
+	public SimpleProblem(Context context) {
+		this.context = context;
 	}
 	
 	// color a string in html
@@ -37,9 +44,24 @@ public class SimpleProblem implements MathProblem {
 		return "<span style='color: #"+color+";'>" + str + "</span>";
 	}
 	
+	// convert to hex with padding
+	private String toHex(int n) {
+		String s = Integer.toHexString(n);
+		if(s.length() == 1) {
+			return "0" + s;
+		} else {
+			return s;
+		}
+	}
+	
 	// numbers are colored holo blue.
 	private String formatNumber(int n) {
-		return colorStr(Integer.toString(n), "00ddff");
+	
+		int c = context.getResources().getColor(R.color.holo_blue_bright);
+		String colorStr = toHex(Color.red(c))  + toHex(Color.green(c)) +
+				toHex(Color.blue(c)); 
+		
+		return colorStr(Integer.toString(n), colorStr);
 	}
 	
 	// operators are white

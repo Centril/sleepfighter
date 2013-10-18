@@ -88,7 +88,7 @@ public class MathChallenge extends BaseChallenge {
 		} else if(problemType == ProblemType.prime) {
 			problem = new PrimeFactorizationProblem(activity, new Random());			
 		}else if(problemType == ProblemType.simple) {
-			problem = new SimpleProblem();			
+			problem = new SimpleProblem(activity);			
 		}else if(problemType == ProblemType.matrix) {
 			problem = new MatrixProblem(activity);			
 		} 
