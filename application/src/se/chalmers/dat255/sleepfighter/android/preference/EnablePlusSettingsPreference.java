@@ -15,7 +15,6 @@ import se.chalmers.dat255.sleepfighter.R;
 import android.content.Context;
 import android.preference.CheckBoxPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -44,7 +43,6 @@ public class EnablePlusSettingsPreference extends CheckBoxPreference {
 	public EnablePlusSettingsPreference( Context context, AttributeSet attrs, int defStyle ) {
 		super( context, attrs );
 
-		Log.d( EnablePlusSettingsPreference.class.getSimpleName(), "hello world" );
 		this.setLayoutResource( R.layout.preference_enable_plus_settings );
 	}
 
