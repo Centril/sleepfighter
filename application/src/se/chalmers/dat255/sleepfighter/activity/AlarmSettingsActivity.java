@@ -264,7 +264,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		
 		// remove the flash light setting of the device doesn't support it. 
-		if(this.deviceSupportsFlashLight()) {
+		if(!this.deviceSupportsFlashLight()) {
 			this.removeFlashLightPref();
 		}
 		
