@@ -23,7 +23,8 @@
         <se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference
             android:defaultValue="00:00"
             android:key="pref_alarm_time"
-            android:title="@string/pref_alarm_time" />
+            android:title="@string/pref_alarm_time"
+            android:icon="@drawable/ic_alarm_clock" />
 
         <se.chalmers.dat255.sleepfighter.android.preference.MultiSelectListPreference
             android:defaultValue="@array/default_week_days"
@@ -31,12 +32,14 @@
             android:entryValues="@array/week_days"
             android:key="pref_enabled_days"
             android:summary="summary summary..."
-            android:title="@string/pref_alarm_enabled_days" />
+            android:title="@string/pref_alarm_enabled_days"
+            android:icon="@drawable/ic_alarm_weekdays" />
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_alarm_repeat"
-            android:title="@string/pref_alarm_repeat" />
+            android:title="@string/pref_alarm_repeat"
+            android:icon="@drawable/ic_alarm_repeat" />
         
         <!-- NOTE: EditTextPreference accepts EditText attributes. -->
         <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
@@ -49,43 +52,50 @@
             android:maxLines="1"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/pref_alarm_name" />
+            android:title="@string/pref_alarm_name"
+            android:icon="@android:color/transparent" />
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/ringer_category_title" >
         <Preference
             android:key="perf_alarm_ringtone"
             android:persistent="false"
-            android:title="@string/pref_alarm_ringtone" />
+            android:title="@string/pref_alarm_ringtone"
+            android:icon="@drawable/ic_alarm_ringtone" />
 
         <se.chalmers.dat255.sleepfighter.android.preference.VolumePreference
             android:key="pref_volume"
-            android:title="@string/pref_volume" />
+            android:title="@string/pref_volume"
+            android:icon="@drawable/ic_alarm_volume" />
 
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_alarm_vibration"
-            android:title="@string/pref_alarm_vibration" />
+            android:title="@string/pref_alarm_vibration"
+            android:icon="@drawable/ic_alarm_vibration" />
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/challenge_category_title" >
         <se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference
             android:key="pref_challenge"
-            android:title="@string/pref_challenge" />
+            android:title="@string/pref_challenge"
+            android:icon="@drawable/ic_alarm_challenge" />
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/snooze_category_title" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pref_alarm_snooze_enabled"
-            android:title="@string/pref_alarm_snooze_enabled" />
+            android:title="@string/pref_alarm_snooze_enabled"
+            android:icon="@drawable/ic_alarm_snooze" />
 
         <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
             android:defaultValue="9"
             android:key="pref_alarm_snooze_time"
             android:max="99"
             android:title="@string/pref_alarm_snooze_time"
-            custom:min="1" />
+            custom:min="1"
+            android:icon="@android:color/transparent" />
 
     </PreferenceCategory>
     
@@ -94,11 +104,13 @@
             android:defaultValue="false"
             android:key="pref_alarm_speech"
             android:summary="@string/pref_use_speech_summary"
-            android:title="@string/pref_use_speech_title" />
+            android:title="@string/pref_use_speech_title"
+            android:icon="@drawable/ic_alarm_speech" />
 
         <Preference
             android:key="pref_speech_sample"
-            android:title="@string/pref_speech_sample" />
+            android:title="@string/pref_speech_sample"
+            android:icon="@android:color/transparent" />
     </PreferenceCategory>
     
     <PreferenceCategory
@@ -108,12 +120,14 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="pref_alarm_flash_enabled"
-            android:title="@string/pref_alarm_flash_enabled" />
+            android:title="@string/pref_alarm_flash_enabled"
+            android:icon="@android:color/transparent" />
         
         <Preference
             android:id="@+id/pref_delete_alarm"
             android:key="pref_delete_alarm"
-            android:title="@string/pref_delete_alarm" />
+            android:title="@string/pref_delete_alarm"
+            android:icon="@drawable/ic_alarm_remove" />
     </PreferenceCategory>
 
 </PreferenceScreen>
