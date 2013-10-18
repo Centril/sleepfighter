@@ -93,9 +93,6 @@ public class MathChallenge extends BaseChallenge {
 			problem = new MatrixProblem(activity);			
 		} 
 		
-		//problem = new PrimeFactorizationProblem(activity, new Random());			
-		
-		
 		problem.newProblem();
 		this.problemString = problem.render();
 		this.problemSolution = problem.solution();
