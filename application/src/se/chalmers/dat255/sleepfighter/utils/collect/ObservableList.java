@@ -26,6 +26,7 @@ import java.util.ListIterator;
 
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBusHolder;
 
 import com.google.common.collect.ForwardingIterator;
 import com.google.common.collect.ForwardingList;
@@ -39,7 +40,7 @@ import com.google.common.collect.ForwardingListIterator;
  * @version 1.0
  * @since Jun 5, 2013
  */
-public class ObservableList<E> extends ForwardingList<E> {
+public class ObservableList<E> extends ForwardingList<E> implements MessageBusHolder {
 	/**
 	 * Operation enumerates the type of change operation in list that was observed.
 	 *

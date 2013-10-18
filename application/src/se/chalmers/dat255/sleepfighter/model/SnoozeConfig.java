@@ -2,6 +2,7 @@ package se.chalmers.dat255.sleepfighter.model;
 
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBusHolder;
 import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 
 import com.j256.ormlite.field.DatabaseField;
@@ -11,7 +12,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * The snooze configuration for an alarm.
  */
 @DatabaseTable(tableName = "snooze_config")
-public class SnoozeConfig implements IdProvider {
+public class SnoozeConfig implements IdProvider, MessageBusHolder {
 
 	/**
 	 * Field constants for ChangeEvent.
@@ -148,6 +149,11 @@ public class SnoozeConfig implements IdProvider {
 		this.bus = bus;
 	}
 
+	@Override
+	public MessageBus<Message> getMessageBus() {
+		return this.bus;
+	}
+
 	/**
 	 * Publish an event to the message bus.
 	 * 
@@ -160,4 +166,5 @@ public class SnoozeConfig implements IdProvider {
 		}
 		this.bus.publish(event);
 	}
+
 }

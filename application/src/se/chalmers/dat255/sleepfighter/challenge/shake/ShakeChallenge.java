@@ -20,6 +20,12 @@ package se.chalmers.dat255.sleepfighter.challenge.shake;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
+import se.chalmers.dat255.sleepfighter.R;
+import se.chalmers.dat255.sleepfighter.challenge.BaseChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
+import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -30,17 +36,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.challenge.Challenge;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
-import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
-import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 
 /**
  * A challenge where the user have to shake the device to complete it.
  */
-public class ShakeChallenge implements Challenge {
+public class ShakeChallenge extends BaseChallenge {
 
 	private static final String TAG = "ShakeChallenge";
 
@@ -52,8 +52,6 @@ public class ShakeChallenge implements Challenge {
 	private static final double MIN_WORK = 100;
 
 	private static final String KEY_PROGRESS_FLOAT = "progress";
-
-	private ChallengeActivity activity;
 	private ProgressBar progressBar;
 	private TextView progressText;
 
@@ -65,20 +63,20 @@ public class ShakeChallenge implements Challenge {
 	private long lastTime;
 
 	@Override
-	public void start(ChallengeActivity activity, ChallengeResolvedParams params) {
+	public void start( Activity activity, ChallengeResolvedParams params) {
 		start(activity, params, null);
 	}
 	
 	@Override
-	public void start(ChallengeActivity activity,
-			ChallengeResolvedParams params, Bundle state) {
-		this.activity = activity;
-		this.activity.setContentView(R.layout.challenge_shake);
+	public void start( Activity activity, ChallengeResolvedParams params, Bundle state) {
+		super.start( activity, params );
+
+		this.activity().setContentView(R.layout.challenge_shake);
 
 		// Get view references
-		this.progressBar = (ProgressBar) this.activity
+		this.progressBar = (ProgressBar) this.activity()
 				.findViewById(R.id.progressBar);
-		this.progressText = (TextView) this.activity
+		this.progressText = (TextView) this.activity()
 				.findViewById(R.id.progressText);
 
 		// Check if required sensor is available
@@ -88,7 +86,7 @@ public class ShakeChallenge implements Challenge {
 			// Complete right away, for now. Checking if device has required
 			// hardware could perhaps be done before the challenge is started.
 			Log.e(TAG, "Device lacks required sensor for ShakeChallenge");
-			activity.complete();
+			this.complete();
 			return;
 		}
 
@@ -173,7 +171,7 @@ public class ShakeChallenge implements Challenge {
 		if (progress >= GOAL) {
 			// Unregister when done
 			this.sensorManager.unregisterListener(sensorEventListener);
-			this.activity.complete();
+			this.complete();
 		}
 	}
 
@@ -193,9 +191,5 @@ public class ShakeChallenge implements Challenge {
 	public void onResume() {
 		this.sensorManager.registerListener(this.sensorEventListener,
 				accelerometer, SensorManager.SENSOR_DELAY_GAME);
-	}
-
-	@Override
-	public void onDestroy() {
 	}
 }

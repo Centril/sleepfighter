@@ -23,14 +23,14 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.BaseChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.geometry.Direction;
 import se.chalmers.dat255.sleepfighter.utils.motion.NoSensorException;
 import se.chalmers.dat255.sleepfighter.utils.motion.RotationControl;
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
@@ -38,52 +38,46 @@ import android.os.Bundle;
  * A challenge that requires the player to rotate the device to control the
  * "snake".
  */
-public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
+public class RotoSnakeChallenge extends BaseChallenge implements PropertyChangeListener {
 	/**
 	 * PrototypeDefinition for RotoSnakeChallenge.
 	 * 
 	 * @version 1.0
 	 * @since Oct 8, 2013
 	 */
-	public static class PrototypeDefinition extends
-			ChallengePrototypeDefinition {
-		{
-			setType(ChallengeType.ROTO_SNAKE);
-		}
-	}
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType(ChallengeType.ROTO_SNAKE);
+	}}
 
 	private RotationControl motionControl;
 	private double angle, margin = 0.2;
-	private ChallengeActivity activity;
 	private SnakeController snakeController;
 
 	@Override
-	public void start(ChallengeActivity activity, ChallengeResolvedParams params) {
-		this.activity = activity;
-		this.activity
-				.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		this.activity.setTitle(R.string.rotoSnakeTitle);
+	public void start( Activity activity, ChallengeResolvedParams params) {
+		super.start( activity, params );
+
+		this.activity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		this.activity().setTitle(R.string.rotoSnakeTitle);
 
 		try {
-			this.motionControl = new RotationControl(this.activity);
+			this.motionControl = new RotationControl(this.activity());
 		} catch (NoSensorException e) {
 			// If the Challenge for some reason is selected, despite the device
 			// not having the required Sensor, complete the Challenge so as to
 			// not trap the user.
-			this.activity.complete();
+			this.complete();
 			return;
 		}
 
 		this.motionControl.addListener(this);
 
-		this.snakeController = new SnakeController(this,
-				this.activity.getBaseContext());
-		this.activity.setContentView(snakeController.getView());
+		this.snakeController = new SnakeController(this, this.activity().getBaseContext());
+		this.activity().setContentView(snakeController.getView());
 	}
 
 	@Override
-	public void start(ChallengeActivity activity,
-			ChallengeResolvedParams params, Bundle state) {
+	public void start( Activity activity, ChallengeResolvedParams params, Bundle state) {
 		this.start(activity, params);
 	}
 
@@ -129,14 +123,14 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 		}
 	}
 
-	private void complete() {
+	protected void completeChallenge() {
 		// Run on UI thread since things can get messy if trying to execute them
 		// on other threads
-		activity.runOnUiThread(new Runnable() {
+		activity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				pause();
-				activity.complete();
+				complete();
 			}
 		});
 	}
@@ -165,9 +159,5 @@ public class RotoSnakeChallenge implements Challenge, PropertyChangeListener {
 	@Override
 	public void onPause() {
 		pause();
-	}
-
-	@Override
-	public void onDestroy() {
 	}
 }
