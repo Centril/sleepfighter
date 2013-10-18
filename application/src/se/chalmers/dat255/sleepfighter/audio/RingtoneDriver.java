@@ -48,6 +48,11 @@ public class RingtoneDriver extends LocalContentDriver  {
 	// Overridden since getting title from some ringtones doesn't seem to work
 	// otherwise (DRM related?)
 	public String printSourceName() {
+		// Seems to happen if URI is for default ringtone, and no ringtones are
+		// on the device (emulator), returns the URI instead then
+		if (this.ringtone == null) {
+			return getSource().getUri();
+		}
 		return this.ringtone.getTitle( this.getContext() );
 	}
 }
