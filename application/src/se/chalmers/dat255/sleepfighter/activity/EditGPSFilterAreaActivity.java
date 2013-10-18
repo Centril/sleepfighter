@@ -484,8 +484,11 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 
 		Log.d( TAG, this.area.toString() );
 
-		Toast.makeText( this, "The area ID provided did not exist in set.", Toast.LENGTH_LONG ).show();
-		this.finish();
+		if (this.area == null) {
+			Toast.makeText(this, "The area ID provided did not exist in set.",
+					Toast.LENGTH_LONG).show();
+			this.finish();
+		}
 	}
 
 	/**
