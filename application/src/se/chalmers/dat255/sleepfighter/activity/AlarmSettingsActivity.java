@@ -232,7 +232,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		if(alarm.isPresetAlarm()) {
 			// having a delete button for the presets alarm makes no sense, so remove it. 
 			removeDeleteButton();
-			removeEditName();
 			removeEditTitle();
 			removeAlarmToggle();
 		}

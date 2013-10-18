@@ -50,7 +50,6 @@ import android.widget.TextView.OnEditorActionListener;
  * 
  * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist, Eric Arnebäck
  */
-
 public class MathChallenge implements Challenge {
 	/**
 	 * PrototypeDefinition for MathChallenge.
@@ -60,6 +59,7 @@ public class MathChallenge implements Challenge {
 	 */
 	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
 		setType( ChallengeType.MATH );
+		
 		
 		add( "hard_problems", PrimitiveValueType.BOOLEAN, false );
 	}}
