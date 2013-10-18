@@ -100,12 +100,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private Alarm alarm;
 	private AlarmList alarmList;
 
-	
-	
 	private SFApplication app() {
 		return SFApplication.get();
 	}
-	
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= 11) {
@@ -115,6 +113,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		    View customView = actionBar.getCustomView();
 
+		    // Setup name field.
 		    getActionBar().getCustomView().findViewById(R.id.global_alarm_hidden_title).setVisibility(View.INVISIBLE);
 		    EditText edit_title_field = (EditText) customView.findViewById(R.id.alarm_edit_title_field);
 		    edit_title_field.setText(MetaTextUtils.printAlarmName(this, alarm));
@@ -130,6 +129,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		    edit_title_field.clearFocus();
 			actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_CUSTOM);
 
+			// Remove the Name preference... no need for duplicate, just looks ugly.
+			this.removeEditName();
+
+			// Setup activated switch.
 			CompoundButton activatedSwitch = (CompoundButton) customView.findViewById( R.id.alarm_actionbar_toggle );
 			activatedSwitch.setChecked( this.alarm.isActivated() );
 			activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
@@ -140,7 +143,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			} );
 		}
 	}
-	
 
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
@@ -186,11 +188,14 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	}
 	
 	private void removeEditName() {
-		Preference pref = (Preference) findPreference(NAME);
-		PreferenceCategory cat = (PreferenceCategory) findPreference("pref_category_misc");
-		cat.removePreference(pref);
+		this.removeDecendantOfScreen( findPreference(NAME) );
 	}
-	
+
+	@SuppressWarnings( "deprecation" )
+	private void removeDecendantOfScreen( Preference pref ) {
+		this.getPreferenceScreen().removePreference( pref );
+	}
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void removeEditTitle() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -220,9 +225,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
 
-		setupActionBar();
 		setupSimplePreferencesScreen();
-		
+
+		setupActionBar();
+
 		if(alarm.isPresetAlarm()) {
 			// having a delete button for the presets alarm makes no sense, so remove it. 
 			removeDeleteButton();
@@ -291,7 +297,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		this.setupRingerPreferences();
 	}
-	
+
 	// if the user's current language doesn't have a voice installed
 	// notify the user that the English voice will used instead.
 	// also recommend the user to install a voice for his/her language. 
@@ -307,7 +313,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		
 	}
-	
 
 	private void bindChallengeAdvancedButton() {
 		((EnablePlusSettingsPreference) findPreference(CHALLENGE)).setOnButtonClickListener(new OnClickListener() {
