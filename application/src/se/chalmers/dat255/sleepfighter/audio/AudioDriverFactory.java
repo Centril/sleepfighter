@@ -65,6 +65,9 @@ public class AudioDriverFactory {
 				driver = new LocalContentDriver();
 				break;
 			case INTERNET_STREAM:
+				driver = new RemoteDriver();
+				break;
+
 			case SPOTIFY:
 				Toast.makeText( context, "NOT IMPLEMENTED YET!", Toast.LENGTH_LONG ).show();
 				driver = new SilentAudioDriver();
