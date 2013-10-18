@@ -76,8 +76,6 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 		this.challengeSet = this.alarm.getChallengeSet();
 
-		this.fetchChallengeType();
-
 		this.fetchDefinition();
 
 		this.readWriter = new ChallengeParamsReadWriter( this.challengeSet, this.definition.getType() );
