@@ -41,7 +41,7 @@ public class SimpleProblem implements MathProblem {
 	
 	// numbers are colored holo blue.
 	private String formatNumber(int n) {
-		return colorStr(Integer.toString(n), "0099cc");
+		return colorStr(Integer.toString(n), "00ddff");
 	}
 	
 	// operators are white
