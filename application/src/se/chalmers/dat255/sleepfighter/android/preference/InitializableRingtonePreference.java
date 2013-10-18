@@ -18,13 +18,9 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.android.preference;
 
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
-import android.database.Cursor;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.RingtonePreference;
-import android.provider.Settings;
 import android.util.AttributeSet;
 
 /**
@@ -46,36 +42,9 @@ public class InitializableRingtonePreference extends RingtonePreference {
 		this.initialUri = uri;
 	}
 
-	Uri[] getAllRingtones() {
-		
-		RingtoneManager ringtoneMgr = new RingtoneManager(this.getContext());
-		ringtoneMgr.setType(RingtoneManager.TYPE_ALL);
-		Cursor alarmsCursor = ringtoneMgr.getCursor();
-		int alarmsCount = alarmsCursor.getCount();
-		if (alarmsCount == 0 && !alarmsCursor.moveToFirst()) {
-			return null;
-		}
-		Uri[] alarms = new Uri[alarmsCount];
-		while(!alarmsCursor.isAfterLast() && alarmsCursor.moveToNext()) {
-			int currentPosition = alarmsCursor.getPosition();
-			alarms[currentPosition] = ringtoneMgr.getRingtoneUri(currentPosition);
-			//Debug.d("sound uri " +alarms[currentPosition]);
-			
-			Debug.d("compare: " + Settings.System.DEFAULT_ALARM_ALERT_URI.compareTo(alarms[currentPosition]));
-		}
-		alarmsCursor.close();
-		return alarms;
-	}
-
 	@Override
-	protected Uri onRestoreRingtone() {
-		
-		//Debug.d("current uri " + this.initialUri);
-		
-		//getAllRingtones();
-		
+	protected Uri onRestoreRingtone() {	
 		return this.initialUri;
-
 	}
 
 	/**
