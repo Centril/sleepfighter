@@ -552,7 +552,6 @@ public class PersistenceManager {
 		ChallengeConfigSet set = evt.getSet();
 
 		if ( evt instanceof ChallengeConfigSet.EnabledEvent ) {
-			Log.d( TAG, "updateChallenges #2: " + evt.toString() );
 			// Handle change for isEnabled().
 			helper.getChallengeConfigSetDao().update( set );
 			return;
@@ -573,7 +572,6 @@ public class PersistenceManager {
 				return;
 			}
 		}
-		Log.d( TAG, "updateChallenges #6: " + evt.toString() );
 
 		throw new IllegalArgumentException( "Do you know something we don't?" );
 	}

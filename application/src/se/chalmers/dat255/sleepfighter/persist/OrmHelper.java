@@ -54,7 +54,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 	// Current database version, change when database structure changes.
 	// IMPORTANT: If you update this, also add the old version to the switch/case
-	private static final int DATABASE_VERSION = 22;
+	private static final int DATABASE_VERSION = 23;
 
 	// Dao for Alarm.
 	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;
@@ -127,14 +127,14 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			// Only test on 19 and higher, since that is the Release version
 			case 19:
 			case 20:
-				TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
-				TableUtils.createTable( connectionSource, ChallengeParam.class );
 			case 21:
 				this.getAlarmDao().executeRaw("ALTER TABLE 'alarm'" +
 						"ADD COLUMN 'isFlash' BOOLEAN DEFAULT false;");
-				
+			case 22:
+				TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
+				TableUtils.createTable( connectionSource, ChallengeParam.class );
 				// Break after the newest version
-				break; 
+				break;
 			default:
 				// Just drop everything if the version is a pre-release version
 				if (oldVersion < 19) {

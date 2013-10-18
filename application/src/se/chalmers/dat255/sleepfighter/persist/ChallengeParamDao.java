@@ -19,15 +19,19 @@
 package se.chalmers.dat255.sleepfighter.persist;
 
 import java.sql.SQLException;
+import java.util.Collection;
 
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeParam;
 
 import com.j256.ormlite.dao.BaseDaoImpl;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
- * Dao 
+ * ChallengeParamDao is the DAO for ChallengeParam. 
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
@@ -37,18 +41,33 @@ public class ChallengeParamDao extends BaseDaoImpl<ChallengeParam, Integer> {
 	public CreateOrUpdateStatus createOrUpdate( ChallengeParam data ) throws SQLException {
 		QueryBuilder<ChallengeParam, Integer> qb = queryBuilder();
 
-		// NOTE: id here is not the identity field
-		qb.where()
+		Where<ChallengeParam, Integer> where = qb.where()
 			.eq( ChallengeParam.CHALLENGE_ID_COLUMN, data.getId() ).and()
 			.eq( "key", data.getKey() );
 
 		ChallengeParam existing = qb.queryForFirst();
+
 		if ( existing == null ) {
 			int numRows = create( data );
 			return new CreateOrUpdateStatus( true, false, numRows );
 		} else {
-			int numRows = update( data );
+			UpdateBuilder<ChallengeParam, Integer> ub = this.updateBuilder();
+			ub.setWhere( where );
+			ub.updateColumnValue( ChallengeParam.CHALLENGE_VALUE_COLUMN, data.getValue() );
+			int numRows = ub.update();
 			return new CreateOrUpdateStatus( false, true, numRows );
+		}
+	}
+
+	@Override
+	public int deleteIds( Collection<Integer> ids ) throws SQLException {
+		DeleteBuilder<ChallengeParam, Integer> db = this.deleteBuilder();
+
+		try {
+			db.where().in( ChallengeParam.CHALLENGE_ID_COLUMN, ids );
+			return db.delete();
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
 		}
 	}
 

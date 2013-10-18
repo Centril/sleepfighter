@@ -194,7 +194,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	@SuppressWarnings( "deprecation" )
 	private void removeDecendantOfScreen( Preference pref ) {
-		this.getPreferenceScreen().removePreference( pref );
+		if ( pref != null ) {
+			this.getPreferenceScreen().removePreference( pref );
+		}
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
