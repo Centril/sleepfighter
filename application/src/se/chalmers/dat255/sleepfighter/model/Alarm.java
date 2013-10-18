@@ -104,7 +104,7 @@ public class Alarm implements IdProvider {
 	 * @version 1.0
 	 * @since Sep 19, 2013
 	 */
-	public static abstract class BaseAlarmEvent implements AlarmEvent {
+	public static class BaseAlarmEvent implements AlarmEvent {
 		private Field field;
 		private Alarm alarm;
 		private Object oldValue;
@@ -755,7 +755,7 @@ public class Alarm implements IdProvider {
 		
 		boolean old = this.isFlash;
 		this.isFlash = isFlash;
-		this.publish( new ScheduleChangeEvent( this, Field.FLASH, old ) );	
+		this.publish( new BaseAlarmEvent( this, Field.FLASH, old ) );	
 	}
 	
 	/**
@@ -780,7 +780,7 @@ public class Alarm implements IdProvider {
 	
 		boolean old = this.isSpeech;
 		this.isSpeech = isSpeech;
-		this.publish( new ScheduleChangeEvent( this, Field.SPEECH, old ) );	
+		this.publish( new BaseAlarmEvent( this, Field.SPEECH, old ) );	
 	}
 
 	/**
