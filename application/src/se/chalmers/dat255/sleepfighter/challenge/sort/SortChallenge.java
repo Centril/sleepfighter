@@ -29,6 +29,7 @@ import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortModel.Order;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -138,7 +139,7 @@ public class SortChallenge implements Challenge {
 		// Store all interesting params.
 		this.colorConfusion = params.getBoolean( "color_confusion" );
 		this.saturationConfusion = params.getBoolean( "color_saturation_confusion" );
-
+		
 		// Init activity, buttons, etc.
 		this.activity = activity;
 		this.activity.setContentView( R.layout.challenge_sort );

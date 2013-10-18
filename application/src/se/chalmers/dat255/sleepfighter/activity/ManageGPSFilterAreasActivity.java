@@ -203,6 +203,7 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		this.splashInfoContainer.startAnimation( this.splashFadeOut );
 	}
 
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

@@ -114,6 +114,14 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 						return true;
 					}
 				});
+				
+				// set the initial disabled value of the dependers, when you first enter this
+				// preference menu. 
+				for(final String depender : paramDef.getDependers()) {
+					final Preference dependentPref = findPreference(depender);
+					dependentPref.setEnabled(this.readWriter.getBoolean( paramDef.getKey(), (Boolean) paramDef.getDefaultValue() ));
+				}
+				
 			}
 		}
 	}
