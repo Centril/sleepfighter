@@ -18,7 +18,8 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge;
 
-import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBusHolder;
+import android.app.Activity;
 import android.os.Bundle;
 
 /**
@@ -29,29 +30,29 @@ import android.os.Bundle;
  * should at some point call {@code complete()} in the given
  * {@code ChallengeActivity}, when the user completes the challenge.
  */
-public interface Challenge {
+public interface Challenge extends MessageBusHolder {
 	/**
 	 * <p>Called from the outside when the challenge is to be started from scratch.</p>
 	 * 
 	 * <p>Here should at least {@code setContentView()},<br/>
-	 * or similar method in ChallengeActivity, be called.</p>
+	 * or similar method in Activity, be called.</p>
 	 * 
-	 * @param activity the ChallengeActivity that the Challenge modifies.
+	 * @param activity the Activity that the Challenge modifies.
 	 * @param params the resolved params (may have no params defined).
 	 */
-	public void start(ChallengeActivity activity, ChallengeResolvedParams params );
+	public void start( Activity activity, ChallengeResolvedParams params );
 
 	/**
 	 * <p>Called from the outside when the challenge is to be started again.</p>
 	 * 
 	 * <p>Here should at least {@code setContentView()},<br/>
-	 * or similar method in ChallengeActivity, be called.</p>
+	 * or similar method in Activity, be called.</p>
 	 * 
-	 * @param activity the ChallengeActivity that the Challenge modifies
+	 * @param activity the Activity that the Challenge modifies.
 	 * @param params the resolved params (may have no params defined).
 	 * @param state the state that was saved by Challenge before.
 	 */
-	public void start(ChallengeActivity activity, ChallengeResolvedParams params, Bundle state);
+	public void start( Activity activity, ChallengeResolvedParams params, Bundle state );
 
 	/**
 	 * Called when challenge must save its state.
