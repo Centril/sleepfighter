@@ -55,7 +55,9 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 	private ChallengeActivity act;
 
 	private Memory mem;
-
+	
+	private List<MemoryCardView> cards;
+	
 	private MemoryCardView flippedCard = null;
 
 	private final static int COLS = 2;
@@ -128,6 +130,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
         		}
         	} else {
         	   	waitingForCardsToFlipOver = true;
+        	   	MemoryChallenge.this.makeAllCardsUnclickable();
         		handler.postDelayed(new Runnable() {
                 	// wait one second before flipping over
                     public void run() {
@@ -135,6 +138,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
                 		card.flip();
                 		flippedCard = null; 
                 		waitingForCardsToFlipOver = false;
+                		MemoryChallenge.this.makeAllCardsClickable();
                     }
                 }, 400);
      
@@ -145,12 +149,24 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
         
         
     }
+	
+	private void makeAllCardsUnclickable() {
+		for(MemoryCardView card : this.cards) {
+			card.setClickable(false);
+		}
+	}
+	
+	private void makeAllCardsClickable() {
+		for(MemoryCardView card : this.cards) {
+			card.setClickable(true);
+		}
+	}
 
 	// assign the buttons their listeners. 
 	private void commonStart(int flippedCardPosition) {
 		act.setContentView(R.layout.activity_alarm_challenge_memory);
 	
-		List<MemoryCardView> cards = new ArrayList<MemoryCardView>();
+		this.cards = new ArrayList<MemoryCardView>();
 		//R.id.challenge_memory_button_1;
 
 		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_1));
