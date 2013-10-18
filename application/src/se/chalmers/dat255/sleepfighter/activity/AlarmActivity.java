@@ -18,7 +18,6 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.activity;
 
-import java.util.Calendar;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -403,7 +402,6 @@ public class AlarmActivity extends Activity {
 		cancelTimer();
 		
 		timer = new Timer("SFTimer");
-		Calendar calendar = Calendar.getInstance();
 
 		final Runnable updateTask = new Runnable() {
 			public void run() {
@@ -419,8 +417,10 @@ public class AlarmActivity extends Activity {
 				runOnUiThread(updateTask);
 			}
 		};
+
+		DateTime dt = DateTime.now();
 		timer.scheduleAtFixedRate(timerTask,
-				calendar.get(Calendar.MILLISECOND), 1000);
+				dt.getMillisOfSecond(), 1000);
 	}
 
 	private void cancelTimer() {
