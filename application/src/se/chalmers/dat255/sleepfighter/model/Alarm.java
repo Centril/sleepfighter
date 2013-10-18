@@ -59,7 +59,7 @@ public class Alarm implements IdProvider {
 	 * @since Sep 19, 2013
 	 */
 	public static enum Field {
-		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID, REPEATING, AUDIO_SOURCE, AUDIO_CONFIG
+		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID, REPEATING, AUDIO_SOURCE, AUDIO_CONFIG, SPEECH, FLASH
 	}
 
 	/* --------------------------------
@@ -293,6 +293,10 @@ public class Alarm implements IdProvider {
 		this.snoozeConfig = new SnoozeConfig( rhs.snoozeConfig );
 
 		this.challenges = new ChallengeConfigSet( rhs.challenges );
+		
+		this.isSpeech = rhs.isSpeech;
+		this.isFlash = rhs.isFlash;
+		
 	}
 
 	/**
@@ -748,8 +752,10 @@ public class Alarm implements IdProvider {
 		if ( this.isFlash == isFlash ) {
 			return;
 		}
-
+		
+		boolean old = this.isFlash;
 		this.isFlash = isFlash;
+		this.publish( new ScheduleChangeEvent( this, Field.FLASH, old ) );	
 	}
 	
 	/**
@@ -768,7 +774,13 @@ public class Alarm implements IdProvider {
 	}
 	
 	public void setSpeech(boolean isSpeech) {
+		if ( this.isSpeech == isSpeech ) {
+			return;
+		}
+	
+		boolean old = this.isSpeech;
 		this.isSpeech = isSpeech;
+		this.publish( new ScheduleChangeEvent( this, Field.SPEECH, old ) );	
 	}
 
 	/**
