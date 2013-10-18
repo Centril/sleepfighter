@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.model;
+package se.chalmers.dat255.sleepfighter.utils.model;
 
 /**
  * The IdProvider interface indicates that a model provides an integer ID.

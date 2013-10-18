@@ -18,7 +18,7 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.audio.playlist;
 
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 import android.net.Uri;
 
 import com.google.common.base.Objects;

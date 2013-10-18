@@ -18,9 +18,9 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.audio;
 
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

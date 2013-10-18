@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
