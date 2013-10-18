@@ -33,7 +33,25 @@ import android.widget.CheckBox;
  * Utility class for Android dialogs.
  */
 public class DialogUtils {
-	
+	private static DialogInterface.OnClickListener NOOP_CLICK_LISTENER;
+
+	/**
+	 * Returns a lazy-created noop onClickListener.
+	 *
+	 * @return the listener.
+	 */
+	public static DialogInterface.OnClickListener getNoopClickListener() {
+		if ( NOOP_CLICK_LISTENER == null ) {
+			NOOP_CLICK_LISTENER = new OnClickListener() {
+				@Override
+				public void onClick( DialogInterface dialog, int which ) {
+				}
+			};
+		}
+
+		return NOOP_CLICK_LISTENER;
+	}
+
 	/**
 	 * Prevent instantiation.
 	 */

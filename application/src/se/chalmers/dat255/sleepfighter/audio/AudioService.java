@@ -38,9 +38,9 @@ import android.util.Log;
  * 
  * <p>
  * Audio played will go through {@link AudioManager#STREAM_ALARM} and played
- * until a {@link #ACTION_STOP} is sent to the service. Both single tracks and
- * playlists can be played through the service, see {@link #ACTION_PLAY_TRACK} and
- * {@link #ACTION_PLAY_PLAYLIST} for details.
+ * until a {@link #ACTION_STOP} is sent to the service. Single tracks
+ * playlists, and remote URI:s can be played through the service,
+ * see {@link #ACTION_PLAY_TRACK}, {@link #ACTION_PLAY_PLAYLIST}, {@link #ACTION_PLAY_REMOTE} for details.
  * </p>
  */
 public class AudioService extends Service implements OnPreparedListener,
@@ -59,6 +59,17 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * </ul>
 	 */
 	public static final String ACTION_PLAY_TRACK = "se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_TRACK";
+
+	/**
+	 * Action for starting playback streaming from a remote URI source.
+	 * <p>Required extras:</p>
+	 * <ul>
+	 * <li>A {@link Uri}, using key defined by {@link #BUNDLE_URI} - the Uri for
+	 * the remote source to be played.</li>
+	 * <li>A float (0-1), using key defined by {@link #BUNDLE_FLOAT_VOLUME} - the initial volume</li>
+	 * </ul>
+	 */
+	public static final String ACTION_PLAY_REMOTE = "se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_REMOTE";
 
 	/**
 	 * Action for stopping any playback.
@@ -105,7 +116,8 @@ public class AudioService extends Service implements OnPreparedListener,
 	 */
 	private enum SourceType {
 		SINGLE,
-		PLAYLIST
+		PLAYLIST,
+		REMOTE
 	}
 
 	private MediaPlayer player;
@@ -147,22 +159,36 @@ public class AudioService extends Service implements OnPreparedListener,
 		} else if (ACTION_PLAY_PLAYLIST.equals(action)) {
 			handleVolumeAction(intent);
 			handlePlaylistPlay(intent);
+		} else if (ACTION_PLAY_REMOTE.equals(action) ) {
+			handleVolumeAction(intent);
+			handleRemotePlay(intent);
 		}
+
 		return START_NOT_STICKY;
 	}
 
-	private void handlePlayAction(Intent intent) {
-		Object o = intent.getParcelableExtra(BUNDLE_URI);
-		if (!(o instanceof Uri)) {
-			throw new IllegalArgumentException(
-					"No Uri bundled with PLAY action");
-		}
-		Uri uri = (Uri) o;
+	private void handleRemotePlay( Intent intent ) {
+		Uri uri = this.getBundledUri( intent );
 
-		// Stop if previously playing
-		if (this.state != State.STOPPED) {
-			stopPlayback();
+		this.stopIfPlaying();
+
+		setSourceType(SourceType.REMOTE);
+
+		// Loop if only one track
+		this.player.setLooping(true);
+		try {
+			this.player.setDataSource(uri.toString());
+		} catch (Exception e) {
+			handleException(e);
+			return;
 		}
+		prepareAndPlay();
+	}
+
+	private void handlePlayAction(Intent intent) {
+		Uri uri = this.getBundledUri( intent );
+
+		this.stopIfPlaying();
 
 		setSourceType(SourceType.SINGLE);
 
@@ -177,6 +203,16 @@ public class AudioService extends Service implements OnPreparedListener,
 		prepareAndPlay();
 	}
 
+	private Uri getBundledUri( Intent intent ) {
+		Object o = intent.getParcelableExtra(BUNDLE_URI);
+		if (!(o instanceof Uri)) {
+			throw new IllegalArgumentException(
+					"No Uri bundled with PLAY action");
+		}
+		Uri uri = (Uri) o;
+		return uri;
+	}
+
 	private void handlePlaylistPlay(Intent intent) {
 		String[] tracks = intent.getStringArrayExtra(BUNDLE_PLAYLIST);
 		if (tracks == null) {
@@ -188,10 +224,7 @@ public class AudioService extends Service implements OnPreparedListener,
 					"Empty String[] bundled with PLAY_PLAYLIST action");
 		}
 
-		// Stop if previously playing
-		if (this.state != State.STOPPED) {
-			stopPlayback();
-		}
+		this.stopIfPlaying();
 
 		setSourceType(SourceType.PLAYLIST);
 		this.tracks = tracks;
@@ -201,6 +234,13 @@ public class AudioService extends Service implements OnPreparedListener,
 
 		setPlaylistDataSource();
 		prepareAndPlay();
+	}
+
+	private void stopIfPlaying() {
+		// Stop if previously playing
+		if (this.state != State.STOPPED) {
+			stopPlayback();
+		}
 	}
 
 	private void handleStopAction() {

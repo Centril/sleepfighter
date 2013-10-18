@@ -46,6 +46,9 @@
     <string name="pref_playlist_picker">Playlist</string>
     <string name="pref_playlist_picker_summary">Select a playlist from your device</string>
 
+    <string name="pref_remote_content_uri_picker">Internet Stream/URI</string>
+    <string name="pref_remote_content_uri_picker_summary">Select a stream from a URI from the internet.</string>
+
     <string name="pref_playlist_not_found">Not found</string>
 
 </resources>
