@@ -20,8 +20,6 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 
 import java.util.Random;
 
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
-
 public class SimpleProblem implements MathProblem {
 
 	private int operand1 = 0;

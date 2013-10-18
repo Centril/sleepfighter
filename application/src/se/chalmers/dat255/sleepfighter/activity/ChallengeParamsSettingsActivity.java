@@ -91,7 +91,10 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 
 		this.setupActionBar();
 	}
-	
+
+	/**
+	 * Sets up any dependencies there might be.
+	 */
 	private void setupDependers() {
 		for ( final ParameterDefinition paramDef : definition.get() ) {
 			if(paramDef.getDependers() != null) {
@@ -335,5 +338,10 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 		String name = "challenge_" + StringUtils.castLower( this.definition.getType().toString() ) + "_" + case_string;
 
 		return checked ? ResourcesDynamicUtil.getResourceStringCheck( name, this ) : ResourcesDynamicUtil.getResourceString( name, this );
+	}
+
+	@SuppressWarnings( "deprecation" )
+	public Preference findPreference( CharSequence key ) {
+		return super.findPreference( key );
 	}
 }
