@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
 public class GlobalSettingsActivity extends PreferenceActivity   {
 	
@@ -65,4 +66,15 @@ public class GlobalSettingsActivity extends PreferenceActivity   {
 
 		//this.updateRingerSummary();
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 }
