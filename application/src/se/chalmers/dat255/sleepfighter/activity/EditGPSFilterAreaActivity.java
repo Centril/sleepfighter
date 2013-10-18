@@ -30,7 +30,7 @@ import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterPolygon;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSLatLng;
-import se.chalmers.dat255.sleepfighter.utils.GPSFilterTextUtils;
+import se.chalmers.dat255.sleepfighter.text.GPSFilterTextUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;

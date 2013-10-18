@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.utils;
+package se.chalmers.dat255.sleepfighter.text;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -35,6 +35,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.text.SpannableString;

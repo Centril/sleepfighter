@@ -29,7 +29,7 @@ import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.service.FadeVolumeService;
 import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
-import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
+import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;

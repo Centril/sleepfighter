@@ -30,11 +30,11 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
-import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
+import se.chalmers.dat255.sleepfighter.text.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.provider.Settings;
 
 import com.google.common.base.Preconditions;

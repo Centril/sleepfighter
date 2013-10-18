@@ -9,9 +9,8 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
-
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 

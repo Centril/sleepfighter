@@ -24,7 +24,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ManageGPSFilterAreasActivity;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
-import se.chalmers.dat255.sleepfighter.utils.GPSFilterTextUtils;
+import se.chalmers.dat255.sleepfighter.text.GPSFilterTextUtils;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

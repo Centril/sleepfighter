@@ -20,10 +20,10 @@ package se.chalmers.dat255.sleepfighter.model.gps;
 
 import java.util.Map;
 
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;

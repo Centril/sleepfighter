@@ -35,7 +35,7 @@ import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.receiver.GPSFilterRefreshReceiver;
 import se.chalmers.dat255.sleepfighter.receiver.LocationReceiver;
-import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
+import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.AlarmManager;
 import android.app.IntentService;

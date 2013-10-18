@@ -21,8 +21,8 @@ package se.chalmers.dat255.sleepfighter.model.challenge;
 import java.util.Map;
 
 import se.chalmers.dat255.sleepfighter.persist.ChallengeParamDao;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DatabaseField;

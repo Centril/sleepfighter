@@ -29,7 +29,7 @@ import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.Pr
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.os.Build;
