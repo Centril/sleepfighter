@@ -24,7 +24,7 @@ import android.preference.CheckBoxPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
@@ -40,7 +40,7 @@ import android.widget.TextView;
  */
 public class EnablePlusSettingsPreference extends CheckBoxPreference {
 	private boolean useButton = true;
-	private Button button;
+	private ImageButton button;
 	private OnClickListener listener;
 
 	private Integer titleColor = null;
@@ -69,7 +69,7 @@ public class EnablePlusSettingsPreference extends CheckBoxPreference {
 
 		this.updateTitleColor();
 
-		this.button = (Button) view.findViewById( R.id.preference_enable_plus_settings_button );
+		this.button = (ImageButton) view.findViewById( R.id.preference_enable_plus_settings_button );
 		if ( this.useButton ) {
 			if ( this.listener != null ) {
 				this.button.setOnClickListener( this.listener );
