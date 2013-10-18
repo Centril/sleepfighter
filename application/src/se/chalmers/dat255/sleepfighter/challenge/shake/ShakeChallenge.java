@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.challenge;
+package se.chalmers.dat255.sleepfighter.challenge.shake;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -32,6 +32,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 
 /**

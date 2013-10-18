@@ -24,6 +24,7 @@ import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.FluidSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.memory.MemoryChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.rotosnake.RotoSnakeChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.shake.ShakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 
