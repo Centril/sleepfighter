@@ -256,8 +256,6 @@ public class SortChallenge implements Challenge {
 	 * Called when the user has sorted correctly.
 	 */
 	private void challengeCompleted() {
-		this.description.setText( this.activity.getString( R.string.challenge_sort_done ) );
-
 		this.activity.complete();
 	}
 
