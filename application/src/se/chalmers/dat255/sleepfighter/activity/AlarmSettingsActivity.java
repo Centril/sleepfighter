@@ -132,6 +132,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			// Remove the Name preference... no need for duplicate, just looks ugly.
 			this.removeEditName();
 
+			
 			// Setup activated switch.
 			CompoundButton activatedSwitch = (CompoundButton) customView.findViewById( R.id.alarm_actionbar_toggle );
 			activatedSwitch.setChecked( this.alarm.isActivated() );
@@ -364,6 +365,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	@Handler
 	public void handleAudioChange( AudioChangeEvent evt ) {
+		Debug.d("handle audio change");
 		if ( evt.getModifiedField() == Field.AUDIO_SOURCE ) {
 			this.updateRingerSummary();
 		}

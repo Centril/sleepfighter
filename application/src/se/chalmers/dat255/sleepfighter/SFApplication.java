@@ -175,6 +175,7 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 				// Take the opportunity to store preset in a factory.
 				this.fromPresetFactory = new FromPresetAlarmFactory( alarm );
 				iter.remove();
+				alarm.setMessageBus(this.getBus());
 				break;
 			}
 		}
