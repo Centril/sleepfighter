@@ -51,7 +51,7 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 
 	@Override
 	protected boolean createIsRepeatingFlag() {
-		return true;
+		return false;
 	}
 
 	@Override
