@@ -32,9 +32,10 @@
     <string name="manage_gpsfilter_what_splash_text">
 	<![CDATA[
 	<p><b>Location Filter</b> lets you i.e <b>avoid embarrasing moments</b> like when the alarm rings during a lecture or meeting.</p>
-	<p>It lets you setup areas you must be in <i><font color=\"#00ddff\">(include)</font></i> and/or areas you can\'t be in <i><font color=\"#ff4444\">(exclude)</font></i> for an alarm to ring</p>
+	<p>It lets you setup areas you must be in <i><font color=\"#00ddff\">(include)</font></i> and/or areas you can\'t be in <i><font color=\"#ff4444\">(exclude)</font></i> for an alarm to ring.
+		<font color=\"#ff4444\">Exclude</font> has highest priority.</p>
 	<p>Tap the plus / add button to add an area.</p>
-	<p>Note that location providers may be <b>inacturate</b>, so give as wide of a range as possible</p>
+	<p>Note that location providers may be <b>inacurate</b>, so give as wide of a range as possible</p>
 	]]>
 	</string>
 

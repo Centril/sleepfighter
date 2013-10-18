@@ -26,10 +26,11 @@ import se.chalmers.dat255.sleepfighter.challenge.ChallengeParamsReadWriter;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.ParameterDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.PrimitiveValueType;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.os.Build;
@@ -76,8 +77,6 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 		this.challengeSet = this.alarm.getChallengeSet();
 
-		this.fetchChallengeType();
-
 		this.fetchDefinition();
 
 		this.readWriter = new ChallengeParamsReadWriter( this.challengeSet, this.definition.getType() );
@@ -87,8 +86,48 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 		for ( ParameterDefinition paramDef : definition.get() ) {
 			this.addPreference( paramDef );
 		}
+		
+		this.setupDependers();
 
 		this.setupActionBar();
+	}
+
+	/**
+	 * Sets up any dependencies there might be.
+	 */
+	private void setupDependers() {
+		for ( final ParameterDefinition paramDef : definition.get() ) {
+			if(paramDef.getDependers() != null) {
+				
+				final Preference pref = findPreference(paramDef.getKey());
+
+				// Disable the dependent prefs if paramDef has been set to false. 	
+				pref.setOnPreferenceChangeListener(null);
+				pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						handleChange( preference, newValue );
+						final boolean b = (Boolean)newValue;
+
+						for(final String depender : paramDef.getDependers()) {
+							final Preference dependentPref = findPreference(depender);
+							dependentPref.setEnabled(b);
+						}
+						
+
+						return true;
+					}
+				});
+				
+				// set the initial disabled value of the dependers, when you first enter this
+				// preference menu. 
+				for(final String depender : paramDef.getDependers()) {
+					final Preference dependentPref = findPreference(depender);
+					dependentPref.setEnabled(this.readWriter.getBoolean( paramDef.getKey(), (Boolean) paramDef.getDefaultValue() ));
+				}
+				
+			}
+		}
 	}
 
 	@Override
@@ -152,6 +191,7 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 			preference.setSummary( summary );
 		}
 
+		
 		// Set listener for change.
 		preference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			@Override
@@ -298,5 +338,10 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 		String name = "challenge_" + StringUtils.castLower( this.definition.getType().toString() ) + "_" + case_string;
 
 		return checked ? ResourcesDynamicUtil.getResourceStringCheck( name, this ) : ResourcesDynamicUtil.getResourceString( name, this );
+	}
+
+	@SuppressWarnings( "deprecation" )
+	public Preference findPreference( CharSequence key ) {
+		return super.findPreference( key );
 	}
 }

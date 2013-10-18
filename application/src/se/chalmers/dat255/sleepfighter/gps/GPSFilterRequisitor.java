@@ -28,7 +28,7 @@ import android.location.Location;
 import android.util.Log;
 
 /**
- * GPSFilterRequisitor is responsible for checking that the user:s<br/>
+ * GPSFilterRequisitor is responsible for checking that the user's<br/>
  * current location is within allowed areas or not.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
@@ -55,12 +55,9 @@ public class GPSFilterRequisitor {
 	 * @return true if requirements are met.
 	 */
 	public boolean isSatisfied( Context context ) {
-		Log.d( TAG, "isSatisfied #1" );
-
 		// Not globally enabled or no enabled and valid areas? Then we're satisfied!
 		if ( !(this.prefs.isLocationFilterEnabled() && this.set.hasEnabledAndValid()) ) {
-			Log.d( TAG, "isSatisfied #2" );
-			return true;
+			return this.returnSatisfaction( true );
 		}
 
 		// Get last known location.
@@ -70,10 +67,9 @@ public class GPSFilterRequisitor {
 		int maxAge = this.prefs.getLocationMaxAge();
 		if ( maxAge > 0 ) {
 			long locAge = System.currentTimeMillis() - loc.getTime();
-			if ( locAge > maxAge * 60000 ) {
+			if ( locAge > (long)maxAge * 60000 ) {
 				// Last known location is too old, skip location filter.
-				Log.d( TAG, "isSatisfied #3" );
-				return true;
+				return this.returnSatisfaction( true );
 			}
 		}
 
@@ -85,27 +81,28 @@ public class GPSFilterRequisitor {
 		// Exclude areas first.
 		for ( GPSFilterArea area : partition[0] ) {
 			if ( area.contains( pos ) ) {
-				Log.d( TAG, "isSatisfied #4" );
-				return false;
+				return this.returnSatisfaction( false );
 			}
 		}
 
 		// Include areas now.
 		if ( partition[1].isEmpty() ) {
-			Log.d( TAG, "isSatisfied #5" );
-			return true;
+			return this.returnSatisfaction( true );
 		} else {
 			// At least one match needed.
 			for ( GPSFilterArea area : partition[1] ) {
 				if ( area.contains( pos ) ) {
-					Log.d( TAG, "isSatisfied #6" );
-					return true;
+					return this.returnSatisfaction( true );
 				}
 			}
 
-			Log.d( TAG, "isSatisfied #7" );
-			return false;
+			return this.returnSatisfaction( false );
 		}
+	}
+
+	private boolean returnSatisfaction( boolean isSatisfied ) {
+		Log.d( TAG, "I'm " + (isSatisfied ? "" : " NOT " ) + "satisfied" );
+		return isSatisfied;
 	}
 
 	/**

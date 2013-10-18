@@ -30,17 +30,17 @@ import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
  * Challenge: Compute the greatest common divisor of two numbers. 
  */
 public class GCDProblem implements MathProblem {
-	final Context context;
+	private final Context context;
 	
 	// ranges of the numbers to compute the gcd of. 
-	final static int MIN = 100;
-	final static int MAX = 5000;
+	private final static int MIN = 1000;
+	private final static int MAX = 7000;
 	
 	private int solution;
 	private int number1;
 	private int number2;
 	
-	String renderedString;
+	private String renderedString;
 	
 	private Random rng = new Random();
 
@@ -65,7 +65,10 @@ public class GCDProblem implements MathProblem {
 			this.number2 = RandomMath.nextRandomRanged(rng, MIN, MAX);
 		}
 		
+		
 		this.solution = gcd(number1, number2);
+
+		
 	}
 	
 	// compute the gcd of two numbers using Euclid's algorithm

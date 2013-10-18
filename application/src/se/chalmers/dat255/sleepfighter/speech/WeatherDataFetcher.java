@@ -28,14 +28,14 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 // gets the current weather from forecast.io given the current coordinates. 
 public class WeatherDataFetcher {
 
-	private final String KEY = "cb8a0d4b48c35b562d1b427b3f77552d";
+	private static final String KEY = "cb8a0d4b48c35b562d1b427b3f77552d";
 	
 	// the json weather data.
-	String jsonData;
+	private String jsonData;
 
 	
 	// build the url used to access the weather data, given latitudes and longitudes. 
-	public WeatherDataFetcher(double lat, double lon) {
+	public WeatherDataFetcher(double lat, double lon) throws IOException {
 			// fetch the json data form forecast.io
 	
 		Debug.d("about to fetch json data");
@@ -70,21 +70,22 @@ public class WeatherDataFetcher {
 		// find the end of the data.
 		int endI = jsonData.indexOf("\"", i) + 1;
 		
-		return (String) jsonData.subSequence(i, endI);
+		return (String) jsonData.subSequence(i, endI-1);
 	}
 	
 	private String buildUrl(double lat, double lon) {
-		String s =  new String("https://api.forecast.io/forecast/") + KEY + "/" +
+		String s = "https://api.forecast.io/forecast/" + KEY + "/" +
 				doubleToString(lat) + "," + doubleToString(lon);
 		return s;
 	}
+	
 	
 	private static String doubleToString(double d) {
 		return String.valueOf(d).replace(",", ".");
 	}
 	
 
-	private String httpGET(String requestURL) {
+	private String httpGET(String requestURL) throws IOException {
 
 		//Variables
 		URL request = null;
@@ -104,7 +105,8 @@ public class WeatherDataFetcher {
 			// the data we need is in the beginning, and it is rather short, so we only 
 			// need about the first 200 characters. 
 			// this speeds things up a bit. 
-			connection.setRequestProperty("Content-Length", "" + 200);
+			// but for some reason it gets stuck when we comment out this line. 
+			//connection.setRequestProperty("Content-Length", "" + 200);
 			connection.connect();
 		
 			if(connection.getResponseCode() == 400){
@@ -116,15 +118,13 @@ public class WeatherDataFetcher {
 				response = scanner.useDelimiter("\\Z").next();
 				scanner.close();
 			}
-		} catch (IOException e) {
-			Debug.e(e);		
-			response = null;
-		} finally {		
-			connection.disconnect();
+		}finally {	
+			if(connection != null)
+				connection.disconnect();
 		}
 
 		return response;
-	}//httpGET - end
+	}
 
 	
 }

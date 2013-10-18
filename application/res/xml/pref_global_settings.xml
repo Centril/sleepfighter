@@ -96,11 +96,11 @@
 
         <Preference
             android:title="@string/pref_version"
-                android:selectable="false"
+            android:selectable="false"
             android:summary="@string/version_name" />
 
-        <Preference
-             android:selectable="false"
+        <se.chalmers.dat255.sleepfighter.android.preference.DevelopersNamesPreference
+            android:selectable="false"
             android:title="@string/developers_title"
             android:summary="@string/developers_summary" />
 

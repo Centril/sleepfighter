@@ -21,8 +21,8 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.android.view.CustomWebView;
+import se.chalmers.dat255.sleepfighter.challenge.BaseChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
@@ -36,20 +36,20 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-import android.widget.Toast;
 
 /**
  * A Class for randomly generating simple arithmetic challenges.
  * 
  * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist, Eric Arnebäck
  */
-
-public class MathChallenge implements Challenge {
+public class MathChallenge extends BaseChallenge {
 	/**
 	 * PrototypeDefinition for MathChallenge.
 	 *
@@ -58,6 +58,7 @@ public class MathChallenge implements Challenge {
 	 */
 	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
 		setType( ChallengeType.MATH );
+		
 		
 		add( "hard_problems", PrimitiveValueType.BOOLEAN, false );
 	}}
@@ -68,34 +69,29 @@ public class MathChallenge implements Challenge {
 	// The problem in string format. Uses jqmath to represent math formulas. 
 	private String problemString;
 	private int problemSolution;
-	
-	private Context context;
 
 	private Random rng = new Random();
 
-	private ChallengeResolvedParams params;
-	
-	public boolean getHardProblemsSetting() {
-		// TODO: for some reason it always returns false.
+	public boolean getHardProblemsSetting(ChallengeResolvedParams params) {
 		return params.getBoolean("hard_problems");
 	}
 	
-	private void runChallenge() {
+	private void runChallenge(Activity activity) {
 		// create challenge object
 		
 		MathProblem problem = null;
 		
 		if(problemType == ProblemType.differentiation) {
-			problem = new DifferentiationProblem(context);			
+			problem = new DifferentiationProblem(activity);			
 		} else if(problemType == ProblemType.gcd) {
-			problem = new GCDProblem(context);			
+			problem = new GCDProblem(activity);			
 		} else if(problemType == ProblemType.prime) {
-			problem = new PrimeFactorizationProblem(context);			
+			problem = new PrimeFactorizationProblem(activity, new Random());			
 		}else if(problemType == ProblemType.simple) {
-			problem = new SimpleProblem();			
+			problem = new SimpleProblem(activity);			
 		}else if(problemType == ProblemType.matrix) {
-			problem = new MatrixProblem(context);			
-		}
+			problem = new MatrixProblem(activity);			
+		} 
 		
 		problem.newProblem();
 		this.problemString = problem.render();
@@ -103,14 +99,11 @@ public class MathChallenge implements Challenge {
 	}
 	
 	@Override
-	public void start(final ChallengeActivity activity, ChallengeResolvedParams params) {
-		this.context = activity;
-		
-		// here we randomize a type.
-		
-		// TODO: for some reason getHardProblemsSetting is always false.
-		boolean hardProblems = true;// getHardProblemsSetting();
-			
+	public void start(final Activity activity, ChallengeResolvedParams params) {
+	
+		boolean hardProblems =  getHardProblemsSetting(params);
+		Debug.d("hard problems: " +hardProblems);
+
 		if(!hardProblems) {
 			this.problemType = ProblemType.simple;
 		} else {
@@ -119,17 +112,18 @@ public class MathChallenge implements Challenge {
 				this.problemType = RandomMath.randomEnum(rng, ProblemType.class);		
 			}while(this.problemType == ProblemType.simple);
 		}
-		
+
 		// create a new challenge
-		runChallenge();
+		runChallenge(activity);
 		
-		commonStart(activity);
+		commonStart(activity, params);
 	}
 	
-	private void commonStart(final ChallengeActivity activity) {
+	private void commonStart(final Activity activity, ChallengeResolvedParams params ) {
+		super.start( activity, params );
+
 		activity.setContentView(R.layout.alarm_challenge_math);
-		
-		
+
 		final EditText editText = (EditText) activity
 				.findViewById(R.id.answerField);
 		
@@ -147,13 +141,10 @@ public class MathChallenge implements Challenge {
 			}
 		});
 
-		// make the keyboard appear.
-	/*	InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-	*/
+	
 		setupWebview(activity);
 		renderMathProblem(activity);
-
+		
 	}
 	
 	private final static String PROBLEM_STRING = "problem_string";
@@ -161,14 +152,12 @@ public class MathChallenge implements Challenge {
 	private final static String PROBLEM_TYPE = "problem_type";
 	
 	@Override
-	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
-		
-		this.context = activity;
+	public void start( Activity activity, ChallengeResolvedParams params, Bundle state ) {
 		this.problemString = state.getString(PROBLEM_STRING);
 		this.problemSolution = state.getInt(PROBLEM_SOLUTION);
 		this.problemType = (ProblemType) state.getSerializable(PROBLEM_TYPE);
 		
-		commonStart(activity);
+		commonStart(activity, params);
 	}
 
 	@Override
@@ -184,7 +173,33 @@ public class MathChallenge implements Challenge {
 	
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi", "InlinedApi" })
 	private void setupWebview(final Activity activity) {
-		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
+		final CustomWebView w = (CustomWebView)  activity.findViewById(R.id.math_webview);
+		
+		w.setWebViewClient(new WebViewClient() {
+			public void onPageFinished(WebView view, String url) {
+
+				Debug.d("page finished");
+				
+				EditText t = (EditText)MathChallenge.this.activity().findViewById(R.id.answerField);
+				t.requestFocus();
+				
+				// make the keyboard appear once the problem has been rendered. 
+				// We'll only do this for the simple problem type.
+				// For the harder math problems, the keyboard takes up too much space
+				//  and gets in the way. 
+				if(problemType == ProblemType.simple) {
+					Debug.d("show keyboard");
+					InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+				}
+				
+				// we only need to do it after it has finished loading for the first time.
+				w.setWebViewClient(null);
+
+			}
+		});
+		
+		
 		w.getSettings().setJavaScriptEnabled(true);
 		
 		w.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -195,10 +210,20 @@ public class MathChallenge implements Challenge {
 	}
 	
 	private String getStyleSheet() {
+		
+		String fontSize;
+		
+		if(this.problemType == ProblemType.simple) {
+			// use a larger font for the simple math challenge. 
+			fontSize = "font-size: 350%;";
+		} else {
+			fontSize = "";
+		}
+		
 		return 
 				"<style type=\"text/css\">" +
-		"body {color: white;}" +
-		"div {text-align: center; font-size: 1000%;}" +
+		"body {color: white;" + fontSize + "}" +
+		"div {text-align: center; }" +
 		"</style>";
 	}
 	
@@ -212,7 +237,7 @@ public class MathChallenge implements Challenge {
 				"<!DOCTYPE html><html lang=\"en\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\"><head><meta charset=\"utf-8\"><link rel=\"stylesheet\" href=\"file:///android_asset/jqmath-0.4.0.css\"><script src=\"file:///android_asset/jquery-1.4.3.min.js\"></script><script src=\"file:///android_asset/jqmath-etc-0.4.0.min.js\"></script></head><html>";
 		final String close_html = "</html>";
 		
-		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
+		final CustomWebView w = (CustomWebView)  activity.findViewById(R.id.math_webview);
 		
 		String problem = "<p style=\"text-align: center;\">" + this.problemString + "</p>";
 		
@@ -220,13 +245,14 @@ public class MathChallenge implements Challenge {
 		
 		w.loadDataWithBaseURL("file:///android_asset", html, "text/html", "utf-8", "");	
 		w.setBackgroundColor(0x00000000);
+		
+		
 	}
 		
 	/**
 	 * Handles what will happen when you answer
 	 */
-	private void handleAnswer(final EditText editText,
-			final ChallengeActivity activity) {
+	private void handleAnswer(final EditText editText, final Activity activity) {
 		boolean correctAnswer = false;
 		try {
 			int guess = Integer.parseInt(editText.getText().toString());
@@ -235,19 +261,15 @@ public class MathChallenge implements Challenge {
 			Debug.d(solution + "");
 			
 			if (guess == solution) {
-				activity.complete();
+				complete();
 				correctAnswer = true;
-				Toast.makeText(activity.getBaseContext(), "Alarm deactivated!",
-						Toast.LENGTH_SHORT).show();
 			}
 		} catch (NumberFormatException e) {
 			// Handles exception when the user answer with empty strings
 		}
 		if (!correctAnswer) {
 			// somehow reload here. 
-			Toast.makeText(activity.getBaseContext(), "Wrong answer!",
-					Toast.LENGTH_SHORT).show();
-			runChallenge();
+			runChallenge(activity);
 		
 			renderMathProblem(activity);
 			editText.setText("");
@@ -255,14 +277,10 @@ public class MathChallenge implements Challenge {
 	}
 
 	@Override
-	public void onPause() {
-	}
-
-	@Override
-	public void onResume() {
-	}
-
-	@Override
 	public void onDestroy() {
+		CustomWebView w = (CustomWebView) activity().findViewById(R.id.math_webview);
+		if (w != null) {
+			w.destroy();
+		}
 	}
 }

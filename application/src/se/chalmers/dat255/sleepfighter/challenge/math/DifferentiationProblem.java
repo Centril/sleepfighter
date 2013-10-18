@@ -43,7 +43,7 @@ public class DifferentiationProblem implements MathProblem {
 	private static final int ORDER = 1;
 	
 	// Used for storing a function and its string representatin. Utilized in DiffentiationProblem
-	public class Function {
+	private static class Function {
 		
 		public Function() {
 			s = "";
@@ -54,7 +54,7 @@ public class DifferentiationProblem implements MathProblem {
 			this.f = this.f.add(term);
 			
 			String sign;
-			if(s != "") {
+			if(!s.equals("")) {
 				// If we don't do this, minus signs will look like this:
 				// " x + -x". Instead it should obviously be "x - x"
 				sign  = (termStr.charAt(0) == '-' ? " " : " + ");		
@@ -100,15 +100,13 @@ public class DifferentiationProblem implements MathProblem {
 	
 	private int solution;
 	
-	String renderedString;
+	private String renderedString;
 	
 	// the value for which to calculate to derivative for. So the solution becomes f'(x)
 	private int x;
 	
 	private Random rng = new Random();
-	
 
-	
 	public String render() {
 		return this.renderedString;
 	}
@@ -201,7 +199,7 @@ public class DifferentiationProblem implements MathProblem {
 		int a =  RandomMath.nextRandomRanged(rng, -5, 5, 0);	
 
 		// if a is 1 we don't need a string at all. Because the expression x looks better than 1x.
-		String aStr = (a != Math.abs(1) ? a + "" : "");
+		String aStr = (Math.abs(a) != 1 ? a + "" : "");
 
 		// Because x looks better than x^1
 		String xcStr = (c == 1 ? gStr : gStr + "^" + c);

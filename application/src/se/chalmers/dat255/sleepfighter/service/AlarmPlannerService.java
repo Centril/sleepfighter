@@ -27,6 +27,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
 import se.chalmers.dat255.sleepfighter.activity.MainActivity;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
@@ -34,8 +35,8 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.receiver.GPSFilterRefreshReceiver;
-import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.receiver.LocationReceiver;
+import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -146,7 +147,7 @@ public class AlarmPlannerService extends IntentService {
 	public static void call( Context context, Command command, int alarmId ) {
 		Intent service = new Intent( context, AlarmPlannerService.class );
 		service.setAction( command.name() );
-		new IntentUtils( service ).setAlarmId( alarmId );
+		new AlarmIntentHelper( service ).setAlarmId( alarmId );
 		context.startService( service );
 	}
 
@@ -163,7 +164,7 @@ public class AlarmPlannerService extends IntentService {
 
 	@Override
 	protected void onHandleIntent( Intent intent ) {
-		final String action = intent.getAction();
+		String action = intent.getAction();
 
 		if ( !matcher.matchAction( action ) ) {
 			return;
@@ -172,10 +173,10 @@ public class AlarmPlannerService extends IntentService {
 		// Handle commands.
 		switch ( Command.valueOf( action ) ) {
 		case CREATE:
-			this.create( new IntentUtils( intent ).getAlarmId() );
+			this.create( new AlarmIntentHelper( intent ).getAlarmId() );
 			break;
 		case SNOOZE:
-			this.snooze( new IntentUtils( intent ).getAlarmId() );
+			this.snooze( new AlarmIntentHelper( intent ).getAlarmId() );
 			break;
 		case CANCEL:
 			this.cancel();
@@ -205,6 +206,7 @@ public class AlarmPlannerService extends IntentService {
 		}
 
 		GPSFilterRefreshReceiver.scheduleFix( app, scheduleTime );
+		LocationReceiver.scheduleFix( app, scheduleTime );
 		
 		schedule(scheduleTime, alarm);
 
@@ -253,7 +255,8 @@ public class AlarmPlannerService extends IntentService {
 		String title = String.format(titleFormat, name);
 		String message = String.format(messageFormat, time);
 
-		NotificationHelper.showNotification(this, title, message, mainActPI);
+		NotificationHelper.getInstance().showNotification(this, title, message,
+				mainActPI);
 	}
 
 	/**
@@ -270,7 +273,7 @@ public class AlarmPlannerService extends IntentService {
 	private void showSnoozingNotification(Alarm alarm, String time) {
 		Intent alarmIntent = new Intent(getApplicationContext(),
 				AlarmActivity.class);
-		new IntentUtils(alarmIntent).setAlarmId(alarm);
+		new AlarmIntentHelper(alarmIntent).setAlarmId(alarm);
 		PendingIntent alarmPI = PendingIntent.getActivity(this, 0,
 				alarmIntent, 0);
 
@@ -283,7 +286,8 @@ public class AlarmPlannerService extends IntentService {
 		String title = String.format(titleFormat, name);
 		String message = String.format(messageFormat, time);
 
-		NotificationHelper.showNotification(this, title, message, alarmPI);
+		NotificationHelper.getInstance().showNotification(
+				getApplicationContext(), title, message, alarmPI);
 	}
 
 	/**
@@ -294,10 +298,12 @@ public class AlarmPlannerService extends IntentService {
 		Log.d( "AlarmPlannerService", "Cancelling!" );
 
 		// Remove app's sticky notification
-		NotificationHelper.removeNotification(this);
+		NotificationHelper.getInstance().removeNotification(
+				getApplicationContext());
 
 		// Unschedule any location fixes.
-		GPSFilterRefreshReceiver.unscheduleFix( SFApplication.get() );
+		GPSFilterRefreshReceiver.unscheduleFix( SFApplication.get() ); 
+		LocationReceiver.unscheduleFix( SFApplication.get() );
 	}
 
 	/**
@@ -313,6 +319,7 @@ public class AlarmPlannerService extends IntentService {
 			throw new IllegalArgumentException( "No alarm was found with given id" );
 		}
 
+		
 		// Determine which time to schedule at by adding offset minutes from alarm to current time
 		MutableDateTime dateTime = MutableDateTime.now();
 		
@@ -331,7 +338,7 @@ public class AlarmPlannerService extends IntentService {
 
 	private PendingIntent makePendingIntent( int alarmId ) {
 		Intent intent = new Intent( this, AlarmReceiver.class);
-		new IntentUtils( intent ).setAlarmId( alarmId );
+		new AlarmIntentHelper( intent ).setAlarmId( alarmId );
 		return PendingIntent.getBroadcast( this, -1, intent, PendingIntent.FLAG_UPDATE_CURRENT );
 	}
 }

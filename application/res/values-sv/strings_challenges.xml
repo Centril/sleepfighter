@@ -24,7 +24,7 @@
         <item>Memory</item>
         <item>Sortera nummer</item>
         <item>Flytande snake</item>
-        <item>Roto snake</item>
+        <item>RotoSnake</item>
         <item>Skaka</item>
         
     </string-array>
@@ -37,6 +37,10 @@
         <item>En utmaning där du behöver skaka din enhet</item>
     </string-array>
 
+    
     <string name="fluidSnakeTitle">Tryck för att styra ormen!</string>
 
+    
+    <string name="rotoSnakeTitle">Rotera din enhet för att styra ormen!</string>
+    
 </resources>

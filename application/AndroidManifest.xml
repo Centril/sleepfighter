@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="se.chalmers.dat255.sleepfighter"
-    android:versionCode="4"
-    android:versionName="1.0" >
+    android:versionCode="5"
+    android:versionName="1.1" >
 
     <uses-sdk	
         android:minSdkVersion="9"
@@ -69,6 +69,8 @@
                 android:value="se.chalmers.dat255.sleepfighter.activity.EditGPSFilterAreaActivity" />
         </activity>
         <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.GPSFilterRefreshReceiver" />
+             <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.LocationReceiver" />
+   
     	<!-- END	GPS related stuff -->
 
         <activity
@@ -145,7 +147,9 @@
         </activity>
 
         <service android:name="se.chalmers.dat255.sleepfighter.service.AlarmPlannerService"></service>
-
+        <service android:name="se.chalmers.dat255.sleepfighter.service.LocationService"></service>
+        <service android:name="se.chalmers.dat255.sleepfighter.service.FadeVolumeService"></service>
+        
         <receiver android:name="se.chalmers.dat255.sleepfighter.receiver.AlarmRebootSetter">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -158,13 +162,14 @@
         </activity>
        
         <service
-            android:name="se.chalmers.dat255.sleepfighter.audio.AudioService"
+            android:name="se.chalmers.dat255.sleepfighter.service.AudioService"
             android:exported="false" >
             <intent-filter>
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_TRACK" />
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.STOP" />
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.VOLUME" />
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_PLAYLIST" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_TRACK" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.STOP" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.VOLUME" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_PLAYLIST" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_REMOTE" />
             </intent-filter>
         </service>
     </application>

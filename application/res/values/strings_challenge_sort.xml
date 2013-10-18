@@ -25,4 +25,10 @@
     <string name="challenge_sort_settings_title">Challenge: Sorting settings</string>
     <string name="challenge_sort_color_confusion_title">Color confusion</string>
     <string name="challenge_sort_color_confusion_summary">If enabled, the backgrounds of the numbers will have a random color to add confusion.</string>
+
+    <string name="challenge_sort_color_saturation_confusion_title">Saturation confusion</string>
+    <string name="challenge_sort_color_saturation_confusion_summary">
+        If enabled, the backgrounds of the numbers will have a random saturation to add confusion.
+        Only works when color confusion is on.
+    </string>
 </resources>

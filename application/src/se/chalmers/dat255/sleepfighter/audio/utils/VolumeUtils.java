@@ -36,12 +36,18 @@ public class VolumeUtils {
 	 * Convert volume from 0-100 integer, which corresponds to what a user sees
 	 * in the UI, to a 0-1 float, which MediaPlayer uses 
 	 * ({@link MediaPlayer#setVolume(float, float)}).
+	 * <p>
+	 * The scaling method used is to approximate using x^3 as described by
+	 * Alexander Thomas
+	 * <a href="http://www.dr-lex.be/info-stuff/volumecontrols.html">here</a>.
+	 * </p>
 	 * 
 	 * @param volume
 	 *            the volume in the range 0-100
-	 * @return the volume in the range 0-1
+	 * @return the scaled volume in the range 0-1
 	 */
 	public static float convertUIToFloatVolume(int volume) {
-		// TODO perhaps to logarithmic conversion here
-		return (float) volume / 100;
+		float f = volume / 100f;
+		float powEstimate = (float) Math.pow(f, 3);
+		return powEstimate;
 	}}

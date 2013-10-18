@@ -25,6 +25,7 @@
     <string name="alarm_unnamed_format">Riasztó %1$d</string>
     <string name="yes">Igen</string>
     <string name="no">Nem</string>
+    <string name="X">X</string>
     <string name="confirm_delete">Biztos, hogy a riasztót ki akarod törölni?</string>
     <string name="pre_chal_act">Elfogadod a kihívást?!</string>
     <string name="snooze">Szundít</string>
@@ -41,6 +42,8 @@
     <string name="btn_fail">Kudarc!</string>
     <string name="challenge_points">Kihíváspontok</string>
     <string name="challenge_toggle_content_desc">Kihívásokat átkapcsolni</string>
+    <string name="deactivate">Riasztó kikapcsolva!</string>
+    <string name="returned">Befejezetlen kihívástol vissza kerülve.</string>
 
     <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">
@@ -66,9 +69,19 @@
         <item>Riasztót kitörölni</item>
         <item>Riasztót lemásolni</item>
     </string-array>
-
-    <!-- Exclude Area (GPS) -->
+    
+    <!-- Location Filter -->
+    
     <string name="action_gpsfilter_area_edit">Területet kihagyni/GPS</string>
+        
     <string name="install_google_play_music_message">Legyen szives installálja be a Google Play Music-et</string>
+    
+    <string name="do_not_show_again">Ne jöjjen megint elő.</string>
+    
+    <string name="no_voice_installed_title">Hang nincs beinstallálva.</string>
+    <string name="no_voice_installed_message">Nincs magyar nyelvü hang beinstallálva, ugy hogy angolul lesznek a hangüzenet
+		Hogy tudjál egy magyar nyelvü hangot használni, be kell installáljad például a SVOX-nevü app-el.</string>
+
+
 
 </resources>

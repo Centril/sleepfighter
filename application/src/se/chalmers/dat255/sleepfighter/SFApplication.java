@@ -18,12 +18,12 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
-import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
 import se.chalmers.dat255.sleepfighter.factory.FromPresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.factory.PresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
@@ -32,21 +32,27 @@ import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.persist.PersistenceManager;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
+import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
+import android.speech.tts.TextToSpeech;
+import android.view.ViewConfiguration;
 
 /**
  * A custom implementation of Application for SleepFighter.
  */
-public class SFApplication extends Application {
+public class SFApplication extends Application implements TextToSpeech.OnInitListener {
 	private static final boolean CLEAN_START = false;
+	public static final boolean DEBUG = false;
 
 	private static SFApplication app;
 
 	private GlobalPreferencesManager prefs;
 
 	private AlarmList alarmList;
+	private Alarm ringingAlarm;
 	private MessageBus<Message> bus;
 
 	private PersistenceManager persistenceManager;
@@ -60,18 +66,32 @@ public class SFApplication extends Application {
 
 	private GPSFilterAreaSet gpsAreaManaged;
 	
+	//private String weather;
+	
+	private TextToSpeech tts;
+
+	// called when the text to speech engine is initialized. 
+	@Override
+	public void onInit(int status) {
+		Debug.d("on init tts");
+		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
+		TextToSpeechUtil.config(tts);
+	}
+	
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		app = this;
 
+		tts = new TextToSpeech(this, this);
+		
 		this.prefs = new GlobalPreferencesManager( this );
 
 		this.persistenceManager = new PersistenceManager( this );
 		this.getBus().subscribe( this.persistenceManager );
 
-		// testing SortModel!
-		new SortChallenge();
+		forceActionBarOverflow();
 	}
 
 	/**
@@ -81,6 +101,30 @@ public class SFApplication extends Application {
 	 */
 	public static final SFApplication get() {
 		return app;
+	}
+
+	/**
+	 * Show the triple-dot action bar overflow icon even on devices with a
+	 * dedicated menu button.
+	 * 
+	 * <p>
+	 * Solution from stackoverflow post found 
+	 * <a href="http://stackoverflow.com/questions/9286822/
+	 * how-to-force-use-of-overflow-menu-on-devices-with-menu-button/
+	 * 11438245#11438245">here</a>.
+	 * </p>
+	 */
+	private void forceActionBarOverflow() {
+	    try {
+	        ViewConfiguration config = ViewConfiguration.get(this);
+	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+	        if(menuKeyField != null) {
+	            menuKeyField.setAccessible(true);
+	            menuKeyField.setBoolean(config, false);
+	        }
+	    } catch (Exception ex) {
+	        // Ignore
+	    }
 	}
 
 	/**
@@ -132,6 +176,7 @@ public class SFApplication extends Application {
 				// Take the opportunity to store preset in a factory.
 				this.fromPresetFactory = new FromPresetAlarmFactory( alarm );
 				iter.remove();
+				alarm.setMessageBus(this.getBus());
 				break;
 			}
 		}
@@ -244,5 +289,34 @@ public class SFApplication extends Application {
 	 */
 	public synchronized void releaseGPSSet() {
 		this.gpsAreaManaged = null;
+	}
+	
+	
+	public TextToSpeech getTts() {
+		return this.tts;
+	}
+
+	/**
+	 * Gets the currently ringing alarm.
+	 * 
+	 * @return the ringing alarm, null if no alarm is ringing
+	 */
+	public Alarm getRingingAlarm() {
+		return ringingAlarm;
+	}
+
+	/**
+	 * Sets the currently ringing alarm.
+	 * 
+	 * <p>
+	 * Added for being able to check from activities if an alarm is currently
+	 * ringing, to then redirect the user to AlarmActivity.
+	 * </p>
+	 * 
+	 * @param alarm
+	 *            the alarm to set as the ringing alarm
+	 */
+	public void setRingingAlarm(Alarm alarm) {
+		this.ringingAlarm = alarm;
 	}
 }

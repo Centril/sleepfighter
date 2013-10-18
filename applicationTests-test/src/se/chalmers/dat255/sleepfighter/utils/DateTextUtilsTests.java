@@ -27,6 +27,7 @@ import org.joda.time.MutablePeriod;
 import org.joda.time.Period;
 
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
+import se.chalmers.dat255.sleepfighter.text.DateTextUtils;
 
 public class DateTextUtilsTests extends TestCase {
 	private static final String[] formats = { "No alarm active",

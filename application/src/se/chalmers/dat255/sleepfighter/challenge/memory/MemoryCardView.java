@@ -36,54 +36,58 @@ public class MemoryCardView extends Button {
   	private static String HIDDEN =  "";
   	// what to show when the memory card s flipped over and shown.
   	private String SHOWN;
-  	
+
   	private int position;
-  	
+
   	private String currentImage;
-    
   	
+  	
+  	private float FONT_SIZE = 40;
+
     public MemoryCardView(Context context) {
         super(context);
+        this.setTextSize(FONT_SIZE);
     }
 
     public MemoryCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.setTextSize(FONT_SIZE);
     }
-	
+
 	public void hide() {
 		currentImage = HIDDEN;
 		super.setText(currentImage);
 		super.setClickable(true);
 	}
-	
+
 	public void show() {
 		currentImage = SHOWN;
 		super.setText(currentImage);
-		
+
 		// it should not be clickable when it is flipped. 
 		super.setClickable(false);
 	}
-	
+
 	public boolean isHidden() {
 		return this.currentImage.equals(HIDDEN);
 	}
-	
+
 	public boolean isShown() {
 		return !isHidden();
 	}
-	
+
 	public void flip() {
 		if(isHidden()) {
 			this.show();
-		} else
+		} else {
 			this.hide();
+		}
 	}
-	
+
 	public void setImage(String image) {
-		//super.setBackgroundResource(android.R.color.white);
 
 		SHOWN = image;
-		
+
 		// all cards are hidden by default. 
 		hide();
 	}
@@ -91,7 +95,7 @@ public class MemoryCardView extends Button {
 	public void setPosition(int position) {
 		this.position = position;
 	}
-	
+
 	public int getPosition() {
 		return this.position;
 	}

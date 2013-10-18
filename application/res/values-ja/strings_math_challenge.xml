@@ -32,6 +32,6 @@
     <string name="challenge_math_settings_title">数学設定</string>
  
     <string name="challenge_math_hard_problems_title">難しい数学の問題</string>
-    <string name="challenge_math_hard_problems_summary">もっと難しい、高等学校レベルの数学の問題を使用する</string>
+    <string name="challenge_math_hard_problems_summary">もっと難しい、高等学校レベルの数学の問題を使用します</string>
   
 </resources>

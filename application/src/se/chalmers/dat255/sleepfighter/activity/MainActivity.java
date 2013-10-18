@@ -28,13 +28,14 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.AlarmAdapter;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
-import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
+import se.chalmers.dat255.sleepfighter.text.DateTextUtils;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -51,10 +52,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
+	
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
@@ -74,6 +75,7 @@ public class MainActivity extends Activity {
 	public SFApplication app() {
 		return SFApplication.get();
 	}
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,7 @@ public class MainActivity extends Activity {
 		this.setupChallengeToggle();
 		this.updateChallengePoints();
 		this.updateEarliestText();
+
 	}
 
 	@Override
@@ -99,6 +102,15 @@ public class MainActivity extends Activity {
 
 		this.updateChallengePoints();
 		this.updateEarliestText();
+
+		// Check if an alarm is ringing, if so, send the user to AlarmActivity
+		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
+		if (ringingAlarm != null) {
+			Intent i = new Intent(this, AlarmActivity.class);
+			new AlarmIntentHelper(i).setAlarmId(ringingAlarm);
+			startActivity(i);
+			finish();
+		}
 	}
 
 	private void setupListView() {
@@ -133,14 +145,12 @@ public class MainActivity extends Activity {
 					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_untoggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(false);
 					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_disabled);
-					Toast.makeText(MainActivity.this, "Challenges disabled", Toast.LENGTH_SHORT).show();
 				}
 				else {
 					app().getPrefs().setChallengesActivated(true);
 					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_toggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(true);
 					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_enabled);
-					Toast.makeText(MainActivity.this, "Challenges enabled", Toast.LENGTH_SHORT).show();
 				}
 			}
 			
@@ -171,8 +181,21 @@ public class MainActivity extends Activity {
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
+			if (SFApplication.DEBUG) {
+				// adds an extra context menu item for starting an alarm
+				menu.add(0, menuItems.length, menuItems.length,
+						"DEBUG: Start alarm");
+			}
 		}
 	}
+	
+	private void startAlarm(Alarm alarm) {
+	    // Send intent directly to receiver
+		   Intent intent = new Intent(this, AlarmReceiver.class);
+		    new AlarmIntentHelper(intent).setAlarmId(alarm.getId());
+		   sendBroadcast(intent);
+	 }
+		
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
@@ -190,6 +213,9 @@ public class MainActivity extends Activity {
 		case 2:
 			copyAlarm(selectedAlarm);
 			return true;
+		case 3:
+			startAlarm(selectedAlarm);
+			return true;
 		default:
 			return false;
 
@@ -198,7 +224,7 @@ public class MainActivity extends Activity {
 
 	private void startAlarmEdit(Alarm alarm, boolean isNew) {
 		Intent intent = new Intent(this, AlarmSettingsActivity.class);
-		new IntentUtils(intent).setAlarmId(alarm);
+		new AlarmIntentHelper(intent).setAlarmId(alarm);
 
 		intent.putExtra(AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew);
 

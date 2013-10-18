@@ -119,12 +119,13 @@ public class SortModel implements Parcelable {
 	 * <p>Before generating the list, you must call {@link #setSize(int)}.</p>
 	 */
 	public void generateList( Random rng ) {
+		this.generator.setNumDigits( 3 );
 		int[] numbers = this.generator.generateList( rng, size );
 
 		this.stepIndex = 0;
 
 		// Finally, sort list.
-		this.sortOrder = Order.fromBool( new Random().nextBoolean() );
+		this.sortOrder = Order.fromBool( rng.nextBoolean() );
 		Arrays.sort( numbers );
 		if ( this.sortOrder == Order.DESCENDING ) {
 			reverseOrder( numbers );
@@ -194,13 +195,12 @@ public class SortModel implements Parcelable {
 		return this.sortOrder;
 	}
 
-
 	/* --------------------------------
 	 * Parcelable stuff.
 	 * --------------------------------
 	 */
 
-	public SortModel( Parcel in ) {
+	public  SortModel( Parcel in ) {
 		this.size = in.readInt();
 		this.stepIndex = in.readInt();
 		in.readIntArray( this.generatedList );

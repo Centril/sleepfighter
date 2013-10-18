@@ -20,6 +20,7 @@ package se.chalmers.dat255.sleepfighter.challenge;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -66,13 +67,26 @@ public class ChallengePrototypeDefinition {
 		private String key;
 		private ValueType type;
 		private Object defaultValue;
-
+		private List<String> dependers;
+		
 		protected ParameterDefinition( String key, ValueType type, Object defaultValue ) {
 			this.key = key;
 			this.type = type;
 			this.defaultValue = defaultValue;
 		}
-
+		
+		protected ParameterDefinition( String key, ValueType type, Object defaultValue, List<String> dependers ) {
+			
+			if(type != PrimitiveValueType.BOOLEAN) {
+				throw new IllegalArgumentException("valType is not of type boolean");
+			}
+			
+			this.key = key;
+			this.type = type;
+			this.defaultValue = defaultValue;
+			this.dependers = dependers;
+		}
+		
 		/**
 		 * Returns the key of the parameter.
 		 *
@@ -99,11 +113,21 @@ public class ChallengePrototypeDefinition {
 		public Object getDefaultValue() {
 			return this.defaultValue;
 		}
+		
+		/**
+		 * Returns the keys of the dependers of this param. If this parameter is false, then all dependers will be disabled.
+		 *
+		 * @return the dependers of this param.
+		 */
+		public List<String> getDependers() {
+			return this.dependers;
+		}
 	}
 
 	private ChallengeType challengeType;
 
 	private Map<String, ParameterDefinition> paramDefinitions;
+	
 
 	/**
 	 * Constructs a ChallengePrototypeDefinition.
@@ -147,7 +171,31 @@ public class ChallengePrototypeDefinition {
 		this.paramDefinitions.put( key, def );
 		return this;
 	}
+	
 
+	/**
+	 * Adds a parameter definition.
+	 *
+	 * @param key the key of the parameter.
+	 * @param valType the value type of the parameter.
+	 * @param defaultValue the default value.
+	 * @param defaultEager whether or not the default value is eager to save itself.
+	 *  Use this if you want to keep the old default value when you change it between challenge versions.
+	 * @param dependers The keys of all the dependers of this param. If this parameter is false, then all dependers will be disabled.
+	 *  Only works if valType == ValueType.Boolean, otherwise an exception is thrown.
+	 * @return this.
+	 */
+	public ChallengePrototypeDefinition add( String key, ValueType valType, Object defaultValue, List<String> dependers) {
+		
+		
+		
+		ParameterDefinition def = new ParameterDefinition( key, valType, defaultValue, dependers );
+		this.paramDefinitions.put( key, def );
+		return this;
+	}
+	
+	
+	
 	/**
 	 * Returns the definitions available as a collection.
 	 *

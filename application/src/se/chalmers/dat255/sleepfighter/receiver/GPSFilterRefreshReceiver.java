@@ -21,11 +21,11 @@ package se.chalmers.dat255.sleepfighter.receiver;
 import org.joda.time.DateTime;
 
 import se.chalmers.dat255.sleepfighter.SFApplication;
+import se.chalmers.dat255.sleepfighter.android.power.WakeLocker;
 import se.chalmers.dat255.sleepfighter.gps.GPSFilterLocationRetriever;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
-import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -51,7 +51,7 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive( Context context, Intent intent ) {
-		AlarmWakeLocker.acquire( context );
+		WakeLocker.acquire( context );
 
 		if ( intent.getBooleanExtra( FROM_ALARM_MANAGER, false ) ) {
 			// We got this from AlarmManager, we need to make a single request.
@@ -63,7 +63,7 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 			// Make the request.
 			GPSFilterLocationRetriever locRet = getLocRet( context );
 			if ( locRet == null ) {
-				AlarmWakeLocker.release();
+				WakeLocker.release();
 				return;
 			}
 
@@ -80,7 +80,7 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 					unscheduleUpdates( context );
 				}
 
-				AlarmWakeLocker.release();
+				WakeLocker.release();
 				return;
 			}
 
@@ -88,12 +88,12 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 			long now = new DateTime().getMillis();
 			AlarmList list = SFApplication.get().getAlarms();
 			AlarmTimestamp at = list.getEarliestAlarm( now );
-			if ( at.getMillis() + interval * MINUTE_TO_MS_FACTOR > now ) {
+			if ( at.getMillis() + (long)interval * MINUTE_TO_MS_FACTOR > now ) {
 				if ( !reqSingle ) {
 					unscheduleUpdates( context );
 				}
 
-				AlarmWakeLocker.release();
+				WakeLocker.release();
 				return;
 			}
 
@@ -132,7 +132,7 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 			return;
 		}
 
-		long unixTime = alarmTime + frtd * MINUTE_TO_MS_FACTOR;
+		long unixTime = alarmTime + (long)frtd * MINUTE_TO_MS_FACTOR;
 
 		// Make pending intent.
 		Bundle bundle = new Bundle();

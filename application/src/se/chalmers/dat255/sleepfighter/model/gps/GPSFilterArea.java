@@ -20,10 +20,11 @@ package se.chalmers.dat255.sleepfighter.model.gps;
 
 import java.util.Map;
 
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBusHolder;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.Maps;
@@ -40,7 +41,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Oct 5, 2013
  */
 @DatabaseTable(tableName = "gpsfilter_area")
-public class GPSFilterArea implements IdProvider {
+public class GPSFilterArea implements IdProvider, MessageBusHolder {
 	/* --------------------------------
 	 * Defined Events.
 	 * --------------------------------

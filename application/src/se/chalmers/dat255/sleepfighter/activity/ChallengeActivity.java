@@ -23,10 +23,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
+import se.chalmers.dat255.sleepfighter.challenge.ChallengeProgressEvent;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
@@ -51,13 +54,22 @@ public class ChallengeActivity extends Activity {
 	private ChallengeType challengeType;
 	private Challenge challenge;
 
+	private SFApplication app() {
+		return SFApplication.get();
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Fetch alarm & set.
 		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset(this);
 		this.challengeSet = this.alarm.getChallengeSet();
 
+		// Start listening for events.
+		this.app().getBus().subscribe( this );
+
+		// Start the challenge.
 		if (savedInstanceState == null) {
 			// Either fetch or make a random challenge type.
 			Object bundled = getIntent().getSerializableExtra( BUNDLE_CHALLENGE_TYPE );
@@ -122,6 +134,7 @@ public class ChallengeActivity extends Activity {
 	 */
 	private void updateChallenge() {
 		this.challenge = ChallengeFactory.getChallenge(this.challengeType);
+		this.challenge.setMessageBus( this.app().getBus() );
 	}
 
 	/**
@@ -145,20 +158,39 @@ public class ChallengeActivity extends Activity {
 	}
 
 	/**
-	 * Called by a challenge when it's completed.
+	 * Handles an event from the current Challenge.
+	 *
+	 * @param event the event.
 	 */
-	public void complete() {
+	@Handler
+	public void handleChallengeEvent( ChallengeProgressEvent event ) {
+		switch ( event.getType() ) {
+		case COMPLETED:
+			this.complete();
+			break;
+
+		case FAILED:
+			this.fail();
+			break;
+
+		default:
+			throw new AssertionError();
+		}
+	}
+
+	/**
+	 * Called when a challenge is completed.
+	 */
+	private void complete() {
 		setResult(Activity.RESULT_OK);
-		
-		SFApplication.get().getPrefs().addChallengePoints(5);
 		
 		finish();
 	}
 
 	/**
-	 * Called by a challenge when it has not been completed.
+	 * Called when a challenge has not been completed.
 	 */
-	public void fail() {
+	private void fail() {
 		setResult(Activity.RESULT_CANCELED);
 		finish();
 	}

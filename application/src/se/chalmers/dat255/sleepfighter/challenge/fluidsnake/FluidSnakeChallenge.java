@@ -20,11 +20,11 @@
 package se.chalmers.dat255.sleepfighter.challenge.fluidsnake;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.BaseChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -43,24 +43,20 @@ import android.widget.Toast;
  * @author Hassel
  * 
  */
-public class FluidSnakeChallenge implements Challenge, OnTouchListener {
+public class FluidSnakeChallenge extends BaseChallenge implements OnTouchListener {
 	/**
 	 * PrototypeDefinition for FluidSnakeChallenge.
 	 * 
 	 * @version 1.0
 	 * @since Oct 5, 2013
 	 */
-	public static class PrototypeDefinition extends
-			ChallengePrototypeDefinition {
-		{
-			setType(ChallengeType.FLUID_SNAKE);
-		}
-	}
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType(ChallengeType.FLUID_SNAKE);
+	}}
 
 	private Model model;
 	private Thread thread;
 	private GameView view;
-	private ChallengeActivity activity;
 
 	// where the user touched on the screen
 	private float touchX;
@@ -70,8 +66,8 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	private boolean updateDir;
 
 	@Override
-	public void start(ChallengeActivity activity, ChallengeResolvedParams params) {
-		this.activity = activity;
+	public void start( Activity activity, ChallengeResolvedParams params) {
+		super.start( activity, params );
 
 		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -138,10 +134,10 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	private void exitChallenge() {
 		// Run on UI thread since things can get messy if trying to execute them
 		// on other threads
-		activity.runOnUiThread(new Runnable() {
+		activity().runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				activity.complete();
+				complete();
 			}
 		});
 	}
@@ -166,8 +162,7 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	}
 
 	@Override
-	public void start(ChallengeActivity activity,
-			ChallengeResolvedParams params, Bundle state) {
+	public void start( Activity activity, ChallengeResolvedParams params, Bundle state) {
 		Toast.makeText(activity, "TODO: IMPLEMENT START FROM SAVED STATE",
 				Toast.LENGTH_LONG).show();
 		this.start(activity, params);
@@ -176,17 +171,5 @@ public class FluidSnakeChallenge implements Challenge, OnTouchListener {
 	@Override
 	public Bundle savedState() {
 		return null;
-	}
-
-	@Override
-	public void onResume() {
-	}
-
-	@Override
-	public void onPause() {
-	}
-
-	@Override
-	public void onDestroy() {
 	}
 }

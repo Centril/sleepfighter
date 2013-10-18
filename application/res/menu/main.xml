@@ -25,14 +25,14 @@
         android:title="@string/action_settings"/>
     <item	
         android:id="@+id/action_add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_action_add"
         android:showAsAction="ifRoom"
         android:title="@string/add"/>
 
     <item	
         android:id="@+id/action_gpsfilter_area_edit"
         android:icon="@android:drawable/ic_menu_myplaces"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:title="@string/action_gpsfilter_area_edit"/>
     
 </menu>

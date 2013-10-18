@@ -30,7 +30,7 @@ import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterMode;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterPolygon;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSLatLng;
-import se.chalmers.dat255.sleepfighter.utils.GPSFilterTextUtils;
+import se.chalmers.dat255.sleepfighter.text.GPSFilterTextUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -180,6 +180,10 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	@Override
 	public boolean onOptionsItemSelected( MenuItem item ) {
 		switch ( item.getItemId() ) {
+		case android.R.id.home:
+			finish();
+			return true;
+			
 		case R.id.action_edit_gpsfilter_area_help:
 			this.showSplash();
 			return true;
@@ -478,10 +482,11 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		// Find area in set.
 		this.area = this.set.getById( id );
 
-		Log.d( TAG, this.area.toString() );
+		Log.d(TAG, "Fetched area " + this.area);
 
-		if ( this.area == null ) {
-			Toast.makeText( this, "The area ID provided did not exist in set.", Toast.LENGTH_LONG ).show();
+		if (this.area == null) {
+			Toast.makeText(this, "The area ID provided did not exist in set.",
+					Toast.LENGTH_LONG).show();
 			this.finish();
 		}
 	}
@@ -757,6 +762,8 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	 * Sets up the map.
 	 */
 	private void setupMap() {
+		this.markers = Lists.newArrayList();
+
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 		if ( status != ConnectionResult.SUCCESS ) {
 			// Google Play Services are not available.
@@ -788,7 +795,6 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		this.googleMap.setMyLocationEnabled( true );
 
 		// Bind events for markers.
-		this.markers = Lists.newArrayList();
 		this.googleMap.setOnMapClickListener( this );
 		this.googleMap.setOnMarkerDragListener( this );
 		this.googleMap.setOnMarkerClickListener( this );
