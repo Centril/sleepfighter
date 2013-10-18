@@ -18,8 +18,8 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.receiver;
 
+import se.chalmers.dat255.sleepfighter.android.power.WakeLocker;
 import se.chalmers.dat255.sleepfighter.service.LocationService;
-import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -64,7 +64,7 @@ public class LocationReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive( Context context, Intent intent ) {
 		
-		AlarmWakeLocker.acquire( context );
+		WakeLocker.acquire( context );
 		
 		this.context = context;
 		

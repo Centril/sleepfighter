@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.utils.android;
+package se.chalmers.dat255.sleepfighter.android.power;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,15 +24,15 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 
 /**
- * Handles wake-locks for alarm.
+ * Handles wake-locks for android in a static manner.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Sep 21, 2013
  */
 @SuppressLint( "Wakelock" )
-public class AlarmWakeLocker {
-	public static final String TAG = "se.chalmers.dat255.sleepfighter.activities.AlarmWakeLocker";
+public class WakeLocker {
+	public static final String TAG = WakeLocker.class.getName();
 
 	private static WakeLock wakeLock;
 
@@ -49,7 +49,7 @@ public class AlarmWakeLocker {
 		}
 
 		PowerManager pm = (PowerManager) context.getSystemService( Context.POWER_SERVICE );
-		wakeLock = pm.newWakeLock( wakeLockLevel, AlarmWakeLocker.TAG );
+		wakeLock = pm.newWakeLock( wakeLockLevel, WakeLocker.TAG );
 		wakeLock.acquire();
 	}
 

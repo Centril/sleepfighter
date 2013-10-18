@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.receiver;
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.activity.AlarmActivity;
+import se.chalmers.dat255.sleepfighter.android.power.WakeLocker;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.gps.GPSFilterRequisitor;
@@ -30,7 +31,6 @@ import se.chalmers.dat255.sleepfighter.service.FadeVolumeService;
 import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.PendingIntent;
@@ -61,7 +61,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive( Context context, Intent intent ) {
 		// Acquire wake-lock.
-		AlarmWakeLocker.acquire( context );
+		WakeLocker.acquire( context );
 
 		this.context = context;
 
