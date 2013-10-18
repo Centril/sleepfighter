@@ -94,7 +94,7 @@
 
     <PreferenceCategory android:title="@string/pref_about" >
 
-        <Preference
+        <se.chalmers.dat255.sleepfighter.android.preference.DevelopersNamesPreference
             android:title="@string/pref_version"
                 android:selectable="false"
             android:summary="@string/version_name" />

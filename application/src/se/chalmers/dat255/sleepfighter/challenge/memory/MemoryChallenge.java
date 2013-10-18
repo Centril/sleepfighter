@@ -149,6 +149,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
         
         
     }
+		
 	
 	private void makeAllCardsUnclickable() {
 		for(MemoryCardView card : this.cards) {

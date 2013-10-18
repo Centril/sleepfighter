@@ -30,11 +30,13 @@ import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.EditText;
@@ -142,9 +144,13 @@ public class MathChallenge implements Challenge {
 		});
 
 		// make the keyboard appear.
-	/*	InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-	*/
+		// We'll only do this for the simple problem type.
+		// For the harder math problems, the keyboard takes up too much space
+		//  and gets in the way. 
+		if(this.problemType == ProblemType.simple) {
+			InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+		}
 		setupWebview(activity);
 		renderMathProblem(activity);
 
