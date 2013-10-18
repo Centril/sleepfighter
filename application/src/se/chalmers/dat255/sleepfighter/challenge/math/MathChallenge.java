@@ -39,6 +39,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -143,16 +144,11 @@ public class MathChallenge implements Challenge {
 			}
 		});
 
-		// make the keyboard appear.
-		// We'll only do this for the simple problem type.
-		// For the harder math problems, the keyboard takes up too much space
-		//  and gets in the way. 
-		if(this.problemType == ProblemType.simple) {
-			InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-		}
+	
 		setupWebview(activity);
 		renderMathProblem(activity);
+
+
 
 	}
 	
@@ -185,6 +181,30 @@ public class MathChallenge implements Challenge {
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi", "InlinedApi" })
 	private void setupWebview(final Activity activity) {
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
+		
+		
+		w.setWebViewClient(new WebViewClient() {
+
+			
+			public void onPageFinished(WebView view, String url) {
+
+				EditText t = (EditText)MathChallenge.this.activity.findViewById(R.id.answerField);
+				t.requestFocus();
+				
+				// make the keyboard appear once the problem has been rendered. 
+				// We'll only do this for the simple problem type.
+				// For the harder math problems, the keyboard takes up too much space
+				//  and gets in the way. 
+				if(problemType == ProblemType.simple) {
+					Debug.d("show keyboard");
+					InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+				}
+
+			}
+		});
+		
+		
 		w.getSettings().setJavaScriptEnabled(true);
 		
 		w.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -214,12 +234,16 @@ public class MathChallenge implements Challenge {
 		
 		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
 		
+				
+		
 		String problem = "<p style=\"text-align: center;\">" + this.problemString + "</p>";
 		
 		String html = new StringBuilder().append(open_html).append(this.getStyleSheet()).append(problem).append(close_html).toString();
 		
 		w.loadDataWithBaseURL("file:///android_asset", html, "text/html", "utf-8", "");	
 		w.setBackgroundColor(0x00000000);
+		
+		
 	}
 		
 	/**
