@@ -45,6 +45,7 @@ import android.view.ViewConfiguration;
  */
 public class SFApplication extends Application implements TextToSpeech.OnInitListener {
 	private static final boolean CLEAN_START = false;
+	public static final boolean DEBUG = false;
 
 	private static SFApplication app;
 
