@@ -28,6 +28,7 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.adapter.AlarmAdapter;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
 import se.chalmers.dat255.sleepfighter.model.Alarm.ScheduleChangeEvent;
@@ -35,7 +36,6 @@ import se.chalmers.dat255.sleepfighter.model.AlarmList;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
 import se.chalmers.dat255.sleepfighter.receiver.AlarmReceiver;
 import se.chalmers.dat255.sleepfighter.text.DateTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
 		if (ringingAlarm != null) {
 			Intent i = new Intent(this, AlarmActivity.class);
-			new IntentUtils(i).setAlarmId(ringingAlarm);
+			new AlarmIntentHelper(i).setAlarmId(ringingAlarm);
 			startActivity(i);
 			finish();
 		}
@@ -190,7 +190,7 @@ public class MainActivity extends Activity {
 	private void startAlarm(Alarm alarm) {
 	    // Send intent directly to receiver
 		   Intent intent = new Intent(this, AlarmReceiver.class);
-		    new IntentUtils(intent).setAlarmId(alarm.getId());
+		    new AlarmIntentHelper(intent).setAlarmId(alarm.getId());
 		   sendBroadcast(intent);
 	 }
 		
@@ -223,7 +223,7 @@ public class MainActivity extends Activity {
 
 	private void startAlarmEdit(Alarm alarm, boolean isNew) {
 		Intent intent = new Intent(this, AlarmSettingsActivity.class);
-		new IntentUtils(intent).setAlarmId(alarm);
+		new AlarmIntentHelper(intent).setAlarmId(alarm);
 
 		intent.putExtra(AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew);
 

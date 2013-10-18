@@ -25,13 +25,13 @@ import se.chalmers.dat255.sleepfighter.android.power.WakeLocker;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
 import se.chalmers.dat255.sleepfighter.gps.GPSFilterRequisitor;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.service.FadeVolumeService;
 import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -67,7 +67,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		// Fetch extras.
 		Bundle extras = intent.getExtras();
-		final int alarmId = new IntentUtils( intent ).getAlarmId();
+		final int alarmId = new AlarmIntentHelper( intent ).getAlarmId();
 
 		if ( !this.isRequirementsMet( alarmId ) ) {
 			return;

@@ -20,7 +20,7 @@ package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -47,7 +47,7 @@ public class GlobalSettingsActivity extends PreferenceActivity   {
 	
 	private void startGlobalPresetAlarmEdit() {
 		Intent intent = new Intent(this, AlarmSettingsActivity.class );
-		new IntentUtils( intent ).setSettingPresetAlarm(true);
+		new AlarmIntentHelper( intent ).setSettingPresetAlarm(true);
 		startActivity( intent );
 	}
 	

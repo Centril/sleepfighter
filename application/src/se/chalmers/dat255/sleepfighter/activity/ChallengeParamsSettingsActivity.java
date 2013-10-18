@@ -26,6 +26,7 @@ import se.chalmers.dat255.sleepfighter.challenge.ChallengeParamsReadWriter;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.ParameterDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition.PrimitiveValueType;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;

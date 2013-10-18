@@ -31,6 +31,7 @@ import se.chalmers.dat255.sleepfighter.android.preference.VolumePreference;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.AudioChangeEvent;
 import se.chalmers.dat255.sleepfighter.model.Alarm.Field;
@@ -40,7 +41,6 @@ import se.chalmers.dat255.sleepfighter.speech.SpeechLocalizer;
 import se.chalmers.dat255.sleepfighter.speech.TextToSpeechUtil;
 import se.chalmers.dat255.sleepfighter.text.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -152,7 +152,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
 		if (ringingAlarm != null) {
 			Intent i = new Intent(this, AlarmActivity.class);
-			new IntentUtils(i).setAlarmId(ringingAlarm);
+			new AlarmIntentHelper(i).setAlarmId(ringingAlarm);
 			startActivity(i);
 			finish();
 		}
@@ -334,7 +334,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			@Override
 			public void onClick( View v ) {
 				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
-				IntentUtils intentUtils = new IntentUtils(i);
+				AlarmIntentHelper intentUtils = new AlarmIntentHelper(i);
 				if (AlarmSettingsActivity.this.alarm.isPresetAlarm()) {
 					intentUtils.setSettingPresetAlarm(true);
 				} else {
@@ -389,7 +389,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	private void startRingerEdit() {
 		Intent intent = new Intent(this, RingerSettingsActivity.class );
 
-		IntentUtils intentUtils = new IntentUtils( intent );
+		AlarmIntentHelper intentUtils = new AlarmIntentHelper( intent );
 
 		if ( this.alarm.isPresetAlarm() ) {
 			intentUtils.setSettingPresetAlarm( true );

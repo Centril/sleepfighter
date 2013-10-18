@@ -16,20 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.utils.android;
+package se.chalmers.dat255.sleepfighter.helper;
 
+import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
+import android.app.Activity;
 import android.content.Intent;
 
 /**
- * IntentUtils provides some utilities for reading and writing data to intents.<br/>
- * Writing when in reading-mode and vice versa is pointless, intents are parceled.
+ * AlarmIntentHelper provides some utilities for reading and writing data to intents regarding alarms.<br/>
+ * Writing when in reading-mode and vice versa is pointless, intents are parceled.<br/>
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Sep 24, 2013
  */
-public class IntentUtils {
+public class AlarmIntentHelper {
 	private static final String ALARM_EXTRA_ID = "alarm_id";
 	private static final String SETTING_PRESET_ALARM = "setting_preset_alarm";
 	
@@ -40,7 +42,7 @@ public class IntentUtils {
 	 *
 	 * @param intent intent object to perform operations on.
 	 */
-	public IntentUtils( Intent intent ) {
+	public AlarmIntentHelper( Intent intent ) {
 		this.intent = intent;
 	}
 
@@ -50,7 +52,7 @@ public class IntentUtils {
 	 * @param alarm the alarm
 	 * @return this.
 	 */
-	public IntentUtils setAlarmId( Alarm alarm ) {
+	public AlarmIntentHelper setAlarmId( Alarm alarm ) {
 		return this.setAlarmId( alarm.getId() );
 	}
 
@@ -61,7 +63,7 @@ public class IntentUtils {
 	 * @param id the alarm id.
 	 * @return this.
 	 */
-	public IntentUtils setAlarmId( final int id ) {
+	public AlarmIntentHelper setAlarmId( final int id ) {
 		if ( id != Alarm.NOT_COMMITTED_ID ) {
 			this.intent.putExtra( ALARM_EXTRA_ID, id );
 		}
@@ -70,13 +72,12 @@ public class IntentUtils {
 	}
 	
 	// if we are about to go to the settings for the preset(default) alarm, set this to true.
-	public IntentUtils setSettingPresetAlarm(final boolean settingPresetAlarm) {
+	public AlarmIntentHelper setSettingPresetAlarm(final boolean settingPresetAlarm) {
 		this.intent.putExtra( SETTING_PRESET_ALARM,  settingPresetAlarm);
 		
 		return this;
 	}
-	
-	
+
 	public boolean isSettingPresetAlarm() {
 		return this.intent.getBooleanExtra(SETTING_PRESET_ALARM, false);
 	}
@@ -93,5 +94,33 @@ public class IntentUtils {
 		}
 
 		return id;
+	}
+
+	/**
+	 * Fetches an alarm from intent taken from activity or the preset if that is the intent.
+	 *
+	 * @param activity the activity to get intent from.
+	 * @return the alarm.
+	 */
+	public static Alarm fetchAlarmOrPreset( Activity activity ) {
+		SFApplication app = SFApplication.get();
+
+		AlarmIntentHelper intentUtils = new AlarmIntentHelper( activity.getIntent() );
+		Alarm alarm = intentUtils.isSettingPresetAlarm() ? app.getFromPresetFactory().getPreset() : app.getAlarms().getById( intentUtils.getAlarmId() );
+		return alarm;
+	}
+
+	/**
+	 * Fetches an alarm from intent without checking for preset.
+	 *
+	 * @param activity the activity to get intent from.
+	 * @return the alarm.
+	 */
+	public static Alarm fetchAlarm( Activity activity ) {
+		SFApplication app = SFApplication.get();
+
+		AlarmIntentHelper intentUtils = new AlarmIntentHelper( activity.getIntent() );
+		Alarm alarm = app.getAlarms().getById( intentUtils.getAlarmId() );
+		return alarm;
 	}
 }

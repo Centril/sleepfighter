@@ -22,10 +22,10 @@ import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -159,7 +159,7 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	 */
 	protected void gotoPreferencesSettings( ChallengeType type ) {
 		Intent i = new Intent( this, ChallengeParamsSettingsActivity.class );
-		IntentUtils intentUtils = new IntentUtils(i);
+		AlarmIntentHelper intentUtils = new AlarmIntentHelper(i);
 		if (this.alarm.isPresetAlarm()) {
 			intentUtils.setSettingPresetAlarm(true);
 		} else {
@@ -261,7 +261,7 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 				ChallengeActivity.class);
 
 		// Bundle in type and what alarm it's for (for params)
-		IntentUtils intentUtils = new IntentUtils(i);
+		AlarmIntentHelper intentUtils = new AlarmIntentHelper(i);
 		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
 		if (ChallengeSettingsActivity.this.alarm.isPresetAlarm()) {
 			intentUtils.setSettingPresetAlarm(true);

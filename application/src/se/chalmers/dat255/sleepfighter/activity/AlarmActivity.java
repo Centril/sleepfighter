@@ -30,6 +30,7 @@ import se.chalmers.dat255.sleepfighter.SFApplication;
 import se.chalmers.dat255.sleepfighter.android.power.WakeLocker;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.VibrationManager;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.AlarmTimestamp;
@@ -38,7 +39,6 @@ import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
 import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.app.Activity;
@@ -108,7 +108,7 @@ public class AlarmActivity extends Activity {
 		SFApplication app = SFApplication.get();
 
 		// Fetch alarm Id.
-		int alarmId = new IntentUtils(this.getIntent()).getAlarmId();
+		int alarmId = new AlarmIntentHelper(this.getIntent()).getAlarmId();
 		this.alarm = app.getPersister().fetchAlarmById(alarmId);
 
 		// Get the name and time of the current ringing alarm
@@ -243,7 +243,7 @@ public class AlarmActivity extends Activity {
 
 		// Send user to ChallengeActivity.
 		Intent i = new Intent(this, ChallengeActivity.class);
-		new IntentUtils(i).setAlarmId(this.alarm);
+		new AlarmIntentHelper(i).setAlarmId(this.alarm);
 		startActivityForResult(i, CHALLENGE_REQUEST_CODE);
 	}
 
