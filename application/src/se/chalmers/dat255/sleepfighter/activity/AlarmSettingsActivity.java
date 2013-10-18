@@ -56,8 +56,8 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.preference.PreferenceScreen;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -202,6 +202,15 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
 		category.removePreference(pref);
 	}
+	
+	private void removeMiscCategoryIfEmpty() {
+		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
+		
+		if(category.getPreferenceCount() == 0) {
+			PreferenceScreen preferenceScreen = (PreferenceScreen) findPreference("alarm_preference_screen");
+			preferenceScreen.removePreference(category);
+		}
+	}
 
 	private void removeDeleteButton() {
 		Preference pref = (Preference) findPreference(DELETE);
@@ -255,19 +264,18 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		
 		// remove the flash light setting of the device doesn't support it. 
-	//	if(this.deviceSupportsFlashLight()) {
+		if(this.deviceSupportsFlashLight()) {
 			this.removeFlashLightPref();
-		//}
+		}
 		
 		if(alarm.isPresetAlarm()) {
 			// having a delete button for the presets alarm makes no sense, so remove it. 
 			removeDeleteButton();
 			removeEditTitle();
-			removeAlarmToggle();
-			
-			
-				
+			removeAlarmToggle();		
 		}
+		
+		removeMiscCategoryIfEmpty();
 	}
 
 	@Override
