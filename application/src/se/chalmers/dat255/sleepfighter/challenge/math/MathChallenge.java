@@ -76,23 +76,26 @@ public class MathChallenge extends BaseChallenge {
 		return params.getBoolean("hard_problems");
 	}
 	
-	private void runChallenge() {
+	private void runChallenge(Activity activity) {
 		// create challenge object
 		
 		MathProblem problem = null;
 		
 		if(problemType == ProblemType.differentiation) {
-			problem = new DifferentiationProblem(activity());			
+			problem = new DifferentiationProblem(activity);			
 		} else if(problemType == ProblemType.gcd) {
-			problem = new GCDProblem(activity());			
+			problem = new GCDProblem(activity);			
 		} else if(problemType == ProblemType.prime) {
-			problem = new PrimeFactorizationProblem(activity(), new Random());			
+			problem = new PrimeFactorizationProblem(activity, new Random());			
 		}else if(problemType == ProblemType.simple) {
 			problem = new SimpleProblem();			
 		}else if(problemType == ProblemType.matrix) {
-			problem = new MatrixProblem(activity());			
+			problem = new MatrixProblem(activity);			
 		} 
-
+		
+		//problem = new PrimeFactorizationProblem(activity, new Random());			
+		
+		
 		problem.newProblem();
 		this.problemString = problem.render();
 		this.problemSolution = problem.solution();
@@ -100,6 +103,7 @@ public class MathChallenge extends BaseChallenge {
 	
 	@Override
 	public void start(final Activity activity, ChallengeResolvedParams params) {
+	
 		boolean hardProblems =  getHardProblemsSetting(params);
 		Debug.d("hard problems: " +hardProblems);
 
@@ -113,7 +117,7 @@ public class MathChallenge extends BaseChallenge {
 		}
 
 		// create a new challenge
-		runChallenge();
+		runChallenge(activity);
 		
 		commonStart(activity, params);
 	}
@@ -268,7 +272,7 @@ public class MathChallenge extends BaseChallenge {
 		}
 		if (!correctAnswer) {
 			// somehow reload here. 
-			runChallenge();
+			runChallenge(activity);
 		
 			renderMathProblem(activity);
 			editText.setText("");
