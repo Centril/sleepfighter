@@ -762,6 +762,8 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	 * Sets up the map.
 	 */
 	private void setupMap() {
+		this.markers = Lists.newArrayList();
+
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
 		if ( status != ConnectionResult.SUCCESS ) {
 			// Google Play Services are not available.
@@ -793,7 +795,6 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		this.googleMap.setMyLocationEnabled( true );
 
 		// Bind events for markers.
-		this.markers = Lists.newArrayList();
 		this.googleMap.setOnMapClickListener( this );
 		this.googleMap.setOnMarkerDragListener( this );
 		this.googleMap.setOnMarkerClickListener( this );
