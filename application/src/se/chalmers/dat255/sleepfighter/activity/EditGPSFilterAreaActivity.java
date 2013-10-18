@@ -482,7 +482,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		// Find area in set.
 		this.area = this.set.getById( id );
 
-		Log.d( TAG, this.area.toString() );
+		Log.d(TAG, "Fetched area " + this.area);
 
 		if (this.area == null) {
 			Toast.makeText(this, "The area ID provided did not exist in set.",
