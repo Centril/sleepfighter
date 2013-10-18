@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.audio;
+package se.chalmers.dat255.sleepfighter.service;
 
 import se.chalmers.dat255.sleepfighter.helper.NotificationHelper;
 import android.app.Notification;
@@ -58,7 +58,7 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * the initial volume</li>
 	 * </ul>
 	 */
-	public static final String ACTION_PLAY_TRACK = "se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_TRACK";
+	public static final String ACTION_PLAY_TRACK = "se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_TRACK";
 
 	/**
 	 * Action for starting playback streaming from a remote URI source.
@@ -69,12 +69,12 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * <li>A float (0-1), using key defined by {@link #BUNDLE_FLOAT_VOLUME} - the initial volume</li>
 	 * </ul>
 	 */
-	public static final String ACTION_PLAY_REMOTE = "se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_REMOTE";
+	public static final String ACTION_PLAY_REMOTE = "se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_REMOTE";
 
 	/**
 	 * Action for stopping any playback.
 	 */
-	public static final String ACTION_STOP = "se.chalmers.dat255.sleepfighter.audio.AudioService.STOP";
+	public static final String ACTION_STOP = "se.chalmers.dat255.sleepfighter.service.AudioService.STOP";
 
 	/**
 	 * Action for modifying the volume of what's currently playing. 
@@ -84,7 +84,7 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * volume (0-1) for the playing audio</li>
 	 * </ul>
 	 */
-	public static final String ACTION_VOLUME = "se.chalmers.dat255.sleepfighter.audio.AudioService.VOLUME";
+	public static final String ACTION_VOLUME = "se.chalmers.dat255.sleepfighter.service.AudioService.VOLUME";
 
 	/**
 	 * Action for starting playback of a playlist.
@@ -96,7 +96,7 @@ public class AudioService extends Service implements OnPreparedListener,
 	 * the initial volume</li>
 	 * </ul>
 	 */
-	public static final String ACTION_PLAY_PLAYLIST = "se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_PLAYLIST";
+	public static final String ACTION_PLAY_PLAYLIST = "se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_PLAYLIST";
 
 	public static final String BUNDLE_URI = "audio_uri";
 	public static final String BUNDLE_FLOAT_VOLUME = "audio_volume";

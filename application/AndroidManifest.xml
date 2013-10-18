@@ -162,14 +162,14 @@
         </activity>
        
         <service
-            android:name="se.chalmers.dat255.sleepfighter.audio.AudioService"
+            android:name="se.chalmers.dat255.sleepfighter.service.AudioService"
             android:exported="false" >
             <intent-filter>
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_TRACK" />
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.STOP" />
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.VOLUME" />
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_PLAYLIST" />
-                <action android:name="se.chalmers.dat255.sleepfighter.audio.AudioService.PLAY_REMOTE" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_TRACK" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.STOP" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.VOLUME" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_PLAYLIST" />
+                <action android:name="se.chalmers.dat255.sleepfighter.service.AudioService.PLAY_REMOTE" />
             </intent-filter>
         </service>
     </application>
