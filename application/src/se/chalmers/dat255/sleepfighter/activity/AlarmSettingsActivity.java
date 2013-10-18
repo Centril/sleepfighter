@@ -47,6 +47,7 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -56,6 +57,7 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -194,6 +196,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			updateRingerSummary();
 		}
 	}
+	
+	private void removeFlashLightPref() {
+		Preference pref = (Preference) findPreference(FLASH);
+		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
+		category.removePreference(pref);
+	}
 
 	private void removeDeleteButton() {
 		Preference pref = (Preference) findPreference(DELETE);
@@ -245,11 +253,20 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		setupActionBar();
 
+		
+		// remove the flash light setting of the device doesn't support it. 
+	//	if(this.deviceSupportsFlashLight()) {
+			this.removeFlashLightPref();
+		//}
+		
 		if(alarm.isPresetAlarm()) {
 			// having a delete button for the presets alarm makes no sense, so remove it. 
 			removeDeleteButton();
 			removeEditTitle();
 			removeAlarmToggle();
+			
+			
+				
 		}
 	}
 
@@ -266,6 +283,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	private boolean deviceSupportsFlashLight() {
+		Context context = this;
+		PackageManager pm = context.getPackageManager();
+
+		return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+	}
 
 	// Using deprecated methods because we need to support Android API level 8
 	@SuppressWarnings("deprecation")
@@ -281,9 +305,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference(CHALLENGE));
 		bindPreferenceSummaryToValue(findPreference(ENABLE_SNOOZE));
 		bindPreferenceSummaryToValue(findPreference(SNOOZE_TIME));
-		bindPreferenceSummaryToValue(findPreference(SPEECH));
+		bindPreferenceSummaryToValue(findPreference(SPEECH));	
 		bindPreferenceSummaryToValue(findPreference(FLASH));
 
+			
 		findPreference(DELETE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
