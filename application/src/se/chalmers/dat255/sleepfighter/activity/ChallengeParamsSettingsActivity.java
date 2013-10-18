@@ -85,8 +85,37 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 		for ( ParameterDefinition paramDef : definition.get() ) {
 			this.addPreference( paramDef );
 		}
+		
+		this.setupDependers();
 
 		this.setupActionBar();
+	}
+	
+	private void setupDependers() {
+		for ( final ParameterDefinition paramDef : definition.get() ) {
+			if(paramDef.getDependers() != null) {
+				
+				final Preference pref = findPreference(paramDef.getKey());
+
+				// Disable the dependent prefs if paramDef has been set to false. 	
+				pref.setOnPreferenceChangeListener(null);
+				pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						handleChange( preference, newValue );
+						final boolean b = (Boolean)newValue;
+
+						for(final String depender : paramDef.getDependers()) {
+							final Preference dependentPref = findPreference(depender);
+							dependentPref.setEnabled(b);
+						}
+						
+
+						return true;
+					}
+				});
+			}
+		}
 	}
 
 	@Override
@@ -150,6 +179,7 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 			preference.setSummary( summary );
 		}
 
+		
 		// Set listener for change.
 		preference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 			@Override

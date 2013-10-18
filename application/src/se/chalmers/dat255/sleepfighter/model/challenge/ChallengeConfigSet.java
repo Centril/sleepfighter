@@ -459,6 +459,7 @@ public class ChallengeConfigSet implements IdProvider {
 			return;
 		}
 
+		
 		this.messageBus.publish( event );
 	}
 }
