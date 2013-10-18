@@ -20,15 +20,20 @@ package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference;
+import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeFactory;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
+import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -61,8 +66,12 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		setupActionBar();
+		
 		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 		this.challengeSet = this.alarm.getChallengeSet();
+		
+		
 
 		addPreferencesFromResource(R.xml.pref_alarm_challenge);
 
@@ -73,6 +82,15 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 		for ( final ChallengeType type : this.challengeSet.getDefinedTypes() ) {
 			Preference p = makeChallengePreference(type);
 			pc.addPreference(p);
+		}
+	}
+	
+	
+	
+	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
+	private void setupActionBar() {
+		if ( Build.VERSION.SDK_INT >= 11 ) {
+			ActivityUtils.setupStandardActionBar( this );
 		}
 	}
 
