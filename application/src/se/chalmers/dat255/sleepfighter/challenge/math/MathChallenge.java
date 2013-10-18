@@ -22,6 +22,7 @@ import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
+import se.chalmers.dat255.sleepfighter.android.view.CustomWebView;
 import se.chalmers.dat255.sleepfighter.challenge.Challenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
@@ -147,9 +148,7 @@ public class MathChallenge implements Challenge {
 	
 		setupWebview(activity);
 		renderMathProblem(activity);
-
-
-
+		
 	}
 	
 	private final static String PROBLEM_STRING = "problem_string";
@@ -180,12 +179,9 @@ public class MathChallenge implements Challenge {
 	
 	@SuppressLint({ "SetJavaScriptEnabled", "NewApi", "InlinedApi" })
 	private void setupWebview(final Activity activity) {
-		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
-		
+		final CustomWebView w = (CustomWebView)  activity.findViewById(R.id.math_webview);
 		
 		w.setWebViewClient(new WebViewClient() {
-
-			
 			public void onPageFinished(WebView view, String url) {
 
 				Debug.d("page finished");
@@ -202,6 +198,9 @@ public class MathChallenge implements Challenge {
 					InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 				}
+				
+				// we only need to do it after it has finished loading for the first time.
+				w.setWebViewClient(null);
 
 			}
 		});
@@ -244,9 +243,7 @@ public class MathChallenge implements Challenge {
 				"<!DOCTYPE html><html lang=\"en\" xmlns:m=\"http://www.w3.org/1998/Math/MathML\"><head><meta charset=\"utf-8\"><link rel=\"stylesheet\" href=\"file:///android_asset/jqmath-0.4.0.css\"><script src=\"file:///android_asset/jquery-1.4.3.min.js\"></script><script src=\"file:///android_asset/jqmath-etc-0.4.0.min.js\"></script></head><html>";
 		final String close_html = "</html>";
 		
-		final WebView w = (WebView)  activity.findViewById(R.id.math_webview);
-		
-				
+		final CustomWebView w = (CustomWebView)  activity.findViewById(R.id.math_webview);
 		
 		String problem = "<p style=\"text-align: center;\">" + this.problemString + "</p>";
 		
@@ -296,7 +293,7 @@ public class MathChallenge implements Challenge {
 
 	@Override
 	public void onDestroy() {
-		WebView w = (WebView) activity.findViewById(R.id.math_webview);
+		CustomWebView w = (CustomWebView) activity.findViewById(R.id.math_webview);
 		if (w != null) {
 			w.destroy();
 		}
