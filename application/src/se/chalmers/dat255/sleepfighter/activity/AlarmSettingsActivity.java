@@ -146,6 +146,19 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		// Check if an alarm is ringing, if so, send the user to AlarmActivity
+		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
+		if (ringingAlarm != null) {
+			Intent i = new Intent(this, AlarmActivity.class);
+			new IntentUtils(i).setAlarmId(ringingAlarm);
+			startActivity(i);
+			finish();
+		}
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
 		this.getMenuInflater().inflate(R.menu.alarm_settings_menu, menu);
 		return true;
