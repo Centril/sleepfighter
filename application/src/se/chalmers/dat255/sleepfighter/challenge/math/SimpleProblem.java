@@ -20,6 +20,8 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 
 import java.util.Random;
 
+import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+
 public class SimpleProblem implements MathProblem {
 
 	private int operand1 = 0;
@@ -31,17 +33,36 @@ public class SimpleProblem implements MathProblem {
 
 	public SimpleProblem() {
 	}
+	
+	// color a string in html
+	private String colorStr(String str, String color) {
+		return "<span style='color: #"+color+";'>" + str + "</span>";
+	}
+	
+	// numbers are colored holo blue.
+	private String formatNumber(int n) {
+		return colorStr(Integer.toString(n), "0099cc");
+	}
+	
+	// operators are white
+	private String formatOperator(String op) {
+		return colorStr(op, "ffffff");
+	}
 
 	public String render() {
 		String rendered = "";
+		
+		String operand1s = formatNumber(this.operand1);
+		String operand2s = formatNumber(this.operand2);
+		
 		if (operation == 0) {
-			rendered += operand1 + " + " + operand2;
+			rendered += operand1s + formatOperator(" + ") + operand2s;
 		} else if (operation == 1) {
-			rendered += operand1 + " - " + operand2;
+			rendered += operand1s + formatOperator(" - ") + operand2s;
 		} else if (operation == 2) {
-			rendered += operand1 + " * " + operand2;
+			rendered += operand1s + formatOperator(" * ") + operand2s;
 		} else {
-			rendered += operand1 + " / " + operand2;
+			rendered += operand1s +formatOperator(" / ") + operand2s;
 		}
 		
 		return rendered;

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
+/*
+ * A special version of WebView, that doesn't hide the keyboard when loadUrl is called.
+ */
 public class CustomWebView extends WebView {
 
 	public CustomWebView(Context context) {

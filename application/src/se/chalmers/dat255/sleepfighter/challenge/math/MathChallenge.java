@@ -221,7 +221,7 @@ public class MathChallenge implements Challenge {
 		
 		if(this.problemType == ProblemType.simple) {
 			// use a larger font for the simple math challenge. 
-			fontSize = "font-size: 300%;";
+			fontSize = "font-size: 350%;";
 		} else {
 			fontSize = "";
 		}
