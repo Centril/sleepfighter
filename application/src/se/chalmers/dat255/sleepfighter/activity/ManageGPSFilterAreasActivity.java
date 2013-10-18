@@ -46,11 +46,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
@@ -170,12 +172,24 @@ public class ManageGPSFilterAreasActivity extends Activity {
 			}
 		} );
 
-		this.findViewById( R.id.manage_gpsfilter_what_splash_close ).setOnClickListener( new View.OnClickListener() {
+		final Button splashCloseButton = (Button)this.findViewById( R.id.manage_gpsfilter_what_splash_close );
+		
+		splashCloseButton.setOnClickListener( new View.OnClickListener() {
 			@Override
 			public void onClick( View v ) {
 				hideSplash();
 			}
 		});
+		
+		// In order to make the splash close button easier to click, we surround it with a container with invincible padding.
+		// if the container is clicked, then also the button is clicked.
+		View container = this.findViewById(R.id.manage_gpsfilter_what_splash_close_container);
+		container.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				splashCloseButton.performClick();
+			}
+		});	
 
 		// Hide if we got areas, user shouldn't need help.
 		if ( !this.set.isEmpty() ) {
