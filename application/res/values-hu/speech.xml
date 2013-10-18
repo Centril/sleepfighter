@@ -25,11 +25,6 @@
      <string name="speech_time_format">Az idő %s</string>
      <string name="speech_weather_format"> és az időjárás %s</string>
  
-     
-     <!-- These strings aren't actually used in the English version of the app.
-     But if they aren't included here, the app will crash for some reason when
-     accessing the weather strings.  -->
-     
      <string name="and_word">és</string>
     
      <string name="clear_weather">tiszta</string>

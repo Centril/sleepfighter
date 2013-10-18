@@ -188,6 +188,8 @@ public class MathChallenge implements Challenge {
 			
 			public void onPageFinished(WebView view, String url) {
 
+				Debug.d("page finished");
+				
 				EditText t = (EditText)MathChallenge.this.activity.findViewById(R.id.answerField);
 				t.requestFocus();
 				
@@ -215,10 +217,20 @@ public class MathChallenge implements Challenge {
 	}
 	
 	private String getStyleSheet() {
+		
+		String fontSize;
+		
+		if(this.problemType == ProblemType.simple) {
+			// use a larger font for the simple math challenge. 
+			fontSize = "font-size: 300%;";
+		} else {
+			fontSize = "";
+		}
+		
 		return 
 				"<style type=\"text/css\">" +
-		"body {color: white;}" +
-		"div {text-align: center; font-size: 1000%;}" +
+		"body {color: white;" + fontSize + "}" +
+		"div {text-align: center; }" +
 		"</style>";
 	}
 	

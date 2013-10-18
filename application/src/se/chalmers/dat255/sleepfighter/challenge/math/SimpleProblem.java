@@ -33,7 +33,7 @@ public class SimpleProblem implements MathProblem {
 	}
 
 	public String render() {
-		String rendered = "$";
+		String rendered = "";
 		if (operation == 0) {
 			rendered += operand1 + " + " + operand2;
 		} else if (operation == 1) {
@@ -44,7 +44,6 @@ public class SimpleProblem implements MathProblem {
 			rendered += operand1 + " / " + operand2;
 		}
 		
-		rendered += "$";
 		return rendered;
 	}
 
