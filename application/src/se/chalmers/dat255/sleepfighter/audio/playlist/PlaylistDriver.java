@@ -21,11 +21,11 @@ package se.chalmers.dat255.sleepfighter.audio.playlist;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.audio.AudioService;
 import se.chalmers.dat255.sleepfighter.audio.BaseAudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.utils.VolumeUtils;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.service.AudioService;
 import android.content.Context;
 import android.content.Intent;
 

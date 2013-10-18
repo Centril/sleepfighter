@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.audio;
 import se.chalmers.dat255.sleepfighter.audio.utils.VolumeUtils;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.service.AudioService;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
