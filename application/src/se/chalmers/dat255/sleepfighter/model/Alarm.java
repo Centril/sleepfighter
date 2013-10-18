@@ -32,6 +32,7 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBusHolder;
 import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.provider.Settings;
@@ -50,7 +51,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 16, 2013
  */	
 @DatabaseTable(tableName = "alarm")
-public class Alarm implements IdProvider {
+public class Alarm implements IdProvider, MessageBusHolder {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *

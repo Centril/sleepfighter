@@ -26,6 +26,7 @@ import java.util.Set;
 
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBusHolder;
 import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 
 import com.google.common.base.Objects;
@@ -42,7 +43,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Oct 3, 2013
  */
 @DatabaseTable(tableName = "challenge_set")
-public class ChallengeConfigSet implements IdProvider {
+public class ChallengeConfigSet implements IdProvider, MessageBusHolder {
 	public static final String ID_COLUMN = "id";
 
 	/* --------------------------------
