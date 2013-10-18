@@ -19,7 +19,6 @@
 package se.chalmers.dat255.sleepfighter.audio.utils;
 
 import android.media.MediaPlayer;
-import android.util.Log;
 
 /**
  * Class with utility methods for volume calculations.

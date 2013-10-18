@@ -42,7 +42,6 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
 /**
@@ -56,25 +55,6 @@ public class DateTextUtils {
 	private final static String TAG = DateTextUtils.class.getSimpleName();
 
 	private static final int ENABLED_DAYS_INDICE_LENGTH = 2;
-
-	/** Joiner for time, the separator is ":". */
-	public static final Joiner TIME_JOINER = Joiner.on( ':' ).skipNulls();
-
-	/**
-	 * Joins time parts together according to {@link #TIME_JOINER}.<br/>
-	 * All the parts are padded with 1 leading zero before joining.
-	 *
-	 * @param parts the time parts to join together.
-	 * @return the time parts joined together.
-	 */
-	public static final String joinTime( Integer... parts ) {
-		String[] paddedParts = new String[parts.length];
-		for ( int i = 0; i < parts.length; ++i ) {
-			paddedParts[i] = Strings.padStart( Integer.toString( parts[i] ), 2, '0' );
-		}
-
-		return TIME_JOINER.join( paddedParts );
-	}
 
 	/**
 	 * Builds and returns text for the "exact" time an alarm occurs as opposed to the period left for it to occur.<br/>
@@ -91,7 +71,6 @@ public class DateTextUtils {
 		String[] formats = res.getStringArray( R.array.exact_time_formats );
 		return getTime( formats, noActive, now, ats, locale );
 	}
-	
 
 	/**
 	 * Builds and returns text for the "exact" time an alarm occurs as opposed to the period left for it to occur.<br/>
@@ -115,7 +94,7 @@ public class DateTextUtils {
 
 			// Prepare replacements.
 			Alarm alarm = ats.getAlarm();
-			String timeReplacement = joinTime( alarm.getHour(), alarm.getMinute() );
+			String timeReplacement = StringUtils.joinTime( alarm.getHour(), alarm.getMinute() );
 
 			// Calculate start of tomorrow.
 			DateTime nowTime = new DateTime( now );

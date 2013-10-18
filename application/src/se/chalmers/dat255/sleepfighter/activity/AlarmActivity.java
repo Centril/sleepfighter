@@ -36,11 +36,11 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.preference.GlobalPreferencesManager;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService;
 import se.chalmers.dat255.sleepfighter.service.AlarmPlannerService.Command;
-import se.chalmers.dat255.sleepfighter.text.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.android.AlarmWakeLocker;
 import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -469,7 +469,7 @@ public class AlarmActivity extends Activity {
 	// Get the current time with the Calendar
 	public String getCurrentTime() {
 		DateTime time = new DateTime();
-		return DateTextUtils.joinTime( time.getHourOfDay(), time.getMinuteOfHour() );
+		return StringUtils.joinTime( time.getHourOfDay(), time.getMinuteOfHour() );
 	}
 
 	/**

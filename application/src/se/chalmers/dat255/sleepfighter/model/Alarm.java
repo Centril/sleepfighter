@@ -30,7 +30,6 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
-import se.chalmers.dat255.sleepfighter.text.DateTextUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
 import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
@@ -675,7 +674,7 @@ public class Alarm implements IdProvider {
 		final Map<String, String> prop = Maps.newHashMap();
 		prop.put( "id", Integer.toString( this.getId() ) );
 		prop.put( "name", this.getName() );
-		prop.put( "time", DateTextUtils.joinTime( this.hour, this.minute, this.second ) );
+		prop.put( "time", StringUtils.joinTime( this.hour, this.minute, this.second ) );
 		prop.put( "weekdays", Arrays.toString( this.enabledDays ) );
 		prop.put( "activated", Boolean.toString( this.isActivated() ) );
 		prop.put( "repeating", Boolean.toString( this.isRepeating() ) );
@@ -691,7 +690,7 @@ public class Alarm implements IdProvider {
 	 * @return the formatted time.
 	 */
 	public String getTimeString() {
-		return DateTextUtils.joinTime( this.getHour(), this.getMinute() );
+		return StringUtils.joinTime( this.getHour(), this.getMinute() );
 	}
 
 	/**

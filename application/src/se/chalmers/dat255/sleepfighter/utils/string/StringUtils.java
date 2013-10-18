@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.Locale;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.base.Splitter;
 
@@ -106,5 +107,24 @@ public class StringUtils {
 		}
 
 		return Integer.parseInt( value, 16 );
+	}
+
+	/** Joiner for time, the separator is ":". */
+	public static final Joiner TIME_JOINER = Joiner.on( ':' ).skipNulls();
+
+	/**
+	 * Joins time parts together according to {@link #TIME_JOINER}.<br/>
+	 * All the parts are padded with 1 leading zero before joining.
+	 *
+	 * @param parts the time parts to join together.
+	 * @return the time parts joined together.
+	 */
+	public static final String joinTime( Integer... parts ) {
+		String[] paddedParts = new String[parts.length];
+		for ( int i = 0; i < parts.length; ++i ) {
+			paddedParts[i] = Strings.padStart( Integer.toString( parts[i] ), 2, '0' );
+		}
+
+		return TIME_JOINER.join( paddedParts );
 	}
 }
