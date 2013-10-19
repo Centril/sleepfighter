@@ -25,10 +25,11 @@ import android.os.Bundle;
 /**
  * Interface implemented by challenges.
  * 
- * It works by giving access to methods in an empty {@code ChallengeActivity}
- * that should be used in order modify its contents. The implementing class
- * should at some point call {@code complete()} in the given
- * {@code ChallengeActivity}, when the user completes the challenge.
+ * It works by giving access to an empty {@link Activity} which should be
+ * modified. The implementing class must at some point publish a
+ * {@link ChallengeProgressEvent} with the type set as
+ * {@link ChallengeProgressEvent.Type#COMPLETED} through the event bus that has
+ * been set.
  */
 public interface Challenge extends MessageBusHolder {
 	/**
@@ -62,7 +63,7 @@ public interface Challenge extends MessageBusHolder {
 	public Bundle savedState();
 
 	/**
-	 * Called when the leaves the activity.
+	 * Called when the user leaves the activity, when it's no longer visible.
 	 */
 	public void onPause();
 
