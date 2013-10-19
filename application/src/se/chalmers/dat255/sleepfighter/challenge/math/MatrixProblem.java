@@ -59,7 +59,7 @@ public class MatrixProblem implements MathProblem {
 	}
 	
 	RealMatrix createRandomMatrix() {
-		return MatrixUtil.createRandomMatrix(rng, MATRIX_SIZE, MIN_INT, MAX_INT);
+		return MatrixUtil.createRandomMatrix(rng, MATRIX_SIZE, MIN_INT, MAX_INT, true);
 	}
 	
 	public void newProblem() {

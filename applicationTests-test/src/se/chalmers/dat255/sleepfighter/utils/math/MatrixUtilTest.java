@@ -61,4 +61,16 @@ public class MatrixUtilTest extends TestCase {
 		assertEquals(10, (int)solution.getEntry(1));
 		assertEquals(2, (int)solution.getEntry(2));
 	}
+	
+	public void testIsSingular() {
+		
+		final RealMatrix m = new Array2DRowRealMatrix(new double[][] {
+				{1, 0, 0},
+				{-2, 0, 0},
+				{4, 6, 1}});
+	
+		
+		assertTrue(MatrixUtil.isSingular(m));
+		
+	}
 }

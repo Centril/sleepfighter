@@ -35,26 +35,50 @@ public class MatrixUtil {
 		return a*e*i+b*f*g+c*d*h-c*e*g-b*d*i-a*f*h;
 	}
 	
-	// create a random quadratic matrix, with random integers. MIN_INT and MAX_INT is the range of these random integers. 
-	public static RealMatrix createRandomMatrix(final Random rng, final int size, final int MIN_INT, final int MAX_INT) {
+	private static int nextRandomRanged(Random rng, final int MIN_INT, final int MAX_INT, boolean noZeros) {
+		return (noZeros ?
+				RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT, 0) : 
+			RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT));
+	}
+	
+	// create a random, invertible(It is very important that it is invertible, because otherwise the system of equations is unsolvable!)
+	//, quadratic matrix, with random integers. MIN_INT and MAX_INT is the range of these random integers. 
+	// if noZeros is true, then there will be no elements with value zero. 
+	public static RealMatrix createRandomMatrix(final Random rng, final int size, final int MIN_INT, final int MAX_INT,
+			boolean noZeros) {
+		
+		RealMatrix m;
+		
+		do {
 
-		double[][] matrixData = new double[size][size];
-		
-		for(int i = 0; i < size; ++i) {
-			for(int j = 0; j < size; ++j) {
-				matrixData[i][j] =   RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT);
+			double[][] matrixData = new double[size][size];
+
+			for(int i = 0; i < size; ++i) {
+				for(int j = 0; j < size; ++j) {
+
+					matrixData[i][j] = MatrixUtil.nextRandomRanged(rng, MIN_INT, MAX_INT, noZeros);
+				}
 			}
-		}
-		
-		return MatrixUtils.createRealMatrix(matrixData);
+			
+			m =  MatrixUtils.createRealMatrix(matrixData);
+
+		} while(isSingular(m));
+
+		return m;
+	}
+	
+	// A singular matrix is invertible.
+	public static boolean isSingular(RealMatrix m) {
+		return computeDeterminant(m) == 0;
 	}
 	
 	// Create a random 3d vector
-	public static RealVector createRandomVector(final Random rng, final int size, final int MIN_INT, final int MAX_INT) {
+	public static RealVector createRandomVector(final Random rng, final int size, final int MIN_INT, final int MAX_INT,
+			boolean noZeros) {
 		return new ArrayRealVector(new double[]{
-				RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT),
-				RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT),
-				RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT)
+				MatrixUtil.nextRandomRanged(rng, MIN_INT, MAX_INT, noZeros),
+				MatrixUtil.nextRandomRanged(rng, MIN_INT, MAX_INT, noZeros),
+				MatrixUtil.nextRandomRanged(rng, MIN_INT, MAX_INT, noZeros)
 		});
 	}
 	
