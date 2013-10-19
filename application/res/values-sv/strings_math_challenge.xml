@@ -23,7 +23,9 @@
     <string name="differentiation_challenge_desc">Beräkna %s avrundat till sitt närmsta heltal</string>
     <string name="gdc_challenge_desc">Finn den största gemensamma delaren till %1$s och %2$s</string>
     <string name="prime_factor_challenge_desc">"Finn den största primtalsfaktorn av %s</string>
-
+    <string name="linear_equation_challenge_desc">Lös för %s</string>
+    
+    
     <!-- Math challenge setings -->
     <string name="challenge_math_settings_title">Inställningar för matte</string>
 

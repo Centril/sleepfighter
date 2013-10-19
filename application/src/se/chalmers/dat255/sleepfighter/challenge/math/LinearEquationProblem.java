@@ -24,6 +24,7 @@ import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.MatrixUtil;
 import android.content.Context;
@@ -69,7 +70,7 @@ public class LinearEquationProblem implements MathProblem {
 		return MatrixUtil.createRandomMatrix(rng, MATRIX_SIZE, -5, 16, true);
 	}
 	
-	// create a fun,fun,fun solution vector!
+	// create a fun,fun,fun solution vector x!
 	private RealVector createSolutionVector() {
 		RealVector s;
 		do {
@@ -91,7 +92,7 @@ public class LinearEquationProblem implements MathProblem {
 
 	}
 	
-	// find a system of linear equations with a real solution(because real solutions are easy to input on the android keyboard)
+	// find a system of linear equations with a real solution(because real solutions are easy to input with the android keyboard)
 	private void generateProblem() {
 		
 		this.A = createCoefficients();
@@ -143,7 +144,6 @@ public class LinearEquationProblem implements MathProblem {
 		
 		double[] v = vector.toArray();
 		
-		
 		return new ArrayRealVector(new double[]{
 				m1[0] * v[0] + m1[1] * v[1] + m1[2] * v[2],
 				m2[0] * v[0] + m2[1] * v[1] + m2[2] * v[2],
@@ -171,8 +171,7 @@ public class LinearEquationProblem implements MathProblem {
 	private static boolean isBoringSolution(RealVector v) {
 		return isBoringSolution((int)v.getEntry(0)) ||
 				isBoringSolution((int)v.getEntry(1)) ||
-				isBoringSolution((int)v.getEntry(2));
-				
+				isBoringSolution((int)v.getEntry(2));			
 	}
 	
 	private void doRender() {
@@ -198,8 +197,9 @@ public class LinearEquationProblem implements MathProblem {
 		// close the table
 		this.renderedString += "\\]";
 		
-		// now write the desciption.
-		this.renderedString += "<br> Solve for $" + getVariableString(this.variableToSolveFor) + "$";
+		// now the description.
+		String format = context.getResources().getString(R.string.linear_equation_challenge_desc);
+		this.renderedString += "<br>" + String.format(format, getVariableString(this.variableToSolveFor));
 	}
 	
 	private static String getVariableString(int variable) {
@@ -226,6 +226,7 @@ public class LinearEquationProblem implements MathProblem {
 				s = " , + , " +   renderTermHelper(v, variable);
 			}
 		}
+	
 		return s + " ";
 	}
 	

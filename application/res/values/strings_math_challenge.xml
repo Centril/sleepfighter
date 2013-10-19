@@ -24,6 +24,8 @@
     <string name="gdc_challenge_desc">Find the greatest common divisor of %1$s and %2$s</string>
     <string name="prime_factor_challenge_desc">"Find the largest prime factor of %s</string>
 
+    <string name="linear_equation_challenge_desc">Solve for %s</string>
+    
     <!-- Math challenge setings --> 
     <string name="challenge_math_settings_title">Math Settings</string>
  
