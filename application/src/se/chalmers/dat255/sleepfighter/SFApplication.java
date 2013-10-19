@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
-import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
+import se.chalmers.dat255.sleepfighter.audio.factory.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.factory.FromPresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.factory.PresetAlarmFactory;
 import se.chalmers.dat255.sleepfighter.model.Alarm;

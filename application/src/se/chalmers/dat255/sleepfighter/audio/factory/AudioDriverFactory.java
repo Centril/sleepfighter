@@ -16,8 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.audio;
+package se.chalmers.dat255.sleepfighter.audio.factory;
 
+import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
+import se.chalmers.dat255.sleepfighter.audio.LocalContentDriver;
+import se.chalmers.dat255.sleepfighter.audio.RemoteDriver;
+import se.chalmers.dat255.sleepfighter.audio.RingtoneDriver;
+import se.chalmers.dat255.sleepfighter.audio.SilentAudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.playlist.PlaylistDriver;
 import se.chalmers.dat255.sleepfighter.audio.playlist.PlaylistProviderFactory;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;

@@ -30,7 +30,7 @@ import se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference;
 import se.chalmers.dat255.sleepfighter.android.preference.VolumePreference;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
-import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
+import se.chalmers.dat255.sleepfighter.audio.factory.AudioDriverFactory;
 import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.AudioChangeEvent;
