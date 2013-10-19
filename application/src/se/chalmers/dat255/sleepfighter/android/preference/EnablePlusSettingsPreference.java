@@ -1,12 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2013 See AUTHORS file. This file is part of SleepFighter.
- * SleepFighter is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
- * Foundation, either version 3 of the License, or (at your option) any later
- * version. SleepFighter is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details. You should have received a copy of the GNU General Public License
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.android.preference;
@@ -17,7 +24,7 @@ import android.preference.CheckBoxPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
@@ -33,7 +40,7 @@ import android.widget.TextView;
  */
 public class EnablePlusSettingsPreference extends CheckBoxPreference {
 	private boolean useButton = true;
-	private Button button;
+	private ImageButton button;
 	private OnClickListener listener;
 
 	private Integer titleColor = null;
@@ -41,7 +48,7 @@ public class EnablePlusSettingsPreference extends CheckBoxPreference {
 	private View view;
 
 	public EnablePlusSettingsPreference( Context context, AttributeSet attrs, int defStyle ) {
-		super( context, attrs, defStyle );
+		super( context, attrs );
 
 		this.setLayoutResource( R.layout.preference_enable_plus_settings );
 	}
@@ -62,7 +69,7 @@ public class EnablePlusSettingsPreference extends CheckBoxPreference {
 
 		this.updateTitleColor();
 
-		this.button = (Button) view.findViewById( R.id.preference_enable_plus_settings_button );
+		this.button = (ImageButton) view.findViewById( R.id.preference_enable_plus_settings_button );
 		if ( this.useButton ) {
 			if ( this.listener != null ) {
 				this.button.setOnClickListener( this.listener );

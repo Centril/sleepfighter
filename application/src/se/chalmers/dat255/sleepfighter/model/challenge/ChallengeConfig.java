@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 
 import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DatabaseField;

@@ -20,7 +20,6 @@
 <resources>
 
     <string-array name="challenge_names">
-        <item>Test</item>
         <item>Mathe</item>
         <item>Memory</item>
         <item>Zahlen sortieren</item>
@@ -29,7 +28,6 @@
         <item>Schütteln</item>
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>Eine Testherausforderung</item>
         <item>Eine Matheaufgabe lösen</item>
         <item>Memory, wo du Buchstaben sortieren soll</item>
         <item>Eine Aufgabe, worin du Zahlen in Größenordnung sortieren soll</item>

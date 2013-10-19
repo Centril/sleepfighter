@@ -20,11 +20,12 @@ package se.chalmers.dat255.sleepfighter.audio.playlist;
 
 import java.util.List;
 
-import se.chalmers.dat255.sleepfighter.audio.AudioService;
+import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.audio.BaseAudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.utils.VolumeUtils;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.service.AudioService;
 import android.content.Context;
 import android.content.Intent;
 
@@ -39,6 +40,7 @@ public class PlaylistDriver extends BaseAudioDriver {
 	private PlaylistProviderFactory factory;
 	private PlaylistProvider provider;
 	private Playlist playlist;
+	private int  volume;
 
 	/**
 	 * Constructs a PlaylistDriver given a PlaylistProviderFactory.
@@ -62,6 +64,12 @@ public class PlaylistDriver extends BaseAudioDriver {
 		if ( this.playlist == null ) {
 			this.playlist = this.getProvider().getPlaylistFor( this.getContext(), this.getSource().getUri() );
 		}
+		// If null after lazy load, the playlist no longer exists on the device
+		if (this.playlist == null) {
+			// May be better if handled some other way, and somewhere other than
+			// here
+			return getContext().getString(R.string.pref_playlist_not_found);
+		}
 
 		return this.playlist.getName();
 	}
@@ -77,6 +85,7 @@ public class PlaylistDriver extends BaseAudioDriver {
 	@Override
 	public void play( AudioConfig config ) {
 		super.play( config );
+		this.volume = config.getVolume();
 
 		float bundleVol = VolumeUtils
 				.convertUIToFloatVolume(config.getVolume());
@@ -112,10 +121,18 @@ public class PlaylistDriver extends BaseAudioDriver {
 
 	@Override
 	public void setVolume(int volume) {
+		this.volume = volume;
 		float bundleVol = VolumeUtils.convertUIToFloatVolume(volume);
 
 		Intent i = new Intent(AudioService.ACTION_VOLUME);
 		i.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
 		getContext().startService(i);
 	}
+
+	@Override
+	public int getVolume() {
+		return this.volume;
+	}
+	
+	
 }

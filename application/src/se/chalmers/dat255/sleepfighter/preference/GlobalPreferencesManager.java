@@ -176,4 +176,21 @@ public class GlobalPreferencesManager {
 	public int getLocationMaxAge() {
 		return this.prefs.getInt( "pref_location_filter_max_age", 20 );
 	}
+	
+	
+	/**
+	 * Used to temporarily store the weather. Some seconds before the app starts, the weather is fetched.
+	 * This preference is used to temporarily store the weather info. 
+	 * @param weather
+	 */
+	public void setWeather(String weather) {
+		
+		Editor edit = prefs.edit();
+		edit.putString("pref_temp_weather", weather);
+		edit.commit();
+	}
+
+	public String getWeather() {
+		return this.prefs.getString("pref_temp_weather", null);
+	}
 }

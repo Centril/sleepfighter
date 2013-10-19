@@ -23,13 +23,35 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
+import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.CheckBox;
 
 /**
  * Utility class for Android dialogs.
  */
 public class DialogUtils {
-	
+	private static DialogInterface.OnClickListener NOOP_CLICK_LISTENER;
+
+	/**
+	 * Returns a lazy-created noop onClickListener.
+	 *
+	 * @return the listener.
+	 */
+	public static DialogInterface.OnClickListener getNoopClickListener() {
+		if ( NOOP_CLICK_LISTENER == null ) {
+			NOOP_CLICK_LISTENER = new OnClickListener() {
+				@Override
+				public void onClick( DialogInterface dialog, int which ) {
+				}
+			};
+		}
+
+		return NOOP_CLICK_LISTENER;
+	}
+
 	/**
 	 * Prevent instantiation.
 	 */
@@ -82,52 +104,53 @@ public class DialogUtils {
 		alert.show();
 	}
 	
-	
-	  public static final String PREFS_NAME = "MyPrefsFile1";
-	  public static CheckBox dontShowAgain;
-
 	/*
 	 * A message box with an ok button, and a "do not show this again" checkbox. 
+	 * prefsName is the name of the preference used to save whether the 
+	 * checkbox has been checked, and that we therefore should not show this dialog anymore. 
+	 * Every dialog of this type should have a unique preference name!
 	 */
-	/*public static void showDoNotShowAgainMessageBox(Context context, String message) {
+	public static void showDoNotShowAgainMessageBox(final Context context, final String title, 
+			final String message, final String prefsName) {
+		
+		final String CHECKED = "checked";
+		final String NOT_CHECKED = "not_checked";
+		final String PREF_FILE_NAME = "do_not_show_again_preferences";
+		
+		
+		// inflate dialog
 	    AlertDialog.Builder adb = new AlertDialog.Builder(context);
         LayoutInflater adbInflater = LayoutInflater.from(context);
-        View eulaLayout = adbInflater.inflate(R.layout.skip, null);
-        dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.skip);
+        View eulaLayout = adbInflater.inflate(R.layout.do_now_show_again_messagebox, null);
+        
+        // get checkbox
+        final CheckBox dontShowAgain = (CheckBox) eulaLayout.findViewById(R.id.skip);
+        
         adb.setView(eulaLayout);
-        adb.setTitle("Attention");
-        adb.setMessage(Html.fromHtml("Zukky, how can I see this then?"));
-        adb.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        adb.setTitle(title);
+        adb.setMessage(Html.fromHtml(message));
+        
+        // add ok button. 
+        adb.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                String checkBoxResult = "NOT checked";
+            	
+                String checkBoxResult = NOT_CHECKED;
                 if (dontShowAgain.isChecked())
-                    checkBoxResult = "checked";
-                SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, 0);
+                    checkBoxResult = CHECKED;
+                
+                SharedPreferences settings = context.getSharedPreferences(PREF_FILE_NAME, 0);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString("skipMessage", checkBoxResult);
+                editor.putString(prefsName, checkBoxResult);
                 // Commit the edits!
                 editor.commit();
                 return;
             }
         });
 
-        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                String checkBoxResult = "NOT checked";
-                if (dontShowAgain.isChecked())
-                    checkBoxResult = "checked";
-                SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-                SharedPreferences.Editor editor = settings.edit();
-                editor.putString("skipMessage", checkBoxResult);
-                // Commit the edits!
-                editor.commit();
-                return;
-            }
-        });
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        String skipMessage = settings.getString("skipMessage", "NOT checked");
-        if (!skipMessage.equals("checked"))
+        SharedPreferences settings = context.getSharedPreferences(PREF_FILE_NAME, 0);
+        String skipMessage = settings.getString(prefsName, NOT_CHECKED);
+        if (!skipMessage.equals(CHECKED))
             adb.show();
     }
-	}*/
+
 }

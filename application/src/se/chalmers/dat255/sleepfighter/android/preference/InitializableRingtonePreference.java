@@ -43,7 +43,7 @@ public class InitializableRingtonePreference extends RingtonePreference {
 	}
 
 	@Override
-	protected Uri onRestoreRingtone() {
+	protected Uri onRestoreRingtone() {	
 		return this.initialUri;
 	}
 

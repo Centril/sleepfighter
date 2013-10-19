@@ -29,7 +29,6 @@ import net.engio.mbassy.listener.Handler;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.Alarm.AlarmEvent;
 import se.chalmers.dat255.sleepfighter.model.AlarmList;
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.model.SnoozeConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
@@ -42,6 +41,7 @@ import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterArea;
 import se.chalmers.dat255.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 import android.content.Context;
 import android.util.Log;
 
@@ -552,7 +552,6 @@ public class PersistenceManager {
 		ChallengeConfigSet set = evt.getSet();
 
 		if ( evt instanceof ChallengeConfigSet.EnabledEvent ) {
-			Log.d( TAG, "updateChallenges #2: " + evt.toString() );
 			// Handle change for isEnabled().
 			helper.getChallengeConfigSetDao().update( set );
 			return;
@@ -573,7 +572,6 @@ public class PersistenceManager {
 				return;
 			}
 		}
-		Log.d( TAG, "updateChallenges #6: " + evt.toString() );
 
 		throw new IllegalArgumentException( "Do you know something we don't?" );
 	}

@@ -87,4 +87,6 @@ public interface AudioDriver {
 	 *            the volume (0-100)
 	 */
 	public void setVolume(int volume);
+	
+	public int getVolume();
 }

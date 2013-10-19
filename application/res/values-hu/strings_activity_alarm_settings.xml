@@ -24,12 +24,11 @@
 
 
     <!-- Example General settings -->
-    <string name="pref_alarm_header_general">Általános</string>
     <string name="pref_alarm_time">Idő</string>
     <string name="pref_alarm_name">Név</string>
     <string name="pref_alarm_default_name">Névtelen riasztó</string>
     <string name="pref_alarm_enabled_days">Napok</string>
-    <string name="time_category_title">Idő</string>
+    <string name="general_category_title">Általános</string>
     <string name="misc_category_title">Egyéb</string>
     <string name="ringer_category_title">Csengőhang beállítások</string>
 
@@ -62,5 +61,12 @@
     <string name="pref_alarm_snooze_enabled">Szundítást megengedni</string>
     <string name="pref_alarm_snooze_time">Szunditás hossza</string>
     <string name="pref_volume">Hangerő</string>
+    
+    <string name="snooze_category_title">Szunditás</string>
+   
+     <string name="speech_category_title">Beszéd</string>
+     <string name="pref_use_speech_summary">Felolvassa az időt és az időjárást mikor a riasztó beindúl.</string>
+     <string name="pref_use_speech_title">Beszéd használása</string>
+     <string name="pref_speech_sample">Proba</string>
 
 </resources>

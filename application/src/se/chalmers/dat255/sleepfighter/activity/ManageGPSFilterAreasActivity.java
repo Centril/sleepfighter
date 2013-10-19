@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -45,11 +46,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
@@ -129,6 +132,8 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		this.setAdapter = new GPSFilterAreaAdapter( this, this.set );
 
 		this.setupSetView();
+		
+		
 	}
 
 	@Override
@@ -149,6 +154,8 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		// Fix text layout.
 		TextView textView = (TextView) this.findViewById( R.id.manage_gpsfilter_what_splash_text );
 		textView.setText( Html.fromHtml( this.getString( R.string.manage_gpsfilter_what_splash_text ) ) );
+		
+		textView.setMovementMethod(new ScrollingMovementMethod());
 
 		// Define fade out animation.
 		this.splashFadeOut = new AlphaAnimation( 1.00f, 0.00f );
@@ -165,12 +172,24 @@ public class ManageGPSFilterAreasActivity extends Activity {
 			}
 		} );
 
-		this.findViewById( R.id.manage_gpsfilter_what_splash_close ).setOnClickListener( new View.OnClickListener() {
+		final Button splashCloseButton = (Button)this.findViewById( R.id.manage_gpsfilter_what_splash_close );
+		
+		splashCloseButton.setOnClickListener( new View.OnClickListener() {
 			@Override
 			public void onClick( View v ) {
 				hideSplash();
 			}
 		});
+		
+		// In order to make the splash close button easier to click, we surround it with a container with invincible padding.
+		// if the container is clicked, then also the button is clicked.
+		View container = this.findViewById(R.id.manage_gpsfilter_what_splash_close_container);
+		container.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				splashCloseButton.performClick();
+			}
+		});	
 
 		// Hide if we got areas, user shouldn't need help.
 		if ( !this.set.isEmpty() ) {
@@ -198,6 +217,7 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		this.splashInfoContainer.startAnimation( this.splashFadeOut );
 	}
 
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -365,7 +385,10 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		case R.id.action_gpsfilter_settings:
 			this.gotoSettings();
 			return true;
-
+			
+		case android.R.id.home:
+			finish();
+			return true;
 		default:
 			return super.onOptionsItemSelected( item );
 		}

@@ -30,10 +30,11 @@ import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
-import se.chalmers.dat255.sleepfighter.utils.DateTextUtils;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBusHolder;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 import android.provider.Settings;
 
 import com.google.common.base.Preconditions;
@@ -50,7 +51,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 16, 2013
  */	
 @DatabaseTable(tableName = "alarm")
-public class Alarm implements Cloneable, IdProvider {
+public class Alarm implements IdProvider, MessageBusHolder {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -59,7 +60,7 @@ public class Alarm implements Cloneable, IdProvider {
 	 * @since Sep 19, 2013
 	 */
 	public static enum Field {
-		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID, REPEATING, AUDIO_SOURCE, AUDIO_CONFIG
+		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID, REPEATING, AUDIO_SOURCE, AUDIO_CONFIG, SPEECH, FLASH
 	}
 
 	/* --------------------------------
@@ -104,7 +105,7 @@ public class Alarm implements Cloneable, IdProvider {
 	 * @version 1.0
 	 * @since Sep 19, 2013
 	 */
-	public static abstract class BaseAlarmEvent implements AlarmEvent {
+	public static class BaseAlarmEvent implements AlarmEvent {
 		private Field field;
 		private Alarm alarm;
 		private Object oldValue;
@@ -127,6 +128,7 @@ public class Alarm implements Cloneable, IdProvider {
 		public Object getOldValue() {
 			return this.oldValue;
 		}
+		
 	}
 
 	/**
@@ -223,6 +225,9 @@ public class Alarm implements Cloneable, IdProvider {
 	@DatabaseField
 	private boolean isRepeating = false;
 	
+	@DatabaseField
+	private boolean isFlash = false;
+	
 	// whether this alarm is the preset alarm(the default alarm)
 	@DatabaseField
 	private boolean isPresetAlarm = false;
@@ -277,7 +282,7 @@ public class Alarm implements Cloneable, IdProvider {
 		this.second = rhs.second;
 		this.isActivated = rhs.isActivated;
 		this.enabledDays = rhs.enabledDays;
-		this.name = rhs.name == null ? null : new String( rhs.name );
+		this.name = rhs.name;
 		this.isRepeating = rhs.isRepeating;
 
 		this.unnamedPlacement = 0;
@@ -290,6 +295,10 @@ public class Alarm implements Cloneable, IdProvider {
 		this.snoozeConfig = new SnoozeConfig( rhs.snoozeConfig );
 
 		this.challenges = new ChallengeConfigSet( rhs.challenges );
+		
+		this.isSpeech = rhs.isSpeech;
+		this.isFlash = rhs.isFlash;
+		
 	}
 
 	/**
@@ -554,7 +563,7 @@ public class Alarm implements Cloneable, IdProvider {
 	 *
 	 * @return true if the alarm can ring in the future.
 	 */
-	public boolean canHappen() {
+	public synchronized boolean canHappen() {
 		if ( !this.isActivated() ) {
 			return false;
 		}
@@ -666,7 +675,7 @@ public class Alarm implements Cloneable, IdProvider {
 		final Map<String, String> prop = Maps.newHashMap();
 		prop.put( "id", Integer.toString( this.getId() ) );
 		prop.put( "name", this.getName() );
-		prop.put( "time", DateTextUtils.joinTime( this.hour, this.minute, this.second ) );
+		prop.put( "time", StringUtils.joinTime( this.hour, this.minute, this.second ) );
 		prop.put( "weekdays", Arrays.toString( this.enabledDays ) );
 		prop.put( "activated", Boolean.toString( this.isActivated() ) );
 		prop.put( "repeating", Boolean.toString( this.isRepeating() ) );
@@ -682,7 +691,7 @@ public class Alarm implements Cloneable, IdProvider {
 	 * @return the formatted time.
 	 */
 	public String getTimeString() {
-		return DateTextUtils.joinTime( this.getHour(), this.getMinute() );
+		return StringUtils.joinTime( this.getHour(), this.getMinute() );
 	}
 
 	/**
@@ -713,13 +722,6 @@ public class Alarm implements Cloneable, IdProvider {
 	}
 
 	/**
-	 * @see Alarm#Alarm(Alarm)
-	 */
-	public Alarm clone() throws CloneNotSupportedException {
-		return new Alarm( this );
-	}
-
-	/**
 	 * Sets if the alarm is repeating or not.
 	 *
 	 * @param isRepeating true if it is repeating.
@@ -743,13 +745,44 @@ public class Alarm implements Cloneable, IdProvider {
 		return this.isRepeating;
 	}
 	
+	/**
+	 * Sets if the alarm is flashing or not.
+	 *
+	 * @param isFlash true if it is flashing.
+	 */
+	public void setFlash(boolean isFlash) {
+		if ( this.isFlash == isFlash ) {
+			return;
+		}
+		
+		boolean old = this.isFlash;
+		this.isFlash = isFlash;
+		this.publish( new BaseAlarmEvent( this, Field.FLASH, old ) );	
+	}
+	
+	/**
+	 * Returns whether or not this alarm is flashing or not.
+	 *
+	 * @return true if it is flashing.
+	 */
+	public boolean isFlashEnabled(){
+		return this.isFlash;
+	}
+	
+	
 	// if true, then the time and weather will be read out when the alarm goes off.
 	public boolean isSpeech() {
 		return this.isSpeech;
 	}
 	
 	public void setSpeech(boolean isSpeech) {
+		if ( this.isSpeech == isSpeech ) {
+			return;
+		}
+	
+		boolean old = this.isSpeech;
 		this.isSpeech = isSpeech;
+		this.publish( new BaseAlarmEvent( this, Field.SPEECH, old ) );	
 	}
 
 	/**

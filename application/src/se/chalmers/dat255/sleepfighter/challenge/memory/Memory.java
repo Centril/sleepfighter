@@ -42,7 +42,7 @@ public class Memory implements Parcelable {
 	int[][] cards;
 	
 	private boolean isOdd(int n) {
-		return (n % 2) == 1; 
+		return (Math.abs(n) % 2) == 1; 
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class Memory implements Parcelable {
 	
 	// access the card using array indexing instead(zero-based indexing)
 	public int getCard(int index) {
-		int row = (int)Math.floor(index / cols);
+		int row = (int)Math.floor((float)index / (float)cols);
 		int col = index - row * cols;
 		return this.getCard(row, col);
 	}
@@ -107,7 +107,7 @@ public class Memory implements Parcelable {
 			throw new IllegalArgumentException("You can't remove and already removed pair");
 		}
 		
-		int row = (int)Math.floor(index / cols);
+		int row = (int)Math.floor((float)index / (float)cols);
 		int col = index - row * cols;
 		cards[row][col] = UNOCCUPIED;
 	}

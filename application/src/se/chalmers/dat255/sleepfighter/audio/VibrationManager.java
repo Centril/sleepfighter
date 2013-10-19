@@ -34,10 +34,7 @@ public class VibrationManager {
 	private VibrationManager() {
 		startedVibration = false;
 	}
-
-	/*
-	 * The class is a singleton for now. We'll probably fix this later. 
-	 */
+	
 	public synchronized static VibrationManager getInstance() {
 		if (instance == null) {
 			instance = new VibrationManager();

@@ -20,17 +20,15 @@
 <resources>
 
     <string-array name="challenge_names">
-        <item>Test</item>
         <item>Matte</item>
         <item>Memory</item>
         <item>Sortera nummer</item>
         <item>Flytande snake</item>
-        <item>Roto snake</item>
+        <item>RotoSnake</item>
         <item>Skaka</item>
         
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>Testutmaning</item>
         <item>Lös ett matteproblem</item>
         <item>Memoryutmaning där man ska matcha bokstäver</item>
         <item>Utmaning där nummer sorteras baserat på storlek</item>
@@ -39,6 +37,10 @@
         <item>En utmaning där du behöver skaka din enhet</item>
     </string-array>
 
+    
     <string name="fluidSnakeTitle">Tryck för att styra ormen!</string>
 
+    
+    <string name="rotoSnakeTitle">Rotera din enhet för att styra ormen!</string>
+    
 </resources>

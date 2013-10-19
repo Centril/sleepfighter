@@ -20,17 +20,19 @@ package se.chalmers.dat255.sleepfighter.activity;
 
 import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
-import se.chalmers.dat255.sleepfighter.utils.android.IntentUtils;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
 public class GlobalSettingsActivity extends PreferenceActivity   {
 	
 	private final String GLOBAL_PRESET_ALARM_SUBSCREEN = "perf_global_preset_alarm";
 
+	
 	// Needs to support API level 9
 	@SuppressWarnings("deprecation")
 	@Override
@@ -46,7 +48,7 @@ public class GlobalSettingsActivity extends PreferenceActivity   {
 	
 	private void startGlobalPresetAlarmEdit() {
 		Intent intent = new Intent(this, AlarmSettingsActivity.class );
-		new IntentUtils( intent ).setSettingPresetAlarm(true);
+		new AlarmIntentHelper( intent ).setSettingPresetAlarm(true);
 		startActivity( intent );
 	}
 	
@@ -64,4 +66,15 @@ public class GlobalSettingsActivity extends PreferenceActivity   {
 
 		//this.updateRingerSummary();
 	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 }

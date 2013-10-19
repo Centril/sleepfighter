@@ -20,7 +20,7 @@
 
     <item
         android:id="@+id/action_manage_gpsfilter_areas_add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_action_add"
         android:orderInCategory="1"
         android:showAsAction="ifRoom"
         android:title="@string/action_gpsfilter_areas_add"/>

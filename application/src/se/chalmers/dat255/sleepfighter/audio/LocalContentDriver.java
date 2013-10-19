@@ -21,6 +21,7 @@ package se.chalmers.dat255.sleepfighter.audio;
 import se.chalmers.dat255.sleepfighter.audio.utils.VolumeUtils;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioConfig;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
+import se.chalmers.dat255.sleepfighter.service.AudioService;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -31,6 +32,7 @@ public class LocalContentDriver extends BaseAudioDriver {
 
 	private Uri uri;
 	private String name;
+	private int volume = 0;
 
 	@Override
 	public void setSource(Context context, AudioSource source) {
@@ -57,6 +59,7 @@ public class LocalContentDriver extends BaseAudioDriver {
 	@Override
 	public void play(AudioConfig config) {
 		super.play(config);
+		this.volume = config.getVolume();
 
 		float bundleVol = VolumeUtils.convertUIToFloatVolume(config.getVolume());
 
@@ -75,10 +78,15 @@ public class LocalContentDriver extends BaseAudioDriver {
 
 	@Override
 	public void setVolume(int volume) {
+		this.volume = volume;
 		float bundleVol = VolumeUtils.convertUIToFloatVolume(volume);
 
 		Intent i = new Intent(AudioService.ACTION_VOLUME);
 		i.putExtra(AudioService.BUNDLE_FLOAT_VOLUME, bundleVol);
 		getContext().startService(i);
+	}
+	
+	public int getVolume() {
+		return this.volume;
 	}
 }

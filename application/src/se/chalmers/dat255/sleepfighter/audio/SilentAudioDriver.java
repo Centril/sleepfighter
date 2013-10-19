@@ -70,4 +70,10 @@ public class SilentAudioDriver implements AudioDriver {
 	@Override
 	public void setVolume(int volume) {
 	}
+
+	@Override
+	public int getVolume() {
+		return 0;
+	}
+
 }

@@ -20,7 +20,6 @@
 <resources>
 
     <string-array name="challenge_names">
-        <item>Test</item>
         <item>Math</item>
         <item>Memory</item>
         <item>Sort Numbers</item>
@@ -29,7 +28,6 @@
         <item>Shake</item>
     </string-array>
     <string-array name="challenge_descriptions">
-        <item>A test challenge</item>
         <item>Solve a math problem</item>
         <item>A memory challenge where letters are matched</item>
         <item>Challenge where numbers are sorted by size</item>
@@ -40,5 +38,5 @@
 
     
     <string name="fluidSnakeTitle">Touch to move the snake!</string>
-    <string name="rotoSnakeTitle">Rotate the device to control the snake!</string>
+    <string name="rotoSnakeTitle">Hold the device upright and rotate it to control the snake!</string>
 </resources>

@@ -53,14 +53,22 @@
 
     <string name="pref_alarm_repeat">Repeat</string>
     <string name="pref_delete_alarm">Delete this alarm</string>
-    <string name="pref_alarm_ringtone">Ring tone</string>
+    <string name="pref_alarm_ringtone">Ringtone</string>
     <string name="pref_alarm_vibration">Vibration</string>
     <string name="pref_challenge">Challenges</string>
     <string name="alarm_settings_action_remove">Delete</string>
     <string name="alarm_settings_action_toggle">Toggle</string>
     <string name="pref_alarm_snooze_enabled">Enable snooze</string>
     <string name="pref_alarm_snooze_time">Snooze length</string>
+    <string name="pref_alarm_flash_enabled">Enable flash</string>
 
     <string name="pref_volume">Volume</string>
     
+    <string name="snooze_category_title">Snooze</string>
+   
+     <string name="speech_category_title">Speech</string> 
+     <string name="pref_use_speech_summary">Read out the time and weather when the alarm goes off</string>
+     <string name="pref_use_speech_title">Use Speech</string>
+     <string name="pref_speech_sample">Sample</string>
+   
 </resources>

@@ -18,6 +18,8 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.android.preference;
 
+import java.util.Arrays;
+
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -71,10 +73,10 @@ public class MultiSelectListPreference extends ListPreference {
     }
 
     public void setEntryChecked(boolean[] entryChecked) {
-    	this.entryChecked = entryChecked;
+    	this.entryChecked = Arrays.copyOf(entryChecked, entryChecked.length);
     }
 
     public boolean[] getEntryChecked() {
-    	return this.entryChecked;
+    	return Arrays.copyOf(this.entryChecked, this.entryChecked.length);
     }
 }

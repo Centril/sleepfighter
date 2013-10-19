@@ -20,9 +20,9 @@ package se.chalmers.dat255.sleepfighter.model.challenge;
 
 import java.util.Map;
 
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.persist.ChallengeParamDao;
-import se.chalmers.dat255.sleepfighter.utils.StringUtils;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
+import se.chalmers.dat255.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DatabaseField;
@@ -40,6 +40,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "challenge_params", daoClass = ChallengeParamDao.class)
 public class ChallengeParam implements IdProvider {
 	public static final String CHALLENGE_ID_COLUMN = "challenge_id";
+	public static final String CHALLENGE_VALUE_COLUMN = "value";
+
+	@DatabaseField(generatedId = true)
+	private int id;
 
 	@DatabaseField(columnName = CHALLENGE_ID_COLUMN, uniqueCombo = true, index = true)
 	private int challengeId;
@@ -47,7 +51,7 @@ public class ChallengeParam implements IdProvider {
 	@DatabaseField(uniqueCombo = true, index = true)
 	private String key;
 
-	@DatabaseField
+	@DatabaseField(columnName = CHALLENGE_VALUE_COLUMN)
 	private String value;
 
 	/**

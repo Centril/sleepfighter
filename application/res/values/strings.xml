@@ -35,6 +35,10 @@
         <item quantity="one">one point</item>
         <item quantity="other">%d points</item>
     </plurals>
+    <plurals name="minute">
+        <item quantity="one">minute</item>
+        <item quantity="other">minutes</item>
+    </plurals>
     	
     <!-- Challenges -->
     <string name="start_challenge">Stop the madness!</string>
@@ -44,10 +48,6 @@
     <string name="challenge_toggle_content_desc">Toggle challenges</string>
     <string name="deactivate">Alarm deactivated!</string>
      <string name="returned">Returned from uncompleted challenge.</string>
-
-    <!-- Alarm name & time, these should be overwritten -->
-    <string name="alarm_name" tools:ignore="MissingTranslation"></string>
-    <string name="alarm_time" tools:ignore="MissingTranslation"></string>
 
     <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">
@@ -78,5 +78,14 @@
     <string name="action_gpsfilter_area_edit">Location Filter</string>
 
     <string name="install_google_play_music_message">Please install Google Play Music</string>
+    
+    <string name="do_not_show_again">Do not show again</string>
+    
+    <string name="no_voice_installed_title">No voice installed</string>
+    <string name="no_voice_installed_message">There is no voice installed for your language,
+         so the language used will be English.
+         If you want a voice for your language, you must install it using an app like SVOX</string>
+    
+    				
     
 </resources>

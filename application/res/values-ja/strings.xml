@@ -29,8 +29,6 @@
 
     <!-- challenge -->
     <string name="pre_chal_act">チャレンジ!</string>
-    <string name="btn_answer">解答</string>
-    <string name="memory_chal_act">神経衰弱</string>
     <string name="start_challenge">チャレンジ</string>
 
     <string-array name="earliest_time_formats">
@@ -59,4 +57,27 @@
     
     <string name="install_google_play_music_message">「Google Play Music」をインストールしてください</string>
 
+    <string name="btn_complete">成功!</string>
+    <string name="btn_fail">失敗</string>
+    
+        <string name="snooze">スヌーズ</string>
+    
+            <string name="challenge_points">チャレンジポイント</string>
+        
+       
+    <string name="alarm_emergency_stop">緊急中止</string>
+    <string name="alarm_emergency_dialog">アラームを止めてもよろしいですか? そうすると、%1$sを失います。ただし、このアラームはまた鳴りません。</string>
+    <plurals name="alarm_emergency_cost">
+        <item quantity="other">%dポイント</item>
+    </plurals>
+    
+    <string name="do_not_show_again">今後このメッセージを表示しません</string>
+    
+     <string name="no_voice_installed_title">声優がありません</string>
+   
+    <string name="no_voice_installed_message">
+        この携帯にはあなたの言語の声優がありませんので、
+        その代わりに英語を使用します。
+      	声優が欲しいなら、SVOXなどのアプリで声優をインストールしてください。</string>
+    
 </resources>

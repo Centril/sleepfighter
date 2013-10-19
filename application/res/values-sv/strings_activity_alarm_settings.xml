@@ -60,11 +60,17 @@
     <string name="pref_alarm_vibration">Vibration</string>
     <string name="pref_alarm_snooze_enabled">Tillåt snooze</string>
     <string name="pref_alarm_snooze_time">Snoozelängd</string>
-    <string name="pref_challenge_enabled">Aktivera utmaningar</string>
-    <string name="pref_challenge_select">Välj utmaningar</string>
     <string name="pref_volume">Ljudvolym</string>
     <string name="pref_challenge">Utmaningar</string>
     <string name="alarm_settings_action_remove">Ta bort</string>
     <string name="alarm_settings_action_toggle">Växla på/av</string>
 
+   
+      <string name="snooze_category_title">Snooze</string>
+   
+        <string name="speech_category_title">Uppläsning</string> 
+     <string name="pref_use_speech_summary">När alarmet ringer så läses tiden och vädret upp</string>
+     <string name="pref_use_speech_title">Använd uppläsning</string>
+     <string name="pref_speech_sample">Pröva</string>
+   
 </resources>

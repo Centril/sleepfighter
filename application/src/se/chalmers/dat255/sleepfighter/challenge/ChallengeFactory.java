@@ -24,6 +24,7 @@ import se.chalmers.dat255.sleepfighter.challenge.fluidsnake.FluidSnakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.math.MathChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.memory.MemoryChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.rotosnake.RotoSnakeChallenge;
+import se.chalmers.dat255.sleepfighter.challenge.shake.ShakeChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.sort.SortChallenge;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 
@@ -45,8 +46,6 @@ public class ChallengeFactory {
 	 */
 	public static Challenge getChallenge(ChallengeType type) {
 		switch (type) {
-		case TEST:
-			return new TestChallenge();
 		case MATH:
 			return new MathChallenge();
 		case MEMORY:
@@ -73,9 +72,6 @@ public class ChallengeFactory {
 
 		if ( def == null ) {
 			switch ( type ) {
-			case TEST:
-				def = new TestChallenge.PrototypeDefinition();
-				break;
 
 			case MATH:
 				def = new MathChallenge.PrototypeDefinition();

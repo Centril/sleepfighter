@@ -25,13 +25,16 @@ import se.chalmers.dat255.sleepfighter.android.utils.ActivityUtils;
 import se.chalmers.dat255.sleepfighter.android.utils.DialogUtils;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriver;
 import se.chalmers.dat255.sleepfighter.audio.AudioDriverFactory;
+import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSource;
 import se.chalmers.dat255.sleepfighter.model.audio.AudioSourceType;
-import se.chalmers.dat255.sleepfighter.utils.MetaTextUtils;
+import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -45,8 +48,8 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * RingerSettingsActivity handles alarm instance settings related to ringing, i.e AudioSource.
@@ -61,7 +64,8 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	public enum ID {
 		RINGTONE_PICKER( "pref_ringtone_picker" ),
 		MUSIC_PICKER( "pref_local_content_uri_picker" ),
-		PLAYLIST_PICKER( "pref_playlist_picker" );
+		PLAYLIST_PICKER( "pref_playlist_picker" ),
+		REMOTE_PICKER( "pref_remote_content_uri_picker" );
 
 		public final String id;
 
@@ -102,6 +106,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.setupRingtonePicker();
 		this.setupMusicPicker();
 		this.setupPlaylistPicker();
+		this.setupRemotePicker();
 	}
 
 	@Override
@@ -294,6 +299,60 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	}
 
 	/**
+	 * Sets up the remote picker.
+	 */
+	private void setupRemotePicker() {
+		this.preferenceBind( ID.REMOTE_PICKER, new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick( Preference preference ) {
+				launchRemotePicker();
+				return false;
+			}
+		} );
+	}
+
+	/**
+	 * Launches the remote picker.
+	 */
+	protected void launchRemotePicker() {
+		final EditText input = new EditText( this );
+
+		// Set current value if the current source is of type: INTERNET_STREAM.
+		AudioSource source = this.alarm.getAudioSource();
+		if ( source != null && source.getType() == AudioSourceType.INTERNET_STREAM ) {
+			input.setText( source.getUri() );
+		}
+
+		// Make a listener for OK.
+		DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+			public void onClick( DialogInterface dialog, int whichButton ) {
+				String uri = input.getText().toString().trim();
+				if ( !uri.isEmpty() ) {
+					setRemote( uri );
+				}
+			}
+		};
+
+		// Setup dialog & show.
+		AlertDialog.Builder alert = new AlertDialog.Builder( this );
+		alert.setTitle( this.getString( R.string.pref_remote_content_uri_picker ) );
+		alert.setMessage( this.getString( R.string.pref_remote_content_uri_picker_summary ) );
+		alert.setView( input );
+		alert.setNegativeButton( android.R.string.cancel, DialogUtils.getNoopClickListener() );
+		alert.setPositiveButton( android.R.string.ok, listener );
+		alert.show();
+	}
+
+	/**
+	 * Sets the AudioSource to a remote source given a URI.
+	 *
+	 * @param uri the URI.
+	 */
+	private void setRemote( String uri ) {
+		this.setAudioSource( new AudioSource( AudioSourceType.INTERNET_STREAM, uri ) );
+	}
+
+	/**
 	 * Sets & stores the current audio source using an intent for data.
 	 *
 	 * @param type the type of AudioSource.
@@ -316,7 +375,6 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.updateSummary();
 	}
 
-	
 	@Override
 	protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
 		if ( resultCode == Activity.RESULT_OK ) {
@@ -360,8 +418,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 
 		if (this.alarm == null) {
-			// TODO: Better handling for final product
-			Toast.makeText(this, "Alarm is null (ID: " + alarm.getId() + ")", Toast.LENGTH_SHORT).show();
+			// TODO: Better handling
 			this.finish();
 		}
 

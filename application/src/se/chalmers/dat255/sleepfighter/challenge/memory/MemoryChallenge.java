@@ -22,17 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.activity.ChallengeActivity;
-import se.chalmers.dat255.sleepfighter.challenge.Challenge;
+import se.chalmers.dat255.sleepfighter.challenge.BaseChallenge;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.chalmers.dat255.sleepfighter.challenge.ChallengeResolvedParams;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 /**
  * Example implementation of Challenge.
@@ -42,7 +41,7 @@ import android.widget.Toast;
  * @since Sep 28, 2013
  */
 
-public class MemoryChallenge implements Challenge, View.OnClickListener {
+public class MemoryChallenge extends BaseChallenge implements View.OnClickListener {
 	/**
 	 * PrototypeDefinition for MemoryChallenge.
 	 *
@@ -53,10 +52,10 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		setType( ChallengeType.MEMORY );
 	}}
 
-	private ChallengeActivity act;
-
 	private Memory mem;
-
+	
+	private List<MemoryCardView> cards;
+	
 	private MemoryCardView flippedCard = null;
 
 	private final static int COLS = 2;
@@ -75,13 +74,12 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 
 	private void fadeOutRemove(View v) {
 		// fade out and remove
-        v.startAnimation(AnimationUtils.loadAnimation(act, android.R.anim.fade_out));
+        v.startAnimation(AnimationUtils.loadAnimation(activity(), android.R.anim.fade_out));
         v.setVisibility(View.INVISIBLE);
         
 	}
 
 	public void onClick(View v) {
-       // Toast.makeText(act, "" + position, Toast.LENGTH_SHORT).show();
       
 		Debug.d("button click");
 		
@@ -121,10 +119,8 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
         			waitingForLastCardsToBeRemoved = true;
             		handler.postDelayed(new Runnable() {
                         public void run() {
-                    		// return to start menu. 
-                			Toast.makeText(act.getBaseContext(), "Alarm deactivated!",
-            						Toast.LENGTH_SHORT).show();		
-                			act.complete();	
+                    		// return to start menu.
+                			complete();	
                         }
                     }, 600);
         			
@@ -132,6 +128,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
         		}
         	} else {
         	   	waitingForCardsToFlipOver = true;
+        	   	MemoryChallenge.this.makeAllCardsUnclickable();
         		handler.postDelayed(new Runnable() {
                 	// wait one second before flipping over
                     public void run() {
@@ -139,6 +136,7 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
                 		card.flip();
                 		flippedCard = null; 
                 		waitingForCardsToFlipOver = false;
+                		MemoryChallenge.this.makeAllCardsClickable();
                     }
                 }, 400);
      
@@ -150,21 +148,33 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
         
     }
 
+	private void makeAllCardsUnclickable() {
+		for(MemoryCardView card : this.cards) {
+			card.setClickable(false);
+		}
+	}
+	
+	private void makeAllCardsClickable() {
+		for(MemoryCardView card : this.cards) {
+			card.setClickable(true);
+		}
+	}
+
 	// assign the buttons their listeners. 
 	private void commonStart(int flippedCardPosition) {
-		act.setContentView(R.layout.activity_alarm_challenge_memory);
+		activity().setContentView(R.layout.activity_alarm_challenge_memory);
 	
-		List<MemoryCardView> cards = new ArrayList<MemoryCardView>();
+		this.cards = new ArrayList<MemoryCardView>();
 		//R.id.challenge_memory_button_1;
 
-		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_1));
-		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_2));
-		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_3));
-		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_4));
-		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_5));
-		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_6));
-		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_7));
-		cards.add((MemoryCardView)this.act.findViewById( R.id.challenge_memory_button_8));
+		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_1));
+		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_2));
+		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_3));
+		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_4));
+		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_5));
+		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_6));
+		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_7));
+		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_8));
 
 		int pos = 0;
 		for ( MemoryCardView card : cards ) {
@@ -188,14 +198,14 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		}
 	}
 	
-	private final String MEMORY = "memory";
-	private final String MEMORY_CARD_IMAGE_DATABASE = "memory_card_image_database";
+	private static final String MEMORY = "memory";
+	private static final String MEMORY_CARD_IMAGE_DATABASE = "memory_card_image_database";
 	
-	private final String FLIPPED_CARD_POSITION = "flipped_card_position";
+	private static final String FLIPPED_CARD_POSITION = "flipped_card_position";
 
 	@Override
-	public void start(final ChallengeActivity act, ChallengeResolvedParams params) {
-		this.act = act;
+	public void start(final Activity activity, ChallengeResolvedParams params) {
+		super.start( activity, params );
 
 		mem = new Memory(ROWS, COLS);
 		Debug.d(mem.toString());
@@ -205,8 +215,8 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 	}
 
 	@Override
-	public void start( ChallengeActivity activity, ChallengeResolvedParams params, Bundle state ) {
-		this.act = activity;
+	public void start( Activity activity, ChallengeResolvedParams params, Bundle state ) {
+		super.start( activity, params );
 
 		this.mem = state.getParcelable(MEMORY);
 		this.database = state.getParcelable(MEMORY_CARD_IMAGE_DATABASE);
@@ -230,17 +240,5 @@ public class MemoryChallenge implements Challenge, View.OnClickListener {
 		}
 		
 		return outState;
-	}
-
-	@Override
-	public void onPause() {
-	}
-
-	@Override
-	public void onResume() {
-	}
-
-	@Override
-	public void onDestroy() {
 	}
 }

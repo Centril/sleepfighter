@@ -18,9 +18,10 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.model.audio;
 
-import se.chalmers.dat255.sleepfighter.model.IdProvider;
 import se.chalmers.dat255.sleepfighter.utils.message.Message;
 import se.chalmers.dat255.sleepfighter.utils.message.MessageBus;
+import se.chalmers.dat255.sleepfighter.utils.message.MessageBusHolder;
+import se.chalmers.dat255.sleepfighter.utils.model.IdProvider;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -33,7 +34,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 27, 2013
  */
 @DatabaseTable(tableName = "audio_config")
-public class AudioConfig implements IdProvider {
+public class AudioConfig implements IdProvider, MessageBusHolder {
 	public static final String ID_COLUMN = "id";
 
 	@DatabaseField(generatedId = true, columnName = ID_COLUMN)

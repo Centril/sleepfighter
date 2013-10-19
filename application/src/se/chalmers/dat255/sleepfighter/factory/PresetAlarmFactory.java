@@ -51,7 +51,7 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 
 	@Override
 	protected boolean createIsRepeatingFlag() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -112,6 +112,11 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 
 	@Override
 	protected boolean createIsSpeech() {
+		return false;
+	}
+	
+	@Override
+	protected boolean createIsFlashEnabled(){
 		return false;
 	}
 }

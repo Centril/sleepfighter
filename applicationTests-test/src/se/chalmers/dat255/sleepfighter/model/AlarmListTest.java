@@ -129,15 +129,11 @@ public class AlarmListTest extends TestCase {
 
 		testUnnamedPart( list, 1 );
 
-		try {
-			Alarm first = new Alarm(0, 0);
-			list.add( first );
-			list.add( first.clone() );
-			list.add( first.clone() );
-			list.add( first.clone() );
-		} catch ( CloneNotSupportedException e ) {
-			fail(e.getLocalizedMessage());
-		}
+		Alarm first = new Alarm(0, 0);
+		list.add(first);
+		list.add(new Alarm(first));
+		list.add(new Alarm(first));
+		list.add(new Alarm(first));
 
 		// tests for whole list.
 		for ( int i = 0; i < 4; i++ ) {
