@@ -92,7 +92,7 @@ public class ChallengeConfig implements IdProvider {
 		this.type = type;
 		this.enabled = enabled;
 
-		this.params = this.params == null ? new HashMap<String, String>() : params;
+		this.params = params == null ? new HashMap<String, String>() : params;
 	}
 
 	/**
