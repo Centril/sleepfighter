@@ -19,8 +19,11 @@
 package se.chalmers.dat255.sleepfighter.utils.math;
 
 
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 import junit.framework.TestCase;
 
@@ -43,8 +46,18 @@ public class MatrixUtilTest extends TestCase {
 
 		
 		RealMatrix m1 = MatrixUtils.createRealMatrix(matrixData);
-		assertEquals(6, (int)MatrixUtil.computeDeterminant(m1));
-		
+		assertEquals(6, (int)MatrixUtil.computeDeterminant(m1));	
 	}
 
+	public void testIsSingular() {
+		
+		final RealMatrix m = new Array2DRowRealMatrix(new double[][] {
+				{1, 0, 0},
+				{-2, 0, 0},
+				{4, 6, 1}});
+	
+		
+		assertTrue(MatrixUtil.isSingular(m));
+		
+	}
 }

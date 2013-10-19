@@ -58,23 +58,8 @@ public class MatrixProblem implements MathProblem {
 		return this.solution;
 	}
 	
-	private int randomSmallInt() {
-		// we don't want too big integers. 
-		return RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT);
-	}
-	
-	private RealMatrix createRandomMatrix() {
-
-		double[][] matrixData = new double[MATRIX_SIZE][MATRIX_SIZE];
-		
-		for(int i = 0; i < MATRIX_SIZE; ++i) {
-			for(int j = 0; j < MATRIX_SIZE; ++j) {
-				matrixData[i][j] = this.randomSmallInt();
-			}
-		}
-		
-		return MatrixUtils.createRealMatrix(matrixData);
-		
+	RealMatrix createRandomMatrix() {
+		return MatrixUtil.createRandomMatrix(rng, MATRIX_SIZE, MIN_INT, MAX_INT, true);
 	}
 	
 	public void newProblem() {
