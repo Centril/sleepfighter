@@ -110,7 +110,7 @@ public class LinearEquationProblem implements MathProblem {
 			
 			// if after 40 attempts we still can't find a good constants vector, we should give up on this 
 			// coefficient matrix and try creating a new one.
-			if(attempts == 40) {
+			if(attempts == 20) {
 				this.A = createCoefficients();
 				ALU = new LUDecomposition(this.A).getSolver();
 				attempts = 0;
@@ -164,7 +164,7 @@ public class LinearEquationProblem implements MathProblem {
 	private void doRender() {
 		
 		// begin table. 
-		this.renderedString =  "\\[\\table "; // "\\[\\table 2x + 3y + 4z, =, 4; 4x + 2y + 6z , =, 6\\]";
+		this.renderedString =  "\\[\\table "; 
 		
 		for(int row = 0; row < MATRIX_SIZE; ++row) {
 			
@@ -201,22 +201,23 @@ public class LinearEquationProblem implements MathProblem {
 	}
 	
 	private static String renderTerm(double value, String variable, boolean isFirstTerm) {
-		
-		
-		// TODO, write 1y as y. 
-		
 		int v = ((int)value);
 		String s;
 		if(isFirstTerm) {
-			s =  Integer.toString(v)  + variable;
+			s = renderTermHelper(v, variable);
 		} else {
 			if(v < 0) {
-				s = ", - , " + Integer.toString(Math.abs(v))  + variable;
+				s = ", - , " +   renderTermHelper(Math.abs(v), variable);
 			} else {
-				s = " , + , " + Integer.toString(v)  + variable;
+				s = " , + , " +   renderTermHelper(v, variable);
 			}
 		}
 		return s + " ";
+	}
+	
+	// 1x should be shown as x instead.
+	public static String renderTermHelper(int value, String variable) {
+		return (value == 1 ? variable : Integer.toString(value) + variable);
 	}
 	
 	public LinearEquationProblem(final Context context) {
