@@ -49,19 +49,6 @@ public class MatrixUtilTest extends TestCase {
 		assertEquals(6, (int)MatrixUtil.computeDeterminant(m1));	
 	}
 
-	public void testSolveLinearEquationSystem() {
-		final RealMatrix coefficients = new Array2DRowRealMatrix(new double[][] {
-				{3, 6, 9},
-				{2, 7, -2},
-				{4, 11, 24}});
-		RealVector constants = new ArrayRealVector(new double[]{36, 38, 102});
-		
-		RealVector solution = MatrixUtil.solveLinearEquationSystem(coefficients, constants);
-		assertEquals(-14, (int)solution.getEntry(0));
-		assertEquals(10, (int)solution.getEntry(1));
-		assertEquals(2, (int)solution.getEntry(2));
-	}
-	
 	public void testIsSingular() {
 		
 		final RealMatrix m = new Array2DRowRealMatrix(new double[][] {

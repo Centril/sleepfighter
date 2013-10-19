@@ -21,16 +21,12 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 import java.util.Random;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
-import org.apache.commons.math3.linear.DecompositionSolver;
-import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.MatrixUtil;
 import android.content.Context;
-
-import com.google.common.math.DoubleMath;
 
 /*
  * Challenge: Solve a system of linear equations with three variables.
@@ -87,7 +83,6 @@ public class LinearEquationProblem implements MathProblem {
 		
 		generateProblem();
 		Debug.d("coeff: " + this.A);
-		Debug.d("solution: " + this.solution);
 		Debug.d("constants: " + this.b);
 
 		// now render the problem
@@ -178,10 +173,6 @@ public class LinearEquationProblem implements MathProblem {
 				isBoringSolution((int)v.getEntry(1)) ||
 				isBoringSolution((int)v.getEntry(2));
 				
-	}
-	
-	private static boolean isInteger(double d) {
-		return DoubleMath.isMathematicalInteger(d);
 	}
 	
 	private void doRender() {
