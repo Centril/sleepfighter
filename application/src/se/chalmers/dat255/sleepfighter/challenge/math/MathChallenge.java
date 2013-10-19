@@ -94,8 +94,7 @@ public class MathChallenge extends BaseChallenge {
 		}else if(problemType == ProblemType.linear_equation) {
 			problem = new LinearEquationProblem(activity);			
 		}  
-		problem = new LinearEquationProblem(activity);			
-		
+
 		
 		problem.newProblem();
 		this.problemString = problem.render();
