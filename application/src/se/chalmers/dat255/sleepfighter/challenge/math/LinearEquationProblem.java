@@ -20,6 +20,7 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 
 import java.util.Random;
 
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.DecompositionSolver;
 import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -68,23 +69,26 @@ public class LinearEquationProblem implements MathProblem {
 	}
 	
 	// Create A
-	RealMatrix createCoefficients() {
-		return MatrixUtil.createRandomMatrix(rng, MATRIX_SIZE, -8, 16, true);
+	private RealMatrix createCoefficients() {
+		return MatrixUtil.createRandomMatrix(rng, MATRIX_SIZE, -5, 16, true);
 	}
 	
-	// create b
-	RealVector createConstantVector() {
-		// 20, 60
-		return MatrixUtil.createRandomVector(rng, MATRIX_SIZE, 25, 60, true);
+	// create the solution vector
+	private RealVector createSolutionVector() {
+		RealVector s;
+		do {
+			s = MatrixUtil.createRandomVector(rng, MATRIX_SIZE, -10, 10, true);
+		} while(isBoringSolution(s));
+
+		return s;
 	}
 	
 	public void newProblem() {
 		
 		generateProblem();
 		Debug.d("coeff: " + this.A);
-		Debug.d("constants: " + this.b);
-		Debug.d("variable: " + this.variableToSolveFor);
 		Debug.d("solution: " + this.solution);
+		Debug.d("constants: " + this.b);
 
 		// now render the problem
 		doRender();
@@ -95,14 +99,10 @@ public class LinearEquationProblem implements MathProblem {
 	// find a system of linear equations with a real solution(because real solutions are easy to input on the android keyboard)
 	private void generateProblem() {
 		
-		// We want to generate a system of linear equations Ax = b(where x = (x1 x2 x3)).
-		// We'll cache the LU-decomposition of the coefficient-matrix A, and then keep on 
-		// generating a constant vector b until we got a real solution for either x1 or y2.
 		this.A = createCoefficients();
-		DecompositionSolver ALU = new LUDecomposition(this.A).getSolver();
 		
 		int attempts = 0;
-		
+		RealVector solution;
 		boolean foundb = false;
 		do { 
 			
@@ -110,51 +110,74 @@ public class LinearEquationProblem implements MathProblem {
 			
 			// if after 40 attempts we still can't find a good constants vector, we should give up on this 
 			// coefficient matrix and try creating a new one.
-			if(attempts == 20) {
+			if(attempts == 40) {
+				Debug.d("new coefficients matrix");
+				
 				this.A = createCoefficients();
-				ALU = new LUDecomposition(this.A).getSolver();
 				attempts = 0;
 			}
-		
-			this.b = this.createConstantVector();
-			RealVector vsolution = MatrixUtil.solveLinearEquationSystem(ALU, b);
 			
-			// x1, x2, and x3 must all be integers. 
-			if(!(isInteger(vsolution.getEntry(0)) &&
-					isInteger(vsolution.getEntry(1)) &&
-					isInteger(vsolution.getEntry(2))) ) {
-				attempts++;
-				continue;
-			}
+			// Generate a solution.
+			solution = this.createSolutionVector();
 			
-			// TODO: ensure the solutions aren't too big.
+			// Now compute Ax = b(where x is the solution)
+			this.b = multiply(this.A, solution);
 			
-			this.variableToSolveFor = -1;
-			
-			if(!isBoringSolution((int)vsolution.getEntry(0))) {
-				Debug.d("found solution x");
-				this.variableToSolveFor = 0;
-				
-			} else if(!isBoringSolution((int)vsolution.getEntry(1))) {
-				Debug.d("found solution y");
-				this.variableToSolveFor = 1;
-			}
-
-			if(this.variableToSolveFor != -1) {
+			// does b satisfy our requirements?
+			if(isGoodb(b)) {
 				foundb = true;
-				Debug.d("soluton: " + vsolution); 
-				this.solution = (int)vsolution.getEntry(this.variableToSolveFor);
 			}
 			
 			attempts++;
 			
 		} while(!foundb);
+		
+		Debug.d("solution: " + solution.toString());
+		
+		// solve for either x1 or x2
+		this.variableToSolveFor = rng.nextBoolean() ? 0 : 1;
+		this.solution = (int)solution.getEntry(this.variableToSolveFor);
+	}
+	
+	// multiply a 3x3 matrix by a 3 vector
+	private static RealVector multiply(RealMatrix matrix, RealVector vector) {
+		
+		double[] m1 = matrix.getRow(0);
+		double[] m2 = matrix.getRow(1);
+		double[] m3 = matrix.getRow(2);
+		
+		double[] v = vector.toArray();
+		
+		
+		return new ArrayRealVector(new double[]{
+				m1[0] * v[0] + m1[1] * v[1] + m1[2] * v[2],
+				m2[0] * v[0] + m2[1] * v[1] + m2[2] * v[2],
+				m3[0] * v[0] + m3[1] * v[1] + m3[2] * v[2],
+				
+		});
+	}
+	
+	// ensure that b isn't too big or too little
+	private static boolean isGoodb(RealVector b) {
+		final int MIN = -20;
+		final int MAX = 59;
+		
+		return ((int)b.getEntry(0) > MIN && (int)b.getEntry(0) < MAX) &&
+				 ((int)b.getEntry(1) > MIN && (int)b.getEntry(1) < MAX) && 
+				 ((int)b.getEntry(2) > MIN && (int)b.getEntry(2) < MAX);
 	}
 	
 	// boring solutions are solution that are small, boring numbers like 1 and 2. 
 	// We will not allow boring solutions!
 	private static boolean isBoringSolution(int solution) {
 		return solution == 0 || Math.abs(solution) == 1 || Math.abs(solution) == 2;
+	}
+	
+	private static boolean isBoringSolution(RealVector v) {
+		return isBoringSolution((int)v.getEntry(0)) ||
+				isBoringSolution((int)v.getEntry(1)) ||
+				isBoringSolution((int)v.getEntry(2));
+				
 	}
 	
 	private static boolean isInteger(double d) {
