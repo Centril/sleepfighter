@@ -22,18 +22,14 @@ import java.util.Random;
 
 import org.apache.commons.math3.linear.DecompositionSolver;
 import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
-import com.google.common.math.DoubleMath;
-
-import android.content.Context;
-
-import se.chalmers.dat255.sleepfighter.R;
 import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import se.chalmers.dat255.sleepfighter.utils.math.MatrixUtil;
-import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
+import android.content.Context;
+
+import com.google.common.math.DoubleMath;
 
 /*
  * Challenge: Solve a system of linear equations with three variables.
@@ -45,9 +41,6 @@ import se.chalmers.dat255.sleepfighter.utils.math.RandomMath;
 public class LinearEquationProblem implements MathProblem {
 	
 	private final Context context;
-	
-	private static final int MAX_INT = 15;
-	private static final int MIN_INT_COEFFICENTS = -8;
 	
 	// we use a 3x3 coefficent matrix.
 	private static final int MATRIX_SIZE = 3;
@@ -87,15 +80,16 @@ public class LinearEquationProblem implements MathProblem {
 	
 	public void newProblem() {
 		
-		for(int i = 0; i < 20; ++i) {
-			generateProblem();
-			Debug.d("coeff: " + this.A);
-			Debug.d("constants: " + this.b);
-			Debug.d("variable: " + this.variableToSolveFor);
-			Debug.d("solution: " + this.solution);
-		}
-		
-		doRender(null, null);
+		generateProblem();
+		Debug.d("coeff: " + this.A);
+		Debug.d("constants: " + this.b);
+		Debug.d("variable: " + this.variableToSolveFor);
+		Debug.d("solution: " + this.solution);
+
+		// now render the problem
+		doRender();
+		Debug.d("rendered problem: " + this.renderedString);
+
 	}
 	
 	// find a system of linear equations with a real solution(because real solutions are easy to input on the android keyboard)
@@ -105,36 +99,51 @@ public class LinearEquationProblem implements MathProblem {
 		// We'll cache the LU-decomposition of the coefficient-matrix A, and then keep on 
 		// generating a constant vector b until we got a real solution for either x1 or y2.
 		this.A = createCoefficients();
-		DecompositionSolver ALU = new LUDecomposition(createCoefficients()).getSolver();
+		DecompositionSolver ALU = new LUDecomposition(this.A).getSolver();
 		
 		int attempts = 0;
 		
 		boolean foundb = false;
 		do { 
 			
+			Debug.d("try again");
+			
 			// if after 40 attempts we still can't find a good constants vector, we should give up on this 
 			// coefficient matrix and try creating a new one.
 			if(attempts == 40) {
 				this.A = createCoefficients();
-				ALU = new LUDecomposition(createCoefficients()).getSolver();
+				ALU = new LUDecomposition(this.A).getSolver();
 				attempts = 0;
 			}
 		
 			this.b = this.createConstantVector();
-			RealVector solution = MatrixUtil.solveLinearEquationSystem(ALU, b);
+			RealVector vsolution = MatrixUtil.solveLinearEquationSystem(ALU, b);
+			
+			// x1, x2, and x3 must all be integers. 
+			if(!(isInteger(vsolution.getEntry(0)) &&
+					isInteger(vsolution.getEntry(1)) &&
+					isInteger(vsolution.getEntry(2))) ) {
+				attempts++;
+				continue;
+			}
+			
+			// TODO: ensure the solutions aren't too big.
 			
 			this.variableToSolveFor = -1;
 			
-			if(isInteger(solution.getEntry(0)) && !isBoringSolution((int)solution.getEntry(0))) {
+			if(!isBoringSolution((int)vsolution.getEntry(0))) {
+				Debug.d("found solution x");
 				this.variableToSolveFor = 0;
 				
-			} else if(isInteger(solution.getEntry(1)) && !isBoringSolution((int)solution.getEntry(1))) {
+			} else if(!isBoringSolution((int)vsolution.getEntry(1))) {
+				Debug.d("found solution y");
 				this.variableToSolveFor = 1;
 			}
 
 			if(this.variableToSolveFor != -1) {
 				foundb = true;
-				this.solution = (int)solution.getEntry(this.variableToSolveFor);
+				Debug.d("soluton: " + vsolution); 
+				this.solution = (int)vsolution.getEntry(this.variableToSolveFor);
 			}
 			
 			attempts++;
@@ -152,17 +161,62 @@ public class LinearEquationProblem implements MathProblem {
 		return DoubleMath.isMathematicalInteger(d);
 	}
 	
-	private void doRender(RealMatrix coefficientMatrix, RealVector constantVector) {
+	private void doRender() {
 		
-		this.renderedString =  "\\[\\table 2x + 3y + 4z, =, 4; 4x + 2y + 6z , =, 6\\]";
+		// begin table. 
+		this.renderedString =  "\\[\\table "; // "\\[\\table 2x + 3y + 4z, =, 4; 4x + 2y + 6z , =, 6\\]";
+		
+		for(int row = 0; row < MATRIX_SIZE; ++row) {
+			
+			// current row
+			double[] r = this.A.getRow(row);
+					
+			// render the terms
+			this.renderedString += 
+					renderTerm(r[0], getVariableString(0), true)+
+					renderTerm(r[1], getVariableString(1), false) + 
+					renderTerm(r[2], getVariableString(2), false); 
+			
+			// now the constant.
+			this.renderedString += " , = , " + (int)this.b.getEntry(row) + ";";
+		}
+		
+		// close the table
+		this.renderedString += "\\]";
+		
+		// now write the desciption.
+		this.renderedString += "<br> Solve for $" + getVariableString(this.variableToSolveFor) + "$";
+	}
+	
+	private static String getVariableString(int variable) {
+		if(variable == 0) {
+			return "x";
+		} else if(variable == 1) {
+			return "y";
+		} else if(variable == 2) {
+			return "z";
+		} else {
+			throw new IllegalArgumentException("This should not happen!");
+		}
+	}
+	
+	private static String renderTerm(double value, String variable, boolean isFirstTerm) {
 		
 		
-	/*	this.renderedString = "$A =";
-		this.renderedString += renderMatrix(m1);
-		this.renderedString += renderMatrix(m2);
-		this.renderedString += "$";
-		String format = context.getResources().getString(R.string.matrix_challenge_desc);
-		this.renderedString += "<br>" + String.format(format, "$A$");*/
+		// TODO, write 1y as y. 
+		
+		int v = ((int)value);
+		String s;
+		if(isFirstTerm) {
+			s =  Integer.toString(v)  + variable;
+		} else {
+			if(v < 0) {
+				s = ", - , " + Integer.toString(Math.abs(v))  + variable;
+			} else {
+				s = " , + , " + Integer.toString(v)  + variable;
+			}
+		}
+		return s + " ";
 	}
 	
 	public LinearEquationProblem(final Context context) {
