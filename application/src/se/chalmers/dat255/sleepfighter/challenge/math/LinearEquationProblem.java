@@ -177,7 +177,7 @@ public class LinearEquationProblem implements MathProblem {
 	private void doRender() {
 		
 		// begin table. 
-		this.renderedString =  "\\[\\table "; 
+		this.renderedString =  "$\\{\\table "; 
 		
 		for(int row = 0; row < MATRIX_SIZE; ++row) {
 			
@@ -195,7 +195,7 @@ public class LinearEquationProblem implements MathProblem {
 		}
 		
 		// close the table
-		this.renderedString += "\\]";
+		this.renderedString += "$";
 		
 		// now the description.
 		String format = context.getResources().getString(R.string.linear_equation_challenge_desc);
