@@ -58,7 +58,6 @@ public class MatrixProblem implements MathProblem {
 		return this.solution;
 	}
 	
-	
 	RealMatrix createRandomMatrix() {
 		return MatrixUtil.createRandomMatrix(rng, MATRIX_SIZE, MIN_INT, MAX_INT);
 	}

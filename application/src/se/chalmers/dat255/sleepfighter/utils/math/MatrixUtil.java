@@ -3,6 +3,8 @@ package se.chalmers.dat255.sleepfighter.utils.math;
 import java.util.Random;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.DecompositionSolver;
+import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
@@ -54,5 +56,13 @@ public class MatrixUtil {
 				RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT),
 				RandomMath.nextRandomRanged(rng, MIN_INT, MAX_INT)
 		});
+	}
+	
+	public static RealVector solveLinearEquationSystem(final RealMatrix coefficients, RealVector constants) {
+		return solveLinearEquationSystem(new LUDecomposition(coefficients).getSolver(), constants);
+	}
+	
+	public static RealVector solveLinearEquationSystem(DecompositionSolver solver, RealVector constants) {
+		return solver.solve(constants);
 	}
 }

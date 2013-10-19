@@ -91,7 +91,11 @@ public class MathChallenge extends BaseChallenge {
 			problem = new SimpleProblem(activity);			
 		}else if(problemType == ProblemType.matrix) {
 			problem = new MatrixProblem(activity);			
-		} 
+		}else if(problemType == ProblemType.linear_equation) {
+			problem = new LinearEquationProblem(activity);			
+		}  
+		
+		problem = new LinearEquationProblem(activity);
 		
 		problem.newProblem();
 		this.problemString = problem.render();

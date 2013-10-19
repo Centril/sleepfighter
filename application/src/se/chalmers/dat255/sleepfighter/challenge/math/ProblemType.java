@@ -5,5 +5,6 @@ public enum ProblemType {
 	gcd,
 	matrix,
 	prime,
-	simple
+	simple,
+	linear_equation
 }

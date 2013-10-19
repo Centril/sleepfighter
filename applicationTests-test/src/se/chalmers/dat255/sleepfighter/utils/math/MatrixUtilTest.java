@@ -19,8 +19,11 @@
 package se.chalmers.dat255.sleepfighter.utils.math;
 
 
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 
 import junit.framework.TestCase;
 
@@ -43,8 +46,19 @@ public class MatrixUtilTest extends TestCase {
 
 		
 		RealMatrix m1 = MatrixUtils.createRealMatrix(matrixData);
-		assertEquals(6, (int)MatrixUtil.computeDeterminant(m1));
-		
+		assertEquals(6, (int)MatrixUtil.computeDeterminant(m1));	
 	}
 
+	public void testSolveLinearEquationSystem() {
+		final RealMatrix coefficients = new Array2DRowRealMatrix(new double[][] {
+				{3, 6, 9},
+				{2, 7, -2},
+				{4, 11, 24}});
+		RealVector constants = new ArrayRealVector(new double[]{36, 38, 102});
+		
+		RealVector solution = MatrixUtil.solveLinearEquationSystem(coefficients, constants);
+		assertEquals(-14, (int)solution.getEntry(0));
+		assertEquals(10, (int)solution.getEntry(1));
+		assertEquals(2, (int)solution.getEntry(2));
+	}
 }
