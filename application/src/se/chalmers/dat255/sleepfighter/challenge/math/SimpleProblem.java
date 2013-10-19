@@ -21,7 +21,6 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.graphics.Color;
 
@@ -119,7 +118,7 @@ public class SimpleProblem implements MathProblem {
 		case 3:
 			result = random.nextInt(8) + 2;
 			operand2 = random.nextInt(8) + 2;
-			operand1 = result / operand2;
+			operand1 = result * operand2;
 			break;	
 		default:
 			throw new IllegalArgumentException("This should not happen");
