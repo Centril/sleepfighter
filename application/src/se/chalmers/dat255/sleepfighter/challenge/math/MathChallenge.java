@@ -95,8 +95,6 @@ public class MathChallenge extends BaseChallenge {
 			problem = new LinearEquationProblem(activity);			
 		}  
 		
-		problem = new LinearEquationProblem(activity);
-		
 		problem.newProblem();
 		this.problemString = problem.render();
 		this.problemSolution = problem.solution();
