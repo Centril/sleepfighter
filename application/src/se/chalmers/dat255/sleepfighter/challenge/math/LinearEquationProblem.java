@@ -199,7 +199,7 @@ public class LinearEquationProblem implements MathProblem {
 		
 		// now the description.
 		String format = context.getResources().getString(R.string.linear_equation_challenge_desc);
-		this.renderedString += "<br>" + String.format(format, getVariableString(this.variableToSolveFor));
+		this.renderedString += "<br>" + String.format(format, "$" + getVariableString(this.variableToSolveFor) + "$");
 	}
 	
 	private static String getVariableString(int variable) {
