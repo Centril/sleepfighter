@@ -69,7 +69,7 @@ public class LinearEquationProblem implements MathProblem {
 		return MatrixUtil.createRandomMatrix(rng, MATRIX_SIZE, -5, 16, true);
 	}
 	
-	// create the solution vector
+	// create a fun,fun,fun solution vector!
 	private RealVector createSolutionVector() {
 		RealVector s;
 		do {
