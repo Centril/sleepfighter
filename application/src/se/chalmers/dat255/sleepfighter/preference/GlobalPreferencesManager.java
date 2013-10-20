@@ -33,6 +33,21 @@ import android.preference.PreferenceManager;
  * @since Sep 29, 2013
  */
 public class GlobalPreferencesManager {
+
+	// Preference keys
+	private static final String PREF_LOCATION_FILTER_MAX_AGE = "pref_location_filter_max_age";
+	private static final String PREF_LOCATION_FILTER_MIN_DISTANCE = "pref_location_filter_min_distance";
+	private static final String PREF_LOCATION_FILTER_REFRESH_INTERVAL = "pref_location_filter_refresh_interval";
+	private static final String PREF_LOCATION_FILTER_TTFF = "pref_location_filter_ttff";
+	private static final String PREF_LOCATION_FILTER_ENABLED = "pref_location_filter_enabled";
+	private static final String CHALLENGES_ACTIVATED = "challenges_activated";
+	private static final String LAST_CHALLENGE_POINTS_GAINED = "lastChallengePointsGained";
+	private static final String CHALLENGE_POINTS = "challenge_points";
+	private static final String PREF_GLOBAL_WHEN_OR_IN_HOW_MUCH = "pref_global_when_or_in_how_much";
+	private static final String PREF_ALARM_BYPASS_LOCK_SCREEN = "pref_alarm_bypass_lock_screen";
+	private static final String PREF_ALARM_TURN_SCREEN_ON = "pref_alarm_turn_screen_on";
+	private static final String PREF_TEMP_WEATHER = "pref_temp_weather";
+
 	private SharedPreferences prefs;
 
 	/**
@@ -51,7 +66,7 @@ public class GlobalPreferencesManager {
 	 * @return true if the screen should be turned on.
 	 */
 	public boolean turnScreenOn() {
-		return this.prefs.getBoolean( "pref_alarm_turn_screen_on", true );
+		return this.prefs.getBoolean( PREF_ALARM_TURN_SCREEN_ON, true );
 	}
 
 	/**
@@ -61,7 +76,7 @@ public class GlobalPreferencesManager {
 	 * @return true if the lockscreen should be bypassed.
 	 */
 	public boolean bypassLockscreen() {
-		return this.prefs.getBoolean( "pref_alarm_bypass_lock_screen", true );
+		return this.prefs.getBoolean( PREF_ALARM_BYPASS_LOCK_SCREEN, true );
 	}
 
 	/**
@@ -71,14 +86,14 @@ public class GlobalPreferencesManager {
 	 * @return true if a period should be displayed instead of exact time.
 	 */
 	public boolean displayPeriodOrTime() {
-		return this.prefs.getBoolean( "pref_global_when_or_in_how_much", false );
+		return this.prefs.getBoolean( PREF_GLOBAL_WHEN_OR_IN_HOW_MUCH, false );
 	}
 	
 	/**
 	 * @return the number of challenge points stored in the shared preferences
 	 */
 	public int getChallengePoints() {
-		return this.prefs.getInt("challenge_points", 0);
+		return this.prefs.getInt(CHALLENGE_POINTS, 0);
 	}
 	
 	/**
@@ -89,9 +104,9 @@ public class GlobalPreferencesManager {
 	public void addChallengePoints(int points) {
 		long now = System.currentTimeMillis();
 		
-		if (now - prefs.getLong("lastChallengePointsGained", 0) >= 6*60*60*1000
+		if (now - prefs.getLong(LAST_CHALLENGE_POINTS_GAINED, 0) >= 6*60*60*1000
 				|| points < 0) {
-			int stored = prefs.getInt("challenge_points", 0);
+			int stored = prefs.getInt(CHALLENGE_POINTS, 0);
 			if (stored + points >= 9999) {
 				stored = 9999;
 				points = 0;
@@ -102,21 +117,21 @@ public class GlobalPreferencesManager {
 			}
 			
 			Editor edit = prefs.edit();
-			edit.putInt("challenge_points", stored + points);
+			edit.putInt(CHALLENGE_POINTS, stored + points);
 			if (points > 0) {
-				edit.putLong("lastChallengePointsGained", now);
+				edit.putLong(LAST_CHALLENGE_POINTS_GAINED, now);
 			}
 			edit.commit();
 		}
 	}
 	
 	public boolean isChallengesActivated() {
-		return prefs.getBoolean("challenges_activated", true);
+		return prefs.getBoolean(CHALLENGES_ACTIVATED, true);
 	}
 	
 	public void setChallengesActivated(boolean isActivated) {
 		Editor edit = prefs.edit();
-		edit.putBoolean("challenges_activated", isActivated);
+		edit.putBoolean(CHALLENGES_ACTIVATED, isActivated);
 		edit.commit();
 	}
 
@@ -126,7 +141,7 @@ public class GlobalPreferencesManager {
 	 * @return true if it is enabled.
 	 */
 	public boolean isLocationFilterEnabled() {
-		return this.prefs.getBoolean( "pref_location_filter_enabled", true );
+		return this.prefs.getBoolean( PREF_LOCATION_FILTER_ENABLED, true );
 	}
 
 	/**
@@ -136,7 +151,7 @@ public class GlobalPreferencesManager {
 	 */
 	public void setLocationFilterEnabled( boolean enabled ) {
 		Editor edit = prefs.edit();
-		edit.putBoolean("pref_location_filter_enabled", enabled );
+		edit.putBoolean(PREF_LOCATION_FILTER_ENABLED, enabled );
 		edit.commit();
 	}
 
@@ -146,7 +161,7 @@ public class GlobalPreferencesManager {
 	 * @return the time in minutes, default is 15 atm.
 	 */
 	public int getLocationFRTD() {
-		return this.prefs.getInt( "pref_location_filter_ttff", 15 );
+		return this.prefs.getInt( PREF_LOCATION_FILTER_TTFF, 15 );
 	}
 
 	/**
@@ -155,7 +170,7 @@ public class GlobalPreferencesManager {
 	 * @return the time in minutes, default is 1 atm.
 	 */
 	public int getLocationRefreshInterval() {
-		return this.prefs.getInt( "pref_location_filter_refresh_interval", 1 );
+		return this.prefs.getInt( PREF_LOCATION_FILTER_REFRESH_INTERVAL, 1 );
 	}
 
 	/**
@@ -164,7 +179,7 @@ public class GlobalPreferencesManager {
 	 * @return the minimum distance in meters.
 	 */
 	public int getLocationMinDistance() {
-		return this.prefs.getInt( "pref_location_filter_min_distance", 100 );
+		return this.prefs.getInt( PREF_LOCATION_FILTER_MIN_DISTANCE, 100 );
 	}
 
 	/**
@@ -174,7 +189,7 @@ public class GlobalPreferencesManager {
 	 * @return the minimum distance in meters.
 	 */
 	public int getLocationMaxAge() {
-		return this.prefs.getInt( "pref_location_filter_max_age", 20 );
+		return this.prefs.getInt( PREF_LOCATION_FILTER_MAX_AGE, 20 );
 	}
 	
 	
@@ -186,11 +201,11 @@ public class GlobalPreferencesManager {
 	public void setWeather(String weather) {
 		
 		Editor edit = prefs.edit();
-		edit.putString("pref_temp_weather", weather);
+		edit.putString(PREF_TEMP_WEATHER, weather);
 		edit.commit();
 	}
 
 	public String getWeather() {
-		return this.prefs.getString("pref_temp_weather", null);
+		return this.prefs.getString(PREF_TEMP_WEATHER, null);
 	}
 }
