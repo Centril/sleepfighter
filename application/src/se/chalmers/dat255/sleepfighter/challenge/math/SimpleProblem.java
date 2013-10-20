@@ -24,6 +24,10 @@ import se.chalmers.dat255.sleepfighter.R;
 import android.content.Context;
 import android.graphics.Color;
 
+/**
+ * Challenge: The user solves an simple arithmetic problem, such "3+2", "5*2", "6/2", and so on.
+ * 
+ */
 public class SimpleProblem implements MathProblem {
 
 	private int operand1 = 0;

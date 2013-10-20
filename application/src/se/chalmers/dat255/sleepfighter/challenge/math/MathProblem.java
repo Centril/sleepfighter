@@ -19,16 +19,16 @@
 package se.chalmers.dat255.sleepfighter.challenge.math;
 
 /**
- * Define a math problem.
+ * Defines a math problem.
  * See SimpleProblem.java for a relatively simple example implementation of this class.
  */
 public interface MathProblem {
 
 	/** The string used for showing the problem in the WebView. Since a WebView is used, you can use 
-	 html tags and such in this stirng. Also, the webwiew uses jqmath to render math. 
-	 By surronding text with dollar signs, $, you can render pretty math formulas. 
+	 html tags and such in this string. Also, the webwiew uses jqmath to render math.
+	 By surrounding text with dollar signs, $, you can render pretty math formulas. 
 	 See: http://mathscribe.com/author/jqmath.html
-	 For more details on how write jqmath. 
+	 For more details on how use jqmath. 
 	 */
 	public String render();
 	
@@ -40,7 +40,7 @@ public interface MathProblem {
 	 */
 	public int solution();
 	
-	/** generate a new problem of this type. The return values of render() of solution() SHOULD change after
+	/** generate a new problem of this type. The return values of render() and solution() SHOULD change after
 	 * this call
 	*/
 	public void newProblem();

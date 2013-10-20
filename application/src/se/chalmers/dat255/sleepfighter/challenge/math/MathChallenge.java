@@ -85,7 +85,7 @@ public class MathChallenge extends BaseChallenge {
 			problem = new DifferentiationProblem(activity);			
 		} else if(problemType == ProblemType.gcd) {
 			problem = new GCDProblem(activity);			
-		} else if(problemType == ProblemType.prime) {
+		} else if( problemType == ProblemType.prime) {
 			problem = new PrimeFactorizationProblem(activity, new Random());			
 		}else if(problemType == ProblemType.simple) {
 			problem = new SimpleProblem(activity);			
