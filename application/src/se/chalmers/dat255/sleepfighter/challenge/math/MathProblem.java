@@ -18,18 +18,31 @@
  ******************************************************************************/
 package se.chalmers.dat255.sleepfighter.challenge.math;
 
+/**
+ * Define a math problem.
+ * See SimpleProblem.java for a relatively simple example implementation of this class.
+ */
 public interface MathProblem {
 
-	// The string used for showing it in the webview, rendered with jqmath. so this stirng should use
-	// the format that jqmath uses.
+	/** The string used for showing the problem in the WebView. Since a WebView is used, you can use 
+	 html tags and such in this stirng. Also, the webwiew uses jqmath to render math. 
+	 By surronding text with dollar signs, $, you can render pretty math formulas. 
+	 See: http://mathscribe.com/author/jqmath.html
+	 For more details on how write jqmath. 
+	 */
 	public String render();
 	
-	// we will only allow problems with integer solutions, to prevent too hard problems.
+	
+	/** Returns the solution to the problem. 
+	 * We will only allow problems with integer solutions, to prevent too hard problems.
+	 * Also, because it's a pain in the ass to input numbers with decimals using the android keyboard.
+	 * 
+	 */
 	public int solution();
 	
-	
-	// generate a new problem of this type. The return values of render() of solution() will change after
-	// you call this method.
+	/** generate a new problem of this type. The return values of render() of solution() SHOULD change after
+	 * this call
+	*/
 	public void newProblem();
 
 }

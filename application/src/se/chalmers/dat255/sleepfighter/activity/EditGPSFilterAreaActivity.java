@@ -46,6 +46,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -568,6 +569,8 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		TextView textView = (TextView) this.splashInfoContainer.findViewById( R.id.edit_gpsfilter_area_splash_text );
 		textView.setText( Html.fromHtml( this.getString( R.string.edit_gpsfilter_area_splash_text ) ) );
 
+		textView.setMovementMethod(new ScrollingMovementMethod());
+		
 		// Define fade out animation.
 		this.splashFadeOut = new AlphaAnimation( 1.00f, 0.00f );
 		this.splashFadeOut.setDuration( SPLASH_FADE_DELAY );
