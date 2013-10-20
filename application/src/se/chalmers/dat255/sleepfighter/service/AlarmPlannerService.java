@@ -206,8 +206,10 @@ public class AlarmPlannerService extends IntentService {
 		}
 
 		GPSFilterRefreshReceiver.scheduleFix( app, scheduleTime );
-		LocationReceiver.scheduleFix( app, scheduleTime );
-		
+
+		if (alarm.isSpeech()) {
+			LocationReceiver.scheduleFix(app, scheduleTime);
+		}
 		schedule(scheduleTime, alarm);
 
 		showPendingNotification(alarm);
