@@ -22,7 +22,7 @@ import android.os.IBinder;
 /*
  * Retrieves the current location, then fetches the weather of that location, and then shuts down. 
  */
-public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener
+public class LocationFetcherService extends Service implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener
 {
 	private LocationClient locationClient;
 
