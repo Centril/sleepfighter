@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.chalmers.dat255.sleepfighter.challenge.minesweeper;
+package se.chalmers.dat255.sleepfighter.utils.math;
 
 /**
  * Grid models a two-dimensional matrix of integers with width & height.
