@@ -22,7 +22,8 @@
 #include "minesweeper.h"
 #include "game.h"
 #include "solver.h"
-#include "logging.h"
+#include "logging/logging.h"
+#include "logging/android_logging.h"
 
 using namespace std;
 
@@ -32,13 +33,21 @@ static void random_seed();
 static Game* makeRandomGame( const GameMaker& maker, const Position& pos, bool solve, int maxSolve );
 static GameState solveRandomGame(Game& game, Move& firstMove, const Position& pos);
 
-Game* makeGame( const make_config& config ) {
-	logger = new android_logger( config.logPrio, config.tag );
-	GameMaker maker = maker( config.dim, config.mineCount, random_seed, random, logger );
-	return makeRandomGame( maker, config.pos, config.requireSolvable, config.maxSolvingTries );
+static android_LogPriority g_log_prio;
+static std::string& g_log_tag;
+
+void Minesweeper::configLogger( const int prio, std::string& tag ) {
+	g_log_prio = prio;
+	g_log_tag = tag;
 }
 
-void freeGame( const Game* game ) {
+Game* Minesweeper::makeGame( const MinesweeperConfig& config, const Position& pos ) {
+	logger = new android_logger( g_log_prio, g_log_tag );
+	GameMaker maker = maker( config.dim, config.mineCount, random_seed, random, logger );
+	return makeRandomGame( maker, pos, config.requireSolvable, config.maxSolvingTries );
+}
+
+void Minesweeper::freeGame( const Game* game ) {
 	delete game;
 }
 

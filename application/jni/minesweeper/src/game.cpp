@@ -6,22 +6,7 @@
 
 #include "game.h"
 
-using namespace std;
-
-/**
- * TODO change this to be a function that is provided from Position.
- * This map contains all of the potential relative positions.
- */
-static int map[8][2] = {
-   {-1,-1},
-   {0,-1},
-   {1,-1},
-   {1, 0},
-   {1, 1},
-   {0, 1},
-   {-1,1},
-   {-1,0}
-};
+typedef Position::direction direction;
 
 // Implementing the Game
 Game::Game( const Dimensions dim, const int mineCount, randomizer rng, logger* log) :
@@ -81,6 +66,14 @@ GameState Board::resetToGenerated( const Move& initial ) {
 void Game::print() {
 	// TODO maybe show more game information
 	board.print();
+}
+
+GameState Game::getState() {
+	return state;
+}
+
+logger* Game::getLogger() {
+	return this->log;
 }
 
 Board* Game::getBoard() {
@@ -218,8 +211,8 @@ int Board::openEmptySquares( const Position& position) {
 			clicked++;
 
 			if (grid[pos].value == EMPTY) {
-				for (int mapPos = 0; mapPos < 8; ++mapPos) {
-					Position nextPos = position.translated(map[mapPos]);
+				for (direction dir = 0; dir < Position::directions_count; ++dir) {
+					Position nextPos = position.translated( dir );
 					clicked += openEmptySquares(nextPos);
 				}
 			}
@@ -233,8 +226,8 @@ GameState Board::expandSquares( const Position& position) {
 	int count = 0;
 
 	// Count the number of adjacent flags
-	for (int i = 0; i < 8; ++i) {
-		Position tempPos = position.translated(map[i]);
+	for (direction dir = 0; dir < Position::directions_count; ++dir) {
+		Position tempPos = position.translated( dir );
 		if (isValidPos(tempPos)) {
 			count += (grid[locPos(tempPos)].state == FLAG_CLICKED);
 		}
@@ -244,8 +237,8 @@ GameState Board::expandSquares( const Position& position) {
 	// if you have clicked enough adjacent flags
 	if (count == grid[locPos(position)].value) {
 		// click each adjacent square normally
-		for (int i = 0; i < 8; ++i) {
-			Position tempPos = position.translated(map[i]);
+		for (direction dir = 0; dir < Position::directions_count; ++dir) {
+			Position tempPos = position.translated( dir );
 			Move move(tempPos, NORMAL);
 			lastGameState = clickSquare(move);
 		}
@@ -328,10 +321,11 @@ void Board::generateGrid( const Move& move) {
 	assert(mines < totalSquares); // Cannot place more mines than there are squares.
 
 	// Shuffle the positions so that we can pick the ones that we want to be the mines.
-	vector<Position> squarePositions(totalSquares);
+	typedef std::vector<Position> posvec;
+	posvec squarePositions(totalSquares);
 	IncGenerator gen(dim);
-	generate(squarePositions.begin(), squarePositions.end(), gen);
-	random_shuffle(squarePositions.begin(), squarePositions.end(), rng );
+	std::generate(squarePositions.begin(), squarePositions.end(), gen);
+	std::random_shuffle(squarePositions.begin(), squarePositions.end(), rng );
 
 	// Generate the board
 	grid = new Square[totalSquares];
@@ -343,7 +337,7 @@ void Board::generateGrid( const Move& move) {
 	// Pick the Mines
 	{
 		int mineCount = 0;
-		for (vector<Position>::iterator positionIter = squarePositions.begin();
+		for (posvec::iterator positionIter = squarePositions.begin();
 				mineCount < mines && positionIter != squarePositions.end();
 				++positionIter) {
 			if (!positionIter->isAdjacent(move.getPosition())) {
@@ -361,9 +355,10 @@ void Board::generateGrid( const Move& move) {
 			if (grid[currentSquare].value != MINE) {
 				int count = EMPTY;
 
-				for (int mapCounter = 0; mapCounter < 8; ++mapCounter) {
-					Position testPos(col + map[mapCounter][0],
-							row + map[mapCounter][1]);
+				Position testPos = Position(col, row );
+
+				for (direction dir = 0; dir < Position::directions_count; ++dir) {
+					testPos = testPos.translated(dir);
 					if (isValidPos(testPos)) {
 						count += (grid[locPos(testPos)].value == MINE);
 					}
@@ -376,12 +371,4 @@ void Board::generateGrid( const Move& move) {
 
 	// Now finally state that the board has been generated
 	generated = true;
-}
-
-GameState Game::getState() {
-	return state;
-}
-
-logger* Game::getLogger() {
-	return this->log;
 }

@@ -1,46 +1,57 @@
 /*******************************************************************************
  * Copyright (c) 2013 See AUTHORS file.
- *
+ * 
  * This file is part of SleepFighter.
- *
+ * 
  * SleepFighter is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * SleepFighter is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-#ifndef _MINESWEEPER_MINESWEEPER_H
-#define _MINESWEEPER_MINESWEEPER_H
+#ifndef DIMENSIONS_H_
+#define DIMENSIONS_H_
 
-#include <string>
-#include "game.h"
+template<typename T>
+class basic_dimensions;
 
-class MinesweeperConfig {
+typedef basic_dimensions<int> Dimensions;
+
+/**
+ * \brief This class represents dimensions.
+ *
+ * Please note that it is immutable.
+ */
+template<typename T>
+class basic_dimensions {
 public:
-	// board config.
-	Dimensions& dim;
-	int mineCount;
+	typedef T value_type;
 
-	// initial move position.
-	Position& pos;
+	basic_dimensions(value_type w, value_type h) : width(w), height(h) {
+	}
 
-	// solver config.
-	bool requireSolvable;
-	int maxSolvingTries;
+	value_type getWidth() const {
+		return width;
+	}
+
+	value_type getHeight() const {
+		return height;
+	}
+
+	value_type size() const {
+		return width * height;
+	}
+
+private:
+	value_type width, height;
 };
 
-class Minesweeper {
-public:
-	void configLogger( const int prio, std::string& tag );
-	Game* makeGame( const MinesweeperConfig& config, const Position& pos );
-	void freeGame( const Game* game );
-};
 
-#endif
+#endif /* DIMENSIONS_H_ */

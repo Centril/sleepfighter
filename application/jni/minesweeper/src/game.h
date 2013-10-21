@@ -1,17 +1,15 @@
 #ifndef _MINESWEEPER_GAME
 #define _MINESWEEPER_GAME
 
-#include "logging.h"
 #include <cstdlib>
+
+#include "logging/logging.h"
+#include "position.h"
+#include "dimensions.h"
 
 // RNG definition.
 typedef void(seeder);
 typedef int(*randomizer)(int);
-
-// In every board game square there should be a mine and they can be EMPTY, 1-8 or a MINE.
-#define NA -1
-#define EMPTY 0
-#define MINE 9
 
 enum GameState {
 	PROGRESS, WON, LOST
@@ -25,81 +23,18 @@ enum SquareState {
 	NOT_CLICKED, FLAG_CLICKED, QUESTION_CLICKED, CLICKED
 };
 
-// The prototypes of the classes so that people know they exist and are waiting to happen.
-class Position;
-class Dimensions;
-class Move;
-class Square;
-class Board;
-class Game;
-
-/**
- * \brief This class represents dimensions.
- *
- * Please note that it is immutable.
- */
-class Dimensions {
-public:
-	Dimensions(int width, int height) {
-		this->width = width;
-		this->height = height;
-	}
-
-	int getWidth() const {
-		return width;
-	}
-
-	int getHeight() const {
-		return height;
-	}
-
-	int size() const {
-		return width * height;
-	}
-
-private:
-	int width, height;
-};
-
-class Position {
-public:
-	Position() {
-		this->x = this->y = 0;
-	}
-
-	Position(int x, int y) {
-		this->x = x;
-		this->y = y;
-	}
-
-	int getX() const {
-		return x;
-	}
-
-	int getY() const {
-		return y;
-	}
-
-	bool isAdjacent(Position other) const {
-		return abs(x - other.x) <= 1 && abs(y - other.y) <= 1;
-	}
-
-	Position translated( const int dx, const int dy ) const {
-		return Position( x + dx, y + dy );
-	}
-
-	inline Position translated( const int& delta[2] ) const {
-		return translated( delta[0], delta[1] );
-	}
-
-private:
-	int x, y;
-};
+// In every board game square there should be a mine and they can be EMPTY, 1-8 or a MINE.
 
 class Square {
 public:
-	int value;
+	typedef int minevalue;
+
+	minevalue value;
 	SquareState state;
+
+	minevalue getValue() {
+		return value;
+	}
 
 	bool isMine() const {
 		return value == MINE;
@@ -108,6 +43,15 @@ public:
 	bool isEmpty() const {
 		return value == EMPTY;
 	}
+
+	SquareState getState() {
+		return state;
+	}
+
+private:
+	static const minevalue NA = -1;
+	static const minevalue EMPTY = 0;
+	static const minevalue MINE = 9;
 };
 
 class Board {
@@ -150,9 +94,6 @@ private:
 
 	logger* log;
 };
-
-// TODO it is possible that only Game and Move need to be in the final interface. Think more on
-// this.
 
 /**
  * \brief This class represents a move that the user can make in a game of minesweeper. 
