@@ -19,31 +19,28 @@
 #ifndef POSITION_H_
 #define POSITION_H_
 
-template<typename T> class basic_position;
-typedef basic_position<int> Position;
-
-template<typename T>
-class basic_position {
+class Position {
 public:
-	typedef T value_type;
+	typedef Position class_type;
+	typedef int value_type;
 
 	enum direction {
-		NORTHWEST = 0,
-		NORTH = 1,
-		NORTHEAST = 2,
-		EAST = 3,
-		SOUTHEAST = 4,
-		SOUTH = 5,
-		SOUTHWEST = 6,
-		WEST = 7
+		NORTHWEST,
+		NORTH,
+		NORTHEAST,
+		EAST,
+		SOUTHEAST,
+		SOUTH,
+		SOUTHWEST,
+		WEST
 	};
 
 	static const int directions_count = 8;
 
-	basic_position() : x(0), y(0) {
+	Position() : x(0), y(0) {
 	}
 
-	basic_position(value_type _x, value_type _y) : x(_x), y(_y) {
+	Position(value_type _x, value_type _y) : x(_x), y(_y) {
 	}
 
 	value_type getX() const {
@@ -58,28 +55,23 @@ public:
 		return std::abs(x - other.x) <= 1 && std::abs(y - other.y) <= 1;
 	}
 
-	Position translated( const value_type dx, const value_type dy ) const {
-		return Position( x + dx, y + dy );
+	class_type translated( const value_type dx, const value_type dy ) const {
+		return class_type( x + dx, y + dy );
 	}
 
-	inline Position translated( direction dir ) const {
+	inline class_type translated( const int dir ) const {
 		return translated( deltaMap[dir][0], deltaMap[dir][1] );
 	}
 
+	// all the defined deltas in different directions.
+	static const value_type deltaMap[8][2];
+
 private:
 	value_type x, y;
-
-	// all the defined deltas in different directions.
-	static const value_type const deltaMap[8][2] = {
-	   {-1,-1},
-	   {0,-1},
-	   {1,-1},
-	   {1, 0},
-	   {1, 1},
-	   {0, 1},
-	   {-1,1},
-	   {-1,0}
-	};
 };
+
+const Position::value_type Position::deltaMap[8][2]  = {
+		{ -1, -1 }, { 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 },
+		{ 0, 1 }, { -1, 1 }, { -1, 0 } };
 
 #endif

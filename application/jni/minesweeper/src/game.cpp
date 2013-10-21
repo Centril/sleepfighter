@@ -54,13 +54,13 @@ GameState Board::resetToGenerated( const Move& initial ) {
 	// First reset the entire grid.
 	squaresLeft = dim.size();
 	for ( int i = 0; i < squaresLeft; ++i ) {
-		grid[i].state = SquareState::NOT_CLICKED;
+		grid[i].state = NOT_CLICKED;
 	}
 
 	// Now re-do the inital move.
 	clickSquare( initial );
 
-	return GameState::PROGRESS;
+	return PROGRESS;
 }
 
 void Game::print() {
@@ -83,7 +83,7 @@ Board* Game::getBoard() {
 //
 // Implementing the Board
 //
-Board( const Dimensions dim, const int mineCount, randomizer rng, logger* log) :
+Board::Board( const Dimensions dim, const int mineCount, randomizer rng, logger* log) :
 		squaresLeft(0), dim(dim), rng(rng), log(log) {
 	grid = NULL;
 	generated = false;
@@ -105,11 +105,11 @@ void Board::print() const {
 			case CLICKED:
 				gridValue = grid[position].value;
 				switch (gridValue) {
-				case MINE:
+				case Square::MINE:
 					(*log) << "M";
 					break;
 
-				case EMPTY:
+				case Square::EMPTY:
 					(*log) << " ";
 					break;
 
@@ -163,7 +163,7 @@ GameState Board::clickSquare( const Move& move) {
 				}
 
 				// Check to see if you won or lost on this click
-				if (grid[position].value == MINE) {
+				if (grid[position].value == Square::MINE) {
 					// if you clicked a mine then you lost
 					resultingState = LOST;
 				} else if (squaresLeft == mines) {
@@ -210,9 +210,9 @@ int Board::openEmptySquares( const Position& position) {
 			grid[pos].state = CLICKED;
 			clicked++;
 
-			if (grid[pos].value == EMPTY) {
-				for (direction dir = 0; dir < Position::directions_count; ++dir) {
-					Position nextPos = position.translated( dir );
+			if (grid[pos].value == Square::EMPTY) {
+				for (int dir = 0; dir < Position::directions_count; ++dir) {
+					Position nextPos = position.translated( (direction) dir );
 					clicked += openEmptySquares(nextPos);
 				}
 			}
@@ -226,7 +226,7 @@ GameState Board::expandSquares( const Position& position) {
 	int count = 0;
 
 	// Count the number of adjacent flags
-	for (direction dir = 0; dir < Position::directions_count; ++dir) {
+	for (int dir = 0; dir < Position::directions_count; ++dir) {
 		Position tempPos = position.translated( dir );
 		if (isValidPos(tempPos)) {
 			count += (grid[locPos(tempPos)].state == FLAG_CLICKED);
@@ -237,7 +237,7 @@ GameState Board::expandSquares( const Position& position) {
 	// if you have clicked enough adjacent flags
 	if (count == grid[locPos(position)].value) {
 		// click each adjacent square normally
-		for (direction dir = 0; dir < Position::directions_count; ++dir) {
+		for (int dir = 0; dir < Position::directions_count; ++dir) {
 			Position tempPos = position.translated( dir );
 			Move move(tempPos, NORMAL);
 			lastGameState = clickSquare(move);
@@ -280,7 +280,7 @@ bool Board::isValidPos( const Position& pos) const {
 }
 
 template<typename T>
-inline static bool inBounds( const T& v, const T& b ) const {
+inline static bool inBounds( const T& v, const T& b ) {
 	return v >= 0 && v < b;
 }
 
@@ -331,7 +331,7 @@ void Board::generateGrid( const Move& move) {
 	grid = new Square[totalSquares];
 	for (int i = 0; i < totalSquares; ++i) {
 		grid[i].state = NOT_CLICKED;
-		grid[i].value = EMPTY;
+		grid[i].value = Square::EMPTY;
 	}
 
 	// Pick the Mines
@@ -341,7 +341,7 @@ void Board::generateGrid( const Move& move) {
 				mineCount < mines && positionIter != squarePositions.end();
 				++positionIter) {
 			if (!positionIter->isAdjacent(move.getPosition())) {
-				grid[locPos(*positionIter)].value = MINE;
+				grid[locPos(*positionIter)].value = Square::MINE;
 				++mineCount;
 			}
 		}
@@ -352,15 +352,15 @@ void Board::generateGrid( const Move& move) {
 		for (int col = 0; col < dim.getWidth(); ++col) {
 			int currentSquare = locPos(col, row);
 
-			if (grid[currentSquare].value != MINE) {
-				int count = EMPTY;
+			if (grid[currentSquare].value != Square::MINE) {
+				int count = Square::EMPTY;
 
 				Position testPos = Position(col, row );
 
-				for (direction dir = 0; dir < Position::directions_count; ++dir) {
+				for (int dir = 0; dir < Position::directions_count; ++dir) {
 					testPos = testPos.translated(dir);
 					if (isValidPos(testPos)) {
-						count += (grid[locPos(testPos)].value == MINE);
+						count += (grid[locPos(testPos)].value == Square::MINE);
 					}
 				}
 

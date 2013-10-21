@@ -19,22 +19,16 @@
 #ifndef DIMENSIONS_H_
 #define DIMENSIONS_H_
 
-template<typename T>
-class basic_dimensions;
-
-typedef basic_dimensions<int> Dimensions;
-
 /**
  * \brief This class represents dimensions.
  *
  * Please note that it is immutable.
  */
-template<typename T>
-class basic_dimensions {
+class Dimensions {
 public:
-	typedef T value_type;
+	typedef int value_type;
 
-	basic_dimensions(value_type w, value_type h) : width(w), height(h) {
+	Dimensions(value_type w, value_type h) : width(w), height(h) {
 	}
 
 	value_type getWidth() const {

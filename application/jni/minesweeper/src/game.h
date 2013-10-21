@@ -23,11 +23,17 @@ enum SquareState {
 	NOT_CLICKED, FLAG_CLICKED, QUESTION_CLICKED, CLICKED
 };
 
+class Move;
+
 // In every board game square there should be a mine and they can be EMPTY, 1-8 or a MINE.
 
 class Square {
 public:
 	typedef int minevalue;
+
+	static const minevalue NA = -1;
+	static const minevalue EMPTY = 0;
+	static const minevalue MINE = 9;
 
 	minevalue value;
 	SquareState state;
@@ -47,11 +53,6 @@ public:
 	SquareState getState() {
 		return state;
 	}
-
-private:
-	static const minevalue NA = -1;
-	static const minevalue EMPTY = 0;
-	static const minevalue MINE = 9;
 };
 
 class Board {
@@ -134,7 +135,7 @@ public:
 
 	// facade methods:
 	inline Dimensions getDimensions() const;
-	const Square& Game::getSquare( const int row, const int col ) const;
+	const Square& getSquare( const int row, const int col ) const;
 	void acceptMove(Move& m);
 
 private:
