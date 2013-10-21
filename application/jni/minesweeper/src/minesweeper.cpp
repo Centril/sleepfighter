@@ -36,9 +36,9 @@ static GameState solveRandomGame(Game& game, Move& firstMove, const Position& po
 static android_LogPriority g_log_prio;
 static std::string& g_log_tag;
 
-void Minesweeper::configLogger( const int prio, std::string& tag ) {
+void Minesweeper::configLogger( const int prio, const char* tag ) {
 	g_log_prio = prio;
-	g_log_tag = tag;
+	g_log_tag = string(tag);
 }
 
 Game* Minesweeper::makeGame( const MinesweeperConfig& config, const Position& pos ) {

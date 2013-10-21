@@ -38,7 +38,7 @@ public:
 
 class Minesweeper {
 public:
-	void configLogger( const int prio, std::string& tag );
+	void configLogger( const int prio, const char*  tag );
 	Game* makeGame( const MinesweeperConfig& config, const Position& pos );
 	void freeGame( const Game* game );
 };
