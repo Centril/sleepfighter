@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <se.chalmers.dat255.sleepfighter.android.view.CustomWebView android:id="@+id/math_webview" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"/>
+    <se.toxbee.sleepfighter.android.view.CustomWebView android:id="@+id/math_webview" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"/>
     
     <EditText
         android:id="@+id/answerField"

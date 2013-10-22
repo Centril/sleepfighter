@@ -54,7 +54,7 @@
             android:summary="@string/pref_location_filter_enabled_summary"
             android:defaultValue="true" />
 
-	    <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+	    <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
 	        android:key="pref_location_filter_ttff"
 			android:title="@string/pref_location_filter_ttff"
 			android:defaultValue="15"
@@ -63,7 +63,7 @@
 			android:max="60"
 			custom:min="0" />
 
-	    <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+	    <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
 	        android:key="pref_location_filter_refresh_interval"
 			android:title="@string/pref_location_filter_refresh_interval"
 			android:defaultValue="1"
@@ -72,7 +72,7 @@
 			android:max="5"
 			custom:min="0" />
 
-	    <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+	    <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
 	        android:key="pref_location_filter_min_distance"
 			android:title="@string/pref_location_filter_min_distance"
 			android:defaultValue="100"
@@ -81,7 +81,7 @@
 			android:max="5000"
 			custom:min="0" />
 
-	    <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+	    <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
 	        android:key="pref_location_filter_location_max_age"
 			android:title="@string/pref_location_filter_max_age"
 			android:defaultValue="20"
@@ -99,7 +99,7 @@
             android:selectable="false"
             android:summary="@string/version_name" />
 
-        <se.chalmers.dat255.sleepfighter.android.preference.DevelopersNamesPreference
+        <se.toxbee.sleepfighter.android.preference.DevelopersNamesPreference
             android:selectable="false"
             android:title="@string/developers_title"
             android:summary="@string/developers_summary" />
