@@ -182,8 +182,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	public void handleNameChange(MetaChangeEvent e) {
 		if (e.getModifiedField() == Field.NAME) {
 			String name = MetaTextUtils.printAlarmName(this, e.getAlarm());
-			findPreference(NAME).setSummary(name);
-			
+			Preference namePref = findPreference(NAME);
+
+			// null if preference removed due to API level
+			if (namePref != null) {
+				namePref.setSummary(name);
+			}
+
 			if (Build.VERSION.SDK_INT >= 11) {
 				((EditText)this.getActionBar().getCustomView().findViewById(R.id.alarm_edit_title_field)).setText(name);
 			}
