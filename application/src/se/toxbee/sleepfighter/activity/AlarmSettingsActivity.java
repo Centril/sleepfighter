@@ -249,6 +249,13 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			getActionBar().getCustomView().findViewById(R.id.alarm_actionbar_toggle).setVisibility(View.INVISIBLE);
 		}
 	}
+
+
+	@Override
+	public void onDestroy () {
+		super.onDestroy();
+		SFApplication.get().getTts().stop();
+	 }
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
