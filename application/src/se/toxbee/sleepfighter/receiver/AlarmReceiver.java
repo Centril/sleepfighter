@@ -79,6 +79,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		// Start the alarm, this will wake the screen up!
 		this.startAlarm(extras);
 
+		
 		if(alarm.isSpeech()) {
 			startSpeech();
 		}

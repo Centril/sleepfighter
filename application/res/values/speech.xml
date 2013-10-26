@@ -37,41 +37,43 @@
       <string name="clear_weather">clear</string>
      
 
-     <string name="possible_very_light_rain">möjligt duggregn</string>
-     <string name="very_light_rain">duggregn</string>
-     <string name="possible_light_rain">möjligt lätt regn</string>
-     <string name="light_rain">lätt regn</string>
-     <string name="medium_rain">regn</string>
-     <string name="heavy_rain">kraftigt regn</string>
+     <string name="possible_very_light_rain">possible drizzle</string>
+     <string name="very_light_rain">drizzle</string>
+     <string name="possible_light_rain">possible light rain</string>
+     <string name="light_rain">light rain</string>
+     <string name="medium_rain">rain</string>
+     <string name="heavy_rain">heavy rain</string>
     
      	  	
-     <string name="possible_very_light_sleet">möjligt lätt snöblandat regn</string>
-     <string name="very_light_sleet">lätt snöblandat regn</string>
-     <string name="possible_light_sleet">möjligt lätt snöblandat regn</string>
-     <string name="light_sleet">lätt snöblandat regn</string>
-     <string name="medium_sleet">snöblandat regn</string>
-     <string name="heavy_sleet">kraftigt snöblandat regn</string>     
      
-      <string name="possible_very_light_snow">möjligt lätt snöfall</string>
-      <string name="very_light_snow">lätt snöfall</string>
+     <string name="possible_very_light_sleet">possible light sleet</string>
+     <string name="very_light_sleet">light sleet</string>
+     <string name="possible_light_sleet">possible light sleet</string>
+     <string name="light_sleet">light sleet</string>
+     <string name="medium_sleet">sleet</string>
+     <string name="heavy_sleet">heavy sleet</string>
+     
+     
+      <string name="possible_very_light_snow">possible flurries</string>
+      <string name="very_light_snow">flurries</string>
     
       
-      <string name="possible_light_snow">möjligt måttligt snöfall</string>
-      <string name="light_snow">måttligt snöfall</string>
+      <string name="possible_light_snow">possible light snow</string>
+      <string name="light_snow">light snow</string>
     
-      <string name="medium_snow">snöfall</string>
-      <string name="heavy_snow">kraftigt snöfall</string>
+      <string name="medium_snow">snow</string>
+      <string name="heavy_snow">heavy snow</string>
       
-      <string name="light_wind">svag vind</string>
-      <string name="medium_wind">måttlig vind</string> 
-      <string name="heavy_wind">h</string>
+      <string name="light_wind">breezy</string>
+      <string name="medium_wind">windy</string> 
+      <string name="heavy_wind">dangerously windy</string>
       
-      <string name="low_humidity">torrt</string> 
-      <string name="high_humidity">fuktigt</string> 
-      <string name="fog">dimma</string> 
+      <string name="low_humidity">dry</string> 
+      <string name="high_humidity">humid</string> 
+      <string name="fog">foggy</string> 
       
-      <string name="light_clouds">delvis monligt</string> 
-      <string name="medium_clouds">monligt</string> 
-      <string name="heavy_clouds">mulet</string> 
+      <string name="light_clouds">partly cloudy</string> 
+      <string name="medium_clouds">mostly cloudy</string> 
+      <string name="heavy_clouds">overcast</string> 
      
 </resources>

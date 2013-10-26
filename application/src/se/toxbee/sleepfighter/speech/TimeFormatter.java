@@ -32,17 +32,11 @@ public class TimeFormatter {
 	private final String quarter;
 	private final String halfPast;
 	
+	
 	public TimeFormatter(final Locale locale) {
 		this.locale = locale;
-			
-		if(TextToSpeechUtil.isEnglish(locale)) {
-			this.am = "a.m. ";
-			this.pm = "p.m. ";
-			past = "past";
-			to = "to";
-			quarter = "quarter";
-			halfPast = "half past";
-		} else if(TextToSpeechUtil.isSwedish(locale)) {
+		
+		if(TextToSpeechUtil.isSwedish(locale)) {
 			this.am = "på förmiddagen";
 			this.pm = "på eftermiddagen";	
 			to = "i";
@@ -58,7 +52,13 @@ public class TimeFormatter {
 			quarter = null;
 			halfPast = null;
 		}   else {
-			throw new IllegalArgumentException("The locale is not supported: "+ locale);
+			// we default to using English. 
+			this.am = "a.m. ";
+			this.pm = "p.m. ";
+			past = "past";
+			to = "to";
+			quarter = "quarter";
+			halfPast = "half past";
 		}
 	}
 

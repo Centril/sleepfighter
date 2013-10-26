@@ -56,6 +56,7 @@ public class TextToSpeechUtil {
 	 *            the String that is to be spoken
 	 */
 	public static void speakAlarm(TextToSpeech tts, String string) {
+		Debug.d("now speaking: " + string);
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
 				String.valueOf(AudioManager.STREAM_MUSIC));

@@ -348,6 +348,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				
 				
 				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getSpeech("Dry and mostly cloudy");
+				Debug.d("s: " + s);
 				TextToSpeechUtil.speakAlarm(tts, s);				
 				return true;
 			}
