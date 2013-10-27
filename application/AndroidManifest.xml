@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="se.toxbee.sleepfighter"
-    android:versionCode="5"
-    android:versionName="1.1" >
+    android:versionCode="6"
+    android:versionName="1.2.0" >
 
     <uses-sdk	
         android:minSdkVersion="9"
@@ -54,7 +54,7 @@
 
     	<!-- START	GPS related stuff -->
     	<!-- START	Google Maps Android API v2 -->
-		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyB7342NDGWqblGnheVBFQ7Po3xaUcQEESw"/>
+		<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyBLdj1j7VcLlcxQgD9KWNwQxVmKus1wp4I"/>
     	<!-- END	Google Maps Android API v2 -->
         <activity
             android:name="se.toxbee.sleepfighter.activity.ManageGPSFilterAreasActivity"
