@@ -38,12 +38,9 @@
 
     <!-- Challenges -->
     <string name="start_challenge">A zűrzavart leállítani!</string>
-    <string name="btn_complete">Siker!</string>
-    <string name="btn_fail">Kudarc!</string>
     <string name="challenge_points">Kihíváspontok</string>
     <string name="challenge_toggle_content_desc">Kihívásokat átkapcsolni</string>
     <string name="deactivate">Riasztó kikapcsolva!</string>
-    <string name="returned">Befejezetlen kihívástol vissza kerülve.</string>
 
     <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">

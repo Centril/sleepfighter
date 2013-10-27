@@ -38,8 +38,6 @@
 
     <!-- Challenges -->
     <string name="start_challenge">Den Wahnsinn beendenen!</string>
-    <string name="btn_complete">Gelungen!</string>
-    <string name="btn_fail">Misslungen!</string>
     <string name="challenge_points">Herausforderungspunkte</string>
     <string name="challenge_toggle_content_desc">Herausforderung umschalten</string>
 

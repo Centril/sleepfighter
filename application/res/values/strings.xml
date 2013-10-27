@@ -42,12 +42,9 @@
     	
     <!-- Challenges -->
     <string name="start_challenge">Stop the madness!</string>
-    <string name="btn_complete" tools:ignore="MissingTranslation">Complete!</string>
-    <string name="btn_fail" tools:ignore="MissingTranslation">Fail!</string>
     <string name="challenge_points">Challenge Points</string>
     <string name="challenge_toggle_content_desc">Toggle challenges</string>
     <string name="deactivate">Alarm deactivated!</string>
-     <string name="returned">Returned from uncompleted challenge.</string>
 
     <!-- Time / Earliest time -->
     <string-array name="earliest_time_formats">
@@ -71,7 +68,7 @@
     <string-array name="main_list_context_menu">
         <item>Edit alarm</item>
         <item>Delete alarm</item>
-        <item>Copy Alarm</item>
+        <item>Copy alarm</item>
     </string-array>
 
     <!-- Location Filter -->
