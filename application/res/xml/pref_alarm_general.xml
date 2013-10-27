@@ -23,13 +23,13 @@
     
     
     
-        <se.chalmers.dat255.sleepfighter.android.preference.TimepickerPreference
+        <se.toxbee.sleepfighter.android.preference.TimepickerPreference
             android:defaultValue="00:00"
             android:key="pref_alarm_time"
             android:title="@string/pref_alarm_time"
             android:icon="@drawable/ic_alarm_clock" />
 
-        <se.chalmers.dat255.sleepfighter.android.preference.MultiSelectListPreference
+        <se.toxbee.sleepfighter.android.preference.MultiSelectListPreference
             android:defaultValue="@array/default_week_days"
             android:entries="@array/week_days"
             android:entryValues="@array/week_days"
@@ -65,7 +65,7 @@
             android:title="@string/pref_alarm_ringtone"
             android:icon="@drawable/ic_alarm_ringtone" />
 
-        <se.chalmers.dat255.sleepfighter.android.preference.VolumePreference
+        <se.toxbee.sleepfighter.android.preference.VolumePreference
             android:key="pref_volume"
             android:title="@string/pref_volume"
             android:icon="@drawable/ic_alarm_volume" />
@@ -78,7 +78,7 @@
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/challenge_category_title" >
-        <se.chalmers.dat255.sleepfighter.android.preference.EnablePlusSettingsPreference
+        <se.toxbee.sleepfighter.android.preference.EnablePlusSettingsPreference
             android:key="pref_challenge"
             android:title="@string/pref_challenge"
             android:icon="@drawable/ic_alarm_challenge" />
@@ -91,7 +91,7 @@
             android:title="@string/pref_alarm_snooze_enabled"
             android:icon="@drawable/ic_alarm_snooze" />
 
-        <se.chalmers.dat255.sleepfighter.android.preference.NumberPickerDialogPreference
+        <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
             android:defaultValue="9"
             android:key="pref_alarm_snooze_time"
             android:max="99"

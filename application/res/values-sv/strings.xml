@@ -45,8 +45,7 @@
     <string name="start_challenge">Avsluta galenskapen!</string>
     <string name="challenge_points">Utmaningspoäng</string>
     <string name="challenge_toggle_content_desc">Sätt på/av utmaningar</string>
-     <string name="deactivate">Alarm avaktiverad!</string>
-      <string name="returned">Returnerad från oavslutad utmaning.</string>
+    <string name="deactivate">Alarm avaktiverad!</string>
 
     <string-array name="earliest_time_formats">
         <item>Inget alarm är aktivt</item>
@@ -72,7 +71,7 @@
     </string-array>
     
     <!-- Exclude Area (GPS) -->
-    <string name="action_gpsfilter_area_edit">Exkludera områden/GPS</string>
+    <string name="action_gpsfilter_area_edit">Områdesfilter</string>
     
     <string name="install_google_play_music_message">Vänligen installera Google Play Music</string>
 

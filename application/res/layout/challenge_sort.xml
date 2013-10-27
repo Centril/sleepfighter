@@ -26,12 +26,12 @@
 
     <include android:id="@+id/challenge_sort_description" layout="@layout/challenge_sort_description" />
 
-    <se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout
+    <se.toxbee.sleepfighter.android.component.layout.RectangleLayout
         android:id="@+id/challenge_sort_square"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        xmlns:custom="http://schemas.android.com/apk/res/se.chalmers.dat255.sleepfighter"
+        xmlns:custom="http://schemas.android.com/apk/res/se.toxbee.sleepfighter"
         custom:scale="1.0" >
 
         <TableLayout
@@ -44,15 +44,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_1"
                     style="@style/ChallengeSortButton" />
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_2"
                     style="@style/ChallengeSortButton" />
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_3"
                     style="@style/ChallengeSortButton" />
 
@@ -63,15 +63,15 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_4"
                     style="@style/ChallengeSortButton" />
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_5"
                     style="@style/ChallengeSortButton" />
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_6"
                     style="@style/ChallengeSortButton" />
 
@@ -82,20 +82,20 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_7"
                     style="@style/ChallengeSortButton" />
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_8"
                     style="@style/ChallengeSortButton" />
 
-                <se.chalmers.dat255.sleepfighter.android.component.button.FontFitButton
+                <se.toxbee.sleepfighter.android.component.button.FontFitButton
                     android:id="@+id/challenge_sort_button_9"
                     style="@style/ChallengeSortButton" />
 
             </TableRow>
         </TableLayout>
-    </se.chalmers.dat255.sleepfighter.android.component.layout.RectangleLayout>
+    </se.toxbee.sleepfighter.android.component.layout.RectangleLayout>
 
 </LinearLayout>
