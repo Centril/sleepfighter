@@ -18,14 +18,11 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.math;
 
+import junit.framework.TestCase;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
-
-import junit.framework.TestCase;
 
 public class MatrixUtilTest extends TestCase {
 	public void testComputeDeterminant() {
