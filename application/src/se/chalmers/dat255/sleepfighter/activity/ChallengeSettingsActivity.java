@@ -27,9 +27,7 @@ import se.chalmers.dat255.sleepfighter.helper.AlarmIntentHelper;
 import se.chalmers.dat255.sleepfighter.model.Alarm;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.chalmers.dat255.sleepfighter.model.challenge.ChallengeType;
-import se.chalmers.dat255.sleepfighter.text.MetaTextUtils;
 import android.annotation.TargetApi;
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -53,7 +51,6 @@ import android.view.View.OnClickListener;
  * @since Oct 5, 2013
  */
 public class ChallengeSettingsActivity extends PreferenceActivity {
-
 	private Alarm alarm;
 	private ChallengeConfigSet challengeSet;
 
@@ -84,9 +81,7 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 			pc.addPreference(p);
 		}
 	}
-	
-	
-	
+
 	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
 	private void setupActionBar() {
 		if ( Build.VERSION.SDK_INT >= 11 ) {

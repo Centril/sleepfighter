@@ -21,7 +21,6 @@ package se.chalmers.dat255.sleepfighter.challenge.math;
 import java.util.Random;
 
 import se.chalmers.dat255.sleepfighter.R;
-import se.chalmers.dat255.sleepfighter.utils.debug.Debug;
 import android.content.Context;
 import android.graphics.Color;
 
