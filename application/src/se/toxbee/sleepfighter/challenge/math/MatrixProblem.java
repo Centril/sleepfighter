@@ -20,15 +20,12 @@ package se.toxbee.sleepfighter.challenge.math;
 
 import java.util.Random;
 
-import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
-
-import android.content.Context;
 
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.math.MatrixUtil;
-import se.toxbee.sleepfighter.utils.math.RandomMath;
+import android.content.Context;
 
 /*
  * Challenge: compute the matrix product of two 3x3 matrices. Then compute the determinant of the product.
