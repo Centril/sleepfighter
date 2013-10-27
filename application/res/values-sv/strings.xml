@@ -72,7 +72,7 @@
     </string-array>
     
     <!-- Exclude Area (GPS) -->
-    <string name="action_gpsfilter_area_edit">Exkludera områden/GPS</string>
+    <string name="action_gpsfilter_area_edit">Områdesfilter</string>
     
     <string name="install_google_play_music_message">Vänligen installera Google Play Music</string>
 

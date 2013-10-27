@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <string name="title_activity_manage_gpsfilter_areas">Områdesfilter</string>
+    <string name="action_gpsfilter_areas_add">Lägg till område</string>
+    <string name="action_gpsfilter_areas_clear">Rensa</string>
+    <string name="action_manage_gpsfilter_help">Hjälp</string>
+    <string name="action_gpsfilter_settings">Inställningar</string>
+
+    <string-array name="manage_gpsfilter_areas_context">
+        <item>Redigera område</item>
+        <item>Ta bort område</item>
+    </string-array>
+
+    <string name="manage_gpsfilter_what_splash_text">
+	<![CDATA[
+	<p><b>Områdesfilter</b> låter dig <b>undvika pinsamma olyckshändelser</b> som att ett larm går av under en föreläsning eller ett möte.</p>
+	<p>Du kan bestämma områden du måste befinna dig inom <i><font color=\"#00ddff\">(inkludera)</font></i> eller områden då inte får befinna dig inom <i><font color=\"#ff4444\">(exkludera)</font></i> för att ett alarm ska ringa.
+		<font color=\"#ff4444\">Exkludera</font> prioriteras alltid högst.</p>
+	<p>Klicka på \"lägg till\"-knappen för att börja markera ett område.</p>
+	<p>Vänligen var medveten om att positionen enheten tillhandahåller inte är exakt, så lägg till en extra marginal runt området för säkerhets skull.</p>
+	]]>
+    </string>
+
+</resources>
