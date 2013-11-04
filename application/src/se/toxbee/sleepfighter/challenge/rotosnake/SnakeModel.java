@@ -27,9 +27,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import se.toxbee.sleepfighter.utils.geometry.Dimension;
-import se.toxbee.sleepfighter.utils.geometry.Direction;
-import se.toxbee.sleepfighter.utils.geometry.Position;
+import se.toxbee.sleepfighter.utils.geom.Dimension;
+import se.toxbee.sleepfighter.utils.geom.Direction;
+import se.toxbee.sleepfighter.utils.geom.FinalPosition;
+import se.toxbee.sleepfighter.utils.geom.Position;
 
 /**
  * Snake game. Original author Mazdak, modified by Laszlo for SleepFighter.
@@ -161,7 +162,7 @@ public class SnakeModel {
 				* size.getHeight() - this.tileSize);
 		for (int i = this.tileSize; i < size.getWidth(); i++) {
 			for (int j = this.tileSize; j < size.getHeight(); j++) {
-				this.emptyPos.add(new Position(i, j));
+				this.emptyPos.add(new FinalPosition(i, j));
 			}
 		}
 
@@ -177,7 +178,7 @@ public class SnakeModel {
 		 * must then be reset to default.
 		 */
 		this.snakePos = new LinkedList<Position>();
-		this.addSnake(new Position((int) Math.ceil(size.getWidth() / 2.0),
+		this.addSnake(new FinalPosition((int) Math.ceil(size.getWidth() / 2.0),
 				(int) Math.ceil(size.getHeight() / 2.0)));
 
 		int initLength = SnakeConstants.getInitialSnakeLength();
@@ -212,7 +213,7 @@ public class SnakeModel {
 		// This is one of the features of THIS snake.
 		if (!newDirection.isOpposite(this.direction)
 				|| snakePos.contains(snakePos.peek()
-						.moveDirection(newDirection))) {
+						.move(newDirection))) {
 			this.direction = newDirection;
 		}
 	}
@@ -295,7 +296,7 @@ public class SnakeModel {
 	 * @return a new Position object representing next position.
 	 */
 	private Position getNextSnakePos() {
-		return this.snakePos.getFirst().moveDirection(this.direction);
+		return this.snakePos.getFirst().move( this.direction );
 	}
 
 	/**

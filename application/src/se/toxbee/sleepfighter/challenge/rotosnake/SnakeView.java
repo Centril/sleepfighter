@@ -24,8 +24,8 @@ import java.util.List;
 
 import se.toxbee.sleepfighter.challenge.snake.CircleEntity;
 import se.toxbee.sleepfighter.challenge.snake.Segment;
-import se.toxbee.sleepfighter.utils.geometry.Dimension;
-import se.toxbee.sleepfighter.utils.geometry.Position;
+import se.toxbee.sleepfighter.utils.geom.Dimension;
+import se.toxbee.sleepfighter.utils.geom.Position;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;

@@ -19,7 +19,8 @@
 
 package se.toxbee.sleepfighter.challenge.rotosnake;
 
-import se.toxbee.sleepfighter.utils.geometry.Dimension;
+import se.toxbee.sleepfighter.utils.geom.FinalPosition;
+import se.toxbee.sleepfighter.utils.geom.Dimension;
 import android.graphics.Color;
 
 /**
@@ -34,7 +35,7 @@ public enum SnakeConstants {
 	 * --------------------------------
 	 */
 	/** The size of games, that is how many tiles there is in each axis. */
-	private static final Dimension SIZE = new Dimension(20, 10);
+	private static final Dimension SIZE = new FinalPosition(20, 10);
 
 	/** The size of each tile in game. */
 	private static final int TILE_SIZE = 1;

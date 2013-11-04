@@ -23,7 +23,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.Random;
 
 import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.geometry.Direction;
+import se.toxbee.sleepfighter.utils.geom.Direction;
 import android.content.Context;
 
 /**
