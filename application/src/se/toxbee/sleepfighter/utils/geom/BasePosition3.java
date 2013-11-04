@@ -143,4 +143,8 @@ public abstract class BasePosition3 extends BasePosition implements Position3, D
 	public int depth() {
 		return this.z();
 	}
+
+	public int getDepth() {
+		return this.z();
+	}
 }

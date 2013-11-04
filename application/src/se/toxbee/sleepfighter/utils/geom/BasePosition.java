@@ -165,8 +165,16 @@ public abstract class BasePosition implements Position  {
 		return this.x();
 	}
 
+	public int getWidth() {
+		return this.x();
+	}
+
 	@Override
 	public int height() {
+		return this.y();
+	}
+
+	public int getHeight() {
 		return this.y();
 	}
 
@@ -183,7 +191,6 @@ public abstract class BasePosition implements Position  {
 			throw new Dimension.UndefinedException( n, this.n() );
 		}
 	}
-
 
 	@Override
 	public int n() {

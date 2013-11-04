@@ -34,4 +34,9 @@ public interface Dimension3 extends Dimension {
 	 * @return the depth.
 	 */
 	public int depth();
+
+	/**
+	 * Alias of {@link #depth()}.
+	 */
+	public int getDepth();
 }

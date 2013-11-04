@@ -81,4 +81,14 @@ public interface Dimension {
 	 * @return the height.
 	 */
 	public int height();
+
+	/**
+	 * Alias of {@link #width()}.
+	 */
+	public int getWidth();
+
+	/**
+	 * Alias of {@link #height()}.
+	 */
+	public int getHeight();
 }
