@@ -37,12 +37,6 @@ public class MinesweeperChallenge extends BaseChallenge {
 		setType( ChallengeType.MINESWEEPER );
 	}}
 
-	/**
-	 * 
-	 */
-	public MinesweeperChallenge() {
-	}
-
 	public void start( Activity activity, ChallengeResolvedParams params ) {
 		super.start( activity, params );
 	}
