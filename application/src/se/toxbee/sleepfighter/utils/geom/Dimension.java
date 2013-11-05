@@ -99,4 +99,12 @@ public interface Dimension {
 	 * Alias of {@link #height()}.
 	 */
 	public int getHeight();
+
+	/**
+	 * Returns whether or not the given position is contained in dimension.
+	 *
+	 * @param pos the position object.
+	 * @return true if this position is contained in dim.
+	 */
+	public boolean contains( Position pos );
 }

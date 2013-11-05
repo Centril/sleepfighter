@@ -244,15 +244,6 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	public int compareTo( Position rhs );
 
 	/**
-	 * Semantically treats this as a dimension rather than a position.<br/>
-	 * Returns true if pos is contained in this.
-	 *
-	 * @param pos the position object.
-	 * @return true if this position is contained in dim.
-	 */
-	public boolean contains( Position pos );
-
-	/**
 	 * Semantically treats dim as a dimension rather than a position.<br/>
 	 * Returns true if this position is contained in given dim.
 	 *
