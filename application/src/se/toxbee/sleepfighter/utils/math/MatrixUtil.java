@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Copyright (c) 2013 See AUTHORS file.
+ * 
+ * This file is part of SleepFighter.
+ * 
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package se.toxbee.sleepfighter.utils.math;
 
 import java.util.Random;
@@ -8,6 +26,11 @@ import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 
+/**
+ * MatrixUtil provides utilities for matrices.
+ *
+ * @version 1.0
+ */
 public class MatrixUtil {
 	
 	private MatrixUtil() {
@@ -55,8 +78,14 @@ public class MatrixUtil {
 		return m;
 	}
 
-	// A singular matrix is invertible.
-	public static boolean isSingular(RealMatrix m) {
+	/**
+	 * Returns whether or not RealMatrix m is singular.
+	 *
+	 * @param m the matrix.
+	 * @return true if singular.
+	 */
+	public static boolean isSingular( RealMatrix m ) {
+		// A singular matrix is invertible.
 		return computeDeterminant(m) == 0;
 	}
 
