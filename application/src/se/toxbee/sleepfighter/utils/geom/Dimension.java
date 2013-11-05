@@ -41,6 +41,14 @@ public interface Dimension {
 	}
 
 	/**
+	 * Returns the size of the entire dimension object:<br/>
+	 * That is: the product sum of all the dimensions.
+	 *
+	 * @return the product sum of all the dimensions.
+	 */
+	public int size();
+
+	/**
 	 * Returns the size of the n:th dimension.
 	 *
 	 * @param n the dimension n. 0-indexed. e.g: x = 0, y = 1, z = 2...

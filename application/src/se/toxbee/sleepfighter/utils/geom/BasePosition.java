@@ -149,7 +149,6 @@ public abstract class BasePosition implements Position  {
 		return Objects.hashCode( this.x(), this.y() );
 	}
 
-
 	@Override
 	public int getN() {
 		return this.n();
@@ -195,5 +194,16 @@ public abstract class BasePosition implements Position  {
 	@Override
 	public int n() {
 		return 1;
+	}
+
+	public int size() {
+		int s = 0;
+		int n = this.n();
+
+		for ( int i = 0; i < n; ++i ) {
+			s *= this.size( i );
+		}
+
+		return s;
 	}
 }
