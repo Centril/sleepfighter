@@ -57,16 +57,7 @@ public class SortChallenge extends BaseChallenge {
 	 */
 	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
 		setType( ChallengeType.SORT );
-		add( "color_confusion", PrimitiveValueType.BOOLEAN, true, new ArrayList<String>() {/**
-			 * 
-			 */
-			
-			private static final long serialVersionUID = 1L;
-
-		{
-		    add("color_saturation_confusion");
-
-		}} );
+		add( "color_confusion", PrimitiveValueType.BOOLEAN, true, Lists.newArrayList( "color_saturation_confusion" ) );
 		add( "color_saturation_confusion", PrimitiveValueType.BOOLEAN, true );
 	}}
 
