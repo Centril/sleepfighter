@@ -18,7 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.reflect;
 
-import java.lang.reflect.Array;
+import com.google.common.collect.ObjectArrays;
 
 /**
  * ReflectionUtil provides very basic reflection utilities.
@@ -35,9 +35,8 @@ public class ReflectionUtil {
 	 * @param size the size of array.
 	 * @return the array.
 	 */
-	@SuppressWarnings( "unchecked" )
 	public static <T> T[] makeArray( Class<T> clazz, int size ) {
-		return (T[]) Array.newInstance( clazz, size );
+		return ObjectArrays.newArray( clazz, size );
 	}
 
 	/**
