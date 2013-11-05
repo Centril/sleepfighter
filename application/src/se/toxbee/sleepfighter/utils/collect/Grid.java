@@ -18,6 +18,9 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.collect;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import se.toxbee.sleepfighter.utils.geom.Dimension;
 import se.toxbee.sleepfighter.utils.geom.FinalPosition;
 import se.toxbee.sleepfighter.utils.geom.Position;
@@ -30,7 +33,7 @@ import se.toxbee.sleepfighter.utils.reflect.ReflectionUtil;
  * @version 1.0
  * @since Nov 5, 2013
  */
-public class Grid<T> {
+public class Grid<T> implements Iterable<T> {
 	private T[] g;
 	private Dimension dim;
 
@@ -199,5 +202,54 @@ public class Grid<T> {
 	 */
 	public boolean inBounds( Position pos ) {
 		return this.dim.contains( pos );
+	}
+
+	/**
+	 * Returns whether or not the given index is valid.
+	 *
+	 * @param index the index to test validity for.
+	 * @return true if valid.
+	 */
+	public boolean isValid( int index ) {
+		return 0 <= index && index < this.g.length;
+	}
+
+	/**
+	 * {@inheritDoc}<br/>
+	 * The iterator does not support removal.
+	 */
+	@Override
+	public Iterator<T> iterator() {
+		return new GridIterator();
+	}
+
+	/**
+	 * GridIterator is the iterator implementation for Grid.
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Nov 5, 2013
+	 */
+	protected class GridIterator implements Iterator<T> {
+		private int pos;
+
+		@Override
+		public boolean hasNext() {
+            return pos + 1 < g.length;
+		}
+
+		@Override
+		public T next() {
+			try {
+				return get( pos++ + 1 );
+			} catch ( ArrayIndexOutOfBoundsException e ) {
+				throw new NoSuchElementException();
+			}
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException( "Can't remove, Grid<T> has fixed size." );
+		}
 	}
 }
