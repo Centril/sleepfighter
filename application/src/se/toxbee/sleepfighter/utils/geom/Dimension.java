@@ -41,12 +41,20 @@ public interface Dimension {
 	}
 
 	/**
-	 * Returns the size of the entire dimension object:<br/>
-	 * That is: the product sum of all the dimensions.
+	 * Returns cross product of the sizes of all dimension.
+	 * Equivalent of {@link Dimension#cross(int)} with {@link Dimension#n()}.
 	 *
-	 * @return the product sum of all the dimensions.
+	 * @return the product sum of all dimensions.
 	 */
-	public int size();
+	public int cross();
+
+	/**
+	 * Returns cross product of the sizes of up until (inclusive) the n:th dimension.
+	 *
+	 * @param n the highest n:index (0-indexed) to sum dimension of.
+	 * @return the product sum of 0, ..., n:th dimension.
+	 */
+	public int cross( int n );
 
 	/**
 	 * Returns the size of the n:th dimension.

@@ -253,6 +253,16 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	public boolean containedIn( Position dim );
 
 	/**
+	 * Returns whether or not rhs is adjacent to this position.<br/>
+	 * Adjacency is tested on all available axes.<br/>
+	 * The position with least axes decides how many axes this is.
+	 *
+	 * @param rhs the other position.
+	 * @return true if it is adjacent.
+	 */
+	public boolean isAdjacent( Position rhs );
+
+	/**
 	 * Returns a string describing this position on the form "(x,y)".
 	 *
 	 * @return a string describing this position.
