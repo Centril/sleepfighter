@@ -56,7 +56,7 @@ public class Grid<T> implements Iterable<T> {
 	 * @param dim the Dimension containing width & height information.
 	 */
 	public Grid( Class<T> clazz, Dimension dim ) {
-		this( ReflectionUtil.makeArray( clazz, dim.size() ), dim );
+		this( ReflectionUtil.makeArray( clazz, dim.cross( 1 ) ), dim );
 	}
 
 	/**
