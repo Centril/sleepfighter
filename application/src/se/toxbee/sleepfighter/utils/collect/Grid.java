@@ -86,6 +86,18 @@ public class Grid<T> {
 	}
 
 	/**
+	 * Converts an index to a <strong>immutable</strong> position object.
+	 *
+	 * @param index the index.
+	 * @return the position.
+	 */
+	public Position position( int index ) {
+		int y = index / dim.width();
+		int x = index % dim.width();
+		return new FinalPosition( x, y );
+	}
+
+	/**
 	 * Returns the value at index.
 	 *
 	 * @param index the index.
