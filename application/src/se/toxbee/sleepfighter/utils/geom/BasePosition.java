@@ -124,6 +124,17 @@ public abstract class BasePosition implements Position  {
 		return val >= 0 && val < max;
 	}
 
+	public boolean isAdjacent( Position rhs ) {
+		int n = Math.min( this.n(), rhs.n() );
+		for ( int i = 0; i <= n; ++i ) {
+			if ( Math.abs( this.size( i ) - rhs.size( i ) ) > 1 ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	public Position clone() {
 		return this.cpy();
 	}
@@ -196,9 +207,12 @@ public abstract class BasePosition implements Position  {
 		return 1;
 	}
 
-	public int size() {
+	public int cross() {
+		return this.cross( this.n() );
+	}
+
+	public int cross( int n ) {
 		int s = 0;
-		int n = this.n();
 
 		for ( int i = 0; i < n; ++i ) {
 			s *= this.size( i );
