@@ -41,8 +41,8 @@ public class MinesweeperCell {
 	public static final int EMPTY = 0;
 	public static final int MINE = 9;
 
-	private int value;
-	private CellState state;
+	private int value = EMPTY;
+	private CellState state = CellState.NOT_CLICKED;
 
 	/**
 	 * Returns the value of the cell.
@@ -78,5 +78,30 @@ public class MinesweeperCell {
 	 */
 	public boolean isEmpty() {
 		return value == EMPTY;
+	}
+
+	/**
+	 * Sets the state of the cell.
+	 *
+	 * @param state the state.
+	 */
+	public void setState( CellState state ) {
+		this.state = state;
+	}
+
+	/**
+	 * Resets the state of the cell.
+	 */
+	public void reset() {
+		this.setState( CellState.NOT_CLICKED );
+	}
+
+	/**
+	 * Sets the value of the cell.
+	 *
+	 * @param value the value.
+	 */
+	public void setValue( int value ) {
+		this.value = value;
 	}
 }

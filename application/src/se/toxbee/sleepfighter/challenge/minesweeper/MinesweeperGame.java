@@ -21,9 +21,7 @@ package se.toxbee.sleepfighter.challenge.minesweeper;
 import java.util.Random;
 
 import se.toxbee.sleepfighter.challenge.minesweeper.MinesweeperBoard.State;
-import se.toxbee.sleepfighter.challenge.minesweeper.MinesweeperMove.Action;
 import se.toxbee.sleepfighter.utils.geom.Dimension;
-import se.toxbee.sleepfighter.utils.geom.Position;
 
 /**
  * MinesweeperGame models a game of minesweeper.
@@ -83,26 +81,6 @@ public class MinesweeperGame {
 			this.state = board.performMove( m );
 		}
 	}
-
-	/**
-	 * Performs the first move in the game opening the cell at pos.
-	 *
-	 * @param pos the pos.
-	 * @return the move.
-	 */
-	public MinesweeperMove firstMove( Position pos ) {
-		MinesweeperMove move = new MinesweeperMove( pos, Action.NORMAL );
-		this.acceptMove( move );
-		return move;
-	}
-
-	// TODO START
-
-	private void generateBoard(int rows, int cols) {
-		
-	}
-
-	// TODO END
 
 	private MinesweeperBoard board;
 	private State state;
