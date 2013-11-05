@@ -22,5 +22,5 @@ package se.toxbee.sleepfighter.model.challenge;
  * The different types of challenges available.
  */
 public enum ChallengeType {
-	MATH, MEMORY, SORT, FLUID_SNAKE, ROTO_SNAKE, SHAKE
+	MATH, MEMORY, SORT, FLUID_SNAKE, ROTO_SNAKE, SHAKE, MINESWEEPER
 }

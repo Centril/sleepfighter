@@ -25,6 +25,7 @@ import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.fluidsnake.FluidSnakeChallenge;
 import se.toxbee.sleepfighter.challenge.math.MathChallenge;
 import se.toxbee.sleepfighter.challenge.memory.MemoryChallenge;
+import se.toxbee.sleepfighter.challenge.minesweeper.MinesweeperChallenge;
 import se.toxbee.sleepfighter.challenge.rotosnake.RotoSnakeChallenge;
 import se.toxbee.sleepfighter.challenge.shake.ShakeChallenge;
 import se.toxbee.sleepfighter.challenge.sort.SortChallenge;
@@ -47,19 +48,28 @@ public class ChallengeFactory {
 	 * @return a new instance of the challenge
 	 */
 	public static Challenge getChallenge(ChallengeType type) {
-		switch (type) {
+		switch ( type ) {
 		case MATH:
 			return new MathChallenge();
+
 		case MEMORY:
 			return new MemoryChallenge();
+
 		case SORT:
 			return new SortChallenge();
+
 		case FLUID_SNAKE:
 			return new FluidSnakeChallenge();
+
 		case ROTO_SNAKE:
 			return new RotoSnakeChallenge();
+
 		case SHAKE:
 			return new ShakeChallenge();
+
+		case MINESWEEPER:
+			return new MinesweeperChallenge();
+
 		default:
 			throw new IllegalArgumentException("Undefined challenge");
 		}
@@ -90,12 +100,18 @@ public class ChallengeFactory {
 			case FLUID_SNAKE:
 				def = new FluidSnakeChallenge.PrototypeDefinition();
 				break;
+
 			case ROTO_SNAKE:
 				def = new RotoSnakeChallenge.PrototypeDefinition();
 				break;
+
 			case SHAKE:
 				def = new ShakeChallenge.PrototypeDefinition();
 				break;
+
+			case MINESWEEPER:
+				def = new MinesweeperChallenge.PrototypeDefinition();
+
 			default:
 				throw new IllegalArgumentException( "Undefined challenge" );
 			}

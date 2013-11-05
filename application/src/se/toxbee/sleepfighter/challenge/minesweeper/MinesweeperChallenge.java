@@ -21,7 +21,9 @@ package se.toxbee.sleepfighter.challenge.minesweeper;
 import android.app.Activity;
 import android.os.Bundle;
 import se.toxbee.sleepfighter.challenge.BaseChallenge;
+import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
+import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 
 /**
  * MinesweeperChallenge is a challenge where the user plays minesweeper.
@@ -31,6 +33,10 @@ import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
  * @since Nov 4, 2013
  */
 public class MinesweeperChallenge extends BaseChallenge {
+	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
+		setType( ChallengeType.MINESWEEPER );
+	}}
+
 	/**
 	 * 
 	 */
