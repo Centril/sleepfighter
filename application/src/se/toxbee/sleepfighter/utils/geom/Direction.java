@@ -71,6 +71,7 @@ public enum Direction {
 
 	public static final Direction[] DEG_90 = { Direction.WEST, Direction.NORTH, Direction.EAST, Direction.SOUTH };
 	public static final Direction[] DEG_45 = { Direction.NORTH_WEST, Direction.NORTH_EAST, Direction.SOUTH_EAST, Direction.SOUTH_WEST };
+	public static final Direction[] ALL = { Direction.WEST, NORTH_WEST, Direction.NORTH, NORTH_EAST, Direction.EAST, SOUTH_EAST, Direction.SOUTH, SOUTH_WEST };
 
 	/**
 	 * Returns all directions that make up all quadrants circle starting from {@link #WEST}.
@@ -88,6 +89,15 @@ public enum Direction {
 	 */
 	public static Direction[] deg45() {
 		return DEG_45;
+	}
+
+	/**
+	 * Returns all directions except {@link #NONE}.
+	 *
+	 * @return the directions.
+	 */
+	public static Direction[] all() {
+		return ALL;
 	}
 
 	/**
