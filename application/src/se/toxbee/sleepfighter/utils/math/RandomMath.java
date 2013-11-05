@@ -41,7 +41,6 @@ public class RandomMath {
 		while ( (r = nextRandomRanged( rng, min, max )) % 10 == 0 );
 		return r;
 	}
-	
 
 	/**
 	 * Calculates random number in range [min, max]
@@ -52,10 +51,9 @@ public class RandomMath {
 	 * @return the randomly generated number.
 	 */
 	public static int nextRandomRanged( Random rng, int min, int max ) {
-		// Maybe use nextGaussian here instead?
 		return min + (int) (rng.nextDouble() * ((max - min) + 1));
 	}
-	
+
 	/**
 	 * Calculates random number in range [min, max], but the value exclude is never 
 	 * returned by this function 
@@ -67,11 +65,25 @@ public class RandomMath {
 	 * @return the randomly generated number.
 	 */
 	public static int nextRandomRanged( Random rng, int min, int max, int exclude ) {
-		int n;
-		do {
-			n = min + (int) (rng.nextDouble() * ((max - min) + 1));
-		}while(n == exclude);
-		return n;
+		int r;
+		while( (r = nextRandomRanged( rng, min, max )) == exclude);
+		return r;
+	}
+
+	/**
+	 * Calculates random number in range [min, max], but 0 is never 
+	 * returned by this function if noZeros = true.
+	 *
+	 * @param rng the random number generator.
+	 * @param min the minimum number, inclusive.
+	 * @param max the maximum number, inclusive.
+	 * @param noZeros should 0 be allowed as resulting value?
+	 * @return the randomly generated number.
+	 */
+	public static int nextRandomRanged(Random rng, final int MIN_INT, final int MAX_INT, boolean noZeros) {
+		return	noZeros
+			?	nextRandomRanged(rng, MIN_INT, MAX_INT, 0)
+			:	nextRandomRanged(rng, MIN_INT, MAX_INT);
 	}
 
 	/**
@@ -126,10 +138,16 @@ public class RandomMath {
 		while ( (r = nextGaussianRanged( rng, min, max, maxIterations, deviations )) % 10 == 0 );
 		return r;
 	}
-	
-	// get a random enum value. 
-    public static <T extends Enum<?>> T randomEnum(Random rng, Class<T> clazz){
-        int x = rng.nextInt(clazz.getEnumConstants().length);
-        return clazz.getEnumConstants()[x];
-    }
+
+	/**
+	 * Returns a random enum value.
+	 * 
+	 * @param rng the RNG to use.
+	 * @param clazz the Class object of enum.
+	 * @return the value of enum.
+	 */
+	public static <T extends Enum<?>> T randomEnum( Random rng, Class<T> clazz ) {
+		int x = rng.nextInt( clazz.getEnumConstants().length );
+		return clazz.getEnumConstants()[x];
+	}
 }
