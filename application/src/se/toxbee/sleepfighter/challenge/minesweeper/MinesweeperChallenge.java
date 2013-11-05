@@ -35,6 +35,8 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 public class MinesweeperChallenge extends BaseChallenge {
 	public static class PrototypeDefinition extends ChallengePrototypeDefinition {{
 		setType( ChallengeType.MINESWEEPER );
+		add( "config", PrimitiveValueType.INTEGER, 0 );
+		add( "custom", PrimitiveValueType.STRING, "" );
 	}}
 
 	public void start( Activity activity, ChallengeResolvedParams params ) {
