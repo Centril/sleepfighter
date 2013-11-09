@@ -27,7 +27,6 @@ import java.util.Random;
 import se.toxbee.sleepfighter.challenge.minesweeper.MinesweeperCell.CellState;
 import se.toxbee.sleepfighter.challenge.minesweeper.MinesweeperMove.Action;
 import se.toxbee.sleepfighter.utils.collect.Grid;
-import se.toxbee.sleepfighter.utils.geom.Dimension;
 import se.toxbee.sleepfighter.utils.geom.Direction;
 import se.toxbee.sleepfighter.utils.geom.FinalPosition;
 import se.toxbee.sleepfighter.utils.geom.MutablePosition;
@@ -79,20 +78,15 @@ public class MinesweeperBoard extends Grid<MinesweeperCell> {
 	}
 
 	/**
-	 * Constructs a board given a dim, mineCount and rng.
+	 * Constructs a board given a config and rng.
 	 *
-	 * @param dim the dimension of the board.
-	 * @param mineCount the count of mines in board.
+	 * @param config the config to get dimensions and mine-count from.
 	 * @param rng RNG.
 	 */
-	public MinesweeperBoard( Dimension dim, int mineCount, Random rng ) {
-		super( MinesweeperCell.class, dim );
+	public MinesweeperBoard( MinesweeperConfig config, Random rng ) {
+		super( MinesweeperCell.class, config.dim() );
 
-		if ( mineCount < 0 || mineCount >= this.dim().cross( 1 ) ) {
-			throw new IllegalArgumentException( "Negative mine count is not allowed and mineCount must be < total cell count.." );
-		}
-
-		this.mines = mineCount;
+		this.mines = config.mineCount();
 		this.rng = rng;
 	}
 

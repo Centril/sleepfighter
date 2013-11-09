@@ -123,7 +123,6 @@ public class MinesweeperFactory {
 		return game;
 	}
 
-
 	/**
 	 * Constructs a game with given config & rng.
 	 *
@@ -132,7 +131,7 @@ public class MinesweeperFactory {
 	 * @return the made game.
 	 */
 	private MinesweeperGame make( Random rng ) {
-		return new MinesweeperGame( this.config.dim(), this.config.mineCount(), rng );
+		return new MinesweeperGame( this.config, rng );
 	}
 
 	/**

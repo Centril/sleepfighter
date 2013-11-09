@@ -21,7 +21,6 @@ package se.toxbee.sleepfighter.challenge.minesweeper;
 import java.util.Random;
 
 import se.toxbee.sleepfighter.challenge.minesweeper.MinesweeperBoard.State;
-import se.toxbee.sleepfighter.utils.geom.Dimension;
 
 /**
  * MinesweeperGame models a game of minesweeper.
@@ -42,14 +41,13 @@ public class MinesweeperGame {
 	}
 
 	/**
-	 * Constructs a game given dimension, mineCount and a RNG.
+	 * Constructs a game given config and a RNG.
 	 *
-	 * @param dim the dimension of board.
-	 * @param mineCount mine count in board.
+	 * @param config the config to get dimensions and mine-count from.
 	 * @param rng RNG.
 	 */
-	public MinesweeperGame( Dimension dim, int mineCount, Random rng ) {
-		this( new MinesweeperBoard( dim, mineCount, rng ) );
+	public MinesweeperGame( MinesweeperConfig config, Random rng ) {
+		this( new MinesweeperBoard( config, rng ) );
 	}
 
 	/**
