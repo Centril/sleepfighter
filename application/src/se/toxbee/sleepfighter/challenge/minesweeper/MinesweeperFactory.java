@@ -40,7 +40,7 @@ public class MinesweeperFactory {
 	 * @version 1.0
 	 * @since Nov 5, 2013
 	 */
-	public class SolverConfig {
+	public static class SolverConfig {
 		// The class is really struct-ish.
 		public boolean requireSolvable;
 		public int maxSolvingTries;
@@ -63,6 +63,15 @@ public class MinesweeperFactory {
 	 * {@link #setConfig(MinesweeperConfig)} must at least be called at some point after this constructor.
 	 */
 	public MinesweeperFactory() {
+	}
+
+	/**
+	 * Constructs a factory with config & using default {@link SolverConfig#SolverConfig()}.
+	 *
+	 * @param config the config to use for making games.
+	 */
+	public MinesweeperFactory( MinesweeperConfig config ) {
+		this( config, new SolverConfig() );
 	}
 
 	/**
