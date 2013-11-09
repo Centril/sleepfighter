@@ -44,6 +44,15 @@ public class MinesweeperFactory {
 		// The class is really struct-ish.
 		public boolean requireSolvable;
 		public int maxSolvingTries;
+
+		public SolverConfig() {
+			this( true, 1000 );
+		}
+
+		public SolverConfig( boolean requireSolvable, int maxSolvingTries ) {
+			this.requireSolvable = requireSolvable;
+			this.maxSolvingTries = maxSolvingTries;
+		}
 	}
 
 	private MinesweeperConfig config;
