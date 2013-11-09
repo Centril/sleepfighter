@@ -115,4 +115,18 @@ public interface Dimension {
 	 * @return true if this position is contained in dim.
 	 */
 	public boolean contains( Position pos );
+
+	/**
+	 * Returns the lowest value among the axes.
+	 *
+	 * @return lowest value.
+	 */
+	public int lowest();
+
+	/**
+	 * Returns the highest value among the axes.
+	 *
+	 * @return highest value.
+	 */
+	public int highest();
 }
