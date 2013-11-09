@@ -220,4 +220,32 @@ public abstract class BasePosition implements Position  {
 
 		return s;
 	}
+
+	public int lowest() {
+		int m = Integer.MAX_VALUE,
+			n = this.n();
+
+		for ( int i = 0; i < n; ++i ) {
+			int v = this.size( i );
+			if ( v < m ) {
+				m = v;
+			}
+		}
+
+		return m;
+	}
+
+	public int highest() {
+		int m = Integer.MIN_VALUE,
+			n = this.n();
+
+		for ( int i = 0; i < n; ++i ) {
+			int v = this.size( i );
+			if ( v > m ) {
+				m = v;
+			}
+		}
+
+		return m;
+	}
 }
