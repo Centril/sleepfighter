@@ -105,25 +105,20 @@ public final class MinesweeperConfig {
 		// First pass, split.
 		Iterator<String> it = StringUtils.COMMA_SPLITTER.split( str ).iterator();
 
-		if ( it.hasNext() ) {
-			int w = iterNextInt( it );
-	
-			if ( it.hasNext() ) {
-				int h = iterNextInt( it );
-
-				if ( it.hasNext() ) {
-					int m = iterNextInt( it );
-
-					return new MinesweeperConfig( w, h, m );
-				}
-			}
+		int v[] = new int[3];
+		for ( int i = 0; i < 3; ++i ) {
+			v[i] = iterNextInt( it );
 		}
 
-		throw new IllegalArgumentException( "Params string is invalid! Given: " + str );
+		return new MinesweeperConfig( v[0], v[1], v[2] );
 	}
 
 	private static int iterNextInt( Iterator<String> it ) {
-		return Math.abs( Integer.parseInt( it.next() ) );
+		if ( it.hasNext() ) {
+			return Math.abs( Integer.parseInt( it.next() ) );
+		}
+
+		throw new IllegalArgumentException( "Params string is invalid! Given: " + it.toString() );
 	}
 
 	/**
