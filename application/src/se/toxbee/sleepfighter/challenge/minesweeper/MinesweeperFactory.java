@@ -107,6 +107,24 @@ public class MinesweeperFactory {
 	}
 
 	/**
+	 * Returns the config to use for making games.
+	 *
+	 * @return the config.
+	 */
+	public MinesweeperConfig getConfig() {
+		return this.config;
+	}
+
+	/**
+	 * Returns the config to use for solving, or null if we shouldn't solve.
+	 *
+	 * @return the config for solver.
+	 */
+	public SolverConfig getSolverConfig() {
+		return this.solverConfig;
+	}
+
+	/**
 	 * Produces a game given an initial position.
 	 *
 	 * @param initial initial the initial position where not to place mines.
