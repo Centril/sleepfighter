@@ -70,7 +70,7 @@ public class AlarmIntentHelper {
 
 		return this;
 	}
-	
+
 	// if we are about to go to the settings for the preset(default) alarm, set this to true.
 	public AlarmIntentHelper setSettingPresetAlarm(final boolean settingPresetAlarm) {
 		this.intent.putExtra( SETTING_PRESET_ALARM,  settingPresetAlarm);
@@ -78,6 +78,27 @@ public class AlarmIntentHelper {
 		return this;
 	}
 
+	/**
+	 * Sets an alarm on intent.
+	 *
+	 * @param alarm the alarm.
+	 * @return this.
+	 */
+	public AlarmIntentHelper setAlarm( final Alarm alarm ) {
+		if ( alarm.isPresetAlarm() ) {
+			this.setSettingPresetAlarm( true );
+		} else {
+			this.setAlarmId( alarm );
+		}
+
+		return this;
+	}
+
+	/**
+	 * Returns true if the alarm is a preset one.
+	 *
+	 * @return true if preset.
+	 */
 	public boolean isSettingPresetAlarm() {
 		return this.intent.getBooleanExtra(SETTING_PRESET_ALARM, false);
 	}
