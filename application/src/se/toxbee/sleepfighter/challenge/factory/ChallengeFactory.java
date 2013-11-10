@@ -111,6 +111,7 @@ public class ChallengeFactory {
 
 			case MINESWEEPER:
 				def = new MinesweeperChallenge.PrototypeDefinition();
+				break;
 
 			default:
 				throw new IllegalArgumentException( "Undefined challenge" );
