@@ -145,8 +145,8 @@ public final class MinesweeperConfig {
 			throw new IllegalArgumentException( "min(dim) >= 3 required." );
 		} else if ( mineCount < 1 ) {
 			throw new IllegalArgumentException( "mineCount >= 1 required, given: " + mineCount );
-		} else if ( dim.cross() - mineCount < (3 * 4 - 1) ) {
-			throw new IllegalArgumentException( "There must be space for atleast: " + (3 * 4 - 1) + " free cells." );
+		} else if ( (dim.cross() - mineCount) < (3 * 4 - 1) ) {
+			throw new IllegalArgumentException( "There must be space for atleast: " + (3 * 4 - 1) + " free cells but there is: " + (dim.cross() - mineCount) );
 		}
 
 		this.dim = dim;
