@@ -212,9 +212,9 @@ public abstract class BasePosition implements Position  {
 	}
 
 	public int cross( int n ) {
-		int s = 0;
+		int s = 1;
 
-		for ( int i = 0; i < n; ++i ) {
+		for ( int i = 0; i <= n; ++i ) {
 			s *= this.size( i );
 		}
 
@@ -225,7 +225,7 @@ public abstract class BasePosition implements Position  {
 		int m = Integer.MAX_VALUE,
 			n = this.n();
 
-		for ( int i = 0; i < n; ++i ) {
+		for ( int i = 0; i <= n; ++i ) {
 			int v = this.size( i );
 			if ( v < m ) {
 				m = v;
@@ -239,7 +239,7 @@ public abstract class BasePosition implements Position  {
 		int m = Integer.MIN_VALUE,
 			n = this.n();
 
-		for ( int i = 0; i < n; ++i ) {
+		for ( int i = 0; i <= n; ++i ) {
 			int v = this.size( i );
 			if ( v > m ) {
 				m = v;
