@@ -1,8 +1,10 @@
 package se.toxbee.sleepfighter.challenge.gdx;
 
 import se.toxbee.sleepfighter.challenge.BaseChallenge;
-import android.view.View;
+import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
+import android.app.Activity;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -29,6 +31,21 @@ import com.badlogic.gdx.utils.Clipboard;
 public abstract class GdxChallenge extends BaseChallenge implements Application, ApplicationListener {
 	private AndroidApplicationBackend backend;
 
+	/**
+	 * Initializes libgdx. All subclasses must call this in
+	 * {@link #start(Activity, ChallengeResolvedParams)}
+	 *
+	 * @param cfg the config to use.
+	 */
+	protected void initGdx( AndroidApplicationConfiguration cfg ) {
+		this.backend = new AndroidApplicationBackend( this.activity() );
+
+		RelativeLayout layout = new RelativeLayout( this.activity() );
+		layout.addView( this.backend.initializeForView( this, cfg ) );
+
+		this.activity().setContentView( layout );
+	}
+
 	@Override
 	public void onPause() {
 		backend.onPause();
@@ -39,30 +56,20 @@ public abstract class GdxChallenge extends BaseChallenge implements Application,
 		backend.onResume();
 	}
 
-	protected void initBackend() {
-		if ( backend == null ) {
-			backend = new AndroidApplicationBackend(this.activity());
-		}
+	@Override
+	public void resize( int width, int height ) {
 	}
 
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
-		initBackend();
-		backend.initialize(listener, useGL2IfAvailable);
+	@Override
+	public void pause() {
 	}
 
-	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		initBackend();
-		backend.initialize(listener, config);
+	@Override
+	public void resume() {
 	}
 
-	public View initializeForView (ApplicationListener listener, boolean useGL2IfAvailable) {
-		initBackend();
-		return backend.initializeForView(listener, useGL2IfAvailable);
-	}
-
-	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		initBackend();
-		return backend.initializeForView(listener, config);
+	@Override
+	public void dispose() {
 	}
 
 	protected void createWakeLock (AndroidApplicationConfiguration config) {
