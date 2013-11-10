@@ -139,9 +139,9 @@ public final class MinesweeperConfig {
 	 * @param mineCount the mine count of boards made with this config.
 	 */
 	public MinesweeperConfig( Dimension dim, int mineCount ) {
-		if ( dim.n() != 2 ) {
+		if ( dim.n() != 1 ) {
 			throw new IllegalArgumentException( "2D dim required, given:" + dim.n() );
-		} else if ( Preconditions.checkNotNull( dim ).lowest() >= 3 ) {
+		} else if ( Preconditions.checkNotNull( dim ).lowest() < 3 ) {
 			throw new IllegalArgumentException( "min(dim) >= 3 required." );
 		} else if ( mineCount < 1 ) {
 			throw new IllegalArgumentException( "mineCount >= 1 required, given: " + mineCount );
