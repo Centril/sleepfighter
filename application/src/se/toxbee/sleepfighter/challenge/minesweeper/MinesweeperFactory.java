@@ -186,12 +186,13 @@ public class MinesweeperFactory {
 		// Now get the AI to work out the rest.
 		do {
 			List<MinesweeperMove> movesToPerform = solver.getMoves( game.board() );
-			if ( movesToPerform != null ) {
-				for ( MinesweeperMove move : movesToPerform ) {
-					game.acceptMove( move );
-				}
+			if ( movesToPerform == null ) {
+				return State.LOST;
 			}
 
+			for ( MinesweeperMove move : movesToPerform ) {
+				game.acceptMove( move );
+			}
 		} while ( game.state() == State.PROGRESS );
 
 		return game.state();
