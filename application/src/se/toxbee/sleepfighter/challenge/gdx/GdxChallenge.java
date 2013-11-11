@@ -28,7 +28,7 @@ import com.badlogic.gdx.utils.Clipboard;
  * @version 1.0
  * @since Nov 9, 2013
  */
-public abstract class GdxChallenge extends BaseChallenge implements Application, ApplicationListener {
+public abstract class GdxChallenge extends BaseChallenge implements Application {
 	private AndroidApplicationBackend backend;
 
 	/**
@@ -37,11 +37,11 @@ public abstract class GdxChallenge extends BaseChallenge implements Application,
 	 *
 	 * @param cfg the config to use.
 	 */
-	protected void initGdx( AndroidApplicationConfiguration cfg ) {
+	protected void initGdx( ApplicationListener l, AndroidApplicationConfiguration cfg ) {
 		this.backend = new AndroidApplicationBackend( this.activity() );
 
 		RelativeLayout layout = new RelativeLayout( this.activity() );
-		layout.addView( this.backend.initializeForView( this, cfg ) );
+		layout.addView( this.backend.initializeForView( l, cfg ) );
 
 		this.activity().setContentView( layout );
 	}
@@ -54,22 +54,6 @@ public abstract class GdxChallenge extends BaseChallenge implements Application,
 	@Override
 	public void onResume() {
 		backend.onResume();
-	}
-
-	@Override
-	public void resize( int width, int height ) {
-	}
-
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
 	}
 
 	protected void createWakeLock (AndroidApplicationConfiguration config) {
