@@ -17,6 +17,7 @@
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res/se.toxbee.sleepfighter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
@@ -29,71 +30,38 @@
     <se.toxbee.sleepfighter.android.component.layout.RectangleLayout
         android:id="@+id/challenge_sort_square"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_gravity="center"
-        xmlns:custom="http://schemas.android.com/apk/res/se.toxbee.sleepfighter"
+        android:layout_weight="1"
         custom:scale="1.0" >
 
         <TableLayout
             android:id="@+id/challenge_sort_button_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_1"
-                    style="@style/ChallengeSortButton" />
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_2"
-                    style="@style/ChallengeSortButton" />
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_3"
-                    style="@style/ChallengeSortButton" />
-
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
             </TableRow>
-
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_4"
-                    style="@style/ChallengeSortButton" />
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_5"
-                    style="@style/ChallengeSortButton" />
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_6"
-                    style="@style/ChallengeSortButton" />
-
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
             </TableRow>
-
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1" >
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_7"
-                    style="@style/ChallengeSortButton" />
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_8"
-                    style="@style/ChallengeSortButton" />
-
-                <se.toxbee.sleepfighter.android.component.button.FontFitButton
-                    android:id="@+id/challenge_sort_button_9"
-                    style="@style/ChallengeSortButton" />
-
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
+                <se.toxbee.sleepfighter.android.component.fontfit.FontFitButton style="@style/ChallengeSortButton" />
             </TableRow>
         </TableLayout>
     </se.toxbee.sleepfighter.android.component.layout.RectangleLayout>
