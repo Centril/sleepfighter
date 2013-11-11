@@ -21,6 +21,10 @@
     <color name="main_background">#161616</color>
     <color name="main_layout_botton_color">#363636</color>
 
+    <color name="challenge_sort_press">#000000</color>
+    <color name="challenge_sort_answered">#ffffff</color>
+    <color name="challenge_sort_default">#ffffff</color>
+
     <!-- START ANDROID API 17 COLORS -->
 
     <drawable name="screen_background_light">#ffffffff</drawable>
