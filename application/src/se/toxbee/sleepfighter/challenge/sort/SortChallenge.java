@@ -28,6 +28,7 @@ import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
 import se.toxbee.sleepfighter.challenge.sort.SortModel.Order;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
+import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import se.toxbee.sleepfighter.utils.math.RandomMath;
 import android.app.Activity;
 import android.graphics.Color;
@@ -61,9 +62,10 @@ public class SortChallenge extends BaseChallenge {
 		add( "color_saturation_confusion", PrimitiveValueType.BOOLEAN, true );
 	}}
 
+	private static final String STATE_MODEL = "model";
 	private static final String STATE_COLORS = "hues";
 	private static final String STATE_SHUFFLED_NUMBERS = "numbers";
-	private static final String STATE_MODEL = "model";
+	private static final String STATE_BUTTONS_STATE = "buttons_state";
 
 	private static final int HSV_MAX_HUE = 360;
 	private static final int HSV_MIN_HUE = 0;
@@ -73,8 +75,6 @@ public class SortChallenge extends BaseChallenge {
 	// Unfortunately, colors must be hard-coded since it is dynamic.
 	private static final int COLOR_PRESS = Color.BLACK;
 	private static final int COLOR_ANSWERED = Color.WHITE;
-
-	private static final int NUMBERS_COUNT = 9;
 
 	private TextView description;
 
@@ -114,7 +114,8 @@ public class SortChallenge extends BaseChallenge {
 			this.currentColors = state.getIntArray( STATE_COLORS );
 		}
 
-		this.setNumbers();
+		// Fix issue #11 Remember the state of buttons.
+		this.setNumbers( state.getBooleanArray( STATE_BUTTONS_STATE ));
 	}
 
 	/**
@@ -147,6 +148,9 @@ public class SortChallenge extends BaseChallenge {
 		outState.putParcelable( STATE_MODEL, this.model );
 		outState.putIntArray( STATE_SHUFFLED_NUMBERS, this.shuffledNumbers );
 
+		// Fix issue #11 Remember the state of buttons.
+		outState.putBooleanArray( STATE_BUTTONS_STATE, this.getButtonsState() );
+
 		if ( this.colorConfusion ) {
 			outState.putIntArray( STATE_COLORS, this.currentColors );
 		}
@@ -155,11 +159,24 @@ public class SortChallenge extends BaseChallenge {
 	}
 
 	/**
+	 * Returns the state of the buttons as boolean array (enabled/disabled).
+	 *
+	 * @return the states.
+	 */
+	private boolean[] getButtonsState() {
+		boolean[] buttonsState = new boolean[this.buttons.size()];
+		for ( int i = 0; i < this.buttons.size(); ++i ) {
+			buttonsState[i] = this.buttons.get( i ).isEnabled();
+		}
+		return buttonsState;
+	}
+
+	/**
 	 * Sets up the model.
 	 */
 	private void setupModel() {
 		this.model = new SortModel();
-		this.model.setSize( NUMBERS_COUNT );
+		this.model.setSize( this.buttons.size() );
 	}
 
 	/**
@@ -222,22 +239,25 @@ public class SortChallenge extends BaseChallenge {
 			this.currentColors = this.selectColors( this.shuffledNumbers.length );
 		}
 
-		this.setNumbers();
+		// Fix issue #11 Remember the state of buttons.
+		this.setNumbers( PrimitiveArrays.filled( true, this.buttons.size() ));
 	}
 
 	/**
 	 * Sets the numbers stored in {@link #shuffledNumbers} and updates the description from model.
 	 */
-	private void setNumbers() {
+	private void setNumbers( boolean[] enabledNumbers ) {
 		this.updateDescription();
 
 		for ( int i = 0; i < this.shuffledNumbers.length; ++i ) {
+			boolean enabled = enabledNumbers[i];
+
 			Button button = this.buttons.get( i );
-			button.setEnabled( true );
+			button.setEnabled( enabled );
 
 			button.setText( Integer.toString( this.shuffledNumbers[i]) );
 
-			if ( this.colorConfusion ) {
+			if ( this.colorConfusion && enabled ) {
 				button.setBackgroundColor( this.currentColors[i] );
 			}
 		}
