@@ -72,9 +72,10 @@ public class SortChallenge extends BaseChallenge {
 	private static final float HSV_SATURATION_MIN = 0.20f;
 	private static final float HSV_VALUE = 1f;
 
-	// Unfortunately, colors must be hard-coded since it is dynamic.
-	private static final int COLOR_PRESS = Color.BLACK;
-	private static final int COLOR_ANSWERED = Color.WHITE;
+	// These are "constant".
+	private int colorPressed;
+	private int colorAnswered;
+	private int colorDefault;
 
 	private TextView description;
 
@@ -127,6 +128,11 @@ public class SortChallenge extends BaseChallenge {
 	private void startCommon( Activity activity, ChallengeResolvedParams params ) {
 		super.start( activity, params );
 
+		// Read all colors from xml.
+		this.colorPressed = this.getColor( R.color.challenge_sort_press );
+		this.colorAnswered = this.getColor( R.color.challenge_sort_answered );
+		this.colorDefault = this.getColor( R.color.challenge_sort_default );
+
 		// Store all interesting params.
 		this.colorConfusion = this.params().getBoolean( "color_confusion" );
 		this.saturationConfusion = this.params().getBoolean( "color_saturation_confusion" );
@@ -139,6 +145,10 @@ public class SortChallenge extends BaseChallenge {
 		this.bindButtons();
 
 		this.rng = new Random();
+	}
+
+	private int getColor( int id ) {
+		return activity().getResources().getColor( id );
 	}
 
 	@Override
@@ -257,8 +267,8 @@ public class SortChallenge extends BaseChallenge {
 
 			button.setText( Integer.toString( this.shuffledNumbers[i]) );
 
-			if ( this.colorConfusion && enabled ) {
-				button.setBackgroundColor( this.currentColors[i] );
+			if ( enabled ) {
+				button.setBackgroundColor( this.colorConfusion ? this.currentColors[i] : this.colorDefault );
 			}
 		}
 	}
@@ -272,33 +282,31 @@ public class SortChallenge extends BaseChallenge {
 	}
 
 	/**
-	 * Called when the user has sorted correctly.
-	 */
-	private void challengeCompleted() {
-		this.complete();
-	}
-
-	/**
 	 * Called when a number button was clicked.<br/>
 	 * If number is next, advance step, else re-generate numbers.
 	 *
 	 * @param button the button.
 	 */
 	private void numberClicked( Button button ) {
-		int number = Integer.parseInt( (String) button.getText() );
+		int index = this.buttons.indexOf( button );
+		int number = this.shuffledNumbers[index];
 
 		if ( this.model.isNextNumber( number ) ) {
-			this.model.advanceStep( number );
-
-			button.setEnabled( false );
-			button.setBackgroundColor( COLOR_ANSWERED );
+			this.advanceStep( number, button );
 
 			if ( this.model.isFinished() ) {
-				this.challengeCompleted();
+				this.complete();
 			}
 		} else {
 			this.updateNumbers();
 		}
+	}
+
+	private void advanceStep( int number, Button button ) {
+		this.model.advanceStep( number );
+
+		button.setEnabled( false );
+		button.setBackgroundColor( colorAnswered );
 	}
 
 	private OnClickListener onButtonClickListener = new OnClickListener() {
@@ -313,7 +321,7 @@ public class SortChallenge extends BaseChallenge {
 		public boolean onTouch( View v, MotionEvent event ) {
 			switch ( event.getAction() ) {
 			case MotionEvent.ACTION_DOWN:
-				v.setBackgroundColor( COLOR_PRESS );
+				v.setBackgroundColor( colorPressed );
 				return false;
 
 			default:
