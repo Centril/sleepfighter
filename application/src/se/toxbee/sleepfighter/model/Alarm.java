@@ -242,7 +242,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	@DatabaseField(foreign = true, canBeNull = false)
 	private SnoozeConfig snoozeConfig = new SnoozeConfig(true, 9);
 
-	
 	@DatabaseField
 	// the time and weather will be read out when the alarm goes off. 
 	private boolean isSpeech = false;
@@ -768,8 +767,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	public boolean isFlashEnabled(){
 		return this.isFlash;
 	}
-	
-	
+
 	// if true, then the time and weather will be read out when the alarm goes off.
 	public boolean isSpeech() {
 		return this.isSpeech;

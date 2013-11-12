@@ -119,7 +119,7 @@ public class StringUtils {
 	 * @param parts the time parts to join together.
 	 * @return the time parts joined together.
 	 */
-	public static final String joinTime( Integer... parts ) {
+	public static final String joinTime( int... parts ) {
 		String[] paddedParts = new String[parts.length];
 		for ( int i = 0; i < parts.length; ++i ) {
 			paddedParts[i] = Strings.padStart( Integer.toString( parts[i] ), 2, '0' );
