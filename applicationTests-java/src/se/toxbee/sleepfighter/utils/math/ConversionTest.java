@@ -18,11 +18,13 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.math;
 
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 
-import junit.framework.TestCase;
-
-public class ConversionTest extends TestCase {
+public class ConversionTest {
+	@Test
 	public void testBoolArrayToInt() {
 		try {
 			Conversion.boolArrayToInt( null );
@@ -45,6 +47,7 @@ public class ConversionTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testIntToBoolArray() {
 		int[] tests = new int[] { 0, 15, 7, 11 };
 

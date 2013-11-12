@@ -18,13 +18,15 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.math;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 
-public class MatrixUtilTest extends TestCase {
+public class MatrixUtilTest {
+	@Test
 	public void testComputeDeterminant() {
 
 		double[][] matrixData = new double[3][3];
@@ -46,6 +48,7 @@ public class MatrixUtilTest extends TestCase {
 		assertEquals(6, (int)MatrixUtil.computeDeterminant(m1));	
 	}
 
+	@Test
 	public void testIsSingular() {
 		
 		final RealMatrix m = new Array2DRowRealMatrix(new double[][] {

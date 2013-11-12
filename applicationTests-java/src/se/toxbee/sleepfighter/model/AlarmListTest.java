@@ -21,15 +21,16 @@ package se.toxbee.sleepfighter.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.joda.time.DateTime;
 
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 
-public class AlarmListTest extends TestCase {
-
+public class AlarmListTest {
+	@Test
 	public void testGetEarliestInfo() {
 		// Bootstrap.
 		Alarm first = new Alarm(0, 2);
@@ -64,6 +65,7 @@ public class AlarmListTest extends TestCase {
 		assertTrue( info == AlarmTimestamp.INVALID );
 	}
 
+	@Test
 	public void testSetMessageBus(  ) {
 		Alarm first = new Alarm(12, 2);
 		Alarm second = new Alarm(12, 3);
@@ -80,7 +82,8 @@ public class AlarmListTest extends TestCase {
 		assertEquals(bus, first.getMessageBus());
 		assertEquals(bus, second.getMessageBus());
 	}
-	
+
+	@Test
 	public void testFireEvent() {
 		List<Alarm> list = new ArrayList<Alarm>();
 		AlarmList manager = new AlarmList( list );
@@ -96,7 +99,8 @@ public class AlarmListTest extends TestCase {
 		assertEquals(bus, second.getMessageBus());
 	
 	}
-	
+
+	@Test
 	public void testGetById() {
 		AlarmList alarmList = new AlarmList();
 		
@@ -124,6 +128,7 @@ public class AlarmListTest extends TestCase {
 		assertEquals(null, alarmList.getById(6));
 	}
 
+	@Test
 	public void testFindLowestUnnamedPlacement() {
 		AlarmList list = new AlarmList();
 

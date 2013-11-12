@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.model;
+package se.toxbee.sleepfighter.challenge.memory;
 
 import se.toxbee.sleepfighter.challenge.memory.Memory;
 import se.toxbee.sleepfighter.utils.debug.Debug;

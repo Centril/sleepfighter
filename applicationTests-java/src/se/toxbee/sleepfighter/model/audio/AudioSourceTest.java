@@ -18,14 +18,14 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.model.audio;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class AudioSourceTest extends TestCase{
-
+public class AudioSourceTest {
+	@Test
 	public void testConstructor() {
 		AudioSource source = new AudioSource(AudioSourceType.INTERNET_STREAM, "uri");
 		assertEquals(AudioSourceType.INTERNET_STREAM, source.getType());
 		assertEquals("uri", source.getUri());
 	}
-	
 }

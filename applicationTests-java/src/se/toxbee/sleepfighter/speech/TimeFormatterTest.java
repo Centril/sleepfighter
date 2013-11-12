@@ -2,10 +2,11 @@ package se.toxbee.sleepfighter.speech;
 
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class TimeFormatterTest extends TestCase{
-	
+public class TimeFormatterTest {
+	@Test
 	public void testFormatTime() {
 		
 		TimeFormatter tm = new TimeFormatter(Locale.ENGLISH);
@@ -67,8 +68,8 @@ public class TimeFormatterTest extends TestCase{
 		assertEquals("quarter to 5 p.m. ", tm.formatTime(16, 44));
 
 	}
-	
 
+	@Test
 	public void testFormatTimeSwedish() {
 		
 		TimeFormatter tm = new TimeFormatter(new Locale("sv", "SE"));
