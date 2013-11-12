@@ -45,13 +45,10 @@ import se.toxbee.sleepfighter.utils.model.IdProvider;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DataPersisterManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.TableUtils;
@@ -304,7 +301,7 @@ public class PersistenceManager {
 	 * @return the query builder.
 	 */
 	private QueryBuilder<Alarm, Integer> makeAlarmQB() {
-		return this.getHelper().getAlarmDao().queryBuilder();
+		return this.getHelper().dao( Alarm.class ).queryBuilder();
 	}
 
 	/**
@@ -318,8 +315,6 @@ public class PersistenceManager {
 			return alarms;
 		}
 
-		OrmHelper helper = this.getHelper();
-
 		/*
 		 * Make lookup tables.
 		 * -------------------
@@ -329,7 +324,7 @@ public class PersistenceManager {
 		Map<Integer, Integer> audioSourceLookup = Maps.newHashMap();
 		Map<Integer, Integer> audioConfigLookup = Maps.newHashMap();
 		Map<Integer, Integer> snoozeConfigLookup = Maps.newHashMap();
-		BiMap<Integer, Integer> challengeSetLookup = HashBiMap.create();
+		Map<Integer, Integer> challengeSetLookup =  Maps.newHashMap();
 
 		for ( int i = 0; i < alarms.size(); ++i ) {
 			Alarm alarm = alarms.get( i );
@@ -353,9 +348,9 @@ public class PersistenceManager {
 		/*
 		 * Query for all tables.
 		 */
-		List<AudioSource> audioSourceList = this.queryInIds( helper.getAudioSourceDao(), AudioSource.ID_COLUMN, audioSourceLookup );
-		List<AudioConfig> audioConfigSetList = this.queryInIds( helper.getAudioConfigDao(), AudioConfig.ID_COLUMN, audioConfigLookup );
-		List<SnoozeConfig> snoozeConfigSetList = this.queryInIds( helper.getSnoozeConfigDao(), SnoozeConfig.ID_COLUMN, snoozeConfigLookup );
+		List<AudioSource> audioSourceList = this.queryInIds( AudioSource.class, AudioSource.ID_COLUMN, audioSourceLookup );
+		List<AudioConfig> audioConfigSetList = this.queryInIds( AudioConfig.class, AudioConfig.ID_COLUMN, audioConfigLookup );
+		List<SnoozeConfig> snoozeConfigSetList = this.queryInIds( SnoozeConfig.class, SnoozeConfig.ID_COLUMN, snoozeConfigLookup );
 
 		/*
 		 * Set all to respective Alarm object.
@@ -400,7 +395,7 @@ public class PersistenceManager {
 		OrmHelper helper = this.getHelper();
 
 		// 1) Read all sets and set them.
-		List<ChallengeConfigSet> challengeSetList = this.queryInIds( helper.getChallengeConfigSetDao(), ChallengeConfigSet.ID_COLUMN, challengeSetLookup );
+		List<ChallengeConfigSet> challengeSetList = this.queryInIds( ChallengeConfigSet.class, ChallengeConfigSet.ID_COLUMN, challengeSetLookup );
 		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
 			// Bind challenge config set to alarm.
 			int alarmIndex = challengeSetLookup.get( challengeSet.getId() );
@@ -411,8 +406,7 @@ public class PersistenceManager {
 
 		// 2) Read all challenge config:s and set to each set.
 		Map<Integer, ChallengeConfig> challengeConfigLookup = Maps.newHashMap();
-		PersistenceExceptionDao<ChallengeConfig, Integer> configDao = helper.getChallengeConfigDao();
-		List<ChallengeConfig> challengeConfigList = this.queryInIds( configDao, ChallengeConfig.SET_FOREIGN_COLUMN, challengeSetLookup );
+		List<ChallengeConfig> challengeConfigList = this.queryInIds( ChallengeConfig.class, ChallengeConfig.SET_FOREIGN_COLUMN, challengeSetLookup );
 		for ( ChallengeConfig challengeConfig : challengeConfigList ) {
 			// Bind challenge config to set.
 			int alarmIndex = challengeSetLookup.get( challengeConfig.getSetId() );
@@ -423,6 +417,7 @@ public class PersistenceManager {
 		}
 
 		// 3) Sanity fix. Find any missing ChallengeType:s and add them.
+		PersistenceExceptionDao<ChallengeConfig, Integer> configDao = helper.dao( ChallengeConfig.class );
 		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
 			Set<ChallengeType> missingTypes = Sets.complementOf( challengeSet.getDefinedTypes(), ChallengeType.class );
 
@@ -437,7 +432,7 @@ public class PersistenceManager {
 		}
 
 		// 3) Finally read all parameters and set to each config.
-		List<ChallengeParam> challengeParamList = this.queryInIds( helper.getChallengeParamDao(), ChallengeParam.CHALLENGE_ID_COLUMN, challengeConfigLookup );
+		List<ChallengeParam> challengeParamList = this.queryInIds( ChallengeParam.class, ChallengeParam.CHALLENGE_ID_COLUMN, challengeConfigLookup );
 		for ( ChallengeParam param : challengeParamList ) {
 			challengeConfigLookup.get( param.getId() ).setFetched( param );
 		}
@@ -446,13 +441,14 @@ public class PersistenceManager {
 	/**
 	 * Helper for {@link #joinFetched(List)}, returns a list of items given a lookup table.
 	 *
-	 * @param dao the Domain Access Object for item type.
+	 * @param clazz the Class object to use to get the Domain Access Object for item type.
 	 * @param lookup the lookup table to get IDs from.
 	 * @return the list of items.
 	 */
-	private <T extends IdProvider> List<T> queryInIds( Dao<T, Integer> dao, String idColumn, Map<Integer, ?> lookup ) {
+	private <T extends IdProvider> List<T> queryInIds( Class<T> clazz, String idColumn, Map<Integer, ?> lookup ) {
 		try {
-			return dao.queryBuilder().where().in( idColumn, lookup.keySet().toArray() ).query();
+			QueryBuilder<T, Integer> qb = this.getHelper().dao( clazz ).queryBuilder();
+			return qb.where().in( idColumn, lookup.keySet().toArray() ).query();
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );
 		}
@@ -482,7 +478,7 @@ public class PersistenceManager {
 		}
 
 		if ( updateAlarmTable ) {
-			helper.getAlarmDao().update( alarm );
+			helper.dao( Alarm.class ).update( alarm );
 		}
 	}
 
@@ -494,12 +490,8 @@ public class PersistenceManager {
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) throws PersistenceException {
-		Log.d( TAG, "updateAudioConfig #1" );
 		OrmHelper helper = this.getHelper();
-
-		Log.d( TAG, "updateAudioConfig #2" );
-		helper.getAudioConfigDao().update( evt.getAudioConfig() );
-		Log.d( TAG, "updateAudioConfig #3" );
+		helper.dao( AudioConfig.class ).update( evt.getAudioConfig() );
 	}
 
 	/**
@@ -512,7 +504,7 @@ public class PersistenceManager {
 	public void updateSnoozeConfig( SnoozeConfig.ChangeEvent evt ) throws PersistenceException {
 		OrmHelper helper = this.getHelper();
 
-		helper.getSnoozeConfigDao().update( evt.getSnoozeConfig() );
+		helper.dao( SnoozeConfig.class ).update( evt.getSnoozeConfig() );
 	}
 
 	/**
@@ -524,7 +516,7 @@ public class PersistenceManager {
 	 */
 	private boolean updateAudioSource( AudioSource source, AudioSource old ) {
 		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<AudioSource, Integer> asDao = helper.getAudioSourceDao();
+		PersistenceExceptionDao<AudioSource, Integer> asDao = helper.dao( AudioSource.class );
 
 		if ( old != null ) {
 			if ( source == null ) {
@@ -553,14 +545,14 @@ public class PersistenceManager {
 
 		if ( evt instanceof ChallengeConfigSet.EnabledEvent ) {
 			// Handle change for isEnabled().
-			helper.getChallengeConfigSetDao().update( set );
+			helper.dao( ChallengeConfigSet.class ).update( set );
 			return;
 		} else if ( evt instanceof ChallengeConfigSet.ChallengeEvent ) {
 			ChallengeConfig config = ((ChallengeConfigSet.ChallengeEvent) evt).getChallengeConfig();
 
 			if ( evt instanceof ChallengeConfigSet.ChallengeEnabledEvent ) {
 				// Handle change for isEnabled() for specific ChallengeConfig.
-				helper.getChallengeConfigDao().update( config );
+				helper.dao( ChallengeConfig.class ).update( config );
 				return;
 			} else if ( evt instanceof ChallengeConfigSet.ChallengeParamEvent ) {
 				// Handle change for a specific challenge config parameter.
@@ -568,7 +560,7 @@ public class PersistenceManager {
 				String key = event.getKey();
 
 				ChallengeParam param = new ChallengeParam( config.getId(), key, config.getParam( key ) );
-				helper.getChallengeParamDao().createOrUpdate( param );
+				helper.dao( ChallengeParam.class ).createOrUpdate( param );
 				return;
 			}
 		}
@@ -587,20 +579,20 @@ public class PersistenceManager {
 
 		// Handle audio source foreign object if present.
 		AudioSource audioSource = alarm.getAudioSource();
-		helper.getAudioSourceDao().create( audioSource );
+		helper.dao( AudioSource.class ).create( audioSource );
 
 		// Handle audio config foreign object.
 		AudioConfig audioConfig = alarm.getAudioConfig();
-		helper.getAudioConfigDao().create( audioConfig );
+		helper.dao( AudioConfig.class ).create( audioConfig );
 
 		// Handle snooze config foreign object.
 		SnoozeConfig snoozeConfig = alarm.getSnoozeConfig();
-		helper.getSnoozeConfigDao().create( snoozeConfig );
+		helper.dao( SnoozeConfig.class ).create( snoozeConfig );
 
 		this.addChallengeSet( alarm );
 
 		// Finally persist alarm itself to DB.
-		helper.getAlarmDao().create( alarm );
+		helper.dao( Alarm.class ).create( alarm );
 	}
 
 	/**
@@ -613,10 +605,10 @@ public class PersistenceManager {
 
 		// Insert set.
 		ChallengeConfigSet set = alarm.getChallengeSet();
-		helper.getChallengeConfigSetDao().create( set );
+		helper.dao( ChallengeConfigSet.class ).create( set );
 
-		PersistenceExceptionDao<ChallengeConfig, Integer> challengeDao = helper.getChallengeConfigDao();
-		PersistenceExceptionDao<ChallengeParam, Integer> paramDao = helper.getChallengeParamDao();
+		PersistenceExceptionDao<ChallengeConfig, Integer> challengeDao = helper.dao( ChallengeConfig.class );
+		PersistenceExceptionDao<ChallengeParam, Integer> paramDao = helper.dao( ChallengeParam.class );
 
 		for ( ChallengeConfig challenge : set.getConfigs() ) {
 			// Insert challenge.
@@ -643,22 +635,22 @@ public class PersistenceManager {
 		// Handle audio source foreign object if present.
 		AudioSource audioSource = alarm.getAudioSource();
 		if ( audioSource != null ) {
-			helper.getAudioSourceDao().delete( audioSource );
+			helper.dao( AudioSource.class ).delete( audioSource );
 		}
 
 		// Handle audio config foreign object.
 		AudioConfig audioConfig = alarm.getAudioConfig();
-		helper.getAudioConfigDao().delete( audioConfig );
+		helper.dao( AudioConfig.class ).delete( audioConfig );
 
 		// Handle snooze config foreign object.
 		SnoozeConfig snoozeConfig = alarm.getSnoozeConfig();
-		helper.getSnoozeConfigDao().delete(snoozeConfig);
+		helper.dao( SnoozeConfig.class ).delete(snoozeConfig);
 
 		// Handle challenge config set foreign object.
 		this.removeChallengeSet( alarm );
 
 		// Finally delete alarm itself from DB.
-		helper.getAlarmDao().delete( alarm );
+		helper.dao( Alarm.class ).delete( alarm );
 	}
 
 	/**
@@ -680,11 +672,11 @@ public class PersistenceManager {
 		}
 
 		// Remove all challenge configs & params.
-		helper.getChallengeConfigDao().deleteIds( removeIds );
-		helper.getChallengeParamDao().deleteIds( removeIds );
+		helper.dao( ChallengeConfig.class ).deleteIds( removeIds );
+		helper.dao( ChallengeParam.class ).deleteIds( removeIds );
 
 		// Finally remove set.
-		helper.getChallengeConfigSetDao().delete( set );
+		helper.dao( ChallengeConfigSet.class ).delete( set );
 	}
 
 	/**
@@ -694,7 +686,7 @@ public class PersistenceManager {
 	 */
 	public GPSFilterAreaSet fetchGPSFilterAreas() {
 		OrmHelper helper = this.getHelper();
-		return new GPSFilterAreaSet( helper.getGPSFilterAreaDao().queryForAll() );
+		return new GPSFilterAreaSet( helper.dao( GPSFilterArea.class ).queryForAll() );
 	}
 
 	/**
@@ -706,7 +698,7 @@ public class PersistenceManager {
 		Log.d( TAG, area.toString() );
 
 		OrmHelper helper = this.getHelper();
-		helper.getGPSFilterAreaDao().createOrUpdate( area );
+		helper.dao( GPSFilterArea.class ).createOrUpdate( area );
 	}
 
 	/**
@@ -717,7 +709,7 @@ public class PersistenceManager {
 	public void deleteGPSFilterArea( GPSFilterArea area ) {
 		OrmHelper helper = this.getHelper();
 
-		helper.getGPSFilterAreaDao().delete( area );
+		helper.dao( GPSFilterArea.class ).delete( area );
 	}
 
 	/**
