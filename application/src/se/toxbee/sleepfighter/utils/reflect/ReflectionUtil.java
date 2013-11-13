@@ -18,7 +18,10 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.reflect;
 
+import java.io.IOException;
+
 import com.google.common.collect.ObjectArrays;
+import com.google.common.reflect.ClassPath;
 
 /**
  * ReflectionUtil provides very basic reflection utilities.
@@ -48,5 +51,34 @@ public class ReflectionUtil {
 	@SuppressWarnings( "unchecked" )
 	public static <T> Class<T> arrayClass( T[] arr ) {
 		return (Class<T>) arr.getClass().getComponentType();
+	}
+
+	/**
+	 * Returns a guava ClassPath object for current thread.
+	 *
+	 * @return the ClassPath object.
+	 */
+	public static ClassPath getClassPath() {
+		// TODO android?
+		ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
+		try {
+			return ClassPath.from( cl );
+		} catch ( IOException e ) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	/**
+	 * {@code Class} to represent a subclass of the given class.
+	 * If successful, this {@code Class} is returned; otherwise null is returned.
+	 *
+	 * @return the {@code Class} or null.
+	 */
+	@SuppressWarnings( "unchecked" )
+	public static <U> Class<? extends U> asSubclass( Class<?> from, Class<U> target ) {
+		return from.isAssignableFrom( target ) ? (Class<U>) from : null;
 	}
 }
