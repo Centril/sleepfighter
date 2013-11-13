@@ -50,6 +50,9 @@ public class StringUtils {
 
 	public static final MapJoiner PROPERTY_MAP_JOINER = Joiner.on(", ").withKeyValueSeparator(": ").useForNull( "null" );
 
+	/** Joiner for commas. */
+	public static final Joiner COMMA_JOINER = Joiner.on( ',' ).skipNulls();
+
 	/** Joiner for whitespace. */
 	public static final Joiner WS_JOINER = Joiner.on( ' ' ).skipNulls();
 
