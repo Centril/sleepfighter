@@ -22,6 +22,7 @@ import java.util.List;
 
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.text.DateTextUtils;
 import se.toxbee.sleepfighter.text.MetaTextUtils;
 import android.app.TimePickerDialog;
@@ -82,24 +83,28 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	private void setupTimeText( final Alarm alarm, View convertView ) {
 		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
 
-		timeTextView.setText( alarm.getTimeString() );
+		timeTextView.setText( alarm.getTime().getTimeString() );
 		timeTextView.setOnClickListener( new OnClickListener() {
-
 			public void onClick( View v ) {
 				
 				OnTimeSetListener onTimePickerSet = new OnTimeSetListener() {
-					
 					@Override
-					public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-						alarm.setTime(hourOfDay, minute);
+					public void onTimeSet(TimePicker view, int h, int m ) {
+						alarm.setTime( new AlarmTime( h, m ) );
 					}
 				};
+
 				// TODO take am/pm into account
 				// And possibly use some way that doesn't make the dialog close
 				// on rotate
-				TimePickerDialog tpd = new TimePickerDialog(getContext(),
-						onTimePickerSet, alarm.getHour(), alarm.getMinute(),
-						true);
+
+				AlarmTime time = alarm.getTime();
+				TimePickerDialog tpd = new TimePickerDialog(
+					getContext(), onTimePickerSet,
+					time.getHour(), time.getMinute(),
+					true
+				);
+
 				tpd.show();
 			}
 		});

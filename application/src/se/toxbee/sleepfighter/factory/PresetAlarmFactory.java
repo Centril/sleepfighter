@@ -20,7 +20,7 @@ package se.toxbee.sleepfighter.factory;
 
 import java.util.Arrays;
 
-import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
@@ -40,13 +40,8 @@ import android.provider.Settings;
  */
 public class PresetAlarmFactory extends AbstractAlarmFactory {
 	@Override
-	protected Alarm instantiateAlarm() {
-		return new Alarm( 8, 0 );
-	}
-
-	@Override
-	protected void setTime( Alarm alarm ) {
-		// Already set time.
+	protected AlarmTime createTime() {
+		return new AlarmTime( 8, 0 );
 	}
 
 	@Override
@@ -87,7 +82,6 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 	protected AudioConfig createAudioConfig() {
 		return new AudioConfig(100, createVibrationFlag());
 	}
-	
 
 	@Override
 	protected SnoozeConfig createSnoozeConfig() {

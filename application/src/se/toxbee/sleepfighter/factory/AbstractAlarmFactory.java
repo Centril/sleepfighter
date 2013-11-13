@@ -19,6 +19,7 @@
 package se.toxbee.sleepfighter.factory;
 
 import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
@@ -34,10 +35,7 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 public abstract class AbstractAlarmFactory implements AlarmFactory {
 	@Override
 	public Alarm createAlarm() {
-		Alarm alarm = this.instantiateAlarm();
-
-		// How to set the time is varied, let concrete factory implement how to set it.
-		this.setTime( alarm );
+		Alarm alarm = this.instantiateAlarm( this.createTime() );
 
 		// Set basic Alarm native properties.
 		alarm.setIsPresetAlarm( this.createIsPresetFlag() );
@@ -46,20 +44,22 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 		alarm.setRepeat( this.createIsRepeatingFlag() );
 		alarm.setName( this.createName() );
 		alarm.setSpeech(this.createIsSpeech());
-		alarm.setFlash(this.createIsFlashEnabled());
+		alarm.setFlash( this.createIsFlashEnabled() );
 
 		// Set foreign objects.
 		alarm.setAudioSource( this.createAudioSource() );
 		alarm.setFetched( this.createAudioConfig() );
 		alarm.setChallenges( this.createChallenges() );
-		alarm.setFetched(createSnoozeConfig());
+		alarm.setFetched( createSnoozeConfig() );
 
 		return alarm;
 	}
 
-	protected abstract Alarm instantiateAlarm();
+	protected Alarm instantiateAlarm( AlarmTime time ) {
+		return new Alarm( time );
+	}
 
-	protected abstract void setTime( Alarm alarm );
+	protected abstract AlarmTime createTime();
 
 	protected abstract boolean createIsRepeatingFlag();
 
@@ -82,7 +82,6 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 	protected abstract ChallengeConfigSet createChallenges();
 	
 	protected abstract boolean createIsFlashEnabled();
-
 
 	protected abstract boolean createIsSpeech();
 }

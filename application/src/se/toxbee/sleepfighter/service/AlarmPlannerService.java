@@ -248,7 +248,7 @@ public class AlarmPlannerService extends IntentService {
 				mainActIntent, 0);
 
 		String name = MetaTextUtils.printAlarmName(this, alarm);
-		String time = alarm.getTimeString();
+		String time = alarm.getTime().getTimeString();
 
 		// Localized strings which we inserts current time and name into
 		String titleFormat = getString(R.string.notification_pending_title);

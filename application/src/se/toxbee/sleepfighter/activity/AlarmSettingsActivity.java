@@ -37,6 +37,7 @@ import se.toxbee.sleepfighter.model.Alarm.AudioChangeEvent;
 import se.toxbee.sleepfighter.model.Alarm.Field;
 import se.toxbee.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.toxbee.sleepfighter.model.AlarmList;
+import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.text.DateTextUtils;
@@ -250,7 +251,6 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 	}
 
-
 	@Override
 	public void onDestroy () {
 		super.onDestroy();
@@ -459,13 +459,12 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			
 			if (TIME.equals(preference.getKey())) {
 				TimepickerPreference tpPref = (TimepickerPreference) preference;
-				
-				int hour = tpPref.getHour();
-				int minute = tpPref.getMinute();
-				
-				alarm.setTime(hour, minute);
-				
-				preference.setSummary((hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
+
+				AlarmTime time = new AlarmTime( tpPref.getHour(), tpPref.getMinute() );
+
+				alarm.setTime( time );
+
+				preference.setSummary( time.getTimeString() );
 			}
 			else if (NAME.equals(preference.getKey())) {
 				alarm.setName(stringValue);
@@ -526,7 +525,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		else if (TIME.equals(preference.getKey())) {
 			initiateTimePicker((TimepickerPreference)preference);
-			preference.setSummary(alarm.getTimeString());
+			preference.setSummary(alarm.getTime().getTimeString());
 		}
 		else if(DAYS.equals(preference.getKey())) {
 			((MultiSelectListPreference) preference).setEntryChecked(alarm.getEnabledDays());;
@@ -566,8 +565,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 	}
 	
-	private void initiateTimePicker(TimepickerPreference tp) {
-		tp.setHour(alarm.getHour());
-		tp.setMinute(alarm.getMinute());
+	private void initiateTimePicker( TimepickerPreference tp ) {
+		AlarmTime time = this.alarm.getTime();
+
+		tp.setHour( time.getHour() );
+		tp.setMinute( time.getMinute() );
 	}
 }

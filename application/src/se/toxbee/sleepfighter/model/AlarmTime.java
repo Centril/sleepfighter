@@ -19,6 +19,7 @@
 package se.toxbee.sleepfighter.model;
 
 import org.joda.time.DateTime;
+import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 
 import com.google.common.collect.ComparisonChain;
@@ -62,6 +63,15 @@ public class AlarmTime implements Comparable<AlarmTime> {
 	 */
 	public int getHour() {
 		return this.hour;
+	}
+
+	/**
+	 * Copy constructor.
+	 *
+	 * @param rhs the time to copy from.
+	 */
+	public AlarmTime( AlarmTime rhs ) {
+		this( rhs.hour, rhs.minute, rhs.second );
 	}
 
 	/**
@@ -176,6 +186,15 @@ public class AlarmTime implements Comparable<AlarmTime> {
 	}
 
 	/**
+	 * Returns the AlarmTime as a string with format: HH:MM.
+	 *
+	 * @return the string.
+	 */
+	public String getTimeString() {
+		return this.getTimeString( true );
+	}
+
+	/**
 	 * <p>Compares with following order: {@link #getSecond()}, {@link #getMinute()}, {@link #getHour()}.</p>
 	 *
 	 * {@inheritDoc}
@@ -187,5 +206,19 @@ public class AlarmTime implements Comparable<AlarmTime> {
 			.compare( this.minute, r.minute )
 			.compare( this.hour, r.hour )
 			.result();
+	}
+
+	/**
+	 * Returns a MutableDateTime for "now" but offset to the same day with the time of this AlarmTime.
+	 *
+	 * @param now now in UNIX epoch timestamp.
+	 * @return the MutableDateTime.
+	 */
+	public MutableDateTime forNow( long now ) {
+		MutableDateTime t = new MutableDateTime( now );
+		t.setHourOfDay( this.hour );
+		t.setMinuteOfHour( this.minute );
+		t.setSecondOfMinute( this.second );
+		return t;
 	}
 }

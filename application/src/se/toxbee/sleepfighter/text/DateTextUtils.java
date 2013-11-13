@@ -92,9 +92,10 @@ public class DateTextUtils {
 				throw new RuntimeException( "Time given is before now." );
 			}
 
-			// Prepare replacements.
 			Alarm alarm = ats.getAlarm();
-			String timeReplacement = StringUtils.joinTime( alarm.getHour(), alarm.getMinute() );
+
+			// Prepare replacements.
+			String timeReplacement = alarm.getTime().getTimeString();
 
 			// Calculate start of tomorrow.
 			DateTime nowTime = new DateTime( now );

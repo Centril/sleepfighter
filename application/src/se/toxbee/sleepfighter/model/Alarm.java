@@ -24,7 +24,6 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
-import org.joda.time.ReadableDateTime;
 
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
@@ -37,8 +36,10 @@ import se.toxbee.sleepfighter.utils.model.IdProvider;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.provider.Settings;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import com.google.common.primitives.Booleans;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -205,6 +206,9 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	public static final String UNNAMED = null;
 
 	@DatabaseField
+	private AlarmTime time;
+
+	@DatabaseField
 	private int hour;
 
 	@DatabaseField
@@ -263,7 +267,16 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * Constructs an alarm to current time.
 	 */
 	public Alarm() {
-		this( new DateTime() );
+		this( new AlarmTime( new DateTime() ) );
+	}
+
+	/**
+	 * Constructs an alarm for given time.
+	 *
+	 * @param time the time.
+	 */
+	public Alarm( AlarmTime time ) {
+		this.time = time;
 	}
 
 	/**
@@ -276,9 +289,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		this.setId( NOT_COMMITTED_ID );
 
 		// Copy data.
-		this.hour = rhs.hour;
-		this.minute = rhs.minute;
-		this.second = rhs.second;
+		this.time = new AlarmTime( rhs.time );
 		this.isActivated = rhs.isActivated;
 		this.enabledDays = rhs.enabledDays;
 		this.name = rhs.name;
@@ -297,46 +308,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		
 		this.isSpeech = rhs.isSpeech;
 		this.isFlash = rhs.isFlash;
-		
-	}
-
-	/**
-	 *  Constructs an alarm given an hour and minute.
-	 * 
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 */
-	public Alarm(int hour, int minute) {
-		this(hour, minute, 0);
-	}
-
-	/**
-	 *  Constructs an alarm given an hour, minute and, second.
-	 * 
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 * @param second the second the alarm should occur.
-	 */
-	public Alarm(int hour, int minute, int second) {
-		this.setTime(hour, minute, second);
-	}
-
-	/**
-	 * Constructs an alarm with values derived from a unix epoch timestamp.
-	 *
-	 * @param time time in unix epoch timestamp.
-	 */
-	public Alarm(long time) {
-		this.setTime(time);
-	}
-
-	/**
-	 * Sets the hour, minute and second of this alarm derived from a {@link ReadableDateTime} object.
-	 * 
-	 * @param time a {@link ReadableDateTime} object. 
-	 */
-	public Alarm(ReadableDateTime time) {
-		this.setTime(time);
 	}
 
 	/* --------------------------------
@@ -426,57 +397,28 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	/**
-	 * Sets the hour and minute of this alarm.<br/>
-	 * This is the equivalent of {@link #setTime(int, int, int)} with <code>(hour, minute, 0)</code>.
+	 * Returns the time of the alarm (not timestamp, see {@link #getNextMillis(long)} for that...).
 	 *
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
+	 * @return the time.
 	 */
-	public synchronized void setTime(int hour, int minute) {
-		this.setTime( hour, minute, 0 );
+	public AlarmTime getTime() {
+		return this.time;
 	}
 
 	/**
-	 * Sets the hour, minute and second of this alarm.
+	 * Sets the time to the given time.<br/>
+	 * For performance, the passed value is not cloned.
 	 *
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 * @param second the second the alarm should occur.
+	 * @param time the time to set alarm to.
 	 */
-	public synchronized void setTime( int hour, int minute, int second ) {
-		if ( this.hour == hour && this.minute == minute && this.second == second ) {
+	public synchronized void setTime( AlarmTime time ) {
+		if ( Objects.equal( this.time, time ) ) {
 			return;
 		}
 
-		if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59 ) {
-			throw new IllegalArgumentException();
-		}
-
-		int[] old = new int[] { this.hour, this.minute, this.second };
-
-		this.hour = hour;
-		this.minute = minute;
-		this.second = second;
-
+		AlarmTime old = this.time;
+		this.time = time;
 		this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
-	}
-
-	/**
-	 * Sets the hour, minute and second of this alarm derived from a unix epoch timestamp.
-	 *
-	 * @param time time in unix epoch timestamp.
-	 */
-	public synchronized void setTime( long time ) {
-		this.setTime( new DateTime(time) );
-	}
-
-	/**
-	 * Sets the hour, minute and second of this alarm derived from a {@link ReadableDateTime} object.
-	 *
-	 * @param time a {@link ReadableDateTime} object.
-	 */
-	public synchronized void setTime( ReadableDateTime time ) {
-		this.setTime( time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute() );
 	}
 
 	/**
@@ -519,10 +461,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 			return NEXT_NON_REAL;
 		}
 
-		MutableDateTime next = new MutableDateTime(now);
-		next.setHourOfDay( this.hour );
-		next.setMinuteOfHour( this.minute );
-		next.setSecondOfMinute( this.second );
+		MutableDateTime next = this.getTime().forNow( now );
 
 		// Check if alarm was earlier today. If so, move to next day
 		if ( next.isBefore( now ) ) {
@@ -567,40 +506,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 			return false;
 		}
 
-		for ( boolean day : this.enabledDays ) {
-			if ( day == true ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Returns the hour the alarm occurs.
-	 *
-	 * @return the hour the alarm occurs.
-	 */
-	public int getHour() {
-		return this.hour;
-	}
-
-	/**
-	 * Returns the minute the alarm occurs.
-	 *
-	 * @return the minute the alarm occurs.
-	 */
-	public int getMinute() {
-		return this.minute;
-	}
-
-	/**
-	 * Returns the second the alarm occurs.
-	 *
-	 * @return the second the alarm occurs.
-	 */
-	public int getSecond() {
-		return this.second;
+		return Booleans.contains( this.enabledDays, true );
 	}
 
 	/**
@@ -608,7 +514,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 *
 	 * @param isActivated whether or not the alarm should be active.
 	 */
-	public void setActivated(boolean isActivated) {
+	public void setActivated( boolean isActivated ) {
 		if ( this.isActivated == isActivated ) {
 			return;
 		}
@@ -682,15 +588,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		prop.put( "audio_config", this.getAudioConfig().toString() );
 
 		return "Alarm[" + StringUtils.PROPERTY_MAP_JOINER.join( prop ) + "]";
-	}
-
-	/**
-	 * Returns the Alarm:s time in the format: hh:mm.
-	 *
-	 * @return the formatted time.
-	 */
-	public String getTimeString() {
-		return StringUtils.joinTime( this.getHour(), this.getMinute() );
 	}
 
 	/**
@@ -768,11 +665,21 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		return this.isFlash;
 	}
 
-	// if true, then the time and weather will be read out when the alarm goes off.
+	/**
+	 * Returns whether or not speech is enabled.<br/>
+	 * If true, then the time and weather will be read out when the alarm goes off.
+	 *
+	 * @return true if enabled.
+	 */
 	public boolean isSpeech() {
 		return this.isSpeech;
 	}
-	
+
+	/**
+	 * Sets whether or not speech is enabled.
+	 *
+	 * @param isSpeech true if enabled.
+	 */
 	public void setSpeech(boolean isSpeech) {
 		if ( this.isSpeech == isSpeech ) {
 			return;
