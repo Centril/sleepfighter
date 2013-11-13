@@ -41,6 +41,9 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.utils.debug.Debug;
+import se.toxbee.sleepfighter.utils.message.Message;
+import se.toxbee.sleepfighter.utils.message.MessageBus;
+import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
 import android.content.Context;
 import android.util.Log;
@@ -51,7 +54,6 @@ import com.google.common.collect.Sets;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.field.DataPersisterManager;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.table.TableUtils;
 
 /**
  * Handles all reads and writes to persistence.<br/>
@@ -61,12 +63,20 @@ import com.j256.ormlite.table.TableUtils;
  * @version 1.0
  * @since Sep 21, 2013
  */
-public class PersistenceManager {
+public class PersistenceManager implements MessageBusHolder {
 	private static final String TAG = PersistenceManager.class.getSimpleName();
+
+	private static final Class<?>[] ALARM_AND_DEPENDERS = new Class<?>[] {
+		Alarm.class,
+		SnoozeConfig.class,
+		AudioSource.class, AudioConfig.class,
+		ChallengeConfigSet.class, ChallengeConfig.class, ChallengeParam.class
+	};
 
 	private volatile OrmHelper ormHelper = null;
 
 	private Context context;
+	private MessageBus<Message> bus = null;
 
 	private static boolean init = false;
 
@@ -198,9 +208,11 @@ public class PersistenceManager {
 	 * Constructs the PersistenceManager.
 	 *
 	 * @param context android context.
+	 * @param bus the message bus.
 	 */
-	public PersistenceManager( Context context ) {
+	public PersistenceManager( Context context, MessageBus<Message> bus ) {
 		this.setContext( context );
+		this.setMessageBus( bus );
 	}
 
 	/**
@@ -210,6 +222,26 @@ public class PersistenceManager {
 	 */
 	public void setContext( Context context ) {
 		this.context = context;
+	}
+
+	@Override
+	public void setMessageBus( MessageBus<Message> bus ) {
+		// Remove ourselves from old bus if any.
+		if ( this.bus != null ) {
+			this.bus.unsubscribe( this );
+		}
+
+		this.bus = bus;
+
+		// Register ourselves to bus.
+		if ( this.bus != null ) {
+			this.bus.subscribe( this );
+		}
+	}
+
+	@Override
+	public MessageBus<Message> getMessageBus() {
+		return this.bus;
 	}
 
 	/**
@@ -225,29 +257,7 @@ public class PersistenceManager {
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void clearAlarms() throws PersistenceException {
-		this.clearTable( Alarm.class );
-
-		this.clearTable( AudioSource.class );
-		this.clearTable( AudioConfig.class );
-
-		this.clearTable( ChallengeConfigSet.class );
-		this.clearTable( ChallengeConfig.class );
-		this.clearTable( ChallengeParam.class );
-
-		this.clearTable(SnoozeConfig.class);
-	}
-
-	/**
-	 * Clears a DB table for given class.
-	 *
-	 * @param clazz the class to clear table for.
-	 */
-	private void clearTable( Class<?> clazz ) {
-		try {
-			TableUtils.clearTable( this.getHelper().getConnectionSource(), clazz );
-		} catch ( SQLException e ) {
-			throw new PersistenceException( e );
-		}
+		this.getHelper().clear( ALARM_AND_DEPENDERS );
 	}
 
 	/**
@@ -685,8 +695,7 @@ public class PersistenceManager {
 	 * @return the list of GPSFilterArea:s.
 	 */
 	public GPSFilterAreaSet fetchGPSFilterAreas() {
-		OrmHelper helper = this.getHelper();
-		return new GPSFilterAreaSet( helper.dao( GPSFilterArea.class ).queryForAll() );
+		return new GPSFilterAreaSet( this.getHelper().dao( GPSFilterArea.class ).queryForAll() );
 	}
 
 	/**
@@ -697,8 +706,7 @@ public class PersistenceManager {
 	public void setGPSFilterArea( GPSFilterArea area ) {
 		Log.d( TAG, area.toString() );
 
-		OrmHelper helper = this.getHelper();
-		helper.dao( GPSFilterArea.class ).createOrUpdate( area );
+		this.getHelper().dao( GPSFilterArea.class ).createOrUpdate( area );
 	}
 
 	/**
@@ -707,16 +715,14 @@ public class PersistenceManager {
 	 * @param area the area.
 	 */
 	public void deleteGPSFilterArea( GPSFilterArea area ) {
-		OrmHelper helper = this.getHelper();
-
-		helper.dao( GPSFilterArea.class ).delete( area );
+		this.getHelper().dao( GPSFilterArea.class ).delete( area );
 	}
 
 	/**
-	 * Removes all gpsfilter areas.
+	 * Removes all GPSFilterArea:s.
 	 */
 	public void clearGPSFilterAreas() {
-		this.clearTable( GPSFilterArea.class );
+		this.getHelper().clear( GPSFilterArea.class );
 	}
 
 	/**
@@ -751,6 +757,7 @@ public class PersistenceManager {
 	 */
 	private void loadHelper() {
 		this.ormHelper = OpenHelperManager.getHelper( this.context, OrmHelper.class );
+		this.ormHelper.setMessageBus( this.getMessageBus() );
 
 		this.init();
 	}
@@ -775,4 +782,5 @@ public class PersistenceManager {
 	private void registerDataTypes() {
 		DataPersisterManager.registerDataPersisters( BooleanArrayType.getSingleton() );
 	}
+
 }

@@ -22,6 +22,8 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 
+import se.toxbee.sleepfighter.android.utils.ApplicationUtils;
+import se.toxbee.sleepfighter.android.utils.Toaster;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.factory.FromPresetAlarmFactory;
@@ -29,6 +31,7 @@ import se.toxbee.sleepfighter.factory.PresetAlarmFactory;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
+import se.toxbee.sleepfighter.persist.OrmHelper.OrmAlterFailureEvent;
 import se.toxbee.sleepfighter.persist.PersistenceManager;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
@@ -37,6 +40,7 @@ import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.view.ViewConfiguration;
 
@@ -45,17 +49,18 @@ import android.view.ViewConfiguration;
  */
 public class SFApplication extends Application implements TextToSpeech.OnInitListener {
 	private static final boolean CLEAN_START = false;
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 	private static SFApplication app;
 
+	// State that is is initialized in onCreate:
+	private MessageBus<Message> bus;
+	private PersistenceManager persistenceManager;
 	private GlobalPreferencesManager prefs;
+	private TextToSpeech tts;
 
 	private AlarmList alarmList;
 	private Alarm ringingAlarm;
-	private MessageBus<Message> bus;
-
-	private PersistenceManager persistenceManager;
 
 	private AlarmPlannerService.ChangeHandler alarmPlanner;
 
@@ -65,10 +70,6 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	private FromPresetAlarmFactory fromPresetFactory;
 
 	private GPSFilterAreaSet gpsAreaManaged;
-	
-	//private String weather;
-	
-	private TextToSpeech tts;
 
 	// called when the text to speech engine is initialized. 
 	@Override
@@ -77,21 +78,22 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
 		TextToSpeechUtil.config(tts);
 	}
-	
-	
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		app = this;
 
-		tts = new TextToSpeech(this, this);
+		this.tts = new TextToSpeech(this, this);
 		
 		this.prefs = new GlobalPreferencesManager( this );
 
-		this.persistenceManager = new PersistenceManager( this );
-		this.getBus().subscribe( this.persistenceManager );
+		this.persistenceManager = new PersistenceManager( this, this.getBus() );
+		if ( CLEAN_START ) {
+			this.persistenceManager.cleanStart();
+		}
 
-		forceActionBarOverflow();
+		this.forceActionBarOverflow();
 	}
 
 	/**
@@ -109,9 +111,7 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 * 
 	 * <p>
 	 * Solution from stackoverflow post found 
-	 * <a href="http://stackoverflow.com/questions/9286822/
-	 * how-to-force-use-of-overflow-menu-on-devices-with-menu-button/
-	 * 11438245#11438245">here</a>.
+	 * <a href="http://stackoverflow.com/questions/9286822/how-to-force-use-of-overflow-menu-on-devices-with-menu-button/11438245#11438245">here</a>.
 	 * </p>
 	 */
 	private void forceActionBarOverflow() {
@@ -190,10 +190,6 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 */
 	public synchronized AlarmList getAlarms() {
 		if ( this.alarmList == null ) {
-			if ( CLEAN_START ) {
-				this.persistenceManager.cleanStart();
-			}
-
 			List<Alarm> alarms = this.getPersister().fetchAlarms();
 			this.filterPresetAlarm( alarms );
 
@@ -230,6 +226,35 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 */
 	public synchronized PersistenceManager getPersister() {
 		return this.persistenceManager;
+	}
+
+	/**
+	 * Handler for failure to alter database (persistence...)
+	 *
+	 * @param evt the failure event.
+	 */
+	public void handlePersistenceError( OrmAlterFailureEvent evt ) {
+		switch ( evt ) {
+		case CREATE: {
+			Toaster.out( this, R.string.database_create_error );
+
+			// Kill application in 1 second.
+			new Handler().postDelayed( new Runnable() {
+				@Override
+				public void run() {
+					ApplicationUtils.kill( false );
+				}
+			}, 1000 );
+			break;
+		}
+
+		case UPGRADE:
+			Toaster.out( this, R.string.database_upgrade_error );
+			break;
+
+		default:
+			throw new AssertionError();
+		}
 	}
 
 	/**
@@ -290,8 +315,12 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	public synchronized void releaseGPSSet() {
 		this.gpsAreaManaged = null;
 	}
-	
-	
+
+	/**
+	 * Returns the TextToSpeech engine.
+	 *
+	 * @return the TTS engine.
+	 */
 	public TextToSpeech getTts() {
 		return this.tts;
 	}

@@ -18,8 +18,16 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
@@ -29,31 +37,51 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeConfig;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeParam;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
+import se.toxbee.sleepfighter.persist.migration.MigrationException;
+import se.toxbee.sleepfighter.persist.migration.MigrationException.Reason;
+import se.toxbee.sleepfighter.persist.migration.VersionMigrater;
+import se.toxbee.sleepfighter.utils.message.Message;
+import se.toxbee.sleepfighter.utils.message.MessageBus;
+import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
+import se.toxbee.sleepfighter.utils.reflect.ReflectionUtil;
+import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 /**
- * Provides an OrmLiteSqliteOpenHelper for application.
+ * Provides an OrmLiteSqliteOpenHelper for persistence layer.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Sep 21, 2013
  */
-public class OrmHelper extends OrmLiteSqliteOpenHelper {
+public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHolder {
+	private static final String TAG = OrmHelper.class.getSimpleName();
+
 	// Name of the database file in application.
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
 	// IMPORTANT: If you update this, also add the old version to the switch/case
 	private static final int DATABASE_VERSION = 23;
+
+	// Package containing migrations for versions, relative to this one.
+	private static final String MIGRATION_PACKAGE = ".upgrades";
 
 	// List of all classes that is managed by helper.
 	private static final Class<?>[] CLASSES = new Class<?>[] {
@@ -71,8 +99,21 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 		GPSFilterArea.class
 	};
 
+	/**
+	 * OrmAlterFailureEvent occurs when migration fails.
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Nov 13, 2013
+	 */
+	public static enum OrmAlterFailureEvent implements Message {
+		UPGRADE, CREATE
+	}
+
 	private final Map<Class<?>, PersistenceExceptionDao<Class<?>, Integer>> daoMap = Maps.newHashMap();
 	private final Map<Class<?>, DaoInitRunner<?>> daoInitRunners = Maps.newHashMap();
+
+	private MessageBus<Message> bus;
 
 	/**
 	 * DaoInitRunner is a method run when a Dao is first initialized.
@@ -81,7 +122,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 * @version 1.0
 	 * @since Nov 12, 2013
 	 */
-	public interface DaoInitRunner<T> {
+	public static interface DaoInitRunner<T> {
 		/**
 		 * Called when Dao is initialized.
 		 *
@@ -165,10 +206,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 *
 	 * @param context the context to use.
 	 */
-	public OrmHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		// TODO.
-		//super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
+	public OrmHelper( Context context ) {
+		super( context, DATABASE_NAME, null, DATABASE_VERSION );
 	}
 
 	/**
@@ -182,7 +221,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 				TableUtils.createTable( connectionSource, clazz );
 			}
 		} catch ( SQLException e ) {
-			Log.e( OrmHelper.class.getName(), "Can't create database", e );
+			this.bus.publish( OrmAlterFailureEvent.CREATE );
+			Log.e( OrmHelper.class.getName(), "Fatal error: Can't create database", e );
 			throw new PersistenceException( e );
 		}
 	}
@@ -192,52 +232,225 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 * and this entails a changed model and therefore changed DB structure.</p>
 	 */
 	@Override
-	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource,
-			int oldVersion, int newVersion) {
-		try {
-			switch(oldVersion) {
-			// Only test on 19 and higher, since that is the Release version
-			case 19:
-			case 20:
-			case 21:
-				this.dao( Alarm.class ).executeRaw("ALTER TABLE 'alarm'" +
-						"ADD COLUMN 'isFlash' BOOLEAN DEFAULT false;");
-			case 22:
-				TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
-				TableUtils.createTable( connectionSource, ChallengeParam.class );
-				// Break after the newest version
-				break;
-			default:
-				// Just drop everything if the version is a pre-release version
-				if (oldVersion < 19) {
-					dropEverything(connectionSource);
-					onCreate(db, connectionSource);
-				}
-				else {
-					throw new RuntimeException("Strange Database Version in OrmHelper." +
-							"Check database version and switch/case.");
-				}
-			}
-		} catch (SQLException e) {
-			Log.e(OrmHelper.class.getName(), "SQL exception during database upgrade", e);
-			throw new PersistenceException(e);
+	public void onUpgrade(SQLiteDatabase db, ConnectionSource cs, int oldVersion, int newVersion) {
+		if ( oldVersion == newVersion ) {
+			return;
+		}
+
+		if ( !this.performMigration( cs, db, oldVersion, newVersion ) ) {
+			this.getMessageBus().publishAsync( OrmAlterFailureEvent.UPGRADE );
+			this.rebuild();
 		}
 	}
 
 	/**
-	 * Tries to drop all tables in database.
+	 * Performs migration from oldVersion to newVersion returning true on success and false on failure.
 	 *
-	 * @param connectionSource
+	 * @param cs
+	 * @param oldVersion
+	 * @param newVersion
+	 * @return
 	 */
-	private void dropEverything( ConnectionSource connectionSource ) {
+	private boolean performMigration( final ConnectionSource cs, final SQLiteDatabase db, final int oldVersion, final int newVersion ) {
+		final OrmHelper self = this;
 		try {
-			for ( Class<?> clazz : CLASSES ) {
-				TableUtils.dropTable( connectionSource, clazz, true );
+			return TransactionManager.callInTransaction( cs, new Callable<Boolean>() {
+				@Override
+				public Boolean call() throws Exception {
+					try {
+						final List<VersionMigrater> list = self.assembleMigraters( oldVersion, newVersion );
+						PersistenceExceptionDao<?, Integer> rawDao = self.rawDao();
+
+						for ( VersionMigrater m : list ) {
+							m.applyMigration( cs, db, rawDao );
+						}
+
+						return true;
+					} catch ( MigrationException e ) {
+						Log.e( TAG, "Error during migration.", e );
+						return false;
+					} catch ( Exception e ) {
+						Log.e( TAG, "Error during migration.", e );
+						return false;
+					}
+				}
+			} );
+		} catch ( SQLException e ) {
+			Log.e( TAG, "Error during migration.", e );
+			return false;
+		}
+	}
+
+	private List<VersionMigrater> assembleMigraters( int oldVersion, int newVersion ) throws MigrationException {
+		List<VersionMigrater> list = this.findMigraters( oldVersion );
+
+		// Let the migraters report what versions to skip.
+		Set<Integer> skipVersions = Sets.newHashSet();
+		for ( VersionMigrater m : list ) {
+			Collection<Integer> skip = m.skipVersions( oldVersion, newVersion );
+			if ( skip != null ) {
+				skipVersions.addAll( skip );
+			}
+		}
+
+		// Remove any migraters to skip.
+		Iterator<VersionMigrater> it = list.iterator();
+		while ( it.hasNext() ) {
+			VersionMigrater m = it.next();
+			if ( skipVersions.contains( m.versionCode() ) ) {
+				it.remove();
+			}
+		}
+
+		if ( list.isEmpty() ) {
+			throw new MigrationException( "No migraters found, the version is too old", Reason.TOO_OLD, oldVersion );
+		}
+
+		// Finally sort the migraters based on version.
+		Collections.sort( list, new Ordering<VersionMigrater>() {
+			@Override
+			public int compare( VersionMigrater a, VersionMigrater b ) {
+				return Ints.compare( a.versionCode(), b.versionCode() );
+			}
+		} );
+
+		return list;
+	}
+
+	/**
+	 * Finds any migraters available.
+	 *
+	 * @param originVersion the version we are coming from.
+	 * @return a list of migraters.
+	 * @throws MigrationException If there was some error in finding migraters,
+	 *							  this is super almost {@link AssertionError} level serious.
+	 */
+	private List<VersionMigrater> findMigraters( int originVersion ) throws MigrationException {
+		List<VersionMigrater> list = Lists.newArrayList();
+
+		try {
+			// Find all classes that are 
+			ClassPath cp = ReflectionUtil.getClassPath();
+			String pack = this.getClass().getPackage().getName() + MIGRATION_PACKAGE;
+			for ( ClassInfo info : cp.getTopLevelClassesRecursive( pack ) ) {
+				// Skip the class if the version is not appropriate.
+				int version = StringUtils.getDigitsIn( info.getSimpleName() );
+				if ( originVersion >= version ) {
+					continue;
+				}
+
+				// Load the class, skip if not a migrater.
+				Class<? extends VersionMigrater> clazz = ReflectionUtil.asSubclass( info.load(), VersionMigrater.class );
+				if ( clazz == null ) {
+					continue;
+				}
+
+				// Time to construct the migrater.
+				VersionMigrater migrater;
+
+				try {
+					Constructor<? extends VersionMigrater> ctor = clazz.getConstructor();
+					migrater = (VersionMigrater) ctor.newInstance();
+				} catch ( NoSuchMethodException e ) {
+					throw new MigrationException( "No no-arg constructor found for migrater", e, version );
+				} catch ( InstantiationException e ) {
+					throw new MigrationException( "Could not instantiate migrater", e, version );
+				} catch ( IllegalAccessException e ) {
+					throw new MigrationException( "Could not access migrater constructor", e, version );
+				} catch ( InvocationTargetException e ) {
+					throw new MigrationException( "Migrater constructor threw exception.", e, version );
+				}
+
+				// Double check to ensure migrater version is appropriate.
+				if ( originVersion > migrater.versionCode() ) {
+					continue;
+				}
+
+				// Finally, we've got a migrater.
+				list.add( migrater );
+			}
+		} catch( RuntimeException e ) {
+			throw new MigrationException( "Failure in finding migraters", e, originVersion );
+		}
+
+		return list;
+	}
+
+	/**
+	 * Returns a Dao which you can run raw statements on.
+	 *
+	 * @return the Dao.
+	 */
+	public PersistenceExceptionDao<?, Integer> rawDao() {
+		return this.dao( Alarm.class );
+	}
+
+	/**
+	 * Drops all DB tables for clazzes.
+	 *
+	 * @param clazzes the classes to drop tables for.
+	 * @return this.
+	 */
+	public OrmHelper drop( Class<?>[] clazzes ) {
+		try {
+			for ( Class<?> clazz : clazzes ) {
+				TableUtils.dropTable( this.getConnectionSource(), clazz, true );
 			}
 		} catch ( SQLException e ) {
 			Log.e( OrmHelper.class.getName(), "Can't drop databases", e );
 			throw new PersistenceException( e );
 		}
+		return this;
+	}
+
+	/**
+	 * Clears all DB tables for clazzes.
+	 *
+	 * @param clazzes the classes to clear tables for.
+	 * @return this.
+	 */
+	public OrmHelper clear( Class<?>[] clazzes ) {
+		try {
+			for ( Class<?> clazz : clazzes ) {
+				TableUtils.clearTable( this.getConnectionSource(), clazz );
+			}
+		} catch ( SQLException e ) {
+			Log.e( OrmHelper.class.getName(), "Can't drop databases", e );
+			throw new PersistenceException( e );
+		}
+		return this;
+	}
+
+	/**
+	 * Drops a DB table for given clazz.
+	 *
+	 * @param clazz the class to drop table for.
+	 * @return this.
+	 */
+	public OrmHelper drop( Class<?> clazz ) {
+		try {
+			TableUtils.dropTable( this.getConnectionSource(), clazz, true );
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
+
+		return this;
+	}
+
+	/**
+	 * Clears a DB table for given clazz.
+	 *
+	 * @param clazz the class to clear table for.
+	 * @return this.
+	 */
+	public OrmHelper clear( Class<?> clazz ) {
+		try {
+			TableUtils.clearTable( this.getConnectionSource(), clazz );
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
+
+		return this;
 	}
 
 	/**
@@ -245,8 +458,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 */
 	public void rebuild() {
 		SQLiteDatabase db = this.getWritableDatabase();
-		this.dropEverything( this.connectionSource );
-		this.onCreate( db, this.connectionSource);
+		this.drop( CLASSES );
+		this.onCreate( db, this.getConnectionSource() );
 	}
 
 	/**
@@ -261,5 +474,16 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 
 		// Clear all caches (Dao + Object).
 		DaoManager.clearCache();
+	}
+
+
+	@Override
+	public void setMessageBus( MessageBus<Message> bus ) {
+		this.bus = bus;
+	}
+
+	@Override
+	public MessageBus<Message> getMessageBus() {
+		return this.bus;
 	}
 }
