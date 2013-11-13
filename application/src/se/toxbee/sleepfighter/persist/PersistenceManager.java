@@ -766,6 +766,13 @@ public class PersistenceManager {
 		init = true;
 
 		// Initialization code goes here.
+		this.registerDataTypes();
+	}
+
+	/**
+	 * Registering of data types goes here.
+	 */
+	private void registerDataTypes() {
 		DataPersisterManager.registerDataPersisters( BooleanArrayType.getSingleton() );
 	}
 }
