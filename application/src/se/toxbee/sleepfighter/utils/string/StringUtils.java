@@ -89,7 +89,8 @@ public class StringUtils {
 	}
 
 	/**
-	 * Capitalizes the first letter of a string.
+	 * Capitalizes the first letter of a string.<br/>
+	 * The rest of the letters are lower cased.
 	 *
 	 * @param string the string to capitalize.
 	 * @return the capitalized string.
@@ -104,7 +105,7 @@ public class StringUtils {
 	 * @param value the value string.
 	 * @return natural read number.
 	 */
-	public static Integer readHexString( String value ) {
+	public static int readHexString( String value ) {
 		if ( value.charAt( 0 ) == '#' ) {
 			value = value.substring( 1 );
 		} else if ( value.startsWith( "0x" ) ) {
@@ -141,6 +142,6 @@ public class StringUtils {
 	 */
 	public static final int getDigitsIn( CharSequence seq ) {
 		String s = CharMatcher.JAVA_DIGIT.retainFrom( Preconditions.checkNotNull( seq ) );
-		return seq.length() == -1 ? 0 : Integer.parseInt( s );
+		return seq.length() == 0 ? -1 : Integer.parseInt( s );
 	}
 }
