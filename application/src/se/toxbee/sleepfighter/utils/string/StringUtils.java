@@ -21,7 +21,9 @@ package se.toxbee.sleepfighter.utils.string;
 import java.io.File;
 import java.util.Locale;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.base.Splitter;
@@ -126,5 +128,16 @@ public class StringUtils {
 		}
 
 		return TIME_JOINER.join( paddedParts );
+	}
+
+	/**
+	 * Returns the digits in a given CharSequence as a positive integer.
+	 *
+	 * @param seq the sequence.
+	 * @return the integer, if no digits were found -1 is returned.
+	 */
+	public static final int getDigitsIn( CharSequence seq ) {
+		String s = CharMatcher.JAVA_DIGIT.retainFrom( Preconditions.checkNotNull( seq ) );
+		return seq.length() == -1 ? 0 : Integer.parseInt( s );
 	}
 }
