@@ -18,16 +18,8 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Callable;
 
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
@@ -37,29 +29,18 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeConfig;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeParam;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
-import se.toxbee.sleepfighter.persist.migration.MigrationException;
-import se.toxbee.sleepfighter.persist.migration.MigrationException.Reason;
-import se.toxbee.sleepfighter.persist.migration.VersionMigrater;
+import se.toxbee.sleepfighter.persist.migration.MigrationExecutor;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
-import se.toxbee.sleepfighter.utils.reflect.ReflectionUtil;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Sets;
-import com.google.common.primitives.Ints;
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -71,17 +52,12 @@ import com.j256.ormlite.table.TableUtils;
  * @since Sep 21, 2013
  */
 public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHolder {
-	private static final String TAG = OrmHelper.class.getSimpleName();
-
 	// Name of the database file in application.
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
 	// IMPORTANT: If you update this, also add the old version to the switch/case
-	private static final int DATABASE_VERSION = 23;
-
-	// Package containing migrations for versions, relative to this one.
-	private static final String MIGRATION_PACKAGE = ".upgrades";
+	private static final int DATABASE_VERSION = 24;
 
 	// List of all classes that is managed by helper.
 	private static final Class<?>[] CLASSES = new Class<?>[] {
@@ -237,143 +213,15 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHold
 			return;
 		}
 
-		if ( !this.performMigration( cs, db, oldVersion, newVersion ) ) {
+		// Execute the migration.
+		MigrationExecutor mig = new MigrationExecutor();
+		boolean success = mig.execute( cs, db, oldVersion, newVersion );
+
+		// Rebuild on failure.
+		if ( !success ) {
 			this.getMessageBus().publishAsync( OrmAlterFailureEvent.UPGRADE );
 			this.rebuild();
 		}
-	}
-
-	/**
-	 * Performs migration from oldVersion to newVersion returning true on success and false on failure.
-	 *
-	 * @param cs
-	 * @param oldVersion
-	 * @param newVersion
-	 * @return
-	 */
-	private boolean performMigration( final ConnectionSource cs, final SQLiteDatabase db, final int oldVersion, final int newVersion ) {
-		final OrmHelper self = this;
-		try {
-			return TransactionManager.callInTransaction( cs, new Callable<Boolean>() {
-				@Override
-				public Boolean call() throws Exception {
-					try {
-						final List<VersionMigrater> list = self.assembleMigraters( oldVersion, newVersion );
-						PersistenceExceptionDao<?, Integer> rawDao = self.rawDao();
-
-						for ( VersionMigrater m : list ) {
-							m.applyMigration( cs, db, rawDao );
-						}
-
-						return true;
-					} catch ( MigrationException e ) {
-						Log.e( TAG, "Error during migration.", e );
-						return false;
-					} catch ( Exception e ) {
-						Log.e( TAG, "Error during migration.", e );
-						return false;
-					}
-				}
-			} );
-		} catch ( SQLException e ) {
-			Log.e( TAG, "Error during migration.", e );
-			return false;
-		}
-	}
-
-	private List<VersionMigrater> assembleMigraters( int oldVersion, int newVersion ) throws MigrationException {
-		List<VersionMigrater> list = this.findMigraters( oldVersion );
-
-		// Let the migraters report what versions to skip.
-		Set<Integer> skipVersions = Sets.newHashSet();
-		for ( VersionMigrater m : list ) {
-			Collection<Integer> skip = m.skipVersions( oldVersion, newVersion );
-			if ( skip != null ) {
-				skipVersions.addAll( skip );
-			}
-		}
-
-		// Remove any migraters to skip.
-		Iterator<VersionMigrater> it = list.iterator();
-		while ( it.hasNext() ) {
-			VersionMigrater m = it.next();
-			if ( skipVersions.contains( m.versionCode() ) ) {
-				it.remove();
-			}
-		}
-
-		if ( list.isEmpty() ) {
-			throw new MigrationException( "No migraters found, the version is too old", Reason.TOO_OLD, oldVersion );
-		}
-
-		// Finally sort the migraters based on version.
-		Collections.sort( list, new Ordering<VersionMigrater>() {
-			@Override
-			public int compare( VersionMigrater a, VersionMigrater b ) {
-				return Ints.compare( a.versionCode(), b.versionCode() );
-			}
-		} );
-
-		return list;
-	}
-
-	/**
-	 * Finds any migraters available.
-	 *
-	 * @param originVersion the version we are coming from.
-	 * @return a list of migraters.
-	 * @throws MigrationException If there was some error in finding migraters,
-	 *							  this is super almost {@link AssertionError} level serious.
-	 */
-	private List<VersionMigrater> findMigraters( int originVersion ) throws MigrationException {
-		List<VersionMigrater> list = Lists.newArrayList();
-
-		try {
-			// Find all classes that are 
-			ClassPath cp = ReflectionUtil.getClassPath();
-			String pack = this.getClass().getPackage().getName() + MIGRATION_PACKAGE;
-			for ( ClassInfo info : cp.getTopLevelClassesRecursive( pack ) ) {
-				// Skip the class if the version is not appropriate.
-				int version = StringUtils.getDigitsIn( info.getSimpleName() );
-				if ( originVersion >= version ) {
-					continue;
-				}
-
-				// Load the class, skip if not a migrater.
-				Class<? extends VersionMigrater> clazz = ReflectionUtil.asSubclass( info.load(), VersionMigrater.class );
-				if ( clazz == null ) {
-					continue;
-				}
-
-				// Time to construct the migrater.
-				VersionMigrater migrater;
-
-				try {
-					Constructor<? extends VersionMigrater> ctor = clazz.getConstructor();
-					migrater = (VersionMigrater) ctor.newInstance();
-				} catch ( NoSuchMethodException e ) {
-					throw new MigrationException( "No no-arg constructor found for migrater", e, version );
-				} catch ( InstantiationException e ) {
-					throw new MigrationException( "Could not instantiate migrater", e, version );
-				} catch ( IllegalAccessException e ) {
-					throw new MigrationException( "Could not access migrater constructor", e, version );
-				} catch ( InvocationTargetException e ) {
-					throw new MigrationException( "Migrater constructor threw exception.", e, version );
-				}
-
-				// Double check to ensure migrater version is appropriate.
-				if ( originVersion > migrater.versionCode() ) {
-					continue;
-				}
-
-				// Finally, we've got a migrater.
-				list.add( migrater );
-			}
-		} catch( RuntimeException e ) {
-			throw new MigrationException( "Failure in finding migraters", e, originVersion );
-		}
-
-		return list;
 	}
 
 	/**
@@ -475,7 +323,6 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHold
 		// Clear all caches (Dao + Object).
 		DaoManager.clearCache();
 	}
-
 
 	@Override
 	public void setMessageBus( MessageBus<Message> bus ) {

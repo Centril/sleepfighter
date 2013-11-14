@@ -18,31 +18,18 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.upgrades;
 
-import java.sql.SQLException;
-
-import se.toxbee.sleepfighter.persist.migration.MigrationAdapter;
-import se.toxbee.sleepfighter.persist.migration.MigrationException;
-import se.toxbee.sleepfighter.persist.migration.MigrationUtil;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.j256.ormlite.support.ConnectionSource;
-
 /**
- * Migration to version 24.
+ * DefinedMigrations provides all defined migrations.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Nov 13, 2013
+ * @since Nov 14, 2013
  */
-public class Version24 extends MigrationAdapter {
-	@Override
-	public void applyMigration( ConnectionSource cs, SQLiteDatabase db ) throws MigrationException {
-		try {
-			MigrationUtil.addColumn( db, "alarm", "time", "INTEGER DEFAULT 0" );
-			MigrationUtil.update( db, "alarm", "time = (alarm.hour << 12) | (minute << 6) | second", null );
-			MigrationUtil.dropColumns( db, "alarm", new String[] { "hour", "minute", "second" } );
-		} catch ( SQLException e ) {
-			throw new MigrationException( "Migration v24 failed.", e, this );
-		}
+public class DefinedMigrations {
+	public static final Class<?>[] get() {
+		// reflections was thought of, but is error prone.
+		return new Class<?>[] {
+			Version24.class
+		};
 	}
 }

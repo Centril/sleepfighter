@@ -40,6 +40,8 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeParam;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
+import se.toxbee.sleepfighter.persist.type.AlarmTimeType;
+import se.toxbee.sleepfighter.persist.type.BooleanArrayType;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
@@ -52,6 +54,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.field.DataPersister;
 import com.j256.ormlite.field.DataPersisterManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 
@@ -780,7 +783,11 @@ public class PersistenceManager implements MessageBusHolder {
 	 * Registering of data types goes here.
 	 */
 	private void registerDataTypes() {
-		DataPersisterManager.registerDataPersisters( BooleanArrayType.getSingleton() );
+		rdt( BooleanArrayType.getSingleton() );
+		rdt( AlarmTimeType.getSingleton() );
 	}
 
+	private void rdt( DataPersister p ) {
+		DataPersisterManager.registerDataPersisters( p );
+	}
 }

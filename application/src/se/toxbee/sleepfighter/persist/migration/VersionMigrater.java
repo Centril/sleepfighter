@@ -17,9 +17,9 @@
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.migration;
+
 import java.util.Collection;
 
-import se.toxbee.sleepfighter.persist.PersistenceExceptionDao;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.j256.ormlite.support.ConnectionSource;
@@ -50,7 +50,7 @@ public interface VersionMigrater {
 	 * @param db a SQLiteDatabase.
 	 * @param rawDao a Dao to run raw statements on.
 	 */
-	public void applyMigration( ConnectionSource cs, SQLiteDatabase db, PersistenceExceptionDao<?, Integer> rawDao ) throws MigrationException;
+	public void applyMigration( ConnectionSource cs, SQLiteDatabase db ) throws MigrationException;
 
 	/**
 	 * Returns the version-code (database) the migration is upgrading for.

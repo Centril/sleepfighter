@@ -25,7 +25,7 @@ import se.toxbee.sleepfighter.persist.PersistenceException;
 
 /**
  * MigrationException thrown when an error occurs in migration.<br/>
- * A MigrationException is a very serious error that should demand user interaction.
+ * A MigrationException is a very serious error that should be displayed to user.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
