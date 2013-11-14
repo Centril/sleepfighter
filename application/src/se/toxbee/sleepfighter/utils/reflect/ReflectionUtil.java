@@ -18,10 +18,9 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.reflect;
 
-import java.io.IOException;
+import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.collect.ObjectArrays;
-import com.google.common.reflect.ClassPath;
 
 /**
  * ReflectionUtil provides very basic reflection utilities.
@@ -54,24 +53,6 @@ public class ReflectionUtil {
 	}
 
 	/**
-	 * Returns a guava ClassPath object for current thread.
-	 *
-	 * @return the ClassPath object.
-	 */
-	public static ClassPath getClassPath() {
-		// TODO android?
-		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-
-		try {
-			return ClassPath.from( cl );
-		} catch ( IOException e ) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
 	 * {@code Class} to represent a subclass of the given class.
 	 * If successful, this {@code Class} is returned; otherwise null is returned.
 	 *
@@ -79,6 +60,30 @@ public class ReflectionUtil {
 	 */
 	@SuppressWarnings( "unchecked" )
 	public static <U> Class<? extends U> asSubclass( Class<?> from, Class<U> target ) {
-		return from.isAssignableFrom( target ) ? (Class<U>) from : null;
+		return target.isAssignableFrom( from ) ? (Class<U>) from : null;
+	}
+
+	/**
+	 * Returns the fully qualified package name of a package that is descendant of a package with clazz<br/>
+	 * If descendant is null, the package name of clazz is returned.
+	 *
+	 * @param clazz the clazz of the parent package.
+	 * @param descendant the descendant package.
+	 * @return the package name.
+	 */
+	public static String packageDecendantName( Class<?> clazz, String descendant ) {
+		return StringUtils.QUALIFIER_JOINER.join( clazz.getPackage().getName(), descendant );
+	}
+
+	/**
+	 * Returns the fully qualified package name of a package that is descendant of a package with clazz<br/>
+	 * If descendant is null, the package name of clazz is returned.
+	 *
+	 * @param o the object to get Class from (the Class of the parent package).
+	 * @param descendant the descendant package.
+	 * @return the package name.
+	 */
+	public static String packageDecendantName( Object o, String descendant ) {
+		return packageDecendantName( o.getClass(), descendant );
 	}
 }
