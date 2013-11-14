@@ -47,12 +47,13 @@ public class MigrationUtil {
 		return columns;
 	}
 
-	public static String makeCreateStmt( SQLiteDatabase db, String tableName ) {
+	public static String fetchCreateStmt( SQLiteDatabase db, String tableName ) {
 		StringBuilder s = new StringBuilder();
 
-		Cursor cur = db.rawQuery( "SELECT sql FROM sqlite_master WHERE name = '?'", new String[] { tableName } );
+		Cursor cur = db.rawQuery( "SELECT sql FROM sqlite_master WHERE name = ?", new String[] { tableName } );
 		while( cur.moveToNext() ) {
-			s.append( cur.getString( 0 ) );
+			String stmt = cur.getString( 0 );
+			s.append( stmt );
 		}
 		cur.close();
 
@@ -62,17 +63,21 @@ public class MigrationUtil {
 	public static void dropColumns( SQLiteDatabase db,
 			String tableName, String[] colsToRemove )
 			throws java.sql.SQLException {
-
-		List<String> updatedTableColumns = getTableColumns( db, tableName );
-
-		// Remove the columns we don't want anymore from the table's list of columns
-		updatedTableColumns.removeAll( Arrays.asList( colsToRemove ) );
-
-		String columnsSeperated = StringUtils.COMMA_JOINER.join( ",", updatedTableColumns );
-
 		// Fetch create statement.
-		String createStmt = makeCreateStmt( db, tableName );
+		String createStmt = fetchCreateStmt( db, tableName );
 
+		// Assemble columns.
+		String columnsSeperated;
+		{
+			List<String> updatedTableColumns = getTableColumns( db, tableName );
+
+			// Remove the columns we don't want anymore from the table's list of columns
+			updatedTableColumns.removeAll( Arrays.asList( colsToRemove ) );
+
+			columnsSeperated = StringUtils.COMMA_JOINER.join( updatedTableColumns );
+		}
+
+		// Rename the table.
 		db.execSQL( "ALTER TABLE " + tableName + " RENAME TO " + tableName + "_old;" );
 
 		// Creating the table on its new format (no redundant columns)
@@ -81,6 +86,8 @@ public class MigrationUtil {
 		// Populating the table with the data
 		db.execSQL( "INSERT INTO " + tableName + "(" + columnsSeperated
 				+ ") SELECT " + columnsSeperated + " FROM " + tableName + "_old;" );
+
+		// Drop the old table.
 		db.execSQL( "DROP TABLE " + tableName + "_old;" );
 	}
 

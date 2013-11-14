@@ -83,7 +83,7 @@ public class MigrationExecutor {
 	private boolean perform( ConnectionSource cs, SQLiteDatabase db, int originVersion, int targetVersion ) {
 		try {
 			if ( originVersion < DefinedMigrations.REBUILD_BELOW_VERSION ) {
-				throw new MigrationException( "No migraters found, the version is too old", Reason.TOO_OLD, originVersion );
+				throw new MigrationException( "The version is too old", Reason.TOO_OLD, originVersion );
 			}
 
 			// Find all migraters.

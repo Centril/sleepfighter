@@ -206,6 +206,9 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			Log.e( OrmHelper.class.getName(), "Fatal error: Couldn't upgrade database." );
 			this.rebuild();
 		}
+
+		// Nuke caches.
+		this.nukeCache();
 	}
 
 	/**
@@ -300,7 +303,13 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	@Override
 	public void close() {
 		super.close();
+		this.nukeCache();
+	}
 
+	/**
+	 * Nukes the cache if any (Dao + Object.
+	 */
+	private void nukeCache() {
 		// Get rid of reference.
 		this.daoMap.clear();
 
