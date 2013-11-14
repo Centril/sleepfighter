@@ -22,8 +22,6 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 
-import se.toxbee.sleepfighter.android.utils.ApplicationUtils;
-import se.toxbee.sleepfighter.android.utils.Toaster;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.factory.FromPresetAlarmFactory;
@@ -31,7 +29,6 @@ import se.toxbee.sleepfighter.factory.PresetAlarmFactory;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
-import se.toxbee.sleepfighter.persist.OrmHelper.OrmAlterFailureEvent;
 import se.toxbee.sleepfighter.persist.PersistenceManager;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
@@ -40,7 +37,6 @@ import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
-import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.view.ViewConfiguration;
 
@@ -84,15 +80,11 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		super.onCreate();
 		app = this;
 
+		this.initPersister();
+
 		this.tts = new TextToSpeech(this, this);
 		
 		this.prefs = new GlobalPreferencesManager( this );
-
-		this.persistenceManager = new PersistenceManager( this, this.getBus() );
-		if ( CLEAN_START ) {
-			this.persistenceManager.cleanStart();
-		}
-
 		this.forceActionBarOverflow();
 	}
 
@@ -229,31 +221,15 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	}
 
 	/**
-	 * Handler for failure to alter database (persistence...)
-	 *
-	 * @param evt the failure event.
+	 * Initializes the persister.
 	 */
-	public void handlePersistenceError( OrmAlterFailureEvent evt ) {
-		switch ( evt ) {
-		case CREATE: {
-			Toaster.out( this, R.string.database_create_error );
+	private void initPersister() {
+		this.persistenceManager = new PersistenceManager( this );
 
-			// Kill application in 1 second.
-			new Handler().postDelayed( new Runnable() {
-				@Override
-				public void run() {
-					ApplicationUtils.kill( false );
-				}
-			}, 1000 );
-			break;
-		}
+		this.getBus().subscribe( this.persistenceManager );
 
-		case UPGRADE:
-			Toaster.out( this, R.string.database_upgrade_error );
-			break;
-
-		default:
-			throw new AssertionError();
+		if ( CLEAN_START ) {
+			this.persistenceManager.cleanStart();
 		}
 	}
 

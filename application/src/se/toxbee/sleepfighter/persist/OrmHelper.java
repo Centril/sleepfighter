@@ -29,10 +29,9 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeConfig;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeParam;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
+import se.toxbee.sleepfighter.persist.dao.PersistenceException;
+import se.toxbee.sleepfighter.persist.dao.PersistenceExceptionDao;
 import se.toxbee.sleepfighter.persist.migration.MigrationExecutor;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
-import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -51,12 +50,11 @@ import com.j256.ormlite.table.TableUtils;
  * @version 1.0
  * @since Sep 21, 2013
  */
-public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHolder {
+public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	// Name of the database file in application.
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	// IMPORTANT: If you update this, also add the old version to the switch/case
 	private static final int DATABASE_VERSION = 24;
 
 	// List of all classes that is managed by helper.
@@ -75,21 +73,8 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHold
 		GPSFilterArea.class
 	};
 
-	/**
-	 * OrmAlterFailureEvent occurs when migration fails.
-	 *
-	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
-	 * @version 1.0
-	 * @since Nov 13, 2013
-	 */
-	public static enum OrmAlterFailureEvent implements Message {
-		UPGRADE, CREATE
-	}
-
 	private final Map<Class<?>, PersistenceExceptionDao<Class<?>, Integer>> daoMap = Maps.newHashMap();
 	private final Map<Class<?>, DaoInitRunner<?>> daoInitRunners = Maps.newHashMap();
-
-	private MessageBus<Message> bus;
 
 	/**
 	 * DaoInitRunner is a method run when a Dao is first initialized.
@@ -197,8 +182,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHold
 				TableUtils.createTable( connectionSource, clazz );
 			}
 		} catch ( SQLException e ) {
-			this.bus.publish( OrmAlterFailureEvent.CREATE );
-			Log.e( OrmHelper.class.getName(), "Fatal error: Can't create database", e );
+			Log.e( OrmHelper.class.getName(), "Fatal error: Couldn't create database." );
 			throw new PersistenceException( e );
 		}
 	}
@@ -219,7 +203,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHold
 
 		// Rebuild on failure.
 		if ( !success ) {
-			this.getMessageBus().publishAsync( OrmAlterFailureEvent.UPGRADE );
+			Log.e( OrmHelper.class.getName(), "Fatal error: Couldn't upgrade database." );
 			this.rebuild();
 		}
 	}
@@ -322,15 +306,5 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper implements MessageBusHold
 
 		// Clear all caches (Dao + Object).
 		DaoManager.clearCache();
-	}
-
-	@Override
-	public void setMessageBus( MessageBus<Message> bus ) {
-		this.bus = bus;
-	}
-
-	@Override
-	public MessageBus<Message> getMessageBus() {
-		return this.bus;
 	}
 }

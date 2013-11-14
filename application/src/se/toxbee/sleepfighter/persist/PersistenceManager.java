@@ -40,12 +40,11 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeParam;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
+import se.toxbee.sleepfighter.persist.dao.PersistenceException;
+import se.toxbee.sleepfighter.persist.dao.PersistenceExceptionDao;
 import se.toxbee.sleepfighter.persist.type.AlarmTimeType;
 import se.toxbee.sleepfighter.persist.type.BooleanArrayType;
 import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
-import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
 import android.content.Context;
 import android.util.Log;
@@ -66,7 +65,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
  * @version 1.0
  * @since Sep 21, 2013
  */
-public class PersistenceManager implements MessageBusHolder {
+public class PersistenceManager {
 	private static final String TAG = PersistenceManager.class.getSimpleName();
 
 	private static final Class<?>[] ALARM_AND_DEPENDERS = new Class<?>[] {
@@ -79,9 +78,6 @@ public class PersistenceManager implements MessageBusHolder {
 	private volatile OrmHelper ormHelper = null;
 
 	private Context context;
-	private MessageBus<Message> bus = null;
-
-	private static boolean init = false;
 
 	/**
 	 * Handles changes in alarm-list (the list itself, additions, deletions, etc).
@@ -213,38 +209,8 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @param context android context.
 	 * @param bus the message bus.
 	 */
-	public PersistenceManager( Context context, MessageBus<Message> bus ) {
-		this.setContext( context );
-		this.setMessageBus( bus );
-	}
-
-	/**
-	 * Sets the context to use.
-	 *
-	 * @param context android context.
-	 */
-	public void setContext( Context context ) {
+	public PersistenceManager( Context context ) {
 		this.context = context;
-	}
-
-	@Override
-	public void setMessageBus( MessageBus<Message> bus ) {
-		// Remove ourselves from old bus if any.
-		if ( this.bus != null ) {
-			this.bus.unsubscribe( this );
-		}
-
-		this.bus = bus;
-
-		// Register ourselves to bus.
-		if ( this.bus != null ) {
-			this.bus.subscribe( this );
-		}
-	}
-
-	@Override
-	public MessageBus<Message> getMessageBus() {
-		return this.bus;
 	}
 
 	/**
@@ -259,7 +225,7 @@ public class PersistenceManager implements MessageBusHolder {
 	 *
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void clearAlarms() throws PersistenceException {
+	public void clearAlarms() {
 		this.getHelper().clear( ALARM_AND_DEPENDERS );
 	}
 
@@ -269,7 +235,7 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public List<Alarm> fetchAlarms() throws PersistenceException {
+	public List<Alarm> fetchAlarms() {
 		try {
 			Debug.d("fetching alarms");
 			return this.joinFetched( this.makeAlarmQB().query() );
@@ -284,7 +250,7 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public List<Alarm> fetchAlarmsSortedNames() throws PersistenceException {
+	public List<Alarm> fetchAlarmsSortedNames() {
 		try {
 			return this.joinFetched( this.makeAlarmQB().orderBy( "name", true ).query() );
 		} catch ( SQLException e ) {
@@ -299,7 +265,7 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @return the fetched Alarm.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public Alarm fetchAlarmById( int id ) throws PersistenceException {
+	public Alarm fetchAlarmById( int id ) {
 		try {
 			List<Alarm> alarms = this.joinFetched( this.makeAlarmQB().where().idEq( id ).query() );
 			return alarms == null || alarms.size() == 0 ? null : alarms.get( 0 );
@@ -474,7 +440,7 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @param evt AlarmEvent that occurred, required to update foreign fields.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void updateAlarm( Alarm alarm, AlarmEvent evt ) throws PersistenceException {
+	public void updateAlarm( Alarm alarm, AlarmEvent evt ) {
 		OrmHelper helper = this.getHelper();
 
 		boolean updateAlarmTable = false;
@@ -502,7 +468,7 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @param evt ChangeEvent that occurred, required to update foreign fields.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) throws PersistenceException {
+	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) {
 		OrmHelper helper = this.getHelper();
 		helper.dao( AudioConfig.class ).update( evt.getAudioConfig() );
 	}
@@ -514,10 +480,8 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @param evt SnoozeConfig that occurred, required to update foreign fields.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void updateSnoozeConfig( SnoozeConfig.ChangeEvent evt ) throws PersistenceException {
-		OrmHelper helper = this.getHelper();
-
-		helper.dao( SnoozeConfig.class ).update( evt.getSnoozeConfig() );
+	public void updateSnoozeConfig( SnoozeConfig.ChangeEvent evt ) {
+		this.getHelper().dao( SnoozeConfig.class ).update( evt.getSnoozeConfig() );
 	}
 
 	/**
@@ -587,7 +551,7 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @param alarm the alarm to store.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void addAlarm( Alarm alarm ) throws PersistenceException {
+	public void addAlarm( Alarm alarm ) {
 		OrmHelper helper = this.getHelper();
 
 		// Handle audio source foreign object if present.
@@ -642,7 +606,7 @@ public class PersistenceManager implements MessageBusHolder {
 	 * @param alarm the alarm to remove.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void removeAlarm( Alarm alarm ) throws PersistenceException {
+	public void removeAlarm( Alarm alarm ) {
 		OrmHelper helper = this.getHelper();
 
 		// Handle audio source foreign object if present.
@@ -745,36 +709,17 @@ public class PersistenceManager implements MessageBusHolder {
 	 */
 	public OrmHelper getHelper() {
 		if ( this.ormHelper == null ) {
-			if ( this.context == null ) {
-				throw new PersistenceException( "There is no helper set and context == null" );
-			}
-
-			this.loadHelper();
+			this.ormHelper = OpenHelperManager.getHelper( this.context, OrmHelper.class );
+			this.init();
 		}
 
 		return this.ormHelper;
 	}
 
 	/**
-	 * Loads the OrmHelper.
-	 */
-	private void loadHelper() {
-		this.ormHelper = OpenHelperManager.getHelper( this.context, OrmHelper.class );
-		this.ormHelper.setMessageBus( this.getMessageBus() );
-
-		this.init();
-	}
-
-	/**
 	 * Initialization code goes here.
 	 */
 	private void init() {
-		// Run Once guard.
-		if ( init ) {
-			return;
-		}
-		init = true;
-
 		// Initialization code goes here.
 		this.registerDataTypes();
 	}

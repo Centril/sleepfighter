@@ -20,19 +20,50 @@ package se.toxbee.sleepfighter.persist.migration;
 
 import java.util.Collection;
 
+import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
- * VersionMigrater is an interface all migrations must implement.<br/>
+ * Migrater is an interface all migrations must implement.<br/>
  * Note that the migrater must have a no-argument constructor.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Nov 12, 2013
  */
-public interface VersionMigrater {
+public interface Migrater {
+	/**
+	 * MigrationAdapter is the base implementation of Migrater.<br/>
+	 * It basically doesn't skip any versions.
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Nov 13, 2013
+	 */
+	public abstract class Adapter implements Migrater {
+		private int version = -1;
+
+		@Override
+		public Collection<Integer> skipVersions( int originVersion, int targetVersion ) {
+			return null;
+		}
+
+		/**
+		 * <p>Default behavior is to deduce the version from the class name using any digits in it.</p>
+		 *
+		 * {@inheritDoc}
+		 */
+		public int versionCode() {
+			if ( this.version == -1 ) {
+				this.version = StringUtils.getDigitsIn( this.getClass().getSimpleName() );
+			}
+
+			return this.version;
+		}
+	}
+
 	/**
 	 * Returns a list of versions this migrater considers unnecessary.<br/>
 	 * These migrations will not be run.

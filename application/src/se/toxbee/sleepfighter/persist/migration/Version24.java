@@ -16,13 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.persist.upgrades;
+package se.toxbee.sleepfighter.persist.migration;
 
 import java.sql.SQLException;
 
-import se.toxbee.sleepfighter.persist.migration.MigrationAdapter;
-import se.toxbee.sleepfighter.persist.migration.MigrationException;
-import se.toxbee.sleepfighter.persist.migration.MigrationUtil;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.j256.ormlite.support.ConnectionSource;
@@ -34,7 +31,7 @@ import com.j256.ormlite.support.ConnectionSource;
  * @version 1.0
  * @since Nov 13, 2013
  */
-public class Version24 extends MigrationAdapter {
+public class Version24 extends Migrater.Adapter {
 	@Override
 	public void applyMigration( ConnectionSource cs, SQLiteDatabase db ) throws MigrationException {
 		try {

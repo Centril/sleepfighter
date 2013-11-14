@@ -22,22 +22,18 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import se.toxbee.sleepfighter.android.utils.ApplicationUtils;
 import se.toxbee.sleepfighter.persist.migration.MigrationException.Reason;
-import se.toxbee.sleepfighter.persist.upgrades.DefinedMigrations;
 import se.toxbee.sleepfighter.utils.reflect.ReflectionUtil;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
@@ -67,7 +63,7 @@ public class MigrationExecutor {
 			return TransactionManager.callInTransaction( cs, new Callable<Boolean>() {
 				@Override
 				public Boolean call() throws Exception {
-					return performMigration( cs, db, originVersion, targetVersion );
+					return perform( cs, db, originVersion, targetVersion );
 				}
 			} );
 		} catch ( SQLException e ) {
@@ -75,11 +71,29 @@ public class MigrationExecutor {
 		}
 	}
 
-	protected Boolean performMigration( ConnectionSource cs, SQLiteDatabase db, int originVersion, int targetVersion ) {
+	/**
+	 * Actually performs the migration.
+	 *
+	 * @param cs the ConnectionSource.
+	 * @param db the SQLiteDatabase.
+	 * @param originVersion the origin version we're starting from.
+	 * @param targetVersion the target version we're heading to.
+	 * @return true if the migration was successful.
+	 */
+	private boolean perform( ConnectionSource cs, SQLiteDatabase db, int originVersion, int targetVersion ) {
 		try {
-			final List<VersionMigrater> list = this.assembleMigraters( originVersion, targetVersion );
+			if ( originVersion < DefinedMigrations.REBUILD_BELOW_VERSION ) {
+				throw new MigrationException( "No migraters found, the version is too old", Reason.TOO_OLD, originVersion );
+			}
 
-			for ( VersionMigrater m : list ) {
+			// Find all migraters.
+			Map<Integer, Migrater> migraters = this.assemble( originVersion );
+
+			// Filter out ones to skip.
+			this.filter( migraters, originVersion, targetVersion );
+
+			// Apply migrations.
+			for ( Migrater m : migraters.values() ) {
 				m.applyMigration( cs, db );
 			}
 
@@ -96,52 +110,39 @@ public class MigrationExecutor {
 		return false;
 	}
 
-	private List<VersionMigrater> assembleMigraters( int oldVersion, int newVersion ) throws MigrationException {
-		List<VersionMigrater> list = this.findMigraters( oldVersion );
-
+	/**
+	 * Filters out any migraters that are unnecessary.
+	 *
+	 * @param migraters the migraters to filter.
+	 * @param originVersion the version we're coming from.
+	 * @param targetVersion the version we're moving to.
+	 */
+	private void filter( Map<Integer, Migrater> migraters, int originVersion, int targetVersion ) {
 		// Let the migraters report what versions to skip.
 		Set<Integer> skipVersions = Sets.newHashSet();
-		for ( VersionMigrater m : list ) {
-			Collection<Integer> skip = m.skipVersions( oldVersion, newVersion );
+		for ( Migrater m : migraters.values() ) {
+			Collection<Integer> skip = m.skipVersions( originVersion, targetVersion );
 			if ( skip != null ) {
 				skipVersions.addAll( skip );
 			}
 		}
 
 		// Remove any migraters to skip.
-		Iterator<VersionMigrater> it = list.iterator();
-		while ( it.hasNext() ) {
-			VersionMigrater m = it.next();
-			if ( skipVersions.contains( m.versionCode() ) ) {
-				it.remove();
-			}
+		for ( int v : skipVersions ) {
+			migraters.remove( v );
 		}
-
-		if ( list.isEmpty() ) {
-			throw new MigrationException( "No migraters found, the version is too old", Reason.TOO_OLD, oldVersion );
-		}
-
-		// Finally sort the migraters based on version.
-		Collections.sort( list, new Comparator<VersionMigrater>() {
-			@Override
-			public int compare( VersionMigrater lhs, VersionMigrater rhs ) {
-				return lhs.versionCode() - rhs.versionCode();
-			}
-		} );
-
-		return list;
 	}
 
 	/**
-	 * Finds any migraters available.
+	 * Assembles any migraters available that are above originVersion.
 	 *
-	 * @param originVersion the version we are coming from.
+	 * @param originVersion the version we're coming from.
 	 * @return a list of migraters.
 	 * @throws MigrationException If there was some error in finding migraters,
 	 *							  this is super almost {@link AssertionError} level serious.
 	 */
-	private List<VersionMigrater> findMigraters( int originVersion ) throws MigrationException {
-		List<VersionMigrater> list = Lists.newArrayList();
+	private Map<Integer, Migrater> assemble( int originVersion ) throws MigrationException {
+		Map<Integer, Migrater> migs = Maps.newTreeMap( Ordering.natural() );
 
 		try {
 			Class<?>[] clazzes = DefinedMigrations.get();
@@ -154,17 +155,17 @@ public class MigrationExecutor {
 				}
 
 				// Load the class, skip if not a migrater.
-				Class<? extends VersionMigrater> clazz = ReflectionUtil.asSubclass( _clazz, VersionMigrater.class );
+				Class<? extends Migrater> clazz = ReflectionUtil.asSubclass( _clazz, Migrater.class );
 				if ( clazz == null ) {
 					continue;
 				}
 
 				// Time to construct the migrater.
-				VersionMigrater migrater;
+				Migrater migrater;
 
 				try {
-					Constructor<? extends VersionMigrater> ctor = clazz.getConstructor();
-					migrater = (VersionMigrater) ctor.newInstance();
+					Constructor<? extends Migrater> ctor = clazz.getConstructor();
+					migrater = (Migrater) ctor.newInstance();
 				} catch ( NoSuchMethodException e ) {
 					throw new MigrationException( "No no-arg constructor found for migrater", e, version );
 				} catch ( InstantiationException e ) {
@@ -175,24 +176,20 @@ public class MigrationExecutor {
 					throw new MigrationException( "Migrater constructor threw exception.", e, version );
 				}
 
+				int v = migrater.versionCode();
+
 				// Double check to ensure migrater version is appropriate.
-				if ( originVersion > migrater.versionCode() ) {
+				if ( originVersion > v ) {
 					continue;
 				}
 
 				// Finally, we've got a migrater.
-				list.add( migrater );
+				migs.put( v, migrater );
 			}
 		} catch( RuntimeException e ) {
 			throw new MigrationException( "Failure in finding migraters", e, originVersion );
 		}
 
-		for ( VersionMigrater m : list ) {
-			Log.d( TAG, Integer.toString( m.versionCode( ) ) );
-		}
-
-		ApplicationUtils.kill( true );
-
-		return list;
+		return migs;
 	}
 }

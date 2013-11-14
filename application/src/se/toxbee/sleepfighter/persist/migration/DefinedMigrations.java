@@ -16,7 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.persist.upgrades;
+package se.toxbee.sleepfighter.persist.migration;
+
 
 /**
  * DefinedMigrations provides all defined migrations.
@@ -26,6 +27,14 @@ package se.toxbee.sleepfighter.persist.upgrades;
  * @since Nov 14, 2013
  */
 public class DefinedMigrations {
+	// Any version below this will cause the database to be rebuilt.
+	public static final int REBUILD_BELOW_VERSION = 23;
+
+	/**
+	 * Returns the defined migrations, avoid class loading before we don't need migration.
+	 *
+	 * @return the available migrations.
+	 */
 	public static final Class<?>[] get() {
 		// reflections was thought of, but is error prone.
 		return new Class<?>[] {

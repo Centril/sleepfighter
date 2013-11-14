@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.persist;
+package se.toxbee.sleepfighter.persist.dao;
 
 import java.sql.SQLException;
 import java.util.Collection;

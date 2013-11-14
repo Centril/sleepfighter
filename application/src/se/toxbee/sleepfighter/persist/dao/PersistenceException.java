@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.persist;
+package se.toxbee.sleepfighter.persist.dao;
 
 /**
  * <p>PersitenceError indicates an error related to persistence.<br/>

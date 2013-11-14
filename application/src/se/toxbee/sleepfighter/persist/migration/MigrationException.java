@@ -21,11 +21,10 @@ package se.toxbee.sleepfighter.persist.migration;
 import java.sql.SQLException;
 import java.util.Locale;
 
-import se.toxbee.sleepfighter.persist.PersistenceException;
+import se.toxbee.sleepfighter.persist.dao.PersistenceException;
 
 /**
- * MigrationException thrown when an error occurs in migration.<br/>
- * A MigrationException is a very serious error that should be displayed to user.
+ * MigrationException thrown when an error occurs in migration.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
@@ -45,7 +44,7 @@ public final class MigrationException extends Exception {
 
 	private static final long serialVersionUID = -6934930583715968324L;
 
-	private final VersionMigrater vm;
+	private final Migrater vm;
 	private final Reason reason;
 	private int version;
 
@@ -81,7 +80,7 @@ public final class MigrationException extends Exception {
 	 * @param cause the cause, used to deduce the reason.
 	 * @param vm the migrater, used to deduce version code.
 	 */
-	public MigrationException( String msg, Throwable cause, VersionMigrater vm ) {
+	public MigrationException( String msg, Throwable cause, Migrater vm ) {
 		this(
 			msg, cause, vm,
 			// Deduce reason from exception.
@@ -97,7 +96,7 @@ public final class MigrationException extends Exception {
 		);
 	}
 
-	private MigrationException( String msg, Throwable cause, VersionMigrater vm, Reason reason ) {
+	private MigrationException( String msg, Throwable cause, Migrater vm, Reason reason ) {
 		super( msg, cause );
 		this.vm = vm;
 		this.reason = reason == null ? Reason.UNKNOWN : reason;
@@ -127,7 +126,7 @@ public final class MigrationException extends Exception {
 	 *
 	 * @return the migrater.
 	 */
-	public VersionMigrater getMigrater() {
+	public Migrater getMigrater() {
 		return this.vm;
 	}
 
