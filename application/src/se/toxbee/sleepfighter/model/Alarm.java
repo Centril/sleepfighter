@@ -61,7 +61,9 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @since Sep 19, 2013
 	 */
 	public static enum Field {
-		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID, REPEATING, AUDIO_SOURCE, AUDIO_CONFIG, SPEECH, FLASH
+		ID, NAME,
+		TIME, MODE, ACTIVATED, ENABLED_DAYS,
+		AUDIO_SOURCE, AUDIO_CONFIG, SPEECH, FLASH
 	}
 
 	/* --------------------------------
@@ -200,7 +202,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	private boolean isActivated;
 
 	@DatabaseField
-	private String name;
+	private String name = UNNAMED;
 
 	/** The value for unnamed strings is {@value #UNNAMED} */
 	public static final String UNNAMED = null;
@@ -209,13 +211,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	private AlarmTime time;
 
 	@DatabaseField
-	private int hour;
-
-	@DatabaseField
-	private int minute;
-
-	@DatabaseField
-	private int second;
+	private AlarmMode mode;
 
 	/** The weekdays that this alarm can ring. */
 	@DatabaseField(width = 7)
@@ -225,36 +221,33 @@ public class Alarm implements IdProvider, MessageBusHolder {
 
 	@DatabaseField
 	private int unnamedPlacement;
-	
-	@DatabaseField
-	private boolean isRepeating = false;
-	
+
 	@DatabaseField
 	private boolean isFlash = false;
-	
+
 	// whether this alarm is the preset alarm(the default alarm)
 	@DatabaseField
 	private boolean isPresetAlarm = false;
-	
+
 	@DatabaseField(foreign = true, canBeNull = true)
 	private AudioSource audioSource = new AudioSource(AudioSourceType.RINGTONE,
 			Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
 
 	@DatabaseField(foreign = true, canBeNull = false)
-	private AudioConfig audioConfig = new AudioConfig(100, true);
+	private AudioConfig audioConfig = new AudioConfig( 100, true );
 
 	@DatabaseField(foreign = true, canBeNull = false)
-	private SnoozeConfig snoozeConfig = new SnoozeConfig(true, 9);
+	private SnoozeConfig snoozeConfig = new SnoozeConfig( true, 9 );
 
-	@DatabaseField
 	// the time and weather will be read out when the alarm goes off. 
+	@DatabaseField
 	private boolean isSpeech = false;
-	
+
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
 	@DatabaseField(foreign = true, canBeNull = false)
-	private ChallengeConfigSet challenges = new ChallengeConfigSet(true);
+	private ChallengeConfigSet challenges = new ChallengeConfigSet( true );
 
 	private MessageBus<Message> bus;
 
@@ -291,9 +284,9 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		// Copy data.
 		this.time = new AlarmTime( rhs.time );
 		this.isActivated = rhs.isActivated;
-		this.enabledDays = rhs.enabledDays;
+		this.enabledDays = rhs.enabledDays.clone();
 		this.name = rhs.name;
-		this.isRepeating = rhs.isRepeating;
+		this.mode = rhs.mode;
 
 		this.unnamedPlacement = 0;
 
@@ -467,25 +460,28 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		if ( next.isBefore( now ) ) {
 			next.addDays( 1 );
 		}
+
 		// Offset for weekdays
 		int offset = 0;
 		
-		// first weekday to check (0-6), getDayOfWeek returns (1-7)
+		// First weekday to check (0-6), getDayOfWeek returns (1-7)
 		int weekday = next.getDayOfWeek() - 1;
 
 		// Find the weekday the alarm should run, should at most run seven times
-		for (int i = 0; i < 7; i++) {
+		for ( int i = 0; i < 7; ++i ) {
 			// Wrap to first weekday
-			if (weekday > MAX_WEEK_INDEX) {
+			if ( weekday > MAX_WEEK_INDEX ) {
 				weekday = 0;
 			}
-			if (this.enabledDays[weekday]) {
+
+			if ( this.enabledDays[weekday] ) {
 				// We've found the closest day the alarm is enabled for
 				offset = i;
 				break;
 			}
-			weekday++;
-			offset++;
+
+			++weekday;
+			++offset;
 		}
 
 		if ( offset > 0 ) {
@@ -580,7 +576,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		final Map<String, String> prop = Maps.newHashMap();
 		prop.put( "id", Integer.toString( this.getId() ) );
 		prop.put( "name", this.getName() );
-		prop.put( "time", StringUtils.joinTime( this.hour, this.minute, this.second ) );
+		prop.put( "time", this.getTime().getTimeString( false ) );
 		prop.put( "weekdays", Arrays.toString( this.enabledDays ) );
 		prop.put( "activated", Boolean.toString( this.isActivated() ) );
 		prop.put( "repeating", Boolean.toString( this.isRepeating() ) );
@@ -618,18 +614,47 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	/**
+	 * Sets the mode of the alarm, this specifies how {@link #getTime()} is understood.
+	 *
+	 * @param mode the mode to set.
+	 */
+	public void setMode( AlarmMode mode ) {
+		if ( this.mode == mode ) {
+			return;
+		}
+
+		AlarmMode old = this.mode;
+		this.mode = mode;
+		this.publish( new ScheduleChangeEvent( this, Field.MODE, old ) );
+	}
+
+	/**
+	 * Returns the mode of the alarm.
+	 *
+	 * @return the mode.
+	 */
+	public AlarmMode getMode() {
+		return this.mode;
+	}
+
+	/**
 	 * Sets if the alarm is repeating or not.
 	 *
 	 * @param isRepeating true if it is repeating.
 	 */
-	public void setRepeat(boolean isRepeating) {
-		if ( this.isRepeating == isRepeating ) {
-			return;
-		}
-	
-		boolean old = this.isRepeating;
-		this.isRepeating = isRepeating;
-		this.publish( new ScheduleChangeEvent( this, Field.REPEATING, old ) );
+	public void setRepeat( boolean isRepeating ) {
+		AlarmMode mode = isRepeating ? AlarmMode.REPEATING : AlarmMode.NORMAL;
+		this.setMode( mode );
+	}
+
+	/**
+	 * Sets if the alarm is counting down or not.
+	 *
+	 * @param isCountdown true if it is counting down.
+	 */
+	public void setCountdown( boolean isCountdown ) {
+		AlarmMode mode = isCountdown ? AlarmMode.COUNTDOWN : AlarmMode.NORMAL;
+		this.setMode( mode );
 	}
 
 	/**
@@ -638,15 +663,24 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @return true if it is repeating.
 	 */
 	public boolean isRepeating() {
-		return this.isRepeating;
+		return this.mode == AlarmMode.REPEATING;
 	}
-	
+
+	/**
+	 * Returns whether or not this alarm is counting down or not.
+	 *
+	 * @return true if it is counting down.
+	 */
+	public boolean isCountdown() {
+		return this.mode == AlarmMode.COUNTDOWN;
+	}
+
 	/**
 	 * Sets if the alarm is flashing or not.
 	 *
 	 * @param isFlash true if it is flashing.
 	 */
-	public void setFlash(boolean isFlash) {
+	public void setFlash( boolean isFlash ) {
 		if ( this.isFlash == isFlash ) {
 			return;
 		}
@@ -661,7 +695,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 *
 	 * @return true if it is flashing.
 	 */
-	public boolean isFlashEnabled(){
+	public boolean isFlashEnabled() {
 		return this.isFlash;
 	}
 
@@ -680,7 +714,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 *
 	 * @param isSpeech true if enabled.
 	 */
-	public void setSpeech(boolean isSpeech) {
+	public void setSpeech( boolean isSpeech ) {
 		if ( this.isSpeech == isSpeech ) {
 			return;
 		}
@@ -806,7 +840,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 *
 	 * @param isPresetAlarm true if it is a preset alarm, otherwise false.
 	 */
-	public void setIsPresetAlarm(boolean isPresetAlarm) {
+	public void setIsPresetAlarm( boolean isPresetAlarm ) {
 		this.isPresetAlarm = isPresetAlarm;
 	}
 
