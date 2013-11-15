@@ -31,7 +31,6 @@ import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.persist.PersistenceManager;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
-import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.message.Message;
@@ -57,8 +56,6 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 
 	private AlarmList alarmList;
 	private Alarm ringingAlarm;
-
-	private AlarmPlannerService.ChangeHandler alarmPlanner;
 
 	private AudioDriver audioDriver;
 	private AudioDriverFactory audioDriverFactory;
@@ -186,17 +183,10 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 			this.filterPresetAlarm( alarms );
 
 			this.alarmList = new AlarmList( alarms );
-			this.alarmList.setMessageBus(this.getBus());
-
-			this.registerAlarmPlanner();
+			this.alarmList.setMessageBus( this.getBus() );
 		}
 
 		return alarmList;
-	}
-
-	private void registerAlarmPlanner() {
-		this.alarmPlanner = new AlarmPlannerService.ChangeHandler( this, this.alarmList );
-		this.bus.subscribe( this.alarmPlanner );
 	}
 
 	/**

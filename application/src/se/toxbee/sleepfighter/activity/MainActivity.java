@@ -35,6 +35,7 @@ import se.toxbee.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.receiver.AlarmReceiver;
+import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.text.DateTextUtils;
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -54,32 +55,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-
-	
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
-	/**
-	 * <p>
-	 * Returns the SFApplication.
-	 * </p>
-	 * 
-	 * <p>
-	 * Thank the genius programmers @ google for making<br/>
-	 * {@link #getApplication()} final removing the option of covariant return
-	 * type.
-	 * </p>
-	 * 
-	 * @return the SFApplication.
-	 */
 	public SFApplication app() {
 		return SFApplication.get();
 	}
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate( savedInstanceState );
+
+		// This is the main entry point to application GUI, so register planner.
+		AlarmPlannerService.register();
 
 		this.setContentView(R.layout.activity_main);
 
@@ -93,7 +81,6 @@ public class MainActivity extends Activity {
 		this.setupChallengeToggle();
 		this.updateChallengePoints();
 		this.updateEarliestText();
-
 	}
 
 	@Override
@@ -121,7 +108,7 @@ public class MainActivity extends Activity {
 		// Register to get context menu events associated with listView
 		this.registerForContextMenu(listView);
 	}
-	
+
 	private void setupChallengeToggle() {
 		
 		ImageView toggleImage = (ImageView) findViewById(R.id.challenge_toggle);
@@ -188,14 +175,13 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
-	
+
 	private void startAlarm(Alarm alarm) {
 	    // Send intent directly to receiver
 		   Intent intent = new Intent(this, AlarmReceiver.class);
 		    new AlarmIntentHelper(intent).setAlarmId(alarm.getId());
 		   sendBroadcast(intent);
 	 }
-		
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {

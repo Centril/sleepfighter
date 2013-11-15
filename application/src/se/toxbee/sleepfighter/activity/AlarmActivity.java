@@ -103,11 +103,9 @@ public class AlarmActivity extends Activity {
 		// Turn and/or keep screen on.
 		this.setScreenFlags();
 		this.setContentView(R.layout.activity_alarm);
-		SFApplication app = SFApplication.get();
 
-		// Fetch alarm Id.
-		int alarmId = new AlarmIntentHelper(this.getIntent()).getAlarmId();
-		this.alarm = app.getPersister().fetchAlarmById(alarmId);
+		// Fetch alarm.
+		this.fetchAlarm();
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
@@ -117,6 +115,15 @@ public class AlarmActivity extends Activity {
 		setupStopButton();
 		setupSnoozeButton();
 		setupFooter();
+	}
+
+	private void fetchAlarm() {
+		// Fetch it.
+		int alarmId = new AlarmIntentHelper( this.getIntent() ).getAlarmId();
+		this.alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
+
+		// Init the planner.
+		AlarmPlannerService.register();
 	}
 
 	@Override

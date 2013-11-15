@@ -19,6 +19,8 @@
 package se.toxbee.sleepfighter.service;
 
 import net.engio.mbassy.listener.Handler;
+import net.engio.mbassy.listener.Listener;
+import net.engio.mbassy.listener.References;
 
 import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
@@ -58,6 +60,22 @@ import android.util.Log;
 public class AlarmPlannerService extends IntentService {
 	private static final String TAG = AlarmPlannerService.class.getSimpleName();
 
+	private static boolean isRegistered = false;
+
+	/**
+	 * Registers the {@link ChangeHandler}.
+	 */
+	public static void register() {
+		if ( !isRegistered ) {
+			isRegistered = false;
+
+			SFApplication app = SFApplication.get();
+			ChangeHandler handler = new ChangeHandler( app, app.getAlarms() );
+
+			app.getBus().subscribe( handler );
+		}
+	}
+
 	/**
 	 * Handles changes in alarms and alarm list and regarding and plans.
 	 *
@@ -65,6 +83,7 @@ public class AlarmPlannerService extends IntentService {
 	 * @version 1.0
 	 * @since Sep 26, 2013
 	 */
+	@Listener(references = References.Strong)
 	public static final class ChangeHandler {
 		private Context context;
 		private AlarmList list;
