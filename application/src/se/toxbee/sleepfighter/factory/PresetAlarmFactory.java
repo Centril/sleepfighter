@@ -18,8 +18,6 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.factory;
 
-import java.util.Arrays;
-
 import se.toxbee.sleepfighter.model.AlarmMode;
 import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
@@ -29,6 +27,7 @@ import se.toxbee.sleepfighter.model.audio.AudioSourceType;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfig;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
+import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import android.provider.Settings;
 
 /**
@@ -67,10 +66,7 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 
 	@Override
 	protected boolean[] createEnabledDays() {
-		boolean[] enabledDays = new boolean[7];
-		Arrays.fill( enabledDays, true );
-
-		return enabledDays;
+		return PrimitiveArrays.filled( true, 7 );
 	}
 
 	@Override

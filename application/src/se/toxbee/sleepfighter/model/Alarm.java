@@ -29,6 +29,7 @@ import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
 import se.toxbee.sleepfighter.model.audio.AudioSourceType;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
@@ -215,7 +216,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 
 	/** The weekdays that this alarm can ring. */
 	@DatabaseField(width = 7)
-	private boolean[] enabledDays = { true, true, true, true, true, true, true };
+	private boolean[] enabledDays = PrimitiveArrays.filled( true, 7 );
 	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
 	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
 
@@ -476,13 +477,23 @@ public class Alarm implements IdProvider, MessageBusHolder {
 			return NEXT_NON_REAL;
 		}
 
-		MutableDateTime next = this.getTime().forNow( now );
+		MutableDateTime next = this.getTime().afterNow( now );
 
-		// Check if alarm was earlier today. If so, move to next day
-		if ( next.isBefore( now ) ) {
-			next.addDays( 1 );
+		// Offset if not countdown alarm.
+		// Countdown alarms always happen exactly at set time.
+		if ( !this.isCountdown() ) {
+			this.offsetWeekdays( next );
 		}
 
+		return next.getMillis();
+	}
+
+	/**
+	 * Offsets next to the first enabled weekday.
+	 *
+	 * @param next the time to offset.
+	 */
+	private void offsetWeekdays( MutableDateTime next ) {
 		// Offset for weekdays
 		int offset = 0;
 		
@@ -509,8 +520,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		if ( offset > 0 ) {
 			next.addDays( offset );
 		}
-
-		return next.getMillis();
 	}
 
 	/**
@@ -524,7 +533,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 			return false;
 		}
 
-		return Booleans.contains( this.enabledDays, true );
+		return this.isCountdown() || Booleans.contains( this.enabledDays, true );
 	}
 
 	/**

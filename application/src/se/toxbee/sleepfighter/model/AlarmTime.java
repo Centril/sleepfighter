@@ -120,7 +120,7 @@ public class AlarmTime implements Comparable<AlarmTime>, Codifiable {
 	 * 
 	 * @param time a {@link ReadableDateTime} object. 
 	 */
-	public AlarmTime(ReadableDateTime time) {
+	public AlarmTime( ReadableDateTime time ) {
 		this( time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute() );
 	}
 
@@ -222,16 +222,22 @@ public class AlarmTime implements Comparable<AlarmTime>, Codifiable {
 	}
 
 	/**
-	 * Returns a MutableDateTime for "now" but offset to the same day with the time of this AlarmTime.
+	 * Returns a MutableDateTime after "now", offset to the time of this {@link AlarmTime}.
 	 *
 	 * @param now now in UNIX epoch timestamp.
 	 * @return the MutableDateTime.
 	 */
-	public MutableDateTime forNow( long now ) {
+	public MutableDateTime afterNow( long now ) {
 		MutableDateTime t = new MutableDateTime( now );
 		t.setHourOfDay( this.hour );
 		t.setMinuteOfHour( this.minute );
 		t.setSecondOfMinute( this.second );
+
+		// Move to next day if it happened before now.
+		if ( t.isBefore( now ) ) {
+			t.addDays( 1 );
+		}
+
 		return t;
 	}
 
