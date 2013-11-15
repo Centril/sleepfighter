@@ -25,21 +25,25 @@ import android.database.sqlite.SQLiteDatabase;
 import com.j256.ormlite.support.ConnectionSource;
 
 /**
- * Migration to version 24.
+ * Migration to version 25.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Nov 13, 2013
+ * @since Nov 15, 2013
  */
-public class Version24 extends Migrater.Adapter {
+public class Version25 extends Migrater.Adapter {
 	@Override
 	public void applyMigration( ConnectionSource cs, SQLiteDatabase db ) throws MigrationException {
 		try {
 			MigrationUtil.addColumn( db, "alarm", "time", "INTEGER DEFAULT 0" );
-			MigrationUtil.update( db, "alarm", "time = (alarm.hour << 12) | (minute << 6) | second", null );
-			MigrationUtil.dropColumns( db, "alarm", new String[] { "hour", "minute", "second" } );
+			MigrationUtil.update( db, "alarm", "time = (hour << 12) | (minute << 6) | second", null );
+
+			MigrationUtil.addColumn( db, "alarm", "mode", "INTEGER DEFAULT 0" );
+			MigrationUtil.update( db, "alarm", "mode = isRepeating", null );
+
+			MigrationUtil.dropColumns( db, "alarm", new String[] { "hour", "minute", "second", "isRepeating" } );
 		} catch ( SQLException e ) {
-			throw new MigrationException( "Migration v24 failed.", e, this );
+			throw new MigrationException( "Migration v25 failed.", e, this );
 		}
 	}
 }

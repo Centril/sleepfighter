@@ -18,7 +18,6 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.migration;
 
-
 /**
  * DefinedMigrations provides all defined migrations.
  *
@@ -38,7 +37,7 @@ public class DefinedMigrations {
 	public static final Class<?>[] get() {
 		// reflections was thought of, but is error prone.
 		return new Class<?>[] {
-			Version24.class
+			Version25.class
 		};
 	}
 }

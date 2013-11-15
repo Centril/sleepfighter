@@ -55,7 +55,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 24;
+	private static final int DATABASE_VERSION = 25;
 
 	// List of all classes that is managed by helper.
 	private static final Class<?>[] CLASSES = new Class<?>[] {
