@@ -319,7 +319,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		this.bus = null;
 
 		if ( this.mode != AlarmMode.REPEATING ) {
-			if ( this.mode == AlarmMode.REPEATING ) {
+			if ( this.mode == AlarmMode.COUNTDOWN ) {
 				this.mode = AlarmMode.NORMAL;
 			}
 
