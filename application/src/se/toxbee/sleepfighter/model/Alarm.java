@@ -309,6 +309,28 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 */
 
 	/**
+	 * Should be called when an alarm has been issued.<br/>
+	 * This forces out a {@link ScheduleChangeEvent} no matter what.
+	 */
+	public void issued() {
+		// Temporarily remove bus, don't send out excess events.
+		MessageBus<Message> bus = this.bus;
+		this.bus = null;
+
+		if ( this.mode != AlarmMode.REPEATING ) {
+			if ( this.mode == AlarmMode.REPEATING ) {
+				this.mode = AlarmMode.NORMAL;
+			}
+
+			this.isActivated = false;
+		}
+
+		// Pretend like the alarms scheduling was altered even tho it might not have been.
+		this.bus = bus;
+		this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, !this.isActivated() ) );
+	}
+
+	/**
 	 * Sets the message bus, if not set, no events will be received.
 	 *
 	 * @param bus the buss that receives events.

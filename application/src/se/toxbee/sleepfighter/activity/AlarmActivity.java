@@ -32,7 +32,6 @@ import se.toxbee.sleepfighter.audio.VibrationManager;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.NotificationHelper;
 import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
@@ -276,24 +275,13 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void performRescheduling() {
-		SFApplication app = SFApplication.get();
-
-		// Disable alarm if not repeating.
-		if (!this.alarm.isRepeating()) {
-			if (this.alarm.getMessageBus() == null) {
-				this.alarm.setMessageBus(app.getBus());
-			}
-
-			this.alarm.setActivated(false);
-		} else {
-			// Reschedule earliest alarm (if any).
-			AlarmTimestamp at = app.getAlarms().getEarliestAlarm(
-					new DateTime().getMillis());
-			if (at != AlarmTimestamp.INVALID) {
-				AlarmPlannerService.call(app, Command.CREATE, at.getAlarm()
-						.getId());
-			}
+		// Make sure alarm has a bus.
+		if ( this.alarm.getMessageBus() == null ) {
+			this.alarm.setMessageBus( SFApplication.get().getBus() );
 		}
+
+		// Tell the alarm it has been issued, rescheduling if necessary.
+		this.alarm.issued();
 	}
 
 	/**
