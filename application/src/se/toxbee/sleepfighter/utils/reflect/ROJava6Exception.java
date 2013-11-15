@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.utils.factory;
+package se.toxbee.sleepfighter.utils.reflect;
 
 /**
  * <p>Wraps exception classes that in JDK1.7 extends<br/>

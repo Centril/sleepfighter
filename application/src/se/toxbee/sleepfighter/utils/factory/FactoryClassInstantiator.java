@@ -19,8 +19,8 @@
 package se.toxbee.sleepfighter.utils.factory;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
+import se.toxbee.sleepfighter.utils.reflect.ROJava6Exception;
 import se.toxbee.sleepfighter.utils.reflect.ReflectionUtil;
 
 /**
@@ -47,16 +47,7 @@ public class FactoryClassInstantiator<K, V> implements FactoryInstantiator<K, V>
 	 */
 	public FactoryClassInstantiator( Class<? extends V> clazz, Object... params ) {
 		this.params = params;
-		this.ctor = this.getCtor( clazz );
-	}
-
-	private Constructor<? extends V> getCtor( Class<? extends V> clazz, Object... params ) {
-		try {
-			return clazz.getConstructor( ReflectionUtil.getClasses( params ) );
-		} catch ( NoSuchMethodException e ) {
-			ROJava6Exception.reThrow( e );
-			return null;
-		}
+		this.ctor = ReflectionUtil.getCtor( clazz, ReflectionUtil.getClasses( params ) );
 	}
 
 	/**
@@ -70,19 +61,6 @@ public class FactoryClassInstantiator<K, V> implements FactoryInstantiator<K, V>
 	 */
 	@Override
 	public V produce( K key ) {
-		try {
-			return this.ctor.newInstance( this.params );
-		} catch ( InstantiationException e ) {
-			ROJava6Exception.reThrow( e );
-		} catch( IllegalAccessException e ) {
-			ROJava6Exception.reThrow( e );
-		} catch ( IllegalArgumentException e ) {
-			ROJava6Exception.reThrow( e );
-		} catch ( InvocationTargetException e ) {
-			ROJava6Exception.reThrow( e );
-		}
-
-		// Satisfy compiler.
-		return null;
+		return ReflectionUtil.newInstance( this.ctor, this.params );
 	}
 }

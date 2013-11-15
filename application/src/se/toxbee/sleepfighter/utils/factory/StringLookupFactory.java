@@ -43,7 +43,8 @@ public abstract class StringLookupFactory<V> extends AbstractFactory<String, V> 
 	protected abstract String getDefaultPackage();
 
 	/**
-	 * When a key not found is added via reflection, this method returns an instantiator for it.
+	 * When a key not found is added via reflection, this method returns an instantiator for it.<br/>
+	 * This gives subclasses an opportunity to use a different instantiator.
 	 *
 	 * @param clazz the clazz.
 	 * @return the instantiator.
@@ -83,13 +84,9 @@ public abstract class StringLookupFactory<V> extends AbstractFactory<String, V> 
 			Class<? extends V> valClazz = null;
 
 			// Find the Class.
-			try {
-				valClazz = ReflectionUtil.classForName( qualifiedKey, clazz );
-			} catch ( ClassNotFoundException e ) {
-				ROJava6Exception.reThrow( e );
-			}
+			valClazz = ReflectionUtil.classForName( qualifiedKey, clazz );
 
-			// Add classes.
+			// Add classes, this caches them.
 			FactoryClassInstantiator<String, V> ins = this.makeFoundInstantiator( valClazz );
 			for ( String addKey : keys ) {
 				this.add( addKey, ins );
