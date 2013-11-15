@@ -19,6 +19,7 @@
 package se.toxbee.sleepfighter.factory;
 
 import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.model.AlarmMode;
 import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
@@ -41,7 +42,7 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 		alarm.setIsPresetAlarm( this.createIsPresetFlag() );
 		alarm.setActivated( this.createIsActivated() );
 		alarm.setEnabledDays( this.createEnabledDays() );
-		alarm.setRepeat( this.createIsRepeatingFlag() );
+		alarm.setMode( this.createMode() );
 		alarm.setName( this.createName() );
 		alarm.setSpeech(this.createIsSpeech());
 		alarm.setFlash( this.createIsFlashEnabled() );
@@ -61,7 +62,7 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 
 	protected abstract AlarmTime createTime();
 
-	protected abstract boolean createIsRepeatingFlag();
+	protected abstract AlarmMode createMode();
 
 	protected abstract String createName();
 

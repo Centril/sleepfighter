@@ -20,6 +20,7 @@ package se.toxbee.sleepfighter.factory;
 
 import java.util.Arrays;
 
+import se.toxbee.sleepfighter.model.AlarmMode;
 import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
@@ -45,8 +46,8 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 	}
 
 	@Override
-	protected boolean createIsRepeatingFlag() {
-		return false;
+	protected AlarmMode createMode() {
+		return AlarmMode.NORMAL;
 	}
 
 	@Override
