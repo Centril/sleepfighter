@@ -16,27 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.utils.annotate;
+package se.toxbee.sleepfighter.utils.model;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import se.toxbee.sleepfighter.utils.factory.FactoryInstantiator;
 
 /**
- * {@link Factory} denotes a class that can construct a concrete class.
+ * A {@link Codifiable} is an object that can be converted to and from an integer code.<br/>
+ * The object must honor the following conditions:
+ * <ul>
+ *	<li>It must define at least one public default {@link Factory}.<br/>
+ *	<li>Given a {@link Factory} of type C and instance c,<br/>
+ *		<code>C.produce( c.toCode() ).equals( c ) == true</code>
+ *	</li>
+ * </ul>
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Nov 15, 2013
+ * @since Nov 14, 2013
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Factory {
+public interface Codifiable {
 	/**
-	 * The {@link Class} that can construct the objects of interest.
+	 * Converts the object to an integer representation.
 	 *
-	 * @return the {@link Class}.
+	 * @return
 	 */
-	public Class<?> clazz();
+	public int toCode();
+
+	public static interface Factory extends FactoryInstantiator<Integer, Codifiable> {
+	}
 }
