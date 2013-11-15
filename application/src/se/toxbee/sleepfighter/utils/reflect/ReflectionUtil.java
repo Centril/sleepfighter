@@ -31,6 +31,23 @@ import com.google.common.collect.ObjectArrays;
  */
 public class ReflectionUtil {
 	/**
+	 * Returns the {@link Class} objects of objs.
+	 *
+	 * @param objs an array of objects.
+	 * @return the classes.
+	 */
+	public static Class<?>[] getClasses( Object... objs ) {
+		int len = objs.length;
+
+		Class<?>[] types = new Class<?>[len];
+		for ( int i = 0; i < len; ++i ) {
+			types[i] = objs[i].getClass();
+		}
+
+		return types;
+	}
+
+	/**
 	 * Creates an array of type T of size.
 	 *
 	 * @param clazz the Class object of type T.
@@ -50,6 +67,20 @@ public class ReflectionUtil {
 	@SuppressWarnings( "unchecked" )
 	public static <T> Class<T> arrayClass( T[] arr ) {
 		return (Class<T>) arr.getClass().getComponentType();
+	}
+
+	/**
+	 * Returns a {@link Class} for fully qualified class with name as a subclass of target.
+	 *
+	 * @param name the fully qualified name of class.
+	 * @param target the target class/interface.
+	 * @return the resulting {@link Class}.
+	 * @throws ClassNotFoundException when there's no class with name.
+	 */
+	public static <U> Class<? extends U> classForName( String name, Class<U> target ) throws ClassNotFoundException {
+		Class<?> dirty = Class.forName( name );
+		Class<? extends U> clazz = dirty.asSubclass( target );
+		return clazz;
 	}
 
 	/**
