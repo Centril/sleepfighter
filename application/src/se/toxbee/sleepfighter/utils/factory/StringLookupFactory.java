@@ -96,7 +96,7 @@ public abstract class StringLookupFactory<V> extends AbstractFactory<String, V> 
 			}
 
 			// Produce again.
-			val = ins.get( key );
+			val = ins.produce( key );
 		}
 
 		return val;

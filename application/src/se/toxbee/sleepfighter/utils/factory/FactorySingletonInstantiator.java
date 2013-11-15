@@ -48,9 +48,9 @@ public class FactorySingletonInstantiator<K, V> implements FactoryInstantiator<K
 	 *
 	 * @return The singleton instance.
 	 */
-	public V get( K key ) {
+	public V produce( K key ) {
 		if ( this.instance == null ) {
-			this.instance = this.instantiator.get( key );
+			this.instance = this.instantiator.produce( key );
 		}
 
 		return this.instance;

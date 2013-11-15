@@ -119,7 +119,7 @@ public abstract class AbstractFactory<K, V> implements Factory<K, V> {
 			return null;
 		} else {
 			try {
-				return ins.get( key );
+				return ins.produce( key );
 			} catch ( Throwable e ) {
 				throw new FactoryInstantiationException( e );
 			}

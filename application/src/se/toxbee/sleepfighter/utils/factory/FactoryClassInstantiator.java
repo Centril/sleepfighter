@@ -69,7 +69,7 @@ public class FactoryClassInstantiator<K, V> implements FactoryInstantiator<K, V>
 	 * @throws ROJava6Exception when an error occurs during construction.
 	 */
 	@Override
-	public V get( K key ) {
+	public V produce( K key ) {
 		try {
 			return this.ctor.newInstance( this.params );
 		} catch ( InstantiationException e ) {

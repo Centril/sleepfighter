@@ -34,5 +34,5 @@ public interface FactoryInstantiator<K, V> {
 	 * @param key The key that retrieved this FactoryInstantiator ( may be null or not used! ).
 	 * @return The constructed Object.
 	 */
-	public V get( K key );
+	public V produce( K key );
 }
