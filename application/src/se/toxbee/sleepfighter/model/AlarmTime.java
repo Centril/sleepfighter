@@ -24,6 +24,7 @@ import org.joda.time.ReadableDateTime;
 
 import com.google.common.collect.ComparisonChain;
 
+import se.toxbee.sleepfighter.utils.model.Codifiable;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 /**
@@ -33,7 +34,14 @@ import se.toxbee.sleepfighter.utils.string.StringUtils;
  * @version 1.0
  * @since Nov 11, 2013
  */
-public class AlarmTime implements Comparable<AlarmTime> {
+public class AlarmTime implements Comparable<AlarmTime>, Codifiable {
+	public static class Factory implements Codifiable.Factory {
+		@Override
+		public AlarmTime produce( Integer key ) {
+			return new AlarmTime( key );
+		}
+	}
+
 	private int second;
 	private int minute;
 	private int hour;
@@ -123,6 +131,11 @@ public class AlarmTime implements Comparable<AlarmTime> {
 		this.second = i & 0x3F;
 		this.minute = (i >> 6) & 0x3F;
 		this.hour = i >> 12;
+	}
+
+	@Override
+	public int toCode() {
+		return this.pack();
 	}
 
 	/**
@@ -221,4 +234,5 @@ public class AlarmTime implements Comparable<AlarmTime> {
 		t.setSecondOfMinute( this.second );
 		return t;
 	}
+
 }
