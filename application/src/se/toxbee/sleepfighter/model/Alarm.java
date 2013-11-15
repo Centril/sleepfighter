@@ -230,8 +230,8 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	private boolean isPresetAlarm = false;
 
 	@DatabaseField(foreign = true, canBeNull = true)
-	private AudioSource audioSource = new AudioSource(AudioSourceType.RINGTONE,
-			Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
+	private AudioSource audioSource = new AudioSource( AudioSourceType.RINGTONE,
+			Settings.System.DEFAULT_ALARM_ALERT_URI.toString() );
 
 	@DatabaseField(foreign = true, canBeNull = false)
 	private AudioConfig audioConfig = new AudioConfig( 100, true );
@@ -318,8 +318,8 @@ public class Alarm implements IdProvider, MessageBusHolder {
 
 		// Pass it on!
 		this.challenges.setMessageBus( bus );
-		this.audioConfig.setMessageBus(bus);
-		this.snoozeConfig.setMessageBus(bus);
+		this.audioConfig.setMessageBus( bus );
+		this.snoozeConfig.setMessageBus( bus );
 	}
 
 	/**
@@ -579,7 +579,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		prop.put( "time", this.getTime().getTimeString( false ) );
 		prop.put( "weekdays", Arrays.toString( this.enabledDays ) );
 		prop.put( "activated", Boolean.toString( this.isActivated() ) );
-		prop.put( "repeating", Boolean.toString( this.isRepeating() ) );
+		prop.put( "mode", this.getMode().toString() );
 		prop.put( "audio_source", this.getAudioSource() == null ? null : this.getAudioSource().toString() );
 		prop.put( "audio_config", this.getAudioConfig().toString() );
 
@@ -601,16 +601,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-
-		Alarm rhs = (Alarm) obj;
-		return this.id == rhs.id;
+		return this == obj || obj != null && this.getClass() == obj.getClass() && this.id == ((Alarm) obj).id;
 	}
 
 	/**
@@ -619,7 +610,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @param mode the mode to set.
 	 */
 	public void setMode( AlarmMode mode ) {
-		if ( this.mode == mode ) {
+		if ( this.mode == Preconditions.checkNotNull( mode ) ) {
 			return;
 		}
 
