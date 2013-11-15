@@ -42,8 +42,7 @@ import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.persist.dao.PersistenceException;
 import se.toxbee.sleepfighter.persist.dao.PersistenceExceptionDao;
-import se.toxbee.sleepfighter.persist.type.AlarmTimeType;
-import se.toxbee.sleepfighter.persist.type.BooleanArrayType;
+import se.toxbee.sleepfighter.persist.type.TypeBootstrapper;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
 import android.content.Context;
@@ -53,8 +52,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.field.DataPersister;
-import com.j256.ormlite.field.DataPersisterManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 /**
@@ -720,19 +717,6 @@ public class PersistenceManager {
 	 * Initialization code goes here.
 	 */
 	private void init() {
-		// Initialization code goes here.
-		this.registerDataTypes();
-	}
-
-	/**
-	 * Registering of data types goes here.
-	 */
-	private void registerDataTypes() {
-		rdt( BooleanArrayType.getSingleton() );
-		rdt( AlarmTimeType.getSingleton() );
-	}
-
-	private void rdt( DataPersister p ) {
-		DataPersisterManager.registerDataPersisters( p );
+		TypeBootstrapper.init();
 	}
 }
