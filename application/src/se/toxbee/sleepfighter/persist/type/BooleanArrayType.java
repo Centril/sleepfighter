@@ -18,15 +18,9 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.type;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-
 import se.toxbee.sleepfighter.utils.math.Conversion;
 
 import com.j256.ormlite.field.FieldType;
-import com.j256.ormlite.field.SqlType;
-import com.j256.ormlite.field.types.BaseDataType;
-import com.j256.ormlite.support.DatabaseResults;
 
 /**
  * Defines how to handle a boolean array for OrmLite.<br/>
@@ -36,52 +30,26 @@ import com.j256.ormlite.support.DatabaseResults;
  * @version 1.0
  * @since Sep 23, 2013
  */
-public class BooleanArrayType extends BaseDataType {
+public class BooleanArrayType extends ToIntegerType {
 	private static Class<?> clazz = new boolean[0].getClass();
 	private static final BooleanArrayType singleton = new BooleanArrayType();
-	private static final String[] associatedClassNames = new String[] { clazz.getName() };
 
 	private BooleanArrayType() {
-		super(SqlType.INTEGER, new Class<?>[] {clazz});
-	}
-
-	public static BooleanArrayType getSingleton() {
-		return singleton;
+		super( clazz );
 	}
 
 	@Override
-	public String[] getAssociatedClassNames() {
-		return Arrays.copyOf(associatedClassNames, associatedClassNames.length);
-	}
-
-	@Override
-	public Class<?> getPrimaryClass() {
-		return clazz;
-	}
-
-	@Override
-	public Object javaToSqlArg(FieldType fieldType, Object javaObject) throws SQLException {
+	protected Integer toInt( FieldType fieldType, Object javaObject ) {
 		return Conversion.boolArrayToInt( (boolean[]) javaObject );
 	}
 
 	@Override
-	public Object sqlArgToJava(FieldType fieldType, Object sqlArg, int columnPos) throws SQLException {
-		return Conversion.intToBoolArray( (Integer) sqlArg, fieldType.getWidth() );
+	protected Object fromInt( FieldType fieldType, Integer val ) {
+		return Conversion.intToBoolArray( val, fieldType.getWidth() );
 	}
 
-	@Override
-	public Object parseDefaultString(FieldType fieldType, String defaultStr) {
-		return Conversion.intToBoolArray( Integer.parseInt( defaultStr ), fieldType.getWidth() );
-	}
-
-	@Override
-	public Object resultToSqlArg(FieldType fieldType, DatabaseResults results, int columnPos) throws SQLException {
-		return results.getInt(columnPos);
-	}
-
-	@Override
-	public boolean isEscapedValue() {
-		return false;
+	public static BooleanArrayType getSingleton() {
+		return singleton;
 	}
 
 	@Override
