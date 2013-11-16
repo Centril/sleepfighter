@@ -18,9 +18,8 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.type;
 
-import se.toxbee.sleepfighter.model.AlarmMode;
-import se.toxbee.sleepfighter.model.AlarmTime;
-import se.toxbee.sleepfighter.utils.model.Codifiable;
+import se.toxbee.sleepfighter.model.time.CountdownTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 
 import com.j256.ormlite.field.DataPersister;
 import com.j256.ormlite.field.DataPersisterManager;
@@ -35,12 +34,8 @@ import com.j256.ormlite.field.DataPersisterManager;
 public class TypeBootstrapper {
 	public static void init() {
 		rdt( BooleanArrayType.getSingleton() );
-		rdt( AlarmTime.class );
-		rdt( AlarmMode.class );
-	}
-
-	private static void rdt( Class<? extends Codifiable> clazz ) {
-		rdt( new CodifiableType( clazz ) );
+		rdt( new CodifiableType( ExactTime.class ) );
+		rdt( new CodifiableLongType( CountdownTime.class ) );
 	}
 
 	private static void rdt( DataPersister p ) {
