@@ -37,6 +37,16 @@ public class CountdownTime extends AlarmTime {
 	private final long timestamp;
 
 	/**
+	 * Copies a CountdownTime, if is null, null is returned.
+	 *
+	 * @param rhs the time to copy.
+	 * @return the copied time.
+	 */
+	public static CountdownTime copy( CountdownTime rhs ) {
+		return rhs == null ? null : new CountdownTime( rhs );
+	}
+
+	/**
 	 * Copy constructor.
 	 *
 	 * @param rhs the time to copy from.
