@@ -21,6 +21,8 @@ package se.toxbee.sleepfighter.model.time;
 import org.joda.time.MutableDateTime;
 import org.joda.time.Period;
 
+import se.toxbee.sleepfighter.utils.model.CodifiableLong;
+
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Longs;
 
@@ -35,7 +37,7 @@ import com.google.common.primitives.Longs;
  * @version 1.0
  * @since Nov 16, 2013
  */
-public class CountdownTime extends AlarmTime {
+public class CountdownTime extends AlarmTime implements CodifiableLong {
 	private final long timestamp;
 
 	/**
@@ -140,7 +142,9 @@ public class CountdownTime extends AlarmTime {
 		return this.timestamp;
 	}
 
-	public long timestamp() {
+
+	@Override
+	public long toCodeLong() {
 		return this.timestamp;
 	}
 }
