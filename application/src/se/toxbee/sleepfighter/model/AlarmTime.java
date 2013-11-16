@@ -19,6 +19,7 @@
 package se.toxbee.sleepfighter.model;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 import org.joda.time.ReadableDateTime;
 
@@ -41,6 +42,9 @@ public class AlarmTime implements Comparable<AlarmTime>, Codifiable {
 			return new AlarmTime( key );
 		}
 	}
+
+	public static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
+	public static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
 
 	private int second;
 	private int minute;
@@ -222,12 +226,13 @@ public class AlarmTime implements Comparable<AlarmTime>, Codifiable {
 	}
 
 	/**
-	 * Returns a MutableDateTime after "now", offset to the time of this {@link AlarmTime}.
+	 * Returns a UNIX epoch timestamp after "now", offset to the time of this {@link AlarmTime} and the first in enabledDays to be true.
 	 *
 	 * @param now now in UNIX epoch timestamp.
-	 * @return the MutableDateTime.
+	 * @param enabledDays a boolean array of size 7 for enabled weekdays.
+	 * @return the timestamp.
 	 */
-	public MutableDateTime afterNow( long now ) {
+	public long afterNow( long now, boolean[] enabledDays ) {
 		MutableDateTime t = new MutableDateTime( now );
 		t.setHourOfDay( this.hour );
 		t.setMinuteOfHour( this.minute );
@@ -238,7 +243,47 @@ public class AlarmTime implements Comparable<AlarmTime>, Codifiable {
 			t.addDays( 1 );
 		}
 
-		return t;
+		// Offset for weekdays
+		int offset = 0;
+		
+		// First weekday to check (0-6), getDayOfWeek returns (1-7)
+		int weekday = t.getDayOfWeek() - 1;
+
+		// Find the weekday the alarm should run, should at most run seven times
+		for ( int i = 0; i < 7; ++i ) {
+			// Wrap to first weekday
+			if ( weekday > MAX_WEEK_INDEX ) {
+				weekday = 0;
+			}
+
+			if ( enabledDays[weekday] ) {
+				// We've found the closest day the alarm is enabled for
+				offset = i;
+				break;
+			}
+
+			++weekday;
+			++offset;
+		}
+
+		if ( offset > 0 ) {
+			t.addDays( offset );
+		}
+
+		return t.getMillis();
 	}
 
+	/**
+	 * Returns a UNIX epoch timestamp adding this to "now".
+	 *
+	 * @param now now in UNIX epoch timestamp.
+	 * @return the timestamp.
+	 */
+	public long plusNow( long now ) {
+		MutableDateTime t = new MutableDateTime( now );
+		t.addHours( this.hour );
+		t.addMinutes( this.minute );
+		t.addSeconds( this.second );
+		return t.getMillis();
+	}
 }

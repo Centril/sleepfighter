@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.MutableDateTime;
 
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
@@ -217,8 +215,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	/** The weekdays that this alarm can ring. */
 	@DatabaseField(width = 7)
 	private boolean[] enabledDays = PrimitiveArrays.filled( true, 7 );
-	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
-	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
 
 	@DatabaseField
 	private int unnamedPlacement;
@@ -318,12 +314,8 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		MessageBus<Message> bus = this.bus;
 		this.bus = null;
 
-		if ( this.mode != AlarmMode.REPEATING ) {
-			if ( this.mode == AlarmMode.COUNTDOWN ) {
-				this.mode = AlarmMode.NORMAL;
-			}
-
-			this.isActivated = false;
+		if ( this.isRepeating() ) {
+			this.setActivated( false );
 		}
 
 		// Pretend like the alarms scheduling was altered even tho it might not have been.
@@ -421,13 +413,21 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		return this.time;
 	}
 
+	public synchronized void setTime( AlarmTime time ) {
+		if ( this.isCountdown() ) {
+			this.setCountdown( false );
+		}
+
+		this.setTimeInternal( time );
+	}
+
 	/**
 	 * Sets the time to the given time.<br/>
 	 * For performance, the passed value is not cloned.
 	 *
 	 * @param time the time to set alarm to.
 	 */
-	public synchronized void setTime( AlarmTime time ) {
+	private synchronized void setTimeInternal( AlarmTime time ) {
 		if ( Objects.equal( this.time, time ) ) {
 			return;
 		}
@@ -435,6 +435,17 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		AlarmTime old = this.time;
 		this.time = time;
 		this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
+	}
+
+	/**
+	 * Sets alarm to countdown to given time.
+	 *
+	 * @param time the time to set alarm to.
+	 */
+	public synchronized void setCountdown( AlarmTime time ) {
+		this.setTimeInternal( time );
+		this.setMode( AlarmMode.COUNTDOWN );
+		this.setActivated( true );
 	}
 
 	/**
@@ -456,7 +467,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
 		Preconditions.checkNotNull( enabledDays );
 
-		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
+		if ( enabledDays.length != AlarmTime.MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
 
@@ -472,54 +483,13 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @param now the current time in unix epoch timestamp.
 	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
-	public synchronized Long getNextMillis(long now) {
-		if ( !this.canHappen() ) {
-			return NEXT_NON_REAL;
+	public synchronized Long getNextMillis( long now ) {
+		if ( this.canHappen() ) {
+			AlarmTime t = this.getTime();
+			return this.isCountdown() ? t.plusNow( now ) : t.afterNow( now, this.enabledDays );
 		}
 
-		MutableDateTime next = this.getTime().afterNow( now );
-
-		// Offset if not countdown alarm.
-		// Countdown alarms always happen exactly at set time.
-		if ( !this.isCountdown() ) {
-			this.offsetWeekdays( next );
-		}
-
-		return next.getMillis();
-	}
-
-	/**
-	 * Offsets next to the first enabled weekday.
-	 *
-	 * @param next the time to offset.
-	 */
-	private void offsetWeekdays( MutableDateTime next ) {
-		// Offset for weekdays
-		int offset = 0;
-		
-		// First weekday to check (0-6), getDayOfWeek returns (1-7)
-		int weekday = next.getDayOfWeek() - 1;
-
-		// Find the weekday the alarm should run, should at most run seven times
-		for ( int i = 0; i < 7; ++i ) {
-			// Wrap to first weekday
-			if ( weekday > MAX_WEEK_INDEX ) {
-				weekday = 0;
-			}
-
-			if ( this.enabledDays[weekday] ) {
-				// We've found the closest day the alarm is enabled for
-				offset = i;
-				break;
-			}
-
-			++weekday;
-			++offset;
-		}
-
-		if ( offset > 0 ) {
-			next.addDays( offset );
-		}
+		return NEXT_NON_REAL;
 	}
 
 	/**
@@ -544,6 +514,10 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	public void setActivated( boolean isActivated ) {
 		if ( this.isActivated == isActivated ) {
 			return;
+		}
+
+		if ( !isActivated && this.isCountdown() ) {
+			this.setCountdown( false );
 		}
 
 		boolean old = this.isActivated;
@@ -674,7 +648,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 *
 	 * @param isCountdown true if it is counting down.
 	 */
-	public void setCountdown( boolean isCountdown ) {
+	private void setCountdown( boolean isCountdown ) {
 		AlarmMode mode = isCountdown ? AlarmMode.COUNTDOWN : AlarmMode.NORMAL;
 		this.setMode( mode );
 	}
