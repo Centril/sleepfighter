@@ -38,7 +38,7 @@ public interface Codifiable {
 	/**
 	 * Converts the object to an integer representation.
 	 *
-	 * @return
+	 * @return the integer code.
 	 */
 	public int toCode();
 
