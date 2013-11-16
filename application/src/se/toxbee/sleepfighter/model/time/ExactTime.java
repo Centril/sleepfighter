@@ -110,7 +110,7 @@ public class ExactTime extends AlarmTime implements Codifiable {
 	}
 
 	@Override
-	long scheduledTimestamp( long now, Object... inject ) {
+	public long scheduledTimestamp( long now, Object... inject ) {
 		// Fetch enabledDays from injected parameters, expected at index 0.
 		boolean[] enabledDays = (boolean[]) inject[0];
 

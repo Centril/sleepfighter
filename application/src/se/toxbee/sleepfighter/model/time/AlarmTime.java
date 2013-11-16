@@ -168,7 +168,7 @@ public abstract class AlarmTime implements Comparable<AlarmTime> {
 	 * @param inject any extra info needed for computation.
 	 * @return the timestamp.
 	 */
-	abstract long scheduledTimestamp( long now, Object... inject );
+	public abstract long scheduledTimestamp( long now, Object... inject );
 
 	protected abstract boolean equalsImpl( AlarmTime t );
 

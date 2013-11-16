@@ -19,7 +19,9 @@
 package se.toxbee.sleepfighter.model.time;
 
 import org.joda.time.MutableDateTime;
+import org.joda.time.Period;
 
+import com.google.common.base.Preconditions;
 import com.google.common.primitives.Longs;
 
 /**
@@ -90,7 +92,10 @@ public class CountdownTime extends AlarmTime {
 	 */
 	public CountdownTime( long timestamp ) {
 		super();
+
+		Preconditions.checkArgument( timestamp < this.now() );
 		this.timestamp = timestamp;
+
 		this.refresh();
 	}
 
@@ -119,10 +124,19 @@ public class CountdownTime extends AlarmTime {
 
 	@Override
 	public void refresh() {
+		Period p = new Period( this.timestamp - this.now() );
+
+		this.hour = p.getHours();
+		this.minute = p.getMinutes();
+		this.second = p.getSeconds();
+	}
+
+	private long now() {
+		return System.currentTimeMillis();
 	}
 
 	@Override
-	long scheduledTimestamp( long now, Object... inject ) {
+	public long scheduledTimestamp( long now, Object... inject ) {
 		return this.timestamp;
 	}
 
