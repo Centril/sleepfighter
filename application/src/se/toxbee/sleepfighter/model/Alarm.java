@@ -594,6 +594,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 */
 	public synchronized void setTime( AlarmTime time ) {
 		if ( time instanceof ExactTime ) {
+			this.countdownTime = null;
 			this.setExactTime( (ExactTime) time );
 		} else if ( time instanceof CountdownTime ) {
 			this.setCountdownTime( (CountdownTime) time );
