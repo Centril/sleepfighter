@@ -121,6 +121,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
 		// TODO possibly use some way that doesn't make the dialog close on rotate
 		AlarmTime time = alarm.getTime();
+		time.refresh();
+
 		SecondTimePickerDialog tpd = new SecondTimePickerDialog(
 			getContext(), onTimePickerSet,
 			time.getHour(), time.getMinute(), time.getSecond(),

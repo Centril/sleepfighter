@@ -36,8 +36,9 @@ import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.Alarm.AudioChangeEvent;
 import se.toxbee.sleepfighter.model.Alarm.Field;
 import se.toxbee.sleepfighter.model.Alarm.MetaChangeEvent;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.model.AlarmList;
-import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.text.DateTextUtils;
@@ -460,8 +461,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			if (TIME.equals(preference.getKey())) {
 				TimepickerPreference tpPref = (TimepickerPreference) preference;
 
-				AlarmTime time = new AlarmTime( tpPref.getHour(), tpPref.getMinute() );
-
+				AlarmTime time = new ExactTime( tpPref.getHour(), tpPref.getMinute() );
 				alarm.setTime( time );
 
 				preference.setSummary( time.getTimeString() );
@@ -567,6 +567,18 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	
 	private void initiateTimePicker( TimepickerPreference tp ) {
 		AlarmTime time = this.alarm.getTime();
+		time.refresh();
+
+		tp.setOnPreferenceClickListener( new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick( Preference preference ) {
+				TimepickerPreference tp = (TimepickerPreference) preference;
+				AlarmTime time = alarm.getTime();
+				tp.setHour( time.getHour() );
+				tp.setMinute( time.getMinute() );
+				return false;
+			}
+		} );
 
 		tp.setHour( time.getHour() );
 		tp.setMinute( time.getMinute() );
