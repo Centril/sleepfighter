@@ -1,4 +1,4 @@
-package se.toxbee.sleepfighter.android.view;
+package se.toxbee.sleepfighter.android.component.web;
 
 import android.content.Context;
 import android.util.AttributeSet;
