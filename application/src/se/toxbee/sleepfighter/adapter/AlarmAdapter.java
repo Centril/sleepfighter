@@ -24,7 +24,9 @@ import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePicker;
 import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePickerDialog;
 import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.AlarmTime;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.CountdownTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.text.DateTextUtils;
 import se.toxbee.sleepfighter.text.MetaTextUtils;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
@@ -94,7 +96,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		OnTimeSetListener onTimePickerSet = new OnTimeSetListener() {
 			@Override
 			public void onTimeSet(TimePicker view, int h, int m ) {
-				alarm.setTime( new AlarmTime( h, m ) );
+				alarm.setTime( new ExactTime( h, m ) );
 			}
 		};
 
@@ -113,7 +115,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		SecondTimePickerDialog.OnTimeSetListener onTimePickerSet = new SecondTimePickerDialog.OnTimeSetListener() {
 			@Override
 			public void onTimeSet( SecondTimePicker view, int h, int m, int s ) {
-				alarm.setCountdown( new AlarmTime( h, m, s ) );
+				alarm.setTime( new CountdownTime( h, m, s ) );
 			}
 		};
 
@@ -130,6 +132,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
 	private void setupTimeText( final Alarm alarm, View convertView ) {
 		AlarmTime time = alarm.getTime();
+		time.refresh();
 
 		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
 		timeTextView.setText( time.getTimeString() );
@@ -189,5 +192,4 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 			}
 		});
 	}
-
 }
