@@ -19,12 +19,11 @@
 package se.toxbee.sleepfighter.factory;
 
 import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.AlarmMode;
-import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 
 /**
  * AbstractAlarmFactory is the abstract factory implementation of AlarmFactory. 
@@ -36,14 +35,18 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 public abstract class AbstractAlarmFactory implements AlarmFactory {
 	@Override
 	public Alarm createAlarm() {
-		Alarm alarm = this.instantiateAlarm( this.createTime() );
+		Alarm alarm = this.instantiateAlarm();
 
-		// Set basic Alarm native properties.
+		// Set meta properties.
+		alarm.setName( this.createName() );
 		alarm.setIsPresetAlarm( this.createIsPresetFlag() );
+
+		// Set scheduling properties.
 		alarm.setActivated( this.createIsActivated() );
 		alarm.setEnabledDays( this.createEnabledDays() );
-		alarm.setMode( this.createMode() );
-		alarm.setName( this.createName() );
+		alarm.setTime( this.createTime() );
+
+		// Set other basic non-foreign properties.
 		alarm.setSpeech(this.createIsSpeech());
 		alarm.setFlash( this.createIsFlashEnabled() );
 
@@ -56,13 +59,11 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 		return alarm;
 	}
 
-	protected Alarm instantiateAlarm( AlarmTime time ) {
-		return new Alarm( time );
+	protected Alarm instantiateAlarm() {
+		return new Alarm();
 	}
 
-	protected abstract AlarmTime createTime();
-
-	protected abstract AlarmMode createMode();
+	protected abstract ExactTime createTime();
 
 	protected abstract String createName();
 

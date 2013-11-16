@@ -18,8 +18,6 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.factory;
 
-import se.toxbee.sleepfighter.model.AlarmMode;
-import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
@@ -27,6 +25,7 @@ import se.toxbee.sleepfighter.model.audio.AudioSourceType;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfig;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import android.provider.Settings;
 
@@ -40,13 +39,8 @@ import android.provider.Settings;
  */
 public class PresetAlarmFactory extends AbstractAlarmFactory {
 	@Override
-	protected AlarmTime createTime() {
-		return new AlarmTime( 8, 0 );
-	}
-
-	@Override
-	protected AlarmMode createMode() {
-		return AlarmMode.NORMAL;
+	protected ExactTime createTime() {
+		return new ExactTime( 8, 0 );
 	}
 
 	@Override
