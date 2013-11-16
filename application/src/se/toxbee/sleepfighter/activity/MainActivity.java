@@ -163,11 +163,11 @@ public class MainActivity extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.mainAlarmsList) {
-			String[] menuItems = getResources().getStringArray(
-					R.array.main_list_context_menu);
+			String[] menuItems = getResources().getStringArray( R.array.main_list_context_menu );
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
+
 			if (SFApplication.DEBUG) {
 				// adds an extra context menu item for starting an alarm
 				menu.add(0, menuItems.length, menuItems.length,
@@ -185,26 +185,36 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		Alarm selectedAlarm = (alarmAdapter.getItem(info.position));
 
 		switch (item.getOrder()) {
 		case 0:
 			startAlarmEdit(selectedAlarm, false);
 			return true;
+
 		case 1:
 			deleteAlarm(selectedAlarm);
 			return true;
+
 		case 2:
 			copyAlarm(selectedAlarm);
 			return true;
+
 		case 3:
+			this.alarmAdapter.pickNormalTime( selectedAlarm );
+			return true;
+
+		case 4:
+			this.alarmAdapter.pickCountdownTime( selectedAlarm );
+			return true;
+
+		case 5:
 			startAlarm(selectedAlarm);
 			return true;
+
 		default:
 			return false;
-
 		}
 	}
 

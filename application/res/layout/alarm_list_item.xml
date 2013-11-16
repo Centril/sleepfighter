@@ -16,17 +16,29 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="left|center_vertical"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/time_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:clickable="true"
             android:textColor="@color/textcolor"
             android:textIsSelectable="false"
             android:textSize="25sp"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/time_view_seconds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:clickable="false"
+            android:textColor="@color/textcolor"
+            android:textIsSelectable="false"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
     </LinearLayout>
 

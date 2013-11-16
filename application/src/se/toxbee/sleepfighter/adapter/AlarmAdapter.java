@@ -21,10 +21,13 @@ package se.toxbee.sleepfighter.adapter;
 import java.util.List;
 
 import se.toxbee.sleepfighter.R;
+import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePicker;
+import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePickerDialog;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmTime;
 import se.toxbee.sleepfighter.text.DateTextUtils;
 import se.toxbee.sleepfighter.text.MetaTextUtils;
+import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
@@ -45,7 +48,6 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	}
 	
 	public void makeTimeTextViewHitboxBigger(View convertView) {
-
 		View container = convertView.findViewById(R.id.time_view_container);
 		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
 		container.setOnClickListener(new OnClickListener() {
@@ -80,32 +82,70 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		return convertView;
 	}
 
-	private void setupTimeText( final Alarm alarm, View convertView ) {
-		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
+	public void pickTime( final Alarm alarm ) {
+		if ( alarm.isCountdown() ) {
+			this.pickCountdownTime( alarm );
+		} else {
+			this.pickNormalTime( alarm );
+		}
+	}
 
-		timeTextView.setText( alarm.getTime().getTimeString() );
+	public void pickNormalTime( final Alarm alarm ) {
+		OnTimeSetListener onTimePickerSet = new OnTimeSetListener() {
+			@Override
+			public void onTimeSet(TimePicker view, int h, int m ) {
+				alarm.setTime( new AlarmTime( h, m ) );
+			}
+		};
+
+		// TODO possibly use some way that doesn't make the dialog close on rotate
+		AlarmTime time = alarm.getTime();
+		TimePickerDialog tpd = new TimePickerDialog(
+			getContext(), onTimePickerSet,
+			time.getHour(), time.getMinute(),
+			true
+		);
+
+		tpd.show();
+	}
+
+	public void pickCountdownTime( final Alarm alarm ) {
+		SecondTimePickerDialog.OnTimeSetListener onTimePickerSet = new SecondTimePickerDialog.OnTimeSetListener() {
+			@Override
+			public void onTimeSet( SecondTimePicker view, int h, int m, int s ) {
+				alarm.setCountdown( new AlarmTime( h, m, s ) );
+			}
+		};
+
+		// TODO possibly use some way that doesn't make the dialog close on rotate
+		AlarmTime time = alarm.getTime();
+		SecondTimePickerDialog tpd = new SecondTimePickerDialog(
+			getContext(), onTimePickerSet,
+			time.getHour(), time.getMinute(), time.getSecond(),
+			true
+		);
+
+		tpd.show();
+	}
+
+	private void setupTimeText( final Alarm alarm, View convertView ) {
+		AlarmTime time = alarm.getTime();
+
+		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
+		timeTextView.setText( time.getTimeString() );
+
+		// Set countdown if needed.
+		final TextView secTextView = (TextView) convertView.findViewById( R.id.time_view_seconds );
+		if ( alarm.isCountdown() ) {
+			secTextView.setVisibility( View.VISIBLE );
+			secTextView.setText( StringUtils.joinTime( time.getSecond() ) + "\"" );
+		} else {
+			secTextView.setVisibility( View.GONE );
+		}
+
 		timeTextView.setOnClickListener( new OnClickListener() {
 			public void onClick( View v ) {
-				
-				OnTimeSetListener onTimePickerSet = new OnTimeSetListener() {
-					@Override
-					public void onTimeSet(TimePicker view, int h, int m ) {
-						alarm.setTime( new AlarmTime( h, m ) );
-					}
-				};
-
-				// TODO take am/pm into account
-				// And possibly use some way that doesn't make the dialog close
-				// on rotate
-
-				AlarmTime time = alarm.getTime();
-				TimePickerDialog tpd = new TimePickerDialog(
-					getContext(), onTimePickerSet,
-					time.getHour(), time.getMinute(),
-					true
-				);
-
-				tpd.show();
+				pickTime( alarm );
 			}
 		});
 	}
@@ -149,4 +189,5 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 			}
 		});
 	}
+
 }
