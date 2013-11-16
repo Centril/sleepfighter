@@ -18,42 +18,43 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.type;
 
-import se.toxbee.sleepfighter.utils.math.Conversion;
+import java.util.Arrays;
 
-import com.j256.ormlite.field.FieldType;
+import com.j256.ormlite.field.DataPersister;
+import com.j256.ormlite.field.SqlType;
+import com.j256.ormlite.field.types.BaseDataType;
 
 /**
- * Defines how to handle a boolean array for OrmLite.<br/>
- * Stored as an integer in database.
+ * BaseType is the base type of all custom {@link DataPersister}:s.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Sep 23, 2013
+ * @since Nov 16, 2013
  */
-public class BooleanArrayType extends ToIntegerType {
-	private static Class<?> clazz = new boolean[0].getClass();
-	private static final BooleanArrayType singleton = new BooleanArrayType();
+public abstract class BaseType extends BaseDataType {
+	protected final String[] associatedClassNames;
 
-	private BooleanArrayType() {
-		super( clazz );
+	protected BaseType( SqlType sqlType, Class<?> clazz ) {
+		this( sqlType, new Class<?>[] { clazz } );
+	}
+
+	protected BaseType( SqlType sqlType, Class<?>[] clazzes ) {
+		super( sqlType, clazzes );
+
+		// Figure out class names.
+		int len = clazzes.length;
+		this.associatedClassNames = new String[len];
+		for ( int i = 0; i < len; ++i ) {
+			this.associatedClassNames[i] = clazzes[i].getName();
+		}
 	}
 
 	@Override
-	protected Integer toInt( FieldType fieldType, Object javaObject ) {
-		return javaObject == null ? null : Conversion.boolArrayToInt( (boolean[]) javaObject );
+	public String[] getAssociatedClassNames() {
+		return associatedHelper( this.associatedClassNames );
 	}
 
-	@Override
-	protected Object fromInt( FieldType fieldType, Integer val ) {
-		return Conversion.intToBoolArray( val, fieldType.getWidth() );
-	}
-
-	public static BooleanArrayType getSingleton() {
-		return singleton;
-	}
-
-	@Override
-	public boolean isAppropriateId() {
-		return false;
+	protected static final String[] associatedHelper( String[] associatedClassNames ) {
+		return Arrays.copyOf( associatedClassNames, associatedClassNames.length );
 	}
 }

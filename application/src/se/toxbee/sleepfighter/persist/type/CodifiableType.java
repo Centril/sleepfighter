@@ -50,7 +50,7 @@ public class CodifiableType extends ToIntegerType {
 
 	@Override
 	protected Integer toInt( FieldType fieldType, Object javaObject ) {
-		return ((Codifiable) javaObject).toCode();
+		return javaObject == null ? null : ((Codifiable) javaObject).toCode();
 	}
 
 	@Override

@@ -19,49 +19,29 @@
 package se.toxbee.sleepfighter.persist.type;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import com.j256.ormlite.field.FieldType;
 import com.j256.ormlite.field.SqlType;
-import com.j256.ormlite.field.types.BaseDataType;
 import com.j256.ormlite.support.DatabaseResults;
 
 /**
- * ToIntegerType is the base type for anything that is stored in database as an INTEGER.
+ * ToIntegerType is the base type for anything that is stored in database as a {@link SqlType#INTEGER}.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Nov 14, 2013
  */
-public abstract class ToIntegerType extends BaseDataType {
-	protected final String[] associatedClassNames;
-
+public abstract class ToIntegerType extends BaseType {
 	protected ToIntegerType( Class<?> clazz ) {
 		this( new Class<?>[] { clazz } );
 	}
 
 	protected ToIntegerType( Class<?>[] clazzes ) {
 		super( SqlType.INTEGER, clazzes );
-
-		// Figure out class names.
-		int len = clazzes.length;
-		this.associatedClassNames = new String[len];
-		for ( int i = 0; i < len; ++i ) {
-			this.associatedClassNames[i] = clazzes[i].getName();
-		}
 	}
 
 	protected abstract Integer toInt( FieldType fieldType, Object javaObject );
 	protected abstract Object fromInt( FieldType fieldType, Integer val );
-
-	@Override
-	public String[] getAssociatedClassNames() {
-		return associatedHelper( this.associatedClassNames );
-	}
-
-	protected static final String[] associatedHelper( String[] associatedClassNames ) {
-		return Arrays.copyOf( associatedClassNames, associatedClassNames.length );
-	}
 
 	@Override
 	public Integer javaToSqlArg( FieldType fieldType, Object javaObject ) throws SQLException {
