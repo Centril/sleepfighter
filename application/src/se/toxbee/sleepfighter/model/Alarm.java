@@ -19,25 +19,23 @@
 package se.toxbee.sleepfighter.model;
 
 import java.util.Arrays;
-import java.util.Map;
-
-import org.joda.time.DateTime;
 
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
 import se.toxbee.sleepfighter.model.audio.AudioSourceType;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.CountdownTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.provider.Settings;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.google.common.primitives.Booleans;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -61,7 +59,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 */
 	public static enum Field {
 		ID, NAME,
-		TIME, MODE, ACTIVATED, ENABLED_DAYS,
+		TIME, REPEATING, ACTIVATED, ENABLED_DAYS,
 		AUDIO_SOURCE, AUDIO_CONFIG, SPEECH, FLASH
 	}
 
@@ -222,21 +220,24 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * --------------------------------
 	 */
 
-	@DatabaseField
-	private boolean isActivated;
-
-	@DatabaseField
-	private AlarmTime time;
-
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
 	@DatabaseField
-	private AlarmMode mode;
+	private boolean isActivated;
+
+	@DatabaseField
+	private ExactTime time;
+
+	@DatabaseField
+	private boolean isRepeating;
 
 	/** The weekdays that this alarm can ring. */
 	@DatabaseField(width = 7)
 	private boolean[] enabledDays = PrimitiveArrays.filled( true, 7 );
+
+	@DatabaseField
+	private CountdownTime countdownTime;
 
 	@DatabaseField(foreign = true, canBeNull = false)
 	private SnoozeConfig snoozeConfig = new SnoozeConfig( true, 9 );
@@ -274,10 +275,9 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 */
 
 	/**
-	 * Constructs an alarm to current time.
+	 * Default constructor, does nothing.
 	 */
 	public Alarm() {
-		this( new AlarmTime( new DateTime() ) );
 	}
 
 	/**
@@ -285,7 +285,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 *
 	 * @param time the time.
 	 */
-	public Alarm( AlarmTime time ) {
+	public Alarm( ExactTime time ) {
 		this.time = time;
 	}
 
@@ -295,21 +295,26 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @param rhs the alarm to copy from.
 	 */
 	public Alarm( Alarm rhs ) {
+		// Set dependencies.
+		this.bus = rhs.bus;
+
 		// Reset id.
 		this.setId( NOT_COMMITTED_ID );
 
-		// Copy data.
-		this.time = new AlarmTime( rhs.time );
-		this.isActivated = rhs.isActivated;
-		this.enabledDays = rhs.enabledDays.clone();
-		this.name = rhs.name;
-		this.mode = rhs.mode;
-
+		// Reset placement.
 		this.unnamedPlacement = 0;
 
-		// Copy dependencies.
-		this.bus = rhs.bus;
-		
+		// More meta stuff.
+		this.name = rhs.name;
+
+		// Copy schedule related.
+		this.isActivated = rhs.isActivated;
+		this.enabledDays = rhs.enabledDays.clone();
+		this.isRepeating = rhs.isRepeating;
+		this.time = new ExactTime( rhs.time );
+		this.countdownTime = CountdownTime.copy( rhs.countdownTime );
+
+		// Copy owned objects.
 		this.audioSource = new AudioSource( rhs.audioSource );
 		this.audioConfig = new AudioConfig( rhs.audioConfig );
 		this.snoozeConfig = new SnoozeConfig( rhs.snoozeConfig );
@@ -388,17 +393,16 @@ public class Alarm implements IdProvider, MessageBusHolder {
 
 	@Override
 	public String toString() {
-		final Map<String, String> prop = Maps.newHashMap();
-		prop.put( "id", Integer.toString( this.getId() ) );
-		prop.put( "name", this.getName() );
-		prop.put( "time", this.getTime().getTimeString( false ) );
-		prop.put( "weekdays", Arrays.toString( this.enabledDays ) );
-		prop.put( "activated", Boolean.toString( this.isActivated() ) );
-		prop.put( "mode", this.getMode().toString() );
-		prop.put( "audio_source", this.getAudioSource() == null ? null : this.getAudioSource().toString() );
-		prop.put( "audio_config", this.getAudioConfig().toString() );
-
-		return "Alarm[" + StringUtils.PROPERTY_MAP_JOINER.join( prop ) + "]";
+		return Objects.toStringHelper( this )
+			.add( "id", this.getId() )
+			.add( "name", this.getName() )
+			.add( "time", this.getTime() )
+			.add( "weekdays", Arrays.toString( this.enabledDays ) )
+			.add( "activated", this.isActivated() )
+			.add( "repeating", this.isRepeating() )
+			.add( "audio_source", this.getAudioSource() )
+			.add( "audio_config", this.getAudioConfig() )
+			.toString();
 	}
 
 	/**
@@ -501,14 +505,19 @@ public class Alarm implements IdProvider, MessageBusHolder {
 
 	/**
 	 * Should be called when an alarm has been issued.<br/>
+	 * This may only be called when {@link #isActivated()} yields true.<br/>
 	 * This forces out a {@link ScheduleChangeEvent} no matter what.
 	 */
 	public void issued() {
+		if ( !this.isActivated() ) {
+			throw new IllegalStateException( "An inactive alarm can't be issued." );
+		}
+
 		// Temporarily remove bus, don't send out excess events.
 		MessageBus<Message> bus = this.bus;
 		this.bus = null;
 
-		if ( this.isRepeating() ) {
+		if ( !this.isRepeating() ) {
 			this.setActivated( false );
 		}
 
@@ -525,12 +534,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
 	public synchronized Long getNextMillis( long now ) {
-		if ( this.canHappen() ) {
-			AlarmTime t = this.getTime();
-			return this.isCountdown() ? t.plusNow( now ) : t.afterNow( now, this.enabledDays );
-		}
-
-		return NEXT_NON_REAL;
+		return this.canHappen() ? this.getTime().scheduledTimestamp( now, this.enabledDays ) : NEXT_NON_REAL;
 	}
 
 	/**
@@ -540,11 +544,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @return true if the alarm can ring in the future.
 	 */
 	public synchronized boolean canHappen() {
-		if ( !this.isActivated() ) {
-			return false;
-		}
-
-		return this.isCountdown() || Booleans.contains( this.enabledDays, true );
+		return this.isActivated() && (this.isCountdown() || Booleans.contains( this.enabledDays, true ));
 	}
 
 	/**
@@ -553,17 +553,15 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @param isActivated whether or not the alarm should be active.
 	 */
 	public void setActivated( boolean isActivated ) {
-		if ( this.isActivated == isActivated ) {
-			return;
-		}
-
-		if ( !isActivated && this.isCountdown() ) {
-			this.setCountdown( false );
-		}
-
 		boolean old = this.isActivated;
-		this.isActivated = isActivated;
-		this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, old ) );
+		if ( old != isActivated ) {
+			if ( !isActivated ) {
+				this.resetCountdown();
+			}
+
+			this.isActivated = isActivated;
+			this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, old ) );
+		}
 	}
 
 	/**
@@ -576,47 +574,55 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	/**
-	 * Returns the time of the alarm (not timestamp, see {@link #getNextMillis(long)} for that...).
+	 * Returns the currently active time of the alarm<br/>
+	 * (not timestamp, see {@link #getNextMillis(long)} for that...).
 	 *
 	 * @return the time.
 	 */
 	public AlarmTime getTime() {
-		return this.time;
+		return this.isCountdown() ? this.countdownTime : this.time;
 	}
 
+	/**
+	 * <p>Sets the time to the given time.<br/>
+	 * For performance, the passed value is not cloned.</p>
+	 *
+	 * <p>Whether the exact time or the countdown time<br/>
+	 * is modified  depends on the type of time.</p>
+	 *
+	 * @param time the time to set alarm to.
+	 */
 	public synchronized void setTime( AlarmTime time ) {
-		if ( this.isCountdown() ) {
-			this.setCountdown( false );
+		if ( time instanceof ExactTime ) {
+			this.setExactTime( (ExactTime) time );
+		} else if ( time instanceof CountdownTime ) {
+			this.setCountdownTime( (CountdownTime) time );
+		} else {
+			throw new AssertionError();
 		}
-
-		this.setTimeInternal( time );
 	}
 
 	/**
-	 * Sets the time to the given time.<br/>
-	 * For performance, the passed value is not cloned.
-	 *
-	 * @param time the time to set alarm to.
+	 * Resets the countdown time, {@link #isCountdown()} will be false after this.
 	 */
-	private synchronized void setTimeInternal( AlarmTime time ) {
-		if ( Objects.equal( this.time, time ) ) {
-			return;
-		}
-
-		AlarmTime old = this.time;
-		this.time = time;
-		this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
+	public synchronized void resetCountdown() {
+		this.setCountdownTime( null );
 	}
 
-	/**
-	 * Sets alarm to countdown to given time.
-	 *
-	 * @param time the time to set alarm to.
-	 */
-	public synchronized void setCountdown( AlarmTime time ) {
-		this.setTimeInternal( time );
-		this.setMode( AlarmMode.COUNTDOWN );
-		this.setActivated( true );
+	private void setExactTime( ExactTime time ) {
+		ExactTime old = this.time;
+		if ( !Objects.equal( old, time ) ) {
+			this.time = old;
+			this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
+		}
+	}
+
+	private void setCountdownTime( CountdownTime time ) {
+		CountdownTime old = this.countdownTime;
+		if ( !Objects.equal( old, time ) ) {
+			this.countdownTime = old;
+			this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
+		}
 	}
 
 	/**
@@ -630,15 +636,14 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	/**
-	 * Sets the weekdays this alarm is enabled for.<br/>
-	 * For performance, the passed value is not cloned.
+	 * Sets the weekdays this alarm is enabled for.
 	 *
 	 * @param enabledDays the weekdays alarm should be enabled for.
 	 */
 	public synchronized void setEnabledDays( boolean[] enabledDays ) {
 		Preconditions.checkNotNull( enabledDays );
 
-		if ( enabledDays.length != AlarmTime.MAX_WEEK_LENGTH ) {
+		if ( enabledDays.length != ExactTime.MAX_WEEK_LENGTH ) {
 			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
 
@@ -648,47 +653,16 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	/**
-	 * Sets the mode of the alarm, this specifies how {@link #getTime()} is understood.
-	 *
-	 * @param mode the mode to set.
-	 */
-	public void setMode( AlarmMode mode ) {
-		if ( this.mode == Preconditions.checkNotNull( mode ) ) {
-			return;
-		}
-
-		AlarmMode old = this.mode;
-		this.mode = mode;
-		this.publish( new ScheduleChangeEvent( this, Field.MODE, old ) );
-	}
-
-	/**
-	 * Returns the mode of the alarm.
-	 *
-	 * @return the mode.
-	 */
-	public AlarmMode getMode() {
-		return this.mode;
-	}
-
-	/**
 	 * Sets if the alarm is repeating or not.
 	 *
 	 * @param isRepeating true if it is repeating.
 	 */
 	public void setRepeat( boolean isRepeating ) {
-		AlarmMode mode = isRepeating ? AlarmMode.REPEATING : AlarmMode.NORMAL;
-		this.setMode( mode );
-	}
-
-	/**
-	 * Sets if the alarm is counting down or not.
-	 *
-	 * @param isCountdown true if it is counting down.
-	 */
-	private void setCountdown( boolean isCountdown ) {
-		AlarmMode mode = isCountdown ? AlarmMode.COUNTDOWN : AlarmMode.NORMAL;
-		this.setMode( mode );
+		boolean old = this.isRepeating;
+		if ( old != isRepeating ) {
+			this.isRepeating = old;
+			this.publish( new ScheduleChangeEvent( this, Field.REPEATING, old ) );
+		}
 	}
 
 	/**
@@ -697,7 +671,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @return true if it is repeating.
 	 */
 	public boolean isRepeating() {
-		return this.mode == AlarmMode.REPEATING;
+		return this.isRepeating;
 	}
 
 	/**
@@ -706,7 +680,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @return true if it is counting down.
 	 */
 	public boolean isCountdown() {
-		return this.mode == AlarmMode.COUNTDOWN;
+		return this.countdownTime != null;
 	}
 
 	/**
@@ -890,10 +864,8 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @param event the event to publish.
 	 */
 	private void publish( AlarmEvent event ) {
-		if ( this.bus == null ) {
-			return;
+		if ( this.bus != null ) {
+			this.bus.publish( event );
 		}
-
-		this.bus.publish( event );
 	}
 }
