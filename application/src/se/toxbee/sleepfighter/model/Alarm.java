@@ -226,7 +226,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	@DatabaseField
 	private boolean isActivated;
 
-	@DatabaseField
+	@DatabaseField(canBeNull = false)
 	private ExactTime time;
 
 	@DatabaseField
@@ -613,7 +613,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	private void setExactTime( ExactTime time ) {
 		ExactTime old = this.time;
 		if ( !Objects.equal( old, time ) ) {
-			this.time = old;
+			this.time = time;
 			this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
 		}
 	}
@@ -621,7 +621,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	private void setCountdownTime( CountdownTime time ) {
 		CountdownTime old = this.countdownTime;
 		if ( !Objects.equal( old, time ) ) {
-			this.countdownTime = old;
+			this.countdownTime = time;
 			this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
 		}
 	}
