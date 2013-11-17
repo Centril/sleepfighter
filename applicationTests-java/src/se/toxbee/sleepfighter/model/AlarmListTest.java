@@ -18,14 +18,16 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.joda.time.DateTime;
+import org.junit.Test;
 
+import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 
@@ -33,10 +35,12 @@ public class AlarmListTest {
 	@Test
 	public void testGetEarliestInfo() {
 		// Bootstrap.
-		Alarm first = new Alarm( new AlarmTime( 0, 2 ) );
+		Alarm first = new Alarm();
+		first.setTime( new ExactTime( 0, 2 ) );
 		first.setId( 1 );
 		first.setActivated(true);
-		Alarm second = new Alarm( new AlarmTime( 0, 3 ) );
+		Alarm second = new Alarm();
+		second.setTime(  new ExactTime( 0, 3 ) );
 		second.setId( 2 );
 		second.setActivated(true);
 
@@ -46,14 +50,14 @@ public class AlarmListTest {
 
 		AlarmList manager = new AlarmList( list );
 
-		long now = new DateTime(0,1,1,0,0).getMillis();
+		long now = new DateTime( 0, 1, 1, 0, 0 ).getMillis();
 
 		// Test index correctness.
 		AlarmTimestamp info = manager.getEarliestAlarm( now );
 		assertTrue( info != AlarmTimestamp.INVALID );
 		assertEquals( info.getAlarm(), first );
 
-		second.setTime( new AlarmTime( 0, 1 ) );
+		second.setTime( new ExactTime( 0, 1 ) );
 		info = manager.getEarliestAlarm( now );
 		assertTrue( info != AlarmTimestamp.INVALID );
 		assertEquals( info.getAlarm(), second );
@@ -66,9 +70,11 @@ public class AlarmListTest {
 	}
 
 	@Test
-	public void testSetMessageBus(  ) {
-		Alarm first = new Alarm( new AlarmTime( 12, 2 ) );
-		Alarm second = new Alarm( new AlarmTime( 12, 3 ) );
+	public void testSetMessageBus() {
+		Alarm first = new Alarm();
+		first.setTime( new ExactTime( 12, 2 ) );
+		Alarm second = new Alarm();
+		second.setTime( new ExactTime( 12, 3 ) );
 
 		List<Alarm> list = new ArrayList<Alarm>();
 		list.add(first);
@@ -90,11 +96,13 @@ public class AlarmListTest {
 		MessageBus<Message> bus = new MessageBus<Message>();
 		manager.setMessageBus(bus);
 		
-		Alarm first = new Alarm( new AlarmTime( 12, 2 ) );
+		Alarm first = new Alarm();
+		first.setTime( new ExactTime( 12, 2 ) );
 		manager.add(first);
 		assertEquals(bus, first.getMessageBus());
 		
-		Alarm second = new Alarm( new AlarmTime( 12, 3 ) );
+		Alarm second = new Alarm();
+		second.setTime( new ExactTime( 12, 3 ) );
 		manager.set(0, second);
 		assertEquals(bus, second.getMessageBus());
 	
@@ -134,7 +142,8 @@ public class AlarmListTest {
 
 		testUnnamedPart( list, 1 );
 
-		Alarm first = new Alarm( new AlarmTime( 0, 0 ) );
+		Alarm first = new Alarm();
+		first.setTime( new ExactTime( 0, 0 ) );
 		list.add(first);
 		list.add(new Alarm(first));
 		list.add(new Alarm(first));
