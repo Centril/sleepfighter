@@ -87,4 +87,8 @@ public class TimepickerPreference extends DialogPreference {
 	public int getMinute() {
 		return minute;
 	}
+
+	public void show() {
+		this.showDialog( null );
+	}
 }
