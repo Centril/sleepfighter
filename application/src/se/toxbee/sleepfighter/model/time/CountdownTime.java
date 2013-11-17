@@ -102,7 +102,7 @@ public class CountdownTime extends AlarmTime implements CodifiableLong {
 	public CountdownTime( long timestamp ) {
 		super();
 
-		Preconditions.checkArgument( timestamp < this.now() );
+		Preconditions.checkArgument( timestamp >= this.now() );
 		this.timestamp = timestamp;
 
 		this.refresh();
@@ -158,5 +158,4 @@ public class CountdownTime extends AlarmTime implements CodifiableLong {
 	public long toCodeLong() {
 		return this.timestamp;
 	}
-
 }
