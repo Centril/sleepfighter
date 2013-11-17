@@ -38,6 +38,13 @@ import com.google.common.primitives.Longs;
  * @since Nov 16, 2013
  */
 public class CountdownTime extends AlarmTime implements CodifiableLong {
+	public static class Factory implements CodifiableLong.Factory {
+		@Override
+		public CountdownTime produce( Long key ) {
+			return new CountdownTime( key );
+		}
+	}
+
 	private final long timestamp;
 
 	/**

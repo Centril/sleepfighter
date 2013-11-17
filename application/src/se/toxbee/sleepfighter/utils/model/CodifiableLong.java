@@ -42,6 +42,6 @@ public interface CodifiableLong {
 	 */
 	public long toCodeLong();
 
-	public static interface Factory extends FactoryInstantiator<Long, Codifiable> {
+	public static interface Factory extends FactoryInstantiator<Long, CodifiableLong> {
 	}
 }
