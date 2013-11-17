@@ -20,9 +20,6 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:key="alarm_preference_screen" >
 
-    
-    
-    
         <se.toxbee.sleepfighter.android.preference.TimepickerPreference
             android:defaultValue="00:00"
             android:key="pref_alarm_time"
