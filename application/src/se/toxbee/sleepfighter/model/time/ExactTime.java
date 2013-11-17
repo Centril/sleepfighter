@@ -21,6 +21,8 @@ package se.toxbee.sleepfighter.model.time;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
+import com.google.common.primitives.Booleans;
+
 import se.toxbee.sleepfighter.utils.model.Codifiable;
 
 /**
@@ -162,5 +164,13 @@ public class ExactTime extends AlarmTime implements Codifiable {
 	@Override
 	public void refresh() {
 		// Nothing to refresh.
+	}
+
+
+	@Override
+	public boolean canHappen( Object... inject ) {
+		// Fetch enabledDays from injected parameters, expected at index 0.
+		boolean[] enabledDays = (boolean[]) inject[0];
+		return Booleans.contains( enabledDays, true );
 	}
 }

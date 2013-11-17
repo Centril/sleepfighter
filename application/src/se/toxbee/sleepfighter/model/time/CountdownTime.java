@@ -149,9 +149,14 @@ public class CountdownTime extends AlarmTime implements CodifiableLong {
 		return this.timestamp;
 	}
 
+	@Override
+	public boolean canHappen( Object... inject ) {
+		return true;
+	}
 
 	@Override
 	public long toCodeLong() {
 		return this.timestamp;
 	}
+
 }

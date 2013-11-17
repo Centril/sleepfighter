@@ -36,7 +36,6 @@ import android.provider.Settings;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.primitives.Booleans;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -544,7 +543,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @return true if the alarm can ring in the future.
 	 */
 	public synchronized boolean canHappen() {
-		return this.isActivated() && (this.isCountdown() || Booleans.contains( this.enabledDays, true ));
+		return this.isActivated() && this.getTime().canHappen( this.enabledDays );
 	}
 
 	/**

@@ -170,6 +170,14 @@ public abstract class AlarmTime implements Comparable<AlarmTime> {
 	 */
 	public abstract long scheduledTimestamp( long now, Object... inject );
 
+	/**
+	 * Returns whether or not the time can occur.
+	 *
+	 * @param inject any extra info needed for computation.
+	 * @return true if it can.
+	 */
+	public abstract boolean canHappen( Object... inject );
+
 	protected abstract boolean equalsImpl( AlarmTime t );
 
 	public abstract int hashCode();
