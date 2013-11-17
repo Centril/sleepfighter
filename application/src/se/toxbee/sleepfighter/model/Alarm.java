@@ -533,7 +533,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
 	public synchronized Long getNextMillis( long now ) {
-		return this.canHappen() ? this.getTime().scheduledTimestamp( now, this.enabledDays ) : NEXT_NON_REAL;
+		return this.canHappen() ? Long.valueOf( this.getTime().scheduledTimestamp( now, this.enabledDays ) ) : NEXT_NON_REAL;
 	}
 
 	/**
