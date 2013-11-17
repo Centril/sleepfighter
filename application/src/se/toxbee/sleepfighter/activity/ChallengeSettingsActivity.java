@@ -82,9 +82,7 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 			pc.addPreference(p);
 		}
 	}
-	
-	
-	
+
 	@TargetApi( Build.VERSION_CODES.HONEYCOMB )
 	private void setupActionBar() {
 		if ( Build.VERSION.SDK_INT >= 11 ) {
@@ -175,16 +173,8 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	 */
 	protected void gotoPreferencesSettings( ChallengeType type ) {
 		Intent i = new Intent( this, ChallengeParamsSettingsActivity.class );
-		AlarmIntentHelper intentUtils = new AlarmIntentHelper(i);
-		if (this.alarm.isPresetAlarm()) {
-			intentUtils.setSettingPresetAlarm(true);
-		} else {
-			intentUtils.setAlarmId(alarm);
-		}
-
 		i.putExtra( ChallengeParamsSettingsActivity.EXTRAS_CHALLENGE_TYPE, type );
-
-		this.startActivity( i );
+		this.startActivity( new AlarmIntentHelper( i ).setAlarm( alarm ).intent() );
 	}
 
 	/**
@@ -273,18 +263,8 @@ public class ChallengeSettingsActivity extends PreferenceActivity {
 	 *            the type of the challenge
 	 */
 	private void testChallenge(ChallengeType type) {
-		Intent i = new Intent(ChallengeSettingsActivity.this,
-				ChallengeActivity.class);
-
-		// Bundle in type and what alarm it's for (for params)
-		AlarmIntentHelper intentUtils = new AlarmIntentHelper(i);
-		i.putExtra(ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type);
-		if (ChallengeSettingsActivity.this.alarm.isPresetAlarm()) {
-			intentUtils.setSettingPresetAlarm(true);
-		} else {
-			intentUtils.setAlarmId(alarm);
-		}
-
-		startActivity(i);		
+		Intent i = new Intent( ChallengeSettingsActivity.this, ChallengeActivity.class );
+		i.putExtra( ChallengeActivity.BUNDLE_CHALLENGE_TYPE, type) ;
+		startActivity( new AlarmIntentHelper( i ).setAlarm( alarm ).intent() );		
 	}
 }

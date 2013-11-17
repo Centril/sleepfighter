@@ -79,7 +79,6 @@ import android.widget.TextView.OnEditorActionListener;
  *
  */
 public class AlarmSettingsActivity extends PreferenceActivity {
-
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
 	private static final String NAME = "pref_alarm_name";
@@ -381,13 +380,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			@Override
 			public void onClick( View v ) {
 				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
-				AlarmIntentHelper intentUtils = new AlarmIntentHelper(i);
-				if (AlarmSettingsActivity.this.alarm.isPresetAlarm()) {
-					intentUtils.setSettingPresetAlarm(true);
-				} else {
-					intentUtils.setAlarmId(alarm);
-				}
-				startActivity(i);
+				startActivity( new AlarmIntentHelper(i).setAlarm( alarm ).intent() );
 			}
 		});
 	}
@@ -434,18 +427,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	}
 
 	private void startRingerEdit() {
-		Intent intent = new Intent(this, RingerSettingsActivity.class );
-
-		AlarmIntentHelper intentUtils = new AlarmIntentHelper( intent );
-
-		if ( this.alarm.isPresetAlarm() ) {
-			intentUtils.setSettingPresetAlarm( true );
-		} else {
-			intentUtils.setAlarmId( alarm );
-		}
-	
-		
-		this.startActivity( intent );
+		Intent i = new Intent(this, RingerSettingsActivity.class );
+		this.startActivity( new AlarmIntentHelper( i ).setAlarm( alarm ).intent() );
 	}
 
 	@SuppressWarnings( "deprecation" )
