@@ -52,7 +52,7 @@ public class LongTextPreference extends Preference {
 	}
 
 	public void readAttrs( Context context, AttributeSet attrs ) {
-		TypedArray a = context.obtainStyledAttributes( attrs, R.styleable.FontFit );
+		TypedArray a = context.obtainStyledAttributes( attrs, R.styleable.LongTextPreference );
 		final int N = a.getIndexCount();
 		for ( int i = 0; i < N; ++i ) {
 			int attr = a.getIndex( i );

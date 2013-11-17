@@ -15,7 +15,7 @@
   See the GNU General Public License for more details.
   
   You should have received a copy of the GNU General Public License
-  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
 
@@ -29,6 +29,10 @@
 
     <declare-styleable name="LongTextPreference">
         <attr name="maxLines" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="LetterSpacing">
+        <attr name="letterSpacing" format="float" />
     </declare-styleable>
 
     <!-- note: to re-use an existing Android attribute not already used by the superclass, name should have prefix "android:" and do not define a format -->
