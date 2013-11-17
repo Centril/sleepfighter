@@ -35,6 +35,8 @@ import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -93,17 +95,21 @@ public class DateTextUtils {
 			}
 
 			Alarm alarm = ats.getAlarm();
+			AlarmTime time = alarm.getTime();
+
+			DateTime timeWork = new DateTime( ats.getMillis() );
 
 			// Prepare replacements.
-			String timeReplacement = alarm.getTime().getTimeString();
+			String timeReplacement	= time instanceof ExactTime
+									? time.getTimeString()
+									: StringUtils.joinTime( timeWork.getHourOfDay(), timeWork.getMinuteOfHour() );
 
 			// Calculate start of tomorrow.
 			DateTime nowTime = new DateTime( now );
-			DateTime time = new DateTime( ats.getMillis() );
 			LocalDate tomorrow = new LocalDate( nowTime ).plusDays( 1 );
 			DateTime startOfTomorrow = tomorrow.toDateTimeAtStartOfDay( nowTime.getZone() );
 
-			if ( time.isBefore( startOfTomorrow ) ) {
+			if ( timeWork.isBefore( startOfTomorrow ) ) {
 				// Alarm is today.
 				Log.d( TAG, "today" );
 				return String.format( formats[0], timeReplacement );
@@ -113,7 +119,7 @@ public class DateTextUtils {
 			LocalDate afterTomorrow = tomorrow.plusDays( 1 );
 			DateTime startOfAfterTomorrow = afterTomorrow.toDateTimeAtStartOfDay( nowTime.getZone() );
 
-			if ( time.isBefore( startOfAfterTomorrow ) ) {
+			if ( timeWork.isBefore( startOfAfterTomorrow ) ) {
 				Log.d( TAG, "tomorrow" );
 				// Alarm is tomorrow.
 				return String.format( formats[1], timeReplacement );
