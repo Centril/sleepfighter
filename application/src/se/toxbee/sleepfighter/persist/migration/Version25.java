@@ -36,12 +36,10 @@ public class Version25 extends Migrater.Adapter {
 	public void applyMigration( ConnectionSource cs, SQLiteDatabase db ) throws MigrationException {
 		try {
 			MigrationUtil.addColumn( db, "alarm", "time", "INTEGER DEFAULT 0" );
+			MigrationUtil.addColumn( db, "alarm", "countdownTime", "BIGINT" );
 			MigrationUtil.update( db, "alarm", "time = (hour << 12) | (minute << 6) | second", null );
 
-			MigrationUtil.addColumn( db, "alarm", "mode", "INTEGER DEFAULT 0" );
-			MigrationUtil.update( db, "alarm", "mode = isRepeating", null );
-
-			MigrationUtil.dropColumns( db, "alarm", new String[] { "hour", "minute", "second", "isRepeating" } );
+			MigrationUtil.dropColumns( db, "alarm", new String[] { "hour", "minute", "second" } );
 		} catch ( SQLException e ) {
 			throw new MigrationException( "Migration v25 failed.", e, this );
 		}
