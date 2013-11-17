@@ -24,5 +24,17 @@
         android:orderInCategory="2"
         android:showAsAction="never"
         android:title="@string/alarm_settings_action_remove" />
-   
+
+    <item
+        android:id="@+id/alarm_settings_action_set_time"
+        android:orderInCategory="10"
+        android:showAsAction="never"
+        android:title="@string/menu_set_alarm_time" />
+
+    <item
+        android:id="@+id/alarm_settings_action_set_countdown"
+        android:orderInCategory="20"
+        android:showAsAction="never"
+        android:title="@string/menu_set_alarm_countdown" />
+
 </menu>

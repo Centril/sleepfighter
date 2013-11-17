@@ -29,6 +29,8 @@ import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.adapter.AlarmAdapter;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher.RefreshedEvent;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.Alarm.Field;
 import se.toxbee.sleepfighter.model.Alarm.ScheduleChangeEvent;
@@ -58,6 +60,8 @@ public class MainActivity extends Activity {
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
+	private AlarmTimeRefresher refresher;
+
 	public SFApplication app() {
 		return SFApplication.get();
 	}
@@ -74,7 +78,10 @@ public class MainActivity extends Activity {
 		this.manager = this.app().getAlarms();
 		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
-		this.app().getBus().subscribe(this);
+		this.app().getBus().subscribe( this );
+
+		this.refresher = new AlarmTimeRefresher( this.manager );
+		this.refresher.start();
 
 		this.setupListView();
 		
@@ -155,7 +162,6 @@ public class MainActivity extends Activity {
 			Alarm clickedAlarm = MainActivity.this.alarmAdapter
 					.getItem(position);
 			startAlarmEdit(clickedAlarm, false);
-
 		}
 	};
 
@@ -260,10 +266,25 @@ public class MainActivity extends Activity {
 	}
 
 	/**
+	 * Handles a refresh event.
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleRefreshed( RefreshedEvent evt ) {
+		this.runOnUiThread( new Runnable() {
+			@Override
+			public void run() {
+				updateEarliestText();
+				alarmAdapter.notifyDataSetChanged();
+			}
+		} );
+	}
+
+	/**
 	 * Handles a change to an alarm's name by refreshing the list.
 	 * 
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	@Handler
 	public void handleAlarmNameChange(Alarm.MetaChangeEvent event) {
@@ -279,8 +300,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Handles a change in time related data in any alarm.
 	 * 
-	 * @param evt
-	 *            the event.
+	 * @param evt the event.
 	 */
 	@Handler
 	public void handleScheduleChange(ScheduleChangeEvent evt) {
@@ -300,8 +320,7 @@ public class MainActivity extends Activity {
 	 * Handles a change in the list of alarms (the list itself, deletion,
 	 * insertion, etc, not edits in an alarm).
 	 * 
-	 * @param evt
-	 *            the event.
+	 * @param evt the event.
 	 */
 	@Handler
 	public void handleListChange(AlarmList.Event evt) {
@@ -320,9 +339,9 @@ public class MainActivity extends Activity {
 	 */
 	private void updateEarliestText() {
 		long now = this.getNow();
+		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
 
 		TextView earliestTimeText = (TextView) findViewById(R.id.earliestTimeText);
-		AlarmTimestamp stamp = this.manager.getEarliestAlarm(now);
 
 		Resources res = this.getResources();
 		String text = this.app().getPrefs().displayPeriodOrTime() ? DateTextUtils

@@ -69,8 +69,8 @@
         <item>Edit alarm</item>
         <item>Delete alarm</item>
         <item>Duplicate</item>
-        <item>Single alarm (time)</item>
-        <item>Single alarm (countdown)</item>
+        <item>@string/menu_set_alarm_time</item>
+        <item>@string/menu_set_alarm_countdown</item>
     </string-array>
 
     <!-- Location Filter -->
