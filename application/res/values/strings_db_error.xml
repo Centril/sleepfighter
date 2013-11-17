@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="database_create_error">Sorry, couldn\'t create database, exiting app.</string>
-    <string name="database_upgrade_error">Sorry, couldn\'t update database, starting from scratch.</string>
-</resources>
