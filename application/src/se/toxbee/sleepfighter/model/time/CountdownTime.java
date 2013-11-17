@@ -41,7 +41,11 @@ public class CountdownTime extends AlarmTime implements CodifiableLong {
 	public static class Factory implements CodifiableLong.Factory {
 		@Override
 		public CountdownTime produce( Long key ) {
-			return new CountdownTime( key );
+			try {
+				return new CountdownTime( key );
+			} catch( IllegalArgumentException e ) {
+				return null;
+			}
 		}
 	}
 
@@ -102,7 +106,8 @@ public class CountdownTime extends AlarmTime implements CodifiableLong {
 	public CountdownTime( long timestamp ) {
 		super();
 
-		Preconditions.checkArgument( timestamp >= this.now() );
+		long now = this.now();
+		Preconditions.checkArgument( timestamp >= now );
 		this.timestamp = timestamp;
 
 		this.refresh();

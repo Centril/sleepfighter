@@ -280,15 +280,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	/**
-	 * Constructs an alarm for given time.
-	 *
-	 * @param time the time.
-	 */
-	public Alarm( ExactTime time ) {
-		this.time = time;
-	}
-
-	/**
 	 * Copy constructor
 	 *
 	 * @param rhs the alarm to copy from.
@@ -593,7 +584,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 */
 	public synchronized void setTime( AlarmTime time ) {
 		if ( time instanceof ExactTime ) {
-			this.countdownTime = null;
 			this.setExactTime( (ExactTime) time );
 		} else if ( time instanceof CountdownTime ) {
 			this.setCountdownTime( (CountdownTime) time );
@@ -610,6 +600,8 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	private void setExactTime( ExactTime time ) {
+		this.countdownTime = null;
+
 		ExactTime old = this.time;
 		if ( !Objects.equal( old, time ) ) {
 			this.time = time;
@@ -621,6 +613,7 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		CountdownTime old = this.countdownTime;
 		if ( !Objects.equal( old, time ) ) {
 			this.countdownTime = time;
+			this.isActivated = true;
 			this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
 		}
 	}
