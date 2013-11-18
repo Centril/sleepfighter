@@ -48,7 +48,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 16, 2013
  */	
 @DatabaseTable(tableName = "alarm")
-public class Alarm implements IdProvider, MessageBusHolder {
+public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -377,8 +377,13 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals( Object obj ) {
 		return this == obj || obj != null && this.getClass() == obj.getClass() && this.id == ((Alarm) obj).id;
+	}
+
+	@Override
+	public int compareTo( Alarm rhs ) {
+		return this.id - rhs.id;
 	}
 
 	@Override
@@ -861,4 +866,5 @@ public class Alarm implements IdProvider, MessageBusHolder {
 			this.bus.publish( event );
 		}
 	}
+
 }
