@@ -96,6 +96,25 @@ public class AlarmActivity extends Activity {
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 
+	/**
+	 * Enforces that no alarm is currently ringing,<br/>
+	 * If one is, AlarmActivity is immediately started<br/>
+	 * and the passed activity is finished.
+	 *
+	 * @param activity the activity to finish if needed.
+	 */
+	public static void startIfRinging( Activity activity ) {
+		SFApplication app = SFApplication.get();
+
+		// Check if an alarm is ringing, if so, send the user to AlarmActivity
+		Alarm ringingAlarm = app.getRingingAlarm();
+		if ( ringingAlarm != null ) {
+			Intent i = new Intent( app, AlarmActivity.class );
+			activity.startActivity( new AlarmIntentHelper( i ).setAlarmId( ringingAlarm ).intent() );
+			activity.finish();
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -282,6 +301,11 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void performRescheduling() {
+		// Debug mode might have issued an inactive alarm, don't need to re-issue it.
+		if ( !this.alarm.isActivated() ) {
+			return;
+		}
+
 		// Make sure alarm has a bus.
 		if ( this.alarm.getMessageBus() == null ) {
 			this.alarm.setMessageBus( SFApplication.get().getBus() );
