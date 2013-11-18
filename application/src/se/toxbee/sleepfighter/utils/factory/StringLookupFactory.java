@@ -21,8 +21,6 @@ package se.toxbee.sleepfighter.utils.factory;
 import se.toxbee.sleepfighter.utils.reflect.ReflectionUtil;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 
-import com.google.common.reflect.TypeToken;
-
 /**
  * StringLookupFactory adds some fallback mechanisms,<br/>
  * based on reflection on top of AbstractFactory<String, V>.
@@ -32,8 +30,7 @@ import com.google.common.reflect.TypeToken;
  * @since Nov 14, 2013
  */
 public abstract class StringLookupFactory<V> extends AbstractFactory<String, V> {
-	@SuppressWarnings( { "serial", "unchecked" } )
-	private Class<V> clazz = (Class<V>) (new TypeToken<V>( this.getClass() ) {}).getRawType();
+	private Class<V> clazz = ReflectionUtil.genericType( this );
 
 	/**
 	 * Returns the default package to use when non-fully-qualified fallback.

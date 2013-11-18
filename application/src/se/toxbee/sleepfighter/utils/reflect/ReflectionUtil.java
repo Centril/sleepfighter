@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.collect.ObjectArrays;
+import com.google.common.reflect.TypeToken;
 
 /**
  * ReflectionUtil provides very basic reflection utilities.
@@ -33,6 +34,33 @@ import com.google.common.collect.ObjectArrays;
  * @since Nov 5, 2013
  */
 public class ReflectionUtil {
+	/**
+	 * Creates a generic array of size with component type U given a generic object o.<br/>
+	 * Only works if o actually has a generic type U.
+	 *
+	 * @param o the generic object.
+	 * @param size
+	 * @return
+	 */
+	public static <U> U[] genericArray( Object o, int size ) {
+		Class<U> type = genericType( o );
+		return makeArray( type, size );
+	}
+
+	/**
+	 * Returns the generic type of object o.<br/>
+	 * Only works if o actually has a generic type U.
+	 *
+	 * @param o the generic object.
+	 * @return the {@link Class} of U.
+	 */
+	@SuppressWarnings( "unchecked" )
+	public static <U> Class<U> genericType( Object o ) {
+		@SuppressWarnings( "serial" )
+		TypeToken<U> t = new TypeToken<U>( o.getClass() ) {};
+		return (Class<U>) t.getRawType();
+	}
+
 	/**
 	 * Returns a nested class/enum/interface from containing type as a subtype of target.
 	 *
