@@ -22,8 +22,8 @@ import java.util.List;
 
 import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.android.location.LocationAdapter;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.gps.GPSFilterLocationRetriever;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;

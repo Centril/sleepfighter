@@ -45,7 +45,7 @@
     <!-- END	Google Maps Android API v2 -->
 
     <application
-        android:name="se.toxbee.sleepfighter.SFApplication"
+        android:name="se.toxbee.sleepfighter.app.SFApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"

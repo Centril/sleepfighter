@@ -22,7 +22,6 @@ import java.util.Locale;
 
 import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePicker;
 import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePickerDialog;
 import se.toxbee.sleepfighter.android.preference.EnablePlusSettingsPreference;
@@ -31,6 +30,7 @@ import se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference;
 import se.toxbee.sleepfighter.android.preference.TimepickerPreference;
 import se.toxbee.sleepfighter.android.preference.VolumePreference;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;

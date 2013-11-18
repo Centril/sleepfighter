@@ -25,9 +25,9 @@ import java.util.TimerTask;
 import org.joda.time.DateTime;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.android.power.WakeLocker;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.audio.VibrationManager;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.NotificationHelper;

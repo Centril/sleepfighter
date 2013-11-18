@@ -21,11 +21,11 @@ package se.toxbee.sleepfighter.receiver;
 import org.joda.time.DateTime;
 
 import se.toxbee.sleepfighter.android.power.WakeLocker;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.gps.GPSFilterLocationRetriever;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
-import se.toxbee.sleepfighter.SFApplication;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;

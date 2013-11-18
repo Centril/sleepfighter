@@ -2,9 +2,9 @@ package se.toxbee.sleepfighter.service;
 
 import java.io.IOException;
 
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.speech.WeatherDataFetcher;
 import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.SFApplication;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;

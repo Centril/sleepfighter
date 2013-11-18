@@ -19,10 +19,10 @@
 package se.toxbee.sleepfighter.activity;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.android.preference.InitializableRingtonePreference;
 import se.toxbee.sleepfighter.android.utils.ActivityUtils;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;

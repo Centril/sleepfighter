@@ -20,11 +20,11 @@ package se.toxbee.sleepfighter.receiver;
 
 import org.joda.time.DateTime;
 
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.service.AlarmPlannerService.Command;
-import se.toxbee.sleepfighter.SFApplication;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

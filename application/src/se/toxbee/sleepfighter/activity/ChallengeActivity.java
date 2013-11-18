@@ -24,6 +24,7 @@ import java.util.Random;
 import java.util.Set;
 
 import net.engio.mbassy.listener.Handler;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.challenge.Challenge;
 import se.toxbee.sleepfighter.challenge.ChallengeProgressEvent;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
@@ -33,7 +34,6 @@ import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.utils.math.RandomMath;
-import se.toxbee.sleepfighter.SFApplication;
 import android.app.Activity;
 import android.os.Bundle;
 

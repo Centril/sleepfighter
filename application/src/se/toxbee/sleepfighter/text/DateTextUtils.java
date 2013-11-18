@@ -32,7 +32,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.model.time.AlarmTime;

@@ -26,9 +26,9 @@ import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.activity.AlarmActivity;
 import se.toxbee.sleepfighter.activity.MainActivity;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.NotificationHelper;
 import se.toxbee.sleepfighter.model.Alarm;

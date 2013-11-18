@@ -20,9 +20,9 @@ package se.toxbee.sleepfighter.activity;
 
 import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.adapter.AlarmAdapter;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.AlarmTimeRefresher;
 import se.toxbee.sleepfighter.helper.AlarmTimeRefresher.RefreshedEvent;

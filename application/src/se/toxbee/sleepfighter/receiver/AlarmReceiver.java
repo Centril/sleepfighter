@@ -19,9 +19,9 @@
 package se.toxbee.sleepfighter.receiver;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.activity.AlarmActivity;
 import se.toxbee.sleepfighter.android.power.WakeLocker;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.VibrationManager;
 import se.toxbee.sleepfighter.gps.GPSFilterRequisitor;

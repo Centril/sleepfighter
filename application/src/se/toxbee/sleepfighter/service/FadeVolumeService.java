@@ -1,8 +1,8 @@
 package se.toxbee.sleepfighter.service;
 
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.SFApplication;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;

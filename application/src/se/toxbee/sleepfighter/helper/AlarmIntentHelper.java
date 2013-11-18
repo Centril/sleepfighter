@@ -18,7 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.helper;
 
-import se.toxbee.sleepfighter.SFApplication;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.model.Alarm;
 import android.app.Activity;
 import android.content.Intent;

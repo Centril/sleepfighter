@@ -22,8 +22,8 @@ import org.joda.time.DateTime;
 
 import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.adapter.GPSFilterAreaAdapter;
+import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea.Field;
