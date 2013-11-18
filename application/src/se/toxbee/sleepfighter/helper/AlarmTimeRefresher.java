@@ -36,6 +36,8 @@ import se.toxbee.sleepfighter.utils.message.MessageBus;
  * @since Nov 17, 2013
  */
 public class AlarmTimeRefresher {
+	private static long REFRESH_INTERVAL = 1000;
+
 	private Timer timer;
 	private final AlarmList list;
 
@@ -62,24 +64,33 @@ public class AlarmTimeRefresher {
 	 * Starts the refresher.
 	 */
 	public void start() {
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-				refresh();
-			}
-		};
+		if ( this.timer != null ) {
+			synchronized ( this.timer ) {
+				TimerTask task = new TimerTask() {
+					@Override
+					public void run() {
+						refresh();
+					}
+				};
 
-		// Refresh every second.
-		this.timer = new Timer();
-		this.timer.scheduleAtFixedRate( task, 0, 1000 );
+				// Refresh every second.
+				this.timer = new Timer();
+				this.timer.scheduleAtFixedRate( task, 0, REFRESH_INTERVAL );
+			}
+		}
 	}
 
 	/**
 	 * Stops the refresher.
 	 */
 	public void stop() {
-		this.timer.cancel();
-		this.timer = null;
+		if ( this.timer != null ) {
+			synchronized ( this.timer ) {
+				this.timer.cancel();
+			}
+
+			this.timer = null;
+		}
 	}
 
 	private void refresh() {
@@ -92,8 +103,16 @@ public class AlarmTimeRefresher {
 			// Do refreshing.
 			for ( Alarm a : l ) {
 				synchronized( a ) {
+					if ( this.timer == null ) {
+						return;
+					}
+
 					a.getTime().refresh();
 				}
+			}
+
+			if ( this.timer == null ) {
+				return;
 			}
 
 			// Notify bus of refresh.

@@ -18,12 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.activity;
 
-import java.util.Locale;
-
 import net.engio.mbassy.listener.Handler;
-
-import org.joda.time.DateTime;
-
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.adapter.AlarmAdapter;
@@ -43,7 +38,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -60,7 +54,7 @@ public class MainActivity extends Activity {
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
-	private AlarmTimeRefresher refresher;
+	private TextView earliestTimeText;
 
 	public SFApplication app() {
 		return SFApplication.get();
@@ -70,40 +64,59 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate( savedInstanceState );
 
+		AlarmActivity.startIfRinging( this );
+
 		// This is the main entry point to application GUI, so register planner.
 		AlarmPlannerService.register();
 
-		this.setContentView(R.layout.activity_main);
+		this.setContentView( R.layout.activity_main );
 
 		this.manager = this.app().getAlarms();
 		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
 		this.app().getBus().subscribe( this );
 
-		this.refresher = new AlarmTimeRefresher( this.manager );
-		this.refresher.start();
-
 		this.setupListView();
-		
-		this.setupChallengeToggle();
-		this.updateChallengePoints();
-		this.updateEarliestText();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		this.updateChallengePoints();
+		AlarmActivity.startIfRinging( this );
+
+		this.earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		this.updateEarliestText();
 
-		// Check if an alarm is ringing, if so, send the user to AlarmActivity
-		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
-		if (ringingAlarm != null) {
-			Intent i = new Intent(this, AlarmActivity.class);
-			new AlarmIntentHelper(i).setAlarmId(ringingAlarm);
-			startActivity(i);
-			finish();
+		this.setupChallengeToggle();
+		this.updateChallengePoints();
+
+		this.initRefresher();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		this.clearRefresher();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		this.clearRefresher();
+	}
+
+	private AlarmTimeRefresher refresher;
+	private void initRefresher() {
+		this.refresher = new AlarmTimeRefresher( this.manager );
+		this.refresher.start();
+	}
+	private void clearRefresher() {
+		if ( this.refresher != null ) {
+			this.refresher.stop();
+			this.refresher = null;
 		}
 	}
 
@@ -117,7 +130,6 @@ public class MainActivity extends Activity {
 	}
 
 	private void setupChallengeToggle() {
-		
 		ImageView toggleImage = (ImageView) findViewById(R.id.challenge_toggle);
 		ImageView pointImage = (ImageView) findViewById(R.id.challenge_points_icon);
 		
@@ -149,10 +161,6 @@ public class MainActivity extends Activity {
 			}
 			
 		});
-	}
-
-	private long getNow() {
-		return new DateTime().getMillis();
 	}
 
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
@@ -224,18 +232,15 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void startAlarmEdit(Alarm alarm, boolean isNew) {
-		Intent intent = new Intent(this, AlarmSettingsActivity.class);
-		new AlarmIntentHelper(intent).setAlarmId(alarm);
-
-		intent.putExtra(AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew);
-
-		startActivity(intent);
+	private void startAlarmEdit( Alarm alarm, boolean isNew ) {
+		Intent i = new Intent( this, AlarmSettingsActivity.class );
+		i.putExtra( AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew );
+		this.startActivity( new AlarmIntentHelper( i ).setAlarmId( alarm ).intent() );
 	}
 
 	private void startGlobalSettings() {
-		Intent intent = new Intent(this, GlobalSettingsActivity.class);
-		startActivity(intent);
+		Intent i = new Intent( this, GlobalSettingsActivity.class );
+		this.startActivity( i );
 	}
 
 	private void deleteAlarm(final Alarm alarm) {
@@ -335,20 +340,12 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Sets the earliest time text.
+	 * Updates the earliest time text.
 	 */
 	private void updateEarliestText() {
-		long now = this.getNow();
+		long now = app().now();
 		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
-
-		TextView earliestTimeText = (TextView) findViewById(R.id.earliestTimeText);
-
-		Resources res = this.getResources();
-		String text = this.app().getPrefs().displayPeriodOrTime() ? DateTextUtils
-				.getTime(res, now, stamp, Locale.getDefault()) : DateTextUtils
-				.getTimeToText(res, now, stamp);
-
-		earliestTimeText.setText(text);
+		earliestTimeText.setText( DateTextUtils.printTime( now, stamp ) );
 	}
 
 	private void updateChallengePoints() {

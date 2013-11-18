@@ -34,6 +34,7 @@ import se.toxbee.sleepfighter.android.utils.DialogUtils;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher;
 import se.toxbee.sleepfighter.helper.AlarmTimeRefresher.RefreshedEvent;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.Alarm.AudioChangeEvent;
@@ -155,13 +156,36 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// Check if an alarm is ringing, if so, send the user to AlarmActivity
-		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
-		if (ringingAlarm != null) {
-			Intent i = new Intent(this, AlarmActivity.class);
-			new AlarmIntentHelper(i).setAlarmId(ringingAlarm);
-			startActivity(i);
-			finish();
+
+		AlarmActivity.startIfRinging( this );
+
+		this.initRefresher();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		this.clearRefresher();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		this.clearRefresher();
+		SFApplication.get().getTts().stop();
+	}
+
+	private AlarmTimeRefresher refresher;
+	private void initRefresher() {
+		this.refresher = new AlarmTimeRefresher( this.alarmList );
+		this.refresher.start();
+	}
+	private void clearRefresher() {
+		if ( this.refresher != null ) {
+			this.refresher.stop();
+			this.refresher = null;
 		}
 	}
 
@@ -277,14 +301,10 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	}
 
 	@Override
-	public void onDestroy () {
-		super.onDestroy();
-		SFApplication.get().getTts().stop();
-	 }
-
-	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		AlarmActivity.startIfRinging( this );
 				
 		TextToSpeechUtil.checkTextToSpeech(this);
 		
