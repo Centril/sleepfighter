@@ -1,3 +1,4 @@
 1.2.1
 ---------------------
-- Fixed SortChallenge bugs, issues 11, 12, 14
+- Fixed BUG SortChallenge bugs, issues 11, 12, 14
+- Added FEATURE Countdown alarms.
