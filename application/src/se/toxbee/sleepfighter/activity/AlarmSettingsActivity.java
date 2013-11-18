@@ -23,6 +23,8 @@ import java.util.Locale;
 import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.SFApplication;
+import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePicker;
+import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePickerDialog;
 import se.toxbee.sleepfighter.android.preference.EnablePlusSettingsPreference;
 import se.toxbee.sleepfighter.android.preference.MultiSelectListPreference;
 import se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference;
@@ -32,11 +34,16 @@ import se.toxbee.sleepfighter.android.utils.DialogUtils;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher.RefreshedEvent;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.Alarm.AudioChangeEvent;
 import se.toxbee.sleepfighter.model.Alarm.Field;
 import se.toxbee.sleepfighter.model.Alarm.MetaChangeEvent;
 import se.toxbee.sleepfighter.model.AlarmList;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.CountdownTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.text.DateTextUtils;
@@ -77,7 +84,6 @@ import android.widget.TextView.OnEditorActionListener;
  *
  */
 public class AlarmSettingsActivity extends PreferenceActivity {
-
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
 	private static final String NAME = "pref_alarm_name";
@@ -150,13 +156,36 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		// Check if an alarm is ringing, if so, send the user to AlarmActivity
-		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
-		if (ringingAlarm != null) {
-			Intent i = new Intent(this, AlarmActivity.class);
-			new AlarmIntentHelper(i).setAlarmId(ringingAlarm);
-			startActivity(i);
-			finish();
+
+		AlarmActivity.startIfRinging( this );
+
+		this.initRefresher();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		this.clearRefresher();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		this.clearRefresher();
+		SFApplication.get().getTts().stop();
+	}
+
+	private AlarmTimeRefresher refresher;
+	private void initRefresher() {
+		this.refresher = new AlarmTimeRefresher( this.alarmList );
+		this.refresher.start();
+	}
+	private void clearRefresher() {
+		if ( this.refresher != null ) {
+			this.refresher.stop();
+			this.refresher = null;
 		}
 	}
 
@@ -177,6 +206,27 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		return true;
 	}
 
+	/**
+	 * Handles a refresh event.
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleRefreshed( RefreshedEvent evt ) {
+		this.runOnUiThread( new Runnable() {
+			@Override
+			public void run() {
+				updateTimeSummary();
+			}
+		} );
+	}
+
+	private void updateTimeSummary() {
+		AlarmTime t = alarm.getTime();
+		boolean countdown = t instanceof CountdownTime;
+		findPreference( TIME ).setSummary( (countdown ? "in " : "") + t.getTimeString( !countdown ) );
+	}
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Handler
 	public void handleNameChange(MetaChangeEvent e) {
@@ -194,20 +244,20 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			}
 		}
 	}
-	
+
 	@Handler
 	public void handleRingerChange(AudioChangeEvent e) {
 		if (e.getModifiedField() == Field.AUDIO_SOURCE) {
 			updateRingerSummary();
 		}
 	}
-	
+
 	private void removeFlashLightPref() {
 		Preference pref = (Preference) findPreference(FLASH);
 		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
 		category.removePreference(pref);
 	}
-	
+
 	private void removeMiscCategoryIfEmpty() {
 		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
 		
@@ -222,7 +272,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		PreferenceCategory category = (PreferenceCategory) findPreference("pref_category_misc");
 		category.removePreference(pref);		
 	}
-	
+
 	private void removeEditName() {
 		this.removeDecendantOfScreen( findPreference(NAME) );
 	}
@@ -242,7 +292,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			getActionBar().getCustomView().findViewById(R.id.global_alarm_hidden_title).setVisibility(View.VISIBLE);
 		}
 	}
-	
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void removeAlarmToggle() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -250,16 +300,11 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 	}
 
-
-	@Override
-	public void onDestroy () {
-		super.onDestroy();
-		SFApplication.get().getTts().stop();
-	 }
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		AlarmActivity.startIfRinging( this );
 				
 		TextToSpeechUtil.checkTextToSpeech(this);
 		
@@ -297,13 +342,46 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			this.deleteAlarm();
 			break;
 
+		case R.id.alarm_settings_action_set_time:
+			this.issueNormalPicker();
+			break;
+
+		case R.id.alarm_settings_action_set_countdown:
+			this.issueCountdownPicker();
+			break;
+
 		case android.R.id.home:
 			finish();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
+	private void issueNormalPicker() {
+		((TimepickerPreference) findPreference( TIME )).show();
+	}
+
+	private void issueCountdownPicker() {
+		SecondTimePickerDialog.OnTimeSetListener onTimePickerSet = new SecondTimePickerDialog.OnTimeSetListener() {
+			@Override
+			public void onTimeSet( SecondTimePicker view, int h, int m, int s ) {
+				alarm.setTime( new CountdownTime( h, m, s ) );
+			}
+		};
+
+		// TODO possibly use some way that doesn't make the dialog close on rotate
+		AlarmTime time = alarm.getTime();
+		time.refresh();
+
+		SecondTimePickerDialog tpd = new SecondTimePickerDialog(
+			this, onTimePickerSet,
+			time.getHour(), time.getMinute(), time.getSecond(),
+			true
+		);
+
+		tpd.show();
+	}
+
 	private boolean deviceSupportsFlashLight() {
 		Context context = this;
 		PackageManager pm = context.getPackageManager();
@@ -380,13 +458,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			@Override
 			public void onClick( View v ) {
 				Intent i = new Intent(AlarmSettingsActivity.this, ChallengeSettingsActivity.class);
-				AlarmIntentHelper intentUtils = new AlarmIntentHelper(i);
-				if (AlarmSettingsActivity.this.alarm.isPresetAlarm()) {
-					intentUtils.setSettingPresetAlarm(true);
-				} else {
-					intentUtils.setAlarmId(alarm);
-				}
-				startActivity(i);
+				startActivity( new AlarmIntentHelper(i).setAlarm( alarm ).intent() );
 			}
 		});
 	}
@@ -433,18 +505,8 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	}
 
 	private void startRingerEdit() {
-		Intent intent = new Intent(this, RingerSettingsActivity.class );
-
-		AlarmIntentHelper intentUtils = new AlarmIntentHelper( intent );
-
-		if ( this.alarm.isPresetAlarm() ) {
-			intentUtils.setSettingPresetAlarm( true );
-		} else {
-			intentUtils.setAlarmId( alarm );
-		}
-	
-		
-		this.startActivity( intent );
+		Intent i = new Intent(this, RingerSettingsActivity.class );
+		this.startActivity( new AlarmIntentHelper( i ).setAlarm( alarm ).intent() );
 	}
 
 	@SuppressWarnings( "deprecation" )
@@ -459,13 +521,11 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 			
 			if (TIME.equals(preference.getKey())) {
 				TimepickerPreference tpPref = (TimepickerPreference) preference;
-				
-				int hour = tpPref.getHour();
-				int minute = tpPref.getMinute();
-				
-				alarm.setTime(hour, minute);
-				
-				preference.setSummary((hour < 10 ? "0" : "") + hour + ":" + (minute < 10 ? "0" : "") + minute);
+
+				AlarmTime time = new ExactTime( tpPref.getHour(), tpPref.getMinute() );
+				alarm.setTime( time );
+
+				updateTimeSummary();
 			}
 			else if (NAME.equals(preference.getKey())) {
 				alarm.setName(stringValue);
@@ -526,7 +586,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		}
 		else if (TIME.equals(preference.getKey())) {
 			initiateTimePicker((TimepickerPreference)preference);
-			preference.setSummary(alarm.getTimeString());
+			updateTimeSummary();
 		}
 		else if(DAYS.equals(preference.getKey())) {
 			((MultiSelectListPreference) preference).setEntryChecked(alarm.getEnabledDays());;
@@ -566,8 +626,22 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 	}
 	
-	private void initiateTimePicker(TimepickerPreference tp) {
-		tp.setHour(alarm.getHour());
-		tp.setMinute(alarm.getMinute());
+	private void initiateTimePicker( TimepickerPreference tp ) {
+		AlarmTime time = this.alarm.getTime();
+		time.refresh();
+
+		tp.setOnPreferenceClickListener( new OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick( Preference preference ) {
+				TimepickerPreference tp = (TimepickerPreference) preference;
+				AlarmTime time = alarm.getTime();
+				tp.setHour( time.getHour() );
+				tp.setMinute( time.getMinute() );
+				return false;
+			}
+		} );
+
+		tp.setHour( time.getHour() );
+		tp.setMinute( time.getMinute() );
 	}
 }

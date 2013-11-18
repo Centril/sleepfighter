@@ -21,7 +21,7 @@ package se.toxbee.sleepfighter.challenge.math;
 import java.util.Random;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.android.view.CustomWebView;
+import se.toxbee.sleepfighter.android.component.web.CustomWebView;
 import se.toxbee.sleepfighter.challenge.BaseChallenge;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;

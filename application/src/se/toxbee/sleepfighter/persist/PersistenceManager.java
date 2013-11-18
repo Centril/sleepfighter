@@ -40,21 +40,19 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeParam;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
+import se.toxbee.sleepfighter.persist.dao.PersistenceException;
+import se.toxbee.sleepfighter.persist.dao.PersistenceExceptionDao;
+import se.toxbee.sleepfighter.persist.type.TypeBootstrapper;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.field.DataPersisterManager;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.table.TableUtils;
 
 /**
  * Handles all reads and writes to persistence.<br/>
@@ -67,11 +65,16 @@ import com.j256.ormlite.table.TableUtils;
 public class PersistenceManager {
 	private static final String TAG = PersistenceManager.class.getSimpleName();
 
+	private static final Class<?>[] ALARM_AND_DEPENDERS = new Class<?>[] {
+		Alarm.class,
+		SnoozeConfig.class,
+		AudioSource.class, AudioConfig.class,
+		ChallengeConfigSet.class, ChallengeConfig.class, ChallengeParam.class
+	};
+
 	private volatile OrmHelper ormHelper = null;
 
 	private Context context;
-
-	private static boolean init = false;
 
 	/**
 	 * Handles changes in alarm-list (the list itself, additions, deletions, etc).
@@ -201,17 +204,9 @@ public class PersistenceManager {
 	 * Constructs the PersistenceManager.
 	 *
 	 * @param context android context.
+	 * @param bus the message bus.
 	 */
 	public PersistenceManager( Context context ) {
-		this.setContext( context );
-	}
-
-	/**
-	 * Sets the context to use.
-	 *
-	 * @param context android context.
-	 */
-	public void setContext( Context context ) {
 		this.context = context;
 	}
 
@@ -227,30 +222,8 @@ public class PersistenceManager {
 	 *
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void clearAlarms() throws PersistenceException {
-		this.clearTable( Alarm.class );
-
-		this.clearTable( AudioSource.class );
-		this.clearTable( AudioConfig.class );
-
-		this.clearTable( ChallengeConfigSet.class );
-		this.clearTable( ChallengeConfig.class );
-		this.clearTable( ChallengeParam.class );
-
-		this.clearTable(SnoozeConfig.class);
-	}
-
-	/**
-	 * Clears a DB table for given class.
-	 *
-	 * @param clazz the class to clear table for.
-	 */
-	private void clearTable( Class<?> clazz ) {
-		try {
-			TableUtils.clearTable( this.getHelper().getConnectionSource(), clazz );
-		} catch ( SQLException e ) {
-			throw new PersistenceException( e );
-		}
+	public void clearAlarms() {
+		this.getHelper().clear( ALARM_AND_DEPENDERS );
 	}
 
 	/**
@@ -259,7 +232,7 @@ public class PersistenceManager {
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public List<Alarm> fetchAlarms() throws PersistenceException {
+	public List<Alarm> fetchAlarms() {
 		try {
 			Debug.d("fetching alarms");
 			return this.joinFetched( this.makeAlarmQB().query() );
@@ -274,7 +247,7 @@ public class PersistenceManager {
 	 * @return the fetched AlarmsManager.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public List<Alarm> fetchAlarmsSortedNames() throws PersistenceException {
+	public List<Alarm> fetchAlarmsSortedNames() {
 		try {
 			return this.joinFetched( this.makeAlarmQB().orderBy( "name", true ).query() );
 		} catch ( SQLException e ) {
@@ -289,7 +262,7 @@ public class PersistenceManager {
 	 * @return the fetched Alarm.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public Alarm fetchAlarmById( int id ) throws PersistenceException {
+	public Alarm fetchAlarmById( int id ) {
 		try {
 			List<Alarm> alarms = this.joinFetched( this.makeAlarmQB().where().idEq( id ).query() );
 			return alarms == null || alarms.size() == 0 ? null : alarms.get( 0 );
@@ -304,7 +277,7 @@ public class PersistenceManager {
 	 * @return the query builder.
 	 */
 	private QueryBuilder<Alarm, Integer> makeAlarmQB() {
-		return this.getHelper().getAlarmDao().queryBuilder();
+		return this.getHelper().dao( Alarm.class ).queryBuilder();
 	}
 
 	/**
@@ -318,8 +291,6 @@ public class PersistenceManager {
 			return alarms;
 		}
 
-		OrmHelper helper = this.getHelper();
-
 		/*
 		 * Make lookup tables.
 		 * -------------------
@@ -329,7 +300,7 @@ public class PersistenceManager {
 		Map<Integer, Integer> audioSourceLookup = Maps.newHashMap();
 		Map<Integer, Integer> audioConfigLookup = Maps.newHashMap();
 		Map<Integer, Integer> snoozeConfigLookup = Maps.newHashMap();
-		BiMap<Integer, Integer> challengeSetLookup = HashBiMap.create();
+		Map<Integer, Integer> challengeSetLookup =  Maps.newHashMap();
 
 		for ( int i = 0; i < alarms.size(); ++i ) {
 			Alarm alarm = alarms.get( i );
@@ -353,9 +324,9 @@ public class PersistenceManager {
 		/*
 		 * Query for all tables.
 		 */
-		List<AudioSource> audioSourceList = this.queryInIds( helper.getAudioSourceDao(), AudioSource.ID_COLUMN, audioSourceLookup );
-		List<AudioConfig> audioConfigSetList = this.queryInIds( helper.getAudioConfigDao(), AudioConfig.ID_COLUMN, audioConfigLookup );
-		List<SnoozeConfig> snoozeConfigSetList = this.queryInIds( helper.getSnoozeConfigDao(), SnoozeConfig.ID_COLUMN, snoozeConfigLookup );
+		List<AudioSource> audioSourceList = this.queryInIds( AudioSource.class, AudioSource.ID_COLUMN, audioSourceLookup );
+		List<AudioConfig> audioConfigSetList = this.queryInIds( AudioConfig.class, AudioConfig.ID_COLUMN, audioConfigLookup );
+		List<SnoozeConfig> snoozeConfigSetList = this.queryInIds( SnoozeConfig.class, SnoozeConfig.ID_COLUMN, snoozeConfigLookup );
 
 		/*
 		 * Set all to respective Alarm object.
@@ -400,7 +371,7 @@ public class PersistenceManager {
 		OrmHelper helper = this.getHelper();
 
 		// 1) Read all sets and set them.
-		List<ChallengeConfigSet> challengeSetList = this.queryInIds( helper.getChallengeConfigSetDao(), ChallengeConfigSet.ID_COLUMN, challengeSetLookup );
+		List<ChallengeConfigSet> challengeSetList = this.queryInIds( ChallengeConfigSet.class, ChallengeConfigSet.ID_COLUMN, challengeSetLookup );
 		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
 			// Bind challenge config set to alarm.
 			int alarmIndex = challengeSetLookup.get( challengeSet.getId() );
@@ -411,8 +382,7 @@ public class PersistenceManager {
 
 		// 2) Read all challenge config:s and set to each set.
 		Map<Integer, ChallengeConfig> challengeConfigLookup = Maps.newHashMap();
-		PersistenceExceptionDao<ChallengeConfig, Integer> configDao = helper.getChallengeConfigDao();
-		List<ChallengeConfig> challengeConfigList = this.queryInIds( configDao, ChallengeConfig.SET_FOREIGN_COLUMN, challengeSetLookup );
+		List<ChallengeConfig> challengeConfigList = this.queryInIds( ChallengeConfig.class, ChallengeConfig.SET_FOREIGN_COLUMN, challengeSetLookup );
 		for ( ChallengeConfig challengeConfig : challengeConfigList ) {
 			// Bind challenge config to set.
 			int alarmIndex = challengeSetLookup.get( challengeConfig.getSetId() );
@@ -423,6 +393,7 @@ public class PersistenceManager {
 		}
 
 		// 3) Sanity fix. Find any missing ChallengeType:s and add them.
+		PersistenceExceptionDao<ChallengeConfig, Integer> configDao = helper.dao( ChallengeConfig.class );
 		for ( ChallengeConfigSet challengeSet : challengeSetList ) {
 			Set<ChallengeType> missingTypes = Sets.complementOf( challengeSet.getDefinedTypes(), ChallengeType.class );
 
@@ -437,7 +408,7 @@ public class PersistenceManager {
 		}
 
 		// 3) Finally read all parameters and set to each config.
-		List<ChallengeParam> challengeParamList = this.queryInIds( helper.getChallengeParamDao(), ChallengeParam.CHALLENGE_ID_COLUMN, challengeConfigLookup );
+		List<ChallengeParam> challengeParamList = this.queryInIds( ChallengeParam.class, ChallengeParam.CHALLENGE_ID_COLUMN, challengeConfigLookup );
 		for ( ChallengeParam param : challengeParamList ) {
 			challengeConfigLookup.get( param.getId() ).setFetched( param );
 		}
@@ -446,13 +417,14 @@ public class PersistenceManager {
 	/**
 	 * Helper for {@link #joinFetched(List)}, returns a list of items given a lookup table.
 	 *
-	 * @param dao the Domain Access Object for item type.
+	 * @param clazz the Class object to use to get the Domain Access Object for item type.
 	 * @param lookup the lookup table to get IDs from.
 	 * @return the list of items.
 	 */
-	private <T extends IdProvider> List<T> queryInIds( Dao<T, Integer> dao, String idColumn, Map<Integer, ?> lookup ) {
+	private <T extends IdProvider> List<T> queryInIds( Class<T> clazz, String idColumn, Map<Integer, ?> lookup ) {
 		try {
-			return dao.queryBuilder().where().in( idColumn, lookup.keySet().toArray() ).query();
+			QueryBuilder<T, Integer> qb = this.getHelper().dao( clazz ).queryBuilder();
+			return qb.where().in( idColumn, lookup.keySet().toArray() ).query();
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );
 		}
@@ -465,7 +437,7 @@ public class PersistenceManager {
 	 * @param evt AlarmEvent that occurred, required to update foreign fields.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void updateAlarm( Alarm alarm, AlarmEvent evt ) throws PersistenceException {
+	public void updateAlarm( Alarm alarm, AlarmEvent evt ) {
 		OrmHelper helper = this.getHelper();
 
 		boolean updateAlarmTable = false;
@@ -482,7 +454,7 @@ public class PersistenceManager {
 		}
 
 		if ( updateAlarmTable ) {
-			helper.getAlarmDao().update( alarm );
+			helper.dao( Alarm.class ).update( alarm );
 		}
 	}
 
@@ -493,13 +465,9 @@ public class PersistenceManager {
 	 * @param evt ChangeEvent that occurred, required to update foreign fields.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) throws PersistenceException {
-		Log.d( TAG, "updateAudioConfig #1" );
+	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) {
 		OrmHelper helper = this.getHelper();
-
-		Log.d( TAG, "updateAudioConfig #2" );
-		helper.getAudioConfigDao().update( evt.getAudioConfig() );
-		Log.d( TAG, "updateAudioConfig #3" );
+		helper.dao( AudioConfig.class ).update( evt.getAudioConfig() );
 	}
 
 	/**
@@ -509,10 +477,8 @@ public class PersistenceManager {
 	 * @param evt SnoozeConfig that occurred, required to update foreign fields.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void updateSnoozeConfig( SnoozeConfig.ChangeEvent evt ) throws PersistenceException {
-		OrmHelper helper = this.getHelper();
-
-		helper.getSnoozeConfigDao().update( evt.getSnoozeConfig() );
+	public void updateSnoozeConfig( SnoozeConfig.ChangeEvent evt ) {
+		this.getHelper().dao( SnoozeConfig.class ).update( evt.getSnoozeConfig() );
 	}
 
 	/**
@@ -524,7 +490,7 @@ public class PersistenceManager {
 	 */
 	private boolean updateAudioSource( AudioSource source, AudioSource old ) {
 		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<AudioSource, Integer> asDao = helper.getAudioSourceDao();
+		PersistenceExceptionDao<AudioSource, Integer> asDao = helper.dao( AudioSource.class );
 
 		if ( old != null ) {
 			if ( source == null ) {
@@ -553,14 +519,14 @@ public class PersistenceManager {
 
 		if ( evt instanceof ChallengeConfigSet.EnabledEvent ) {
 			// Handle change for isEnabled().
-			helper.getChallengeConfigSetDao().update( set );
+			helper.dao( ChallengeConfigSet.class ).update( set );
 			return;
 		} else if ( evt instanceof ChallengeConfigSet.ChallengeEvent ) {
 			ChallengeConfig config = ((ChallengeConfigSet.ChallengeEvent) evt).getChallengeConfig();
 
 			if ( evt instanceof ChallengeConfigSet.ChallengeEnabledEvent ) {
 				// Handle change for isEnabled() for specific ChallengeConfig.
-				helper.getChallengeConfigDao().update( config );
+				helper.dao( ChallengeConfig.class ).update( config );
 				return;
 			} else if ( evt instanceof ChallengeConfigSet.ChallengeParamEvent ) {
 				// Handle change for a specific challenge config parameter.
@@ -568,7 +534,7 @@ public class PersistenceManager {
 				String key = event.getKey();
 
 				ChallengeParam param = new ChallengeParam( config.getId(), key, config.getParam( key ) );
-				helper.getChallengeParamDao().createOrUpdate( param );
+				helper.dao( ChallengeParam.class ).createOrUpdate( param );
 				return;
 			}
 		}
@@ -582,25 +548,25 @@ public class PersistenceManager {
 	 * @param alarm the alarm to store.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void addAlarm( Alarm alarm ) throws PersistenceException {
+	public void addAlarm( Alarm alarm ) {
 		OrmHelper helper = this.getHelper();
 
 		// Handle audio source foreign object if present.
 		AudioSource audioSource = alarm.getAudioSource();
-		helper.getAudioSourceDao().create( audioSource );
+		helper.dao( AudioSource.class ).create( audioSource );
 
 		// Handle audio config foreign object.
 		AudioConfig audioConfig = alarm.getAudioConfig();
-		helper.getAudioConfigDao().create( audioConfig );
+		helper.dao( AudioConfig.class ).create( audioConfig );
 
 		// Handle snooze config foreign object.
 		SnoozeConfig snoozeConfig = alarm.getSnoozeConfig();
-		helper.getSnoozeConfigDao().create( snoozeConfig );
+		helper.dao( SnoozeConfig.class ).create( snoozeConfig );
 
 		this.addChallengeSet( alarm );
 
 		// Finally persist alarm itself to DB.
-		helper.getAlarmDao().create( alarm );
+		helper.dao( Alarm.class ).create( alarm );
 	}
 
 	/**
@@ -613,10 +579,10 @@ public class PersistenceManager {
 
 		// Insert set.
 		ChallengeConfigSet set = alarm.getChallengeSet();
-		helper.getChallengeConfigSetDao().create( set );
+		helper.dao( ChallengeConfigSet.class ).create( set );
 
-		PersistenceExceptionDao<ChallengeConfig, Integer> challengeDao = helper.getChallengeConfigDao();
-		PersistenceExceptionDao<ChallengeParam, Integer> paramDao = helper.getChallengeParamDao();
+		PersistenceExceptionDao<ChallengeConfig, Integer> challengeDao = helper.dao( ChallengeConfig.class );
+		PersistenceExceptionDao<ChallengeParam, Integer> paramDao = helper.dao( ChallengeParam.class );
 
 		for ( ChallengeConfig challenge : set.getConfigs() ) {
 			// Insert challenge.
@@ -637,28 +603,28 @@ public class PersistenceManager {
 	 * @param alarm the alarm to remove.
 	 * @throws PersistenceException if some SQL error happens.
 	 */
-	public void removeAlarm( Alarm alarm ) throws PersistenceException {
+	public void removeAlarm( Alarm alarm ) {
 		OrmHelper helper = this.getHelper();
 
 		// Handle audio source foreign object if present.
 		AudioSource audioSource = alarm.getAudioSource();
 		if ( audioSource != null ) {
-			helper.getAudioSourceDao().delete( audioSource );
+			helper.dao( AudioSource.class ).delete( audioSource );
 		}
 
 		// Handle audio config foreign object.
 		AudioConfig audioConfig = alarm.getAudioConfig();
-		helper.getAudioConfigDao().delete( audioConfig );
+		helper.dao( AudioConfig.class ).delete( audioConfig );
 
 		// Handle snooze config foreign object.
 		SnoozeConfig snoozeConfig = alarm.getSnoozeConfig();
-		helper.getSnoozeConfigDao().delete(snoozeConfig);
+		helper.dao( SnoozeConfig.class ).delete(snoozeConfig);
 
 		// Handle challenge config set foreign object.
 		this.removeChallengeSet( alarm );
 
 		// Finally delete alarm itself from DB.
-		helper.getAlarmDao().delete( alarm );
+		helper.dao( Alarm.class ).delete( alarm );
 	}
 
 	/**
@@ -680,11 +646,11 @@ public class PersistenceManager {
 		}
 
 		// Remove all challenge configs & params.
-		helper.getChallengeConfigDao().deleteIds( removeIds );
-		helper.getChallengeParamDao().deleteIds( removeIds );
+		helper.dao( ChallengeConfig.class ).deleteIds( removeIds );
+		helper.dao( ChallengeParam.class ).deleteIds( removeIds );
 
 		// Finally remove set.
-		helper.getChallengeConfigSetDao().delete( set );
+		helper.dao( ChallengeConfigSet.class ).delete( set );
 	}
 
 	/**
@@ -693,8 +659,7 @@ public class PersistenceManager {
 	 * @return the list of GPSFilterArea:s.
 	 */
 	public GPSFilterAreaSet fetchGPSFilterAreas() {
-		OrmHelper helper = this.getHelper();
-		return new GPSFilterAreaSet( helper.getGPSFilterAreaDao().queryForAll() );
+		return new GPSFilterAreaSet( this.getHelper().dao( GPSFilterArea.class ).queryForAll() );
 	}
 
 	/**
@@ -705,8 +670,7 @@ public class PersistenceManager {
 	public void setGPSFilterArea( GPSFilterArea area ) {
 		Log.d( TAG, area.toString() );
 
-		OrmHelper helper = this.getHelper();
-		helper.getGPSFilterAreaDao().createOrUpdate( area );
+		this.getHelper().dao( GPSFilterArea.class ).createOrUpdate( area );
 	}
 
 	/**
@@ -715,16 +679,14 @@ public class PersistenceManager {
 	 * @param area the area.
 	 */
 	public void deleteGPSFilterArea( GPSFilterArea area ) {
-		OrmHelper helper = this.getHelper();
-
-		helper.getGPSFilterAreaDao().delete( area );
+		this.getHelper().dao( GPSFilterArea.class ).delete( area );
 	}
 
 	/**
-	 * Removes all gpsfilter areas.
+	 * Removes all GPSFilterArea:s.
 	 */
 	public void clearGPSFilterAreas() {
-		this.clearTable( GPSFilterArea.class );
+		this.getHelper().clear( GPSFilterArea.class );
 	}
 
 	/**
@@ -744,36 +706,17 @@ public class PersistenceManager {
 	 */
 	public OrmHelper getHelper() {
 		if ( this.ormHelper == null ) {
-			if ( this.context == null ) {
-				throw new PersistenceException( "There is no helper set and context == null" );
-			}
-
-			this.loadHelper();
+			this.ormHelper = OpenHelperManager.getHelper( this.context, OrmHelper.class );
+			this.init();
 		}
 
 		return this.ormHelper;
 	}
 
 	/**
-	 * Loads the OrmHelper.
-	 */
-	private void loadHelper() {
-		this.ormHelper = OpenHelperManager.getHelper( this.context, OrmHelper.class );
-
-		this.init();
-	}
-
-	/**
 	 * Initialization code goes here.
 	 */
 	private void init() {
-		// Run Once guard.
-		if ( init ) {
-			return;
-		}
-		init = true;
-
-		// Initialization code goes here.
-		DataPersisterManager.registerDataPersisters( BooleanArrayType.getSingleton() );
+		TypeBootstrapper.init();
 	}
 }

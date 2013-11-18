@@ -65,22 +65,23 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		this.context = context;
 
-		// Fetch extras.
-		Bundle extras = intent.getExtras();
 		final int alarmId = new AlarmIntentHelper( intent ).getAlarmId();
 
 		if ( !this.isRequirementsMet( alarmId ) ) {
+			WakeLocker.release();
 			return;
 		}
 
 		// Fetching alarm
 		this.alarm = SFApplication.get().getPersister().fetchAlarmById(alarmId);
-		
-		// Start the alarm, this will wake the screen up!
-		this.startAlarm(extras);
 
-		
-		if(alarm.isSpeech()) {
+		// Fetch extras.
+		Bundle extras = intent.getExtras();
+
+		// Start the alarm, this will wake the screen up!
+		this.startAlarm( extras );
+
+		if ( alarm.isSpeech() ) {
 			startSpeech();
 		}
 	}
@@ -131,7 +132,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		SFApplication.get().setRingingAlarm(alarm);
 	}
-	
+
 	private void startAudio() {
 		SFApplication app = SFApplication.get();
 		AudioDriver driver = app.getAudioDriverFactory().produce(app,
@@ -202,8 +203,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		d.setVolume(origVolume/5);
 	}
-	
-	
+
 	private void restoreVolume() {
 		// gradually restore the volume.		
 		Intent serviceIntent = new Intent(context,FadeVolumeService.class);
@@ -211,7 +211,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		this.context.startService(serviceIntent);
  
 	}
-	
+
 	private OnUtteranceCompletedListener utteranceListener = new OnUtteranceCompletedListener() {
 
 		@Override

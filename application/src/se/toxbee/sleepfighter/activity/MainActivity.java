@@ -18,29 +18,26 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.activity;
 
-import java.util.Locale;
-
 import net.engio.mbassy.listener.Handler;
-
-import org.joda.time.DateTime;
-
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.adapter.AlarmAdapter;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher.RefreshedEvent;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.Alarm.Field;
 import se.toxbee.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.receiver.AlarmReceiver;
+import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.text.DateTextUtils;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -54,62 +51,72 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-
-	
 	private AlarmList manager;
 	private AlarmAdapter alarmAdapter;
 
-	/**
-	 * <p>
-	 * Returns the SFApplication.
-	 * </p>
-	 * 
-	 * <p>
-	 * Thank the genius programmers @ google for making<br/>
-	 * {@link #getApplication()} final removing the option of covariant return
-	 * type.
-	 * </p>
-	 * 
-	 * @return the SFApplication.
-	 */
+	private TextView earliestTimeText;
+
 	public SFApplication app() {
 		return SFApplication.get();
 	}
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate( savedInstanceState );
 
-		this.setContentView(R.layout.activity_main);
+		AlarmActivity.startIfRinging( this );
+
+		// This is the main entry point to application GUI, so register planner.
+		AlarmPlannerService.register();
+
+		this.setContentView( R.layout.activity_main );
 
 		this.manager = this.app().getAlarms();
 		this.alarmAdapter = new AlarmAdapter(this, this.manager);
 
-		this.app().getBus().subscribe(this);
+		this.app().getBus().subscribe( this );
 
 		this.setupListView();
-		
-		this.setupChallengeToggle();
-		this.updateChallengePoints();
-		this.updateEarliestText();
-
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		this.updateChallengePoints();
+		AlarmActivity.startIfRinging( this );
+
+		this.earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
 		this.updateEarliestText();
 
-		// Check if an alarm is ringing, if so, send the user to AlarmActivity
-		Alarm ringingAlarm = SFApplication.get().getRingingAlarm();
-		if (ringingAlarm != null) {
-			Intent i = new Intent(this, AlarmActivity.class);
-			new AlarmIntentHelper(i).setAlarmId(ringingAlarm);
-			startActivity(i);
-			finish();
+		this.setupChallengeToggle();
+		this.updateChallengePoints();
+
+		this.initRefresher();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		this.clearRefresher();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		this.clearRefresher();
+	}
+
+	private AlarmTimeRefresher refresher;
+	private void initRefresher() {
+		this.refresher = new AlarmTimeRefresher( this.manager );
+		this.refresher.start();
+	}
+	private void clearRefresher() {
+		if ( this.refresher != null ) {
+			this.refresher.stop();
+			this.refresher = null;
 		}
 	}
 
@@ -121,9 +128,8 @@ public class MainActivity extends Activity {
 		// Register to get context menu events associated with listView
 		this.registerForContextMenu(listView);
 	}
-	
+
 	private void setupChallengeToggle() {
-		
 		ImageView toggleImage = (ImageView) findViewById(R.id.challenge_toggle);
 		ImageView pointImage = (ImageView) findViewById(R.id.challenge_points_icon);
 		
@@ -157,10 +163,6 @@ public class MainActivity extends Activity {
 		});
 	}
 
-	private long getNow() {
-		return new DateTime().getMillis();
-	}
-
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -168,7 +170,6 @@ public class MainActivity extends Activity {
 			Alarm clickedAlarm = MainActivity.this.alarmAdapter
 					.getItem(position);
 			startAlarmEdit(clickedAlarm, false);
-
 		}
 	};
 
@@ -176,11 +177,11 @@ public class MainActivity extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.mainAlarmsList) {
-			String[] menuItems = getResources().getStringArray(
-					R.array.main_list_context_menu);
+			String[] menuItems = getResources().getStringArray( R.array.main_list_context_menu );
 			for (int i = 0; i < menuItems.length; i++) {
 				menu.add(0, i, i, menuItems[i]);
 			}
+
 			if (SFApplication.DEBUG) {
 				// adds an extra context menu item for starting an alarm
 				menu.add(0, menuItems.length, menuItems.length,
@@ -188,52 +189,58 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
-	
+
 	private void startAlarm(Alarm alarm) {
 	    // Send intent directly to receiver
 		   Intent intent = new Intent(this, AlarmReceiver.class);
 		    new AlarmIntentHelper(intent).setAlarmId(alarm.getId());
 		   sendBroadcast(intent);
 	 }
-		
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		Alarm selectedAlarm = (alarmAdapter.getItem(info.position));
 
 		switch (item.getOrder()) {
 		case 0:
 			startAlarmEdit(selectedAlarm, false);
 			return true;
+
 		case 1:
 			deleteAlarm(selectedAlarm);
 			return true;
+
 		case 2:
 			copyAlarm(selectedAlarm);
 			return true;
+
 		case 3:
+			this.alarmAdapter.pickNormalTime( selectedAlarm );
+			return true;
+
+		case 4:
+			this.alarmAdapter.pickCountdownTime( selectedAlarm );
+			return true;
+
+		case 5:
 			startAlarm(selectedAlarm);
 			return true;
+
 		default:
 			return false;
-
 		}
 	}
 
-	private void startAlarmEdit(Alarm alarm, boolean isNew) {
-		Intent intent = new Intent(this, AlarmSettingsActivity.class);
-		new AlarmIntentHelper(intent).setAlarmId(alarm);
-
-		intent.putExtra(AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew);
-
-		startActivity(intent);
+	private void startAlarmEdit( Alarm alarm, boolean isNew ) {
+		Intent i = new Intent( this, AlarmSettingsActivity.class );
+		i.putExtra( AlarmSettingsActivity.EXTRA_ALARM_IS_NEW, isNew );
+		this.startActivity( new AlarmIntentHelper( i ).setAlarmId( alarm ).intent() );
 	}
 
 	private void startGlobalSettings() {
-		Intent intent = new Intent(this, GlobalSettingsActivity.class);
-		startActivity(intent);
+		Intent i = new Intent( this, GlobalSettingsActivity.class );
+		this.startActivity( i );
 	}
 
 	private void deleteAlarm(final Alarm alarm) {
@@ -264,10 +271,25 @@ public class MainActivity extends Activity {
 	}
 
 	/**
+	 * Handles a refresh event.
+	 *
+	 * @param evt the event.
+	 */
+	@Handler
+	public void handleRefreshed( RefreshedEvent evt ) {
+		this.runOnUiThread( new Runnable() {
+			@Override
+			public void run() {
+				updateEarliestText();
+				alarmAdapter.notifyDataSetChanged();
+			}
+		} );
+	}
+
+	/**
 	 * Handles a change to an alarm's name by refreshing the list.
 	 * 
-	 * @param event
-	 *            the event
+	 * @param event the event
 	 */
 	@Handler
 	public void handleAlarmNameChange(Alarm.MetaChangeEvent event) {
@@ -283,8 +305,7 @@ public class MainActivity extends Activity {
 	/**
 	 * Handles a change in time related data in any alarm.
 	 * 
-	 * @param evt
-	 *            the event.
+	 * @param evt the event.
 	 */
 	@Handler
 	public void handleScheduleChange(ScheduleChangeEvent evt) {
@@ -304,8 +325,7 @@ public class MainActivity extends Activity {
 	 * Handles a change in the list of alarms (the list itself, deletion,
 	 * insertion, etc, not edits in an alarm).
 	 * 
-	 * @param evt
-	 *            the event.
+	 * @param evt the event.
 	 */
 	@Handler
 	public void handleListChange(AlarmList.Event evt) {
@@ -320,20 +340,12 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Sets the earliest time text.
+	 * Updates the earliest time text.
 	 */
 	private void updateEarliestText() {
-		long now = this.getNow();
-
-		TextView earliestTimeText = (TextView) findViewById(R.id.earliestTimeText);
-		AlarmTimestamp stamp = this.manager.getEarliestAlarm(now);
-
-		Resources res = this.getResources();
-		String text = this.app().getPrefs().displayPeriodOrTime() ? DateTextUtils
-				.getTime(res, now, stamp, Locale.getDefault()) : DateTextUtils
-				.getTimeToText(res, now, stamp);
-
-		earliestTimeText.setText(text);
+		long now = app().now();
+		AlarmTimestamp stamp = this.manager.getEarliestAlarm( now );
+		earliestTimeText.setText( DateTextUtils.printTime( now, stamp ) );
 	}
 
 	private void updateChallengePoints() {

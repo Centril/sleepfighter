@@ -35,12 +35,14 @@ import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.SFApplication;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
+import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 
 import com.google.common.base.Strings;
 
@@ -52,9 +54,30 @@ import com.google.common.base.Strings;
  * @since Sep 19, 2013
  */
 public class DateTextUtils {
-	private final static String TAG = DateTextUtils.class.getSimpleName();
+	//private final static String TAG = DateTextUtils.class.getSimpleName();
 
 	private static final int ENABLED_DAYS_INDICE_LENGTH = 2;
+
+	/**
+	 * Builds and returns the time of an {@link AlarmTimestamp} in the preferred manner<br/>
+	 * according to {@link GlobalPreferencesManager#displayPeriodOrTime()}.
+	 *
+	 * @param stamp the alarm and its timestamp info.
+	 * @return the time.
+	 */
+	public static final String printTime( long now, AlarmTimestamp stamp ) {
+		SFApplication app = SFApplication.get();
+
+		boolean periodOrTime = app.getPrefs().displayPeriodOrTime();
+
+		Resources res = app.getResources();
+
+		String text = periodOrTime
+					? getTime( res, now, stamp, app.locale() )
+					: getTimeToText( res, now, stamp );
+
+		return text;
+	}
 
 	/**
 	 * Builds and returns text for the "exact" time an alarm occurs as opposed to the period left for it to occur.<br/>
@@ -84,27 +107,27 @@ public class DateTextUtils {
 	 * @return the built time-to string.
 	 */
 	public static final String getTime( String[] formats, String noActive, long now, AlarmTimestamp ats, Locale locale ) {	
-		
 		if ( ats == AlarmTimestamp.INVALID ) {
 			return noActive;
 		} else {
-			if ( ats.getMillis() < now ) {
-				throw new RuntimeException( "Time given is before now." );
-			}
+			// Due to threading, now could be after ats - so we're forgiving here.
+			Alarm alarm = ats.getAlarm();
+			AlarmTime time = alarm.getTime();
+
+			DateTime timeWork = new DateTime( ats.getMillis() );
 
 			// Prepare replacements.
-			Alarm alarm = ats.getAlarm();
-			String timeReplacement = StringUtils.joinTime( alarm.getHour(), alarm.getMinute() );
+			String timeReplacement	= time instanceof ExactTime
+									? time.getTimeString()
+									: StringUtils.joinTime( timeWork.getHourOfDay(), timeWork.getMinuteOfHour() );
 
 			// Calculate start of tomorrow.
 			DateTime nowTime = new DateTime( now );
-			DateTime time = new DateTime( ats.getMillis() );
 			LocalDate tomorrow = new LocalDate( nowTime ).plusDays( 1 );
 			DateTime startOfTomorrow = tomorrow.toDateTimeAtStartOfDay( nowTime.getZone() );
 
-			if ( time.isBefore( startOfTomorrow ) ) {
+			if ( timeWork.isBefore( startOfTomorrow ) ) {
 				// Alarm is today.
-				Log.d( TAG, "today" );
 				return String.format( formats[0], timeReplacement );
 			}
 
@@ -112,14 +135,12 @@ public class DateTextUtils {
 			LocalDate afterTomorrow = tomorrow.plusDays( 1 );
 			DateTime startOfAfterTomorrow = afterTomorrow.toDateTimeAtStartOfDay( nowTime.getZone() );
 
-			if ( time.isBefore( startOfAfterTomorrow ) ) {
-				Log.d( TAG, "tomorrow" );
+			if ( timeWork.isBefore( startOfAfterTomorrow ) ) {
 				// Alarm is tomorrow.
 				return String.format( formats[1], timeReplacement );
 			}
 
 			// Alarm is after tomorrow.
-			Log.d( TAG, "after tomorrow" );
 			String weekday = new DateTime( ats.getMillis() ).dayOfWeek().getAsText( locale );
 			return String.format( formats[2], timeReplacement, weekday );
 		}
@@ -136,9 +157,12 @@ public class DateTextUtils {
 	public static final String getTimeToText( Resources res, long now, AlarmTimestamp ats ) {
 		Period diff = null;
 		
-		// ats is invalid when all the alarms have been turned off. INVALID has the value null. 
-		// therefore, we must do a nullcheck, otherwise we get an exception. 
-		if(ats != AlarmTimestamp.INVALID) {
+		/*
+		 * ats is invalid when all the alarms have been turned off.
+		 * INVALID has the value null.
+		 * therefore, we must do a nullcheck, otherwise we get an exception.
+		 */
+		if ( ats != AlarmTimestamp.INVALID ) {
 			diff = new Period( now, ats.getMillis() );
 		}
 		
@@ -185,7 +209,6 @@ public class DateTextUtils {
 
 				// Finally format everything.
 				earliestText = String.format( earliestText, args.toArray() );
-
 				earliestText = String.format( earliestText, diffVal[0], diffVal[1], diffVal[2] );
 			} else {
 				// only seconds remains until it goes off.
@@ -245,8 +268,10 @@ public class DateTextUtils {
 			throw new AssertionError("A week has 7 days, wrong array lengths!");
 		}
 
+		Resources res = SFApplication.get().getResources();
+
 		int enabledColor = Color.WHITE;
-		int disabledColor = SFApplication.get().getResources().getColor( R.color.nearly_background_text );
+		int disabledColor = res.getColor( R.color.nearly_background_text );
 
 		int start = 0;
 		for ( int i = 0; i < enabledDays.length; i++ ) {
@@ -260,11 +285,5 @@ public class DateTextUtils {
 		}
 
 		return text;
-	}
-
-	/**
-	 * Construction forbidden.
-	 */
-	private DateTextUtils() {
 	}
 }

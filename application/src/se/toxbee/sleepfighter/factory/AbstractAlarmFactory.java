@@ -23,6 +23,7 @@ import se.toxbee.sleepfighter.model.SnoozeConfig;
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.toxbee.sleepfighter.model.time.ExactTime;
 
 /**
  * AbstractAlarmFactory is the abstract factory implementation of AlarmFactory. 
@@ -36,32 +37,33 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 	public Alarm createAlarm() {
 		Alarm alarm = this.instantiateAlarm();
 
-		// How to set the time is varied, let concrete factory implement how to set it.
-		this.setTime( alarm );
-
-		// Set basic Alarm native properties.
+		// Set meta properties.
+		alarm.setName( this.createName() );
 		alarm.setIsPresetAlarm( this.createIsPresetFlag() );
+
+		// Set scheduling properties.
 		alarm.setActivated( this.createIsActivated() );
 		alarm.setEnabledDays( this.createEnabledDays() );
-		alarm.setRepeat( this.createIsRepeatingFlag() );
-		alarm.setName( this.createName() );
+		alarm.setTime( this.createTime() );
+
+		// Set other basic non-foreign properties.
 		alarm.setSpeech(this.createIsSpeech());
-		alarm.setFlash(this.createIsFlashEnabled());
+		alarm.setFlash( this.createIsFlashEnabled() );
 
 		// Set foreign objects.
 		alarm.setAudioSource( this.createAudioSource() );
 		alarm.setFetched( this.createAudioConfig() );
 		alarm.setChallenges( this.createChallenges() );
-		alarm.setFetched(createSnoozeConfig());
+		alarm.setFetched( createSnoozeConfig() );
 
 		return alarm;
 	}
 
-	protected abstract Alarm instantiateAlarm();
+	protected Alarm instantiateAlarm() {
+		return new Alarm();
+	}
 
-	protected abstract void setTime( Alarm alarm );
-
-	protected abstract boolean createIsRepeatingFlag();
+	protected abstract ExactTime createTime();
 
 	protected abstract String createName();
 
@@ -82,7 +84,6 @@ public abstract class AbstractAlarmFactory implements AlarmFactory {
 	protected abstract ChallengeConfigSet createChallenges();
 	
 	protected abstract boolean createIsFlashEnabled();
-
 
 	protected abstract boolean createIsSpeech();
 }

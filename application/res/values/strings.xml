@@ -68,7 +68,9 @@
     <string-array name="main_list_context_menu">
         <item>Edit alarm</item>
         <item>Delete alarm</item>
-        <item>Copy alarm</item>
+        <item>Duplicate</item>
+        <item>@string/menu_set_alarm_time</item>
+        <item>@string/menu_set_alarm_countdown</item>
     </string-array>
 
     <!-- Location Filter -->

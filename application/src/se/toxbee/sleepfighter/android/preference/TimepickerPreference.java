@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.android.preference;
 
+import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -26,18 +27,14 @@ import android.widget.TimePicker;
 
 /**
  * A DialogPreference with containing a TimePicker.
- * 
- * @author Hassel
  *
+ * @author Hassel
  */
 public class TimepickerPreference extends DialogPreference {
-	// TODO: Preview volume?
-	
-	
 	private int hour;
 	private int minute;
 	private TimePicker tp;
-	
+
 	public TimepickerPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
@@ -61,11 +58,9 @@ public class TimepickerPreference extends DialogPreference {
 			hour = tp.getCurrentHour();
 			minute = tp.getCurrentMinute();
 		}
-		
-		String time = (hour < 10 ? "0" : "") + hour + ":"
-				+ (minute < 10 ? "0" : "") + minute;
-		
-		
+
+		String time = StringUtils.joinTime( this.hour, this.minute );
+
 		if (positiveResult && callChangeListener(time)) {
 			persistString(time);
         }
@@ -91,5 +86,9 @@ public class TimepickerPreference extends DialogPreference {
 	 */
 	public int getMinute() {
 		return minute;
+	}
+
+	public void show() {
+		this.showDialog( null );
 	}
 }

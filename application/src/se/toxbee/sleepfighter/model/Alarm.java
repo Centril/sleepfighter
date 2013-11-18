@@ -19,26 +19,23 @@
 package se.toxbee.sleepfighter.model;
 
 import java.util.Arrays;
-import java.util.Map;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
-import org.joda.time.MutableDateTime;
-import org.joda.time.ReadableDateTime;
 
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
 import se.toxbee.sleepfighter.model.audio.AudioSourceType;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.CountdownTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
+import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.provider.Settings;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -60,7 +57,9 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @since Sep 19, 2013
 	 */
 	public static enum Field {
-		TIME, ACTIVATED, ENABLED_DAYS, NAME, ID, REPEATING, AUDIO_SOURCE, AUDIO_CONFIG, SPEECH, FLASH
+		ID, NAME,
+		TIME, REPEATING, ACTIVATED, ENABLED_DAYS,
+		AUDIO_SOURCE, AUDIO_CONFIG, SPEECH, FLASH
 	}
 
 	/* --------------------------------
@@ -185,7 +184,14 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	/* --------------------------------
-	 * Fields.
+	 * Fields: Bus.
+	 * --------------------------------
+	 */
+
+	private MessageBus<Message> bus;
+
+	/* --------------------------------
+	 * Fields: Meta.
 	 * --------------------------------
 	 */
 
@@ -196,64 +202,71 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	public static final int NOT_COMMITTED_ID = -1;
 
 	@DatabaseField
-	private boolean isActivated;
+	private String name = UNNAMED;
 
 	@DatabaseField
-	private String name;
+	private int unnamedPlacement;
 
 	/** The value for unnamed strings is {@value #UNNAMED} */
 	public static final String UNNAMED = null;
 
-	@DatabaseField
-	private int hour;
-
-	@DatabaseField
-	private int minute;
-
-	@DatabaseField
-	private int second;
-
-	/** The weekdays that this alarm can ring. */
-	@DatabaseField(width = 7)
-	private boolean[] enabledDays = { true, true, true, true, true, true, true };
-	private static final int MAX_WEEK_LENGTH = DateTimeConstants.DAYS_PER_WEEK;
-	private static final int MAX_WEEK_INDEX = MAX_WEEK_LENGTH - 1;
-
-	@DatabaseField
-	private int unnamedPlacement;
-	
-	@DatabaseField
-	private boolean isRepeating = false;
-	
-	@DatabaseField
-	private boolean isFlash = false;
-	
 	// whether this alarm is the preset alarm(the default alarm)
 	@DatabaseField
 	private boolean isPresetAlarm = false;
-	
-	@DatabaseField(foreign = true, canBeNull = true)
-	private AudioSource audioSource = new AudioSource(AudioSourceType.RINGTONE,
-			Settings.System.DEFAULT_ALARM_ALERT_URI.toString());
 
-	@DatabaseField(foreign = true, canBeNull = false)
-	private AudioConfig audioConfig = new AudioConfig(100, true);
+	/* --------------------------------
+	 * Fields: Scheduling.
+	 * --------------------------------
+	 */
 
-	@DatabaseField(foreign = true, canBeNull = false)
-	private SnoozeConfig snoozeConfig = new SnoozeConfig(true, 9);
-
-	
-	@DatabaseField
-	// the time and weather will be read out when the alarm goes off. 
-	private boolean isSpeech = false;
-	
 	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
-	@DatabaseField(foreign = true, canBeNull = false)
-	private ChallengeConfigSet challenges = new ChallengeConfigSet(true);
+	@DatabaseField
+	private boolean isActivated;
 
-	private MessageBus<Message> bus;
+	@DatabaseField(canBeNull = false)
+	private ExactTime time;
+
+	@DatabaseField
+	private boolean isRepeating;
+
+	/** The weekdays that this alarm can ring. */
+	@DatabaseField(width = 7)
+	private boolean[] enabledDays = PrimitiveArrays.filled( true, 7 );
+
+	@DatabaseField
+	private CountdownTime countdownTime;
+
+	@DatabaseField(foreign = true, canBeNull = false)
+	private SnoozeConfig snoozeConfig = new SnoozeConfig( true, 9 );
+
+	/* --------------------------------
+	 * Fields: Audio.
+	 * --------------------------------
+	 */
+
+	@DatabaseField(foreign = true, canBeNull = true)
+	private AudioSource audioSource = new AudioSource( AudioSourceType.RINGTONE,
+			Settings.System.DEFAULT_ALARM_ALERT_URI.toString() );
+
+	@DatabaseField(foreign = true, canBeNull = false)
+	private AudioConfig audioConfig = new AudioConfig( 100, true );
+
+	// the time and weather will be read out when the alarm goes off. 
+	@DatabaseField
+	private boolean isSpeech = false;
+
+	/* --------------------------------
+	 * Fields: Extras.
+	 * --------------------------------
+	 */
+
+	@DatabaseField
+	private boolean isFlash = false;
+
+	@DatabaseField(foreign = true, canBeNull = false)
+	private ChallengeConfigSet challenges = new ChallengeConfigSet( true );
 
 	/* --------------------------------
 	 * Constructors.
@@ -261,10 +274,9 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 */
 
 	/**
-	 * Constructs an alarm to current time.
+	 * Default constructor, does nothing.
 	 */
 	public Alarm() {
-		this( new DateTime() );
 	}
 
 	/**
@@ -273,23 +285,26 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @param rhs the alarm to copy from.
 	 */
 	public Alarm( Alarm rhs ) {
+		// Set dependencies.
+		this.bus = rhs.bus;
+
 		// Reset id.
 		this.setId( NOT_COMMITTED_ID );
 
-		// Copy data.
-		this.hour = rhs.hour;
-		this.minute = rhs.minute;
-		this.second = rhs.second;
-		this.isActivated = rhs.isActivated;
-		this.enabledDays = rhs.enabledDays;
-		this.name = rhs.name;
-		this.isRepeating = rhs.isRepeating;
-
+		// Reset placement.
 		this.unnamedPlacement = 0;
 
-		// Copy dependencies.
-		this.bus = rhs.bus;
-		
+		// More meta stuff.
+		this.name = rhs.name;
+
+		// Copy schedule related.
+		this.isActivated = rhs.isActivated;
+		this.enabledDays = rhs.enabledDays.clone();
+		this.isRepeating = rhs.isRepeating;
+		this.time = new ExactTime( rhs.time );
+		this.countdownTime = CountdownTime.copy( rhs.countdownTime );
+
+		// Copy owned objects.
 		this.audioSource = new AudioSource( rhs.audioSource );
 		this.audioConfig = new AudioConfig( rhs.audioConfig );
 		this.snoozeConfig = new SnoozeConfig( rhs.snoozeConfig );
@@ -298,75 +313,30 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		
 		this.isSpeech = rhs.isSpeech;
 		this.isFlash = rhs.isFlash;
-		
-	}
-
-	/**
-	 *  Constructs an alarm given an hour and minute.
-	 * 
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 */
-	public Alarm(int hour, int minute) {
-		this(hour, minute, 0);
-	}
-
-	/**
-	 *  Constructs an alarm given an hour, minute and, second.
-	 * 
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 * @param second the second the alarm should occur.
-	 */
-	public Alarm(int hour, int minute, int second) {
-		this.setTime(hour, minute, second);
-	}
-
-	/**
-	 * Constructs an alarm with values derived from a unix epoch timestamp.
-	 *
-	 * @param time time in unix epoch timestamp.
-	 */
-	public Alarm(long time) {
-		this.setTime(time);
-	}
-
-	/**
-	 * Sets the hour, minute and second of this alarm derived from a {@link ReadableDateTime} object.
-	 * 
-	 * @param time a {@link ReadableDateTime} object. 
-	 */
-	public Alarm(ReadableDateTime time) {
-		this.setTime(time);
 	}
 
 	/* --------------------------------
-	 * Public methods.
+	 * Bus related fields.
 	 * --------------------------------
 	 */
 
-	/**
-	 * Sets the message bus, if not set, no events will be received.
-	 *
-	 * @param bus the buss that receives events.
-	 */
 	public void setMessageBus( MessageBus<Message> bus ) {
 		this.bus = bus;
 
 		// Pass it on!
 		this.challenges.setMessageBus( bus );
-		this.audioConfig.setMessageBus(bus);
-		this.snoozeConfig.setMessageBus(bus);
+		this.audioConfig.setMessageBus( bus );
+		this.snoozeConfig.setMessageBus( bus );
 	}
 
-	/**
-	 * Returns the message bus, or null if not set.
-	 *
-	 * @return the message bus.
-	 */
 	public MessageBus<Message> getMessageBus() {
 		return this.bus;
 	}
+
+	/* --------------------------------
+	 * Public methods: Meta.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Returns the ID of the alarm.
@@ -391,6 +361,38 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		int old = this.id;
 		this.id = id;
 		this.publish( new MetaChangeEvent( this, Field.ID, old ) );
+	}
+
+	/**
+	 * <p><code>{@link Alarm#hashCode()} == {@link Alarm#getId()}</code></p>
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		return this.id;
+	}
+
+	/**
+	 * <p>Two alarms are considered equal iff <code>{@link Alarm#hashCode()} == {@link Alarm#getId()}</code></p>
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		return this == obj || obj != null && this.getClass() == obj.getClass() && this.id == ((Alarm) obj).id;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper( this )
+			.add( "id", this.getId() )
+			.add( "name", this.getName() )
+			.add( "time", this.getTime() )
+			.add( "weekdays", Arrays.toString( this.enabledDays ) )
+			.add( "activated", this.isActivated() )
+			.add( "repeating", this.isRepeating() )
+			.add( "audio_source", this.getAudioSource() )
+			.add( "audio_config", this.getAudioConfig() )
+			.toString();
 	}
 
 	/**
@@ -424,208 +426,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		this.name = name;
 		this.unnamedPlacement = 0;
 		this.publish( new MetaChangeEvent( this, Field.NAME, old ) );
-	}
-
-	/**
-	 * Sets the hour and minute of this alarm.<br/>
-	 * This is the equivalent of {@link #setTime(int, int, int)} with <code>(hour, minute, 0)</code>.
-	 *
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 */
-	public synchronized void setTime(int hour, int minute) {
-		this.setTime( hour, minute, 0 );
-	}
-
-	/**
-	 * Sets the hour, minute and second of this alarm.
-	 *
-	 * @param hour the hour the alarm should occur.
-	 * @param minute the minute the alarm should occur.
-	 * @param second the second the alarm should occur.
-	 */
-	public synchronized void setTime( int hour, int minute, int second ) {
-		if ( this.hour == hour && this.minute == minute && this.second == second ) {
-			return;
-		}
-
-		if (hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59 ) {
-			throw new IllegalArgumentException();
-		}
-
-		int[] old = new int[] { this.hour, this.minute, this.second };
-
-		this.hour = hour;
-		this.minute = minute;
-		this.second = second;
-
-		this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
-	}
-
-	/**
-	 * Sets the hour, minute and second of this alarm derived from a unix epoch timestamp.
-	 *
-	 * @param time time in unix epoch timestamp.
-	 */
-	public synchronized void setTime( long time ) {
-		this.setTime( new DateTime(time) );
-	}
-
-	/**
-	 * Sets the hour, minute and second of this alarm derived from a {@link ReadableDateTime} object.
-	 *
-	 * @param time a {@link ReadableDateTime} object.
-	 */
-	public synchronized void setTime( ReadableDateTime time ) {
-		this.setTime( time.getHourOfDay(), time.getMinuteOfHour(), time.getSecondOfMinute() );
-	}
-
-	/**
-	 * Returns the weekdays days this alarm is enabled for.<br/>
-	 * For performance, a direct reference is returned.
-	 *
-	 * @return the weekdays alarm is enabled for.
-	 */
-	public synchronized boolean[] getEnabledDays() {
-		return this.enabledDays.clone();
-	}
-
-	/**
-	 * Sets the weekdays this alarm is enabled for.<br/>
-	 * For performance, the passed value is not cloned.
-	 *
-	 * @param enabledDays the weekdays alarm should be enabled for.
-	 */
-	public synchronized void setEnabledDays( boolean[] enabledDays ) {
-		Preconditions.checkNotNull( enabledDays );
-
-		if ( enabledDays.length != MAX_WEEK_LENGTH ) {
-			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
-		}
-
-		boolean[] old = this.enabledDays;
-		this.enabledDays = enabledDays.clone();
-		this.publish( new ScheduleChangeEvent( this, Field.ENABLED_DAYS, old ) );
-	}
-
-	/**
-	 * Returns when this alarm will ring.<br/>
-	 * If {@link #canHappen()} returns false, -1 will be returned.
-	 *
-	 * @param now the current time in unix epoch timestamp.
-	 * @return the time in unix epoch timestamp when alarm will next ring.
-	 */
-	public synchronized Long getNextMillis(long now) {
-		if ( !this.canHappen() ) {
-			return NEXT_NON_REAL;
-		}
-
-		MutableDateTime next = new MutableDateTime(now);
-		next.setHourOfDay( this.hour );
-		next.setMinuteOfHour( this.minute );
-		next.setSecondOfMinute( this.second );
-
-		// Check if alarm was earlier today. If so, move to next day
-		if ( next.isBefore( now ) ) {
-			next.addDays( 1 );
-		}
-		// Offset for weekdays
-		int offset = 0;
-		
-		// first weekday to check (0-6), getDayOfWeek returns (1-7)
-		int weekday = next.getDayOfWeek() - 1;
-
-		// Find the weekday the alarm should run, should at most run seven times
-		for (int i = 0; i < 7; i++) {
-			// Wrap to first weekday
-			if (weekday > MAX_WEEK_INDEX) {
-				weekday = 0;
-			}
-			if (this.enabledDays[weekday]) {
-				// We've found the closest day the alarm is enabled for
-				offset = i;
-				break;
-			}
-			weekday++;
-			offset++;
-		}
-
-		if ( offset > 0 ) {
-			next.addDays( offset );
-		}
-
-		return next.getMillis();
-	}
-
-	/**
-	 * Returns true if the alarm can ring in the future,<br/>
-	 * that is: if {@link #isActivated()} and some weekday is enabled.
-	 *
-	 * @return true if the alarm can ring in the future.
-	 */
-	public synchronized boolean canHappen() {
-		if ( !this.isActivated() ) {
-			return false;
-		}
-
-		for ( boolean day : this.enabledDays ) {
-			if ( day == true ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Returns the hour the alarm occurs.
-	 *
-	 * @return the hour the alarm occurs.
-	 */
-	public int getHour() {
-		return this.hour;
-	}
-
-	/**
-	 * Returns the minute the alarm occurs.
-	 *
-	 * @return the minute the alarm occurs.
-	 */
-	public int getMinute() {
-		return this.minute;
-	}
-
-	/**
-	 * Returns the second the alarm occurs.
-	 *
-	 * @return the second the alarm occurs.
-	 */
-	public int getSecond() {
-		return this.second;
-	}
-
-	/**
-	 * Sets whether or not the alarm should be active.
-	 *
-	 * @param isActivated whether or not the alarm should be active.
-	 */
-	public void setActivated(boolean isActivated) {
-		if ( this.isActivated == isActivated ) {
-			return;
-		}
-
-		boolean old = this.isActivated;
-		this.isActivated = isActivated;
-		this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, old ) );
-	}
-
-	/**
-	 * Returns true if the alarm is active.
-	 *
-	 * @return true if the alarm is active.
-	 */
-	public boolean isActivated() {
-		return this.isActivated;
 	}
 
 	/**
@@ -670,55 +470,179 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		this.unnamedPlacement = placement;
 	}
 
-	@Override
-	public String toString() {
-		final Map<String, String> prop = Maps.newHashMap();
-		prop.put( "id", Integer.toString( this.getId() ) );
-		prop.put( "name", this.getName() );
-		prop.put( "time", StringUtils.joinTime( this.hour, this.minute, this.second ) );
-		prop.put( "weekdays", Arrays.toString( this.enabledDays ) );
-		prop.put( "activated", Boolean.toString( this.isActivated() ) );
-		prop.put( "repeating", Boolean.toString( this.isRepeating() ) );
-		prop.put( "audio_source", this.getAudioSource() == null ? null : this.getAudioSource().toString() );
-		prop.put( "audio_config", this.getAudioConfig().toString() );
-
-		return "Alarm[" + StringUtils.PROPERTY_MAP_JOINER.join( prop ) + "]";
-	}
-
 	/**
-	 * Returns the Alarm:s time in the format: hh:mm.
+	 * Sets whether or not this is a preset alarm.
 	 *
-	 * @return the formatted time.
+	 * @param isPresetAlarm true if it is a preset alarm, otherwise false.
 	 */
-	public String getTimeString() {
-		return StringUtils.joinTime( this.getHour(), this.getMinute() );
+	public void setIsPresetAlarm( boolean isPresetAlarm ) {
+		this.isPresetAlarm = isPresetAlarm;
 	}
 
 	/**
-	 * <p><code>{@link Alarm#hashCode()} == {@link Alarm#getId()}</code></p>
-	 * {@inheritDoc}
+	 * Returns whether or not this is a preset alarm.
+	 *
+	 * @return true if it is a preset alarm, otherwise false.
 	 */
-	@Override
-	public int hashCode() {
-		return this.id;
+	public boolean isPresetAlarm() {
+		return this.isPresetAlarm;
+	}
+
+	/* --------------------------------
+	 * Public methods: Scheduling.
+	 * --------------------------------
+	 */
+
+	/**
+	 * Should be called when an alarm has been issued.<br/>
+	 * This may only be called when {@link #isActivated()} yields true.<br/>
+	 * This forces out a {@link ScheduleChangeEvent} no matter what.
+	 */
+	public void issued() {
+		if ( !this.isActivated() ) {
+			throw new IllegalStateException( "An inactive alarm can't be issued." );
+		}
+
+		// Temporarily remove bus, don't send out excess events.
+		MessageBus<Message> bus = this.bus;
+		this.bus = null;
+
+		if ( !this.isRepeating() ) {
+			this.setActivated( false );
+		}
+
+		// Pretend like the alarms scheduling was altered even tho it might not have been.
+		this.bus = bus;
+		this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, !this.isActivated() ) );
 	}
 
 	/**
-	 * <p>Two alarms are considered equal iff <code>{@link Alarm#hashCode()} == {@link Alarm#getId()}</code></p>
-	 * {@inheritDoc}
+	 * Returns when this alarm will ring.<br/>
+	 * If {@link #canHappen()} returns false, -1 will be returned.
+	 *
+	 * @param now the current time in unix epoch timestamp.
+	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
+	public synchronized Long getNextMillis( long now ) {
+		return this.canHappen() ? Long.valueOf( this.getTime().scheduledTimestamp( now, this.enabledDays ) ) : NEXT_NON_REAL;
+	}
+
+	/**
+	 * Returns true if the alarm can ring in the future,<br/>
+	 * that is: if {@link #isActivated()} and some weekday is enabled.
+	 *
+	 * @return true if the alarm can ring in the future.
+	 */
+	public synchronized boolean canHappen() {
+		return this.isActivated() && this.getTime().canHappen( this.enabledDays );
+	}
+
+	/**
+	 * Sets whether or not the alarm should be active.
+	 *
+	 * @param isActivated whether or not the alarm should be active.
+	 */
+	public void setActivated( boolean isActivated ) {
+		boolean old = this.isActivated;
+		if ( old != isActivated ) {
+			if ( !isActivated ) {
+				this.resetCountdown();
+			}
+
+			this.isActivated = isActivated;
+			this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, old ) );
+		}
+	}
+
+	/**
+	 * Returns true if the alarm is active.
+	 *
+	 * @return true if the alarm is active.
+	 */
+	public boolean isActivated() {
+		return this.isActivated;
+	}
+
+	/**
+	 * Returns the currently active time of the alarm<br/>
+	 * (not timestamp, see {@link #getNextMillis(long)} for that...).
+	 *
+	 * @return the time.
+	 */
+	public AlarmTime getTime() {
+		return this.isCountdown() ? this.countdownTime : this.time;
+	}
+
+	/**
+	 * <p>Sets the time to the given time.<br/>
+	 * For performance, the passed value is not cloned.</p>
+	 *
+	 * <p>Whether the exact time or the countdown time<br/>
+	 * is modified  depends on the type of time.</p>
+	 *
+	 * @param time the time to set alarm to.
+	 */
+	public synchronized void setTime( AlarmTime time ) {
+		if ( time instanceof ExactTime ) {
+			this.setExactTime( (ExactTime) time );
+		} else if ( time instanceof CountdownTime ) {
+			this.setCountdownTime( (CountdownTime) time );
+		} else {
+			throw new AssertionError();
+		}
+	}
+
+	/**
+	 * Resets the countdown time, {@link #isCountdown()} will be false after this.
+	 */
+	public synchronized void resetCountdown() {
+		this.setCountdownTime( null );
+	}
+
+	private void setExactTime( ExactTime time ) {
+		this.countdownTime = null;
+
+		ExactTime old = this.time;
+		if ( !Objects.equal( old, time ) ) {
+			this.time = time;
+			this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
+		}
+	}
+
+	private void setCountdownTime( CountdownTime time ) {
+		CountdownTime old = this.countdownTime;
+		if ( !Objects.equal( old, time ) ) {
+			this.countdownTime = time;
+			this.isActivated = true;
+			this.publish( new ScheduleChangeEvent( this, Field.TIME, old ) );
+		}
+	}
+
+	/**
+	 * Returns the weekdays days this alarm is enabled for.<br/>
+	 * For performance, a direct reference is returned.
+	 *
+	 * @return the weekdays alarm is enabled for.
+	 */
+	public synchronized boolean[] getEnabledDays() {
+		return this.enabledDays.clone();
+	}
+
+	/**
+	 * Sets the weekdays this alarm is enabled for.
+	 *
+	 * @param enabledDays the weekdays alarm should be enabled for.
+	 */
+	public synchronized void setEnabledDays( boolean[] enabledDays ) {
+		Preconditions.checkNotNull( enabledDays );
+
+		if ( enabledDays.length != ExactTime.MAX_WEEK_LENGTH ) {
+			throw new IllegalArgumentException( "A week has 7 days, but an array with: " + enabledDays.length + " was passed" );
 		}
 
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-
-		Alarm rhs = (Alarm) obj;
-		return this.id == rhs.id;
+		boolean[] old = this.enabledDays;
+		this.enabledDays = enabledDays.clone();
+		this.publish( new ScheduleChangeEvent( this, Field.ENABLED_DAYS, old ) );
 	}
 
 	/**
@@ -726,14 +650,12 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 *
 	 * @param isRepeating true if it is repeating.
 	 */
-	public void setRepeat(boolean isRepeating) {
-		if ( this.isRepeating == isRepeating ) {
-			return;
-		}
-	
+	public void setRepeat( boolean isRepeating ) {
 		boolean old = this.isRepeating;
-		this.isRepeating = isRepeating;
-		this.publish( new ScheduleChangeEvent( this, Field.REPEATING, old ) );
+		if ( old != isRepeating ) {
+			this.isRepeating = old;
+			this.publish( new ScheduleChangeEvent( this, Field.REPEATING, old ) );
+		}
 	}
 
 	/**
@@ -744,46 +666,29 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	public boolean isRepeating() {
 		return this.isRepeating;
 	}
-	
+
 	/**
-	 * Sets if the alarm is flashing or not.
+	 * Returns whether or not this alarm is counting down or not.
 	 *
-	 * @param isFlash true if it is flashing.
+	 * @return true if it is counting down.
 	 */
-	public void setFlash(boolean isFlash) {
-		if ( this.isFlash == isFlash ) {
-			return;
-		}
-		
-		boolean old = this.isFlash;
-		this.isFlash = isFlash;
-		this.publish( new BaseAlarmEvent( this, Field.FLASH, old ) );	
+	public boolean isCountdown() {
+		return this.countdownTime != null;
 	}
-	
+
 	/**
-	 * Returns whether or not this alarm is flashing or not.
-	 *
-	 * @return true if it is flashing.
+	 * Returns the snooze configuration for the alarm.
+	 * 
+	 * @return the snooze configuration
 	 */
-	public boolean isFlashEnabled(){
-		return this.isFlash;
+	public SnoozeConfig getSnoozeConfig() {
+		return this.snoozeConfig;
 	}
-	
-	
-	// if true, then the time and weather will be read out when the alarm goes off.
-	public boolean isSpeech() {
-		return this.isSpeech;
-	}
-	
-	public void setSpeech(boolean isSpeech) {
-		if ( this.isSpeech == isSpeech ) {
-			return;
-		}
-	
-		boolean old = this.isSpeech;
-		this.isSpeech = isSpeech;
-		this.publish( new BaseAlarmEvent( this, Field.SPEECH, old ) );	
-	}
+
+	/* --------------------------------
+	 * Public methods: Audio.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Sets the audio source for this alarm.
@@ -819,12 +724,57 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	}
 
 	/**
-	 * Returns the snooze configuration for the alarm.
-	 * 
-	 * @return the snooze configuration
+	 * Returns whether or not speech is enabled.<br/>
+	 * If true, then the time and weather will be read out when the alarm goes off.
+	 *
+	 * @return true if enabled.
 	 */
-	public SnoozeConfig getSnoozeConfig() {
-		return this.snoozeConfig;
+	public boolean isSpeech() {
+		return this.isSpeech;
+	}
+
+	/**
+	 * Sets whether or not speech is enabled.
+	 *
+	 * @param isSpeech true if enabled.
+	 */
+	public void setSpeech( boolean isSpeech ) {
+		if ( this.isSpeech == isSpeech ) {
+			return;
+		}
+	
+		boolean old = this.isSpeech;
+		this.isSpeech = isSpeech;
+		this.publish( new BaseAlarmEvent( this, Field.SPEECH, old ) );	
+	}
+
+	/* --------------------------------
+	 * Extras related fields.
+	 * --------------------------------
+	 */
+
+	/**
+	 * Sets if the alarm is flashing or not.
+	 *
+	 * @param isFlash true if it is flashing.
+	 */
+	public void setFlash( boolean isFlash ) {
+		if ( this.isFlash == isFlash ) {
+			return;
+		}
+		
+		boolean old = this.isFlash;
+		this.isFlash = isFlash;
+		this.publish( new BaseAlarmEvent( this, Field.FLASH, old ) );	
+	}
+	
+	/**
+	 * Returns whether or not this alarm is flashing or not.
+	 *
+	 * @return true if it is flashing.
+	 */
+	public boolean isFlashEnabled() {
+		return this.isFlash;
 	}
 
 	/**
@@ -896,24 +846,6 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		this.challenges.setMessageBus( this.getMessageBus() );
 	}
 
-	/**
-	 * Sets whether or not this is a preset alarm.
-	 *
-	 * @param isPresetAlarm true if it is a preset alarm, otherwise false.
-	 */
-	public void setIsPresetAlarm(boolean isPresetAlarm) {
-		this.isPresetAlarm = isPresetAlarm;
-	}
-
-	/**
-	 * Returns whether or not this is a preset alarm.
-	 *
-	 * @return true if it is a preset alarm, otherwise false.
-	 */
-	public boolean isPresetAlarm() {
-		return this.isPresetAlarm;
-	}
-
 	/* --------------------------------
 	 * Private Methods.
 	 * --------------------------------
@@ -925,10 +857,8 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @param event the event to publish.
 	 */
 	private void publish( AlarmEvent event ) {
-		if ( this.bus == null ) {
-			return;
+		if ( this.bus != null ) {
+			this.bus.publish( event );
 		}
-
-		this.bus.publish( event );
 	}
 }

@@ -18,8 +18,8 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.helper;
 
-import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.SFApplication;
+import se.toxbee.sleepfighter.model.Alarm;
 import android.app.Activity;
 import android.content.Intent;
 
@@ -70,11 +70,41 @@ public class AlarmIntentHelper {
 
 		return this;
 	}
-	
-	// if we are about to go to the settings for the preset(default) alarm, set this to true.
-	public AlarmIntentHelper setSettingPresetAlarm(final boolean settingPresetAlarm) {
-		this.intent.putExtra( SETTING_PRESET_ALARM,  settingPresetAlarm);
+
+	/**
+	 * Indicate that we want preset alarm.
+	 *
+	 * @param isPreset true if it is the preset alarm.
+	 * @return this.
+	 */
+	public AlarmIntentHelper setSettingPresetAlarm( final boolean isPreset ) {
+		this.intent.putExtra( SETTING_PRESET_ALARM, isPreset );
 		
+		return this;
+	}
+
+	/**
+	 * Returns the intent we're working on.
+	 *
+	 * @return the intent.
+	 */
+	public Intent intent() {
+		return this.intent;
+	}
+
+	/**
+	 * Sets the alarm on intent.
+	 *
+	 * @param alarm an alarm.
+	 * @return this.
+	 */
+	public AlarmIntentHelper setAlarm( Alarm alarm ) {
+		if ( alarm.isPresetAlarm() ) {
+			this.setSettingPresetAlarm( true );
+		} else {
+			this.setAlarmId( alarm );
+		}
+
 		return this;
 	}
 

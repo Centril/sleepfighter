@@ -21,7 +21,9 @@ package se.toxbee.sleepfighter.utils.string;
 import java.io.File;
 import java.util.Locale;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Joiner.MapJoiner;
 import com.google.common.base.Splitter;
@@ -47,6 +49,9 @@ public class StringUtils {
 	public static final Splitter PAIR_DIRECTORY_SPLITTER = DIRECTORY_SPLITTER.limit( 2 );
 
 	public static final MapJoiner PROPERTY_MAP_JOINER = Joiner.on(", ").withKeyValueSeparator(": ").useForNull( "null" );
+
+	/** Joiner for commas. */
+	public static final Joiner COMMA_JOINER = Joiner.on( ',' ).skipNulls();
 
 	/** Joiner for whitespace. */
 	public static final Joiner WS_JOINER = Joiner.on( ' ' ).skipNulls();
@@ -84,7 +89,8 @@ public class StringUtils {
 	}
 
 	/**
-	 * Capitalizes the first letter of a string.
+	 * Capitalizes the first letter of a string.<br/>
+	 * The rest of the letters are lower cased.
 	 *
 	 * @param string the string to capitalize.
 	 * @return the capitalized string.
@@ -99,7 +105,7 @@ public class StringUtils {
 	 * @param value the value string.
 	 * @return natural read number.
 	 */
-	public static Integer readHexString( String value ) {
+	public static int readHexString( String value ) {
 		if ( value.charAt( 0 ) == '#' ) {
 			value = value.substring( 1 );
 		} else if ( value.startsWith( "0x" ) ) {
@@ -119,12 +125,23 @@ public class StringUtils {
 	 * @param parts the time parts to join together.
 	 * @return the time parts joined together.
 	 */
-	public static final String joinTime( Integer... parts ) {
+	public static final String joinTime( int... parts ) {
 		String[] paddedParts = new String[parts.length];
 		for ( int i = 0; i < parts.length; ++i ) {
 			paddedParts[i] = Strings.padStart( Integer.toString( parts[i] ), 2, '0' );
 		}
 
 		return TIME_JOINER.join( paddedParts );
+	}
+
+	/**
+	 * Returns the digits in a given CharSequence as a positive integer.
+	 *
+	 * @param seq the sequence.
+	 * @return the integer, if no digits were found -1 is returned.
+	 */
+	public static final int getDigitsIn( CharSequence seq ) {
+		String s = CharMatcher.JAVA_DIGIT.retainFrom( Preconditions.checkNotNull( seq ) );
+		return seq.length() == 0 ? -1 : Integer.parseInt( s );
 	}
 }

@@ -20,10 +20,12 @@
 
     <string name="title_activity_alarm_settings">Alarm</string>
 
+    <!-- Menu strings -->
+    <string name="menu_set_alarm_time">Set time</string>
+    <string name="menu_set_alarm_countdown">Set countdown</string>
+
     <!-- Strings related to Settings -->
 
-
-    <!-- Example General settings -->
     <string name="pref_alarm_time">Time</string>
     <string name="pref_alarm_name">Name</string>
     <string name="pref_alarm_default_name">Untitled Alarm</string>

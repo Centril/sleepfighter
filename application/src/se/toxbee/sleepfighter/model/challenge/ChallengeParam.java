@@ -20,7 +20,7 @@ package se.toxbee.sleepfighter.model.challenge;
 
 import java.util.Map;
 
-import se.toxbee.sleepfighter.persist.ChallengeParamDao;
+import se.toxbee.sleepfighter.persist.dao.ChallengeParamDao;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 

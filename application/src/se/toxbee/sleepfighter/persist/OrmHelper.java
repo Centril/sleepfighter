@@ -19,8 +19,7 @@
 package se.toxbee.sleepfighter.persist;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
@@ -30,11 +29,14 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeConfig;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeParam;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
+import se.toxbee.sleepfighter.persist.dao.PersistenceException;
+import se.toxbee.sleepfighter.persist.dao.PersistenceExceptionDao;
+import se.toxbee.sleepfighter.persist.migration.MigrationExecutor;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.google.common.collect.Maps;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
@@ -42,7 +44,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 /**
- * Provides an OrmLiteSqliteOpenHelper for application.
+ * Provides an OrmLiteSqliteOpenHelper for persistence layer.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
@@ -53,247 +55,95 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	// IMPORTANT: If you update this, also add the old version to the switch/case
-	private static final int DATABASE_VERSION = 23;
+	private static final int DATABASE_VERSION = 25;
 
-	// Dao for Alarm.
-	private PersistenceExceptionDao<Alarm, Integer> alarmDao = null;
+	// List of all classes that is managed by helper.
+	private static final Class<?>[] CLASSES = new Class<?>[] {
+		Alarm.class,
 
-	// Dao for AudioSource.
-	private PersistenceExceptionDao<AudioSource, Integer> audioSourceDao = null;
+		AudioSource.class,
+		AudioConfig.class,
 
-	// Dao for AudioConfig.
-	private PersistenceExceptionDao<AudioConfig, Integer> audioConfigDao = null;
+		SnoozeConfig.class,
 
-	// Dao for ChallengeConfigSet.
-	private PersistenceExceptionDao<ChallengeConfigSet, Integer> challengeConfigSetDao = null;
+		ChallengeConfigSet.class,
+		ChallengeConfig.class,
+		ChallengeParam.class,
 
-	// Dao for ChallengeConfig.
-	private PersistenceExceptionDao<ChallengeConfig, Integer> challengeConfigDao = null;
+		GPSFilterArea.class
+	};
 
-	// Dao for ChallengeParam.
-	private PersistenceExceptionDao<ChallengeParam, Integer> challengeParamDao = null;
-
-	// Dao for SnoozeConfig.
-	private PersistenceExceptionDao<SnoozeConfig, Integer> snoozeConfigDao = null;
-
-	// Dao for GPSFilterArea.
-	private PersistenceExceptionDao<GPSFilterArea, Integer> gpsFilterAreaDao;
+	private final Map<Class<?>, PersistenceExceptionDao<Class<?>, Integer>> daoMap = Maps.newHashMap();
+	private final Map<Class<?>, DaoInitRunner<?>> daoInitRunners = Maps.newHashMap();
 
 	/**
-	 * Constructs the helper from a given context.
+	 * DaoInitRunner is a method run when a Dao is first initialized.
 	 *
-	 * @param context the context to use.
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Nov 12, 2013
 	 */
-	public OrmHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-		// TODO.
-		//super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
+	public static interface DaoInitRunner<T> {
+		/**
+		 * Called when Dao is initialized.
+		 *
+		 * @param helper the OrmHelper.
+		 * @param daoClazz the Class of the Dao.
+		 * @param dao the Dao itself.
+		 */
+		public <D extends PersistenceExceptionDao<T, Integer>> void daoInit( OrmHelper helper, Class<T> daoClazz, D dao );
 	}
 
 	/**
-	 * Called when database is created (on install of android app).<br/>
-	 * Creates all tables, etc.
-	 */
-	@Override
-	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
-		try {
-			TableUtils.createTable( connectionSource, Alarm.class );
-
-			TableUtils.createTable( connectionSource, AudioSource.class );
-			TableUtils.createTable( connectionSource, AudioConfig.class );
-			TableUtils.createTable(connectionSource, SnoozeConfig.class);
-
-			TableUtils.createTable( connectionSource, ChallengeConfigSet.class );
-			TableUtils.createTable( connectionSource, ChallengeConfig.class );
-			TableUtils.createTable( connectionSource, ChallengeParam.class );
-
-			TableUtils.createTable(connectionSource, GPSFilterArea.class);
-		} catch ( SQLException e ) {
-			Log.e( OrmHelper.class.getName(), "Can't create database", e );
-			throw new PersistenceException( e );
-		}
-	}
-
-	/**
-	 * <p>Called when application is updates from google play or something<br/>
-	 * and this entails a changed model and therefore changed DB structure.</p>
-	 */
-	@Override
-	public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource,
-			int oldVersion, int newVersion) {
-		try {
-			switch(oldVersion) {
-			// Only test on 19 and higher, since that is the Release version
-			case 19:
-			case 20:
-			case 21:
-				this.getAlarmDao().executeRaw("ALTER TABLE 'alarm'" +
-						"ADD COLUMN 'isFlash' BOOLEAN DEFAULT false;");
-			case 22:
-				TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
-				TableUtils.createTable( connectionSource, ChallengeParam.class );
-				// Break after the newest version
-				break;
-			default:
-				// Just drop everything if the version is a pre-release version
-				if (oldVersion < 19) {
-					dropEverything(connectionSource);
-					onCreate(db, connectionSource);
-				}
-				else {
-					throw new RuntimeException("Strange Database Version in OrmHelper." +
-							"Check database version and switch/case.");
-				}
-			}
-		} catch (SQLException e) {
-			Log.e(OrmHelper.class.getName(), "SQL exception during database upgrade", e);
-			throw new PersistenceException(e);
-		}
-	}
-	
-	private void dropEverything(ConnectionSource connectionSource) throws SQLException {
-		TableUtils.dropTable( connectionSource, Alarm.class, true );
-		
-		TableUtils.dropTable( connectionSource, AudioSource.class, true );
-		TableUtils.dropTable( connectionSource, AudioConfig.class, true );
-		TableUtils.dropTable( connectionSource, SnoozeConfig.class, true );
-
-		TableUtils.dropTable( connectionSource, ChallengeConfigSet.class, true );
-		TableUtils.dropTable( connectionSource, ChallengeConfig.class, true );
-		TableUtils.dropTable( connectionSource, ChallengeParam.class, true );
-
-		TableUtils.dropTable(connectionSource, GPSFilterArea.class, true );
-	}
-
-	/**
-	 * Rebuilds all data-structures. Any data is lost.
-	 */
-	public void rebuild() {
-		// Drop all tables.
-		List<String> tables = new ArrayList<String>();
-		Cursor cursor = this.getReadableDatabase().rawQuery("SELECT * FROM sqlite_master WHERE type='table';", null );
-		cursor.moveToFirst();
-		while ( !cursor.isAfterLast() ) {
-			String tableName = cursor.getString( 1 );
-			if ( !tableName.equals( "android_metadata" ) && !tableName.equals( "sqlite_sequence" ) ) {
-				tables.add( tableName );
-			}
-			cursor.moveToNext();
-		}
-		cursor.close();
-
-		SQLiteDatabase db = this.getWritableDatabase();
-		for(String tableName : tables) {
-		    db.execSQL("DROP TABLE IF EXISTS " + tableName);
-		}
-
-		onCreate(db, connectionSource);
-	}
-
-	/**
-	 * Returns DAO for Alarm model.<br/>
-	 * It either creates or returns a cached object.
+	 * CacheEnabler is a DaoInitRunner that simply enables object cache.
 	 *
-	 * @return the DAO for Alarm model.
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Nov 12, 2013
 	 */
-	public PersistenceExceptionDao<Alarm, Integer> getAlarmDao() throws PersistenceException {
-		if ( this.alarmDao == null ) {
-			this.alarmDao = this.getExceptionDao( Alarm.class );
-			this.alarmDao.setObjectCache( true );
+	public class CacheEnabler<T> implements DaoInitRunner<T> {
+		@Override
+		public <D extends PersistenceExceptionDao<T, Integer>> void daoInit( OrmHelper helper, Class<T> daoClazz, D dao ) {
+			dao.setObjectCache( true );
 		}
-		return this.alarmDao;
+	}
+
+	// Initialize DaoInitRunner:s here.
+	{
+		Map<Class<?>, DaoInitRunner<?>> r = this.daoInitRunners;
+		r.put( Alarm.class, new CacheEnabler<Alarm>() );
+	}
+
+	public <D extends PersistenceExceptionDao<T, Integer>, T> D dao( Class<T> clazz ) {
+		@SuppressWarnings( "unchecked" )
+		D dao = (D) this.daoMap.get( clazz );
+
+		if ( dao == null ) {
+			dao = this.getExceptionDao( clazz );
+
+			this.runDaoInit( clazz, dao );
+
+			@SuppressWarnings( "unchecked" )
+			PersistenceExceptionDao<Class<?>, Integer> castDao = (PersistenceExceptionDao<Class<?>, Integer>) dao;
+
+			this.daoMap.put( clazz, castDao );
+		}
+
+		return dao;
 	}
 
 	/**
-	 * Returns DAO for AudioSource model.<br/>
-	 * It either creates or returns a cached object.
+	 * Runs the DaoInitRunner for clazz if any.
 	 *
-	 * @return the DAO for AudioSource model.
+	 * @param clazz the to run for.
+	 * @param dao the dao for the clazz.
 	 */
-	public PersistenceExceptionDao<AudioSource, Integer> getAudioSourceDao() throws PersistenceException {
-		if ( this.audioSourceDao == null ) {
-			this.audioSourceDao = this.getExceptionDao( AudioSource.class );
+	private <D extends PersistenceExceptionDao<T, Integer>, T> void runDaoInit( Class<T> clazz, D dao ) {
+		@SuppressWarnings( "unchecked" )
+		DaoInitRunner<T> onInit = (DaoInitRunner<T>) this.daoInitRunners.get( clazz );
+		if ( onInit != null ) {
+			onInit.daoInit( this, clazz, dao );
 		}
-		return this.audioSourceDao;
-	}
-
-	/**
-	 * Returns DAO for AudioConfig model.<br/>
-	 * It either creates or returns a cached object.
-	 *
-	 * @return the DAO for AudioConfig model.
-	 */
-	public PersistenceExceptionDao<AudioConfig, Integer> getAudioConfigDao() throws PersistenceException {
-		if ( this.audioConfigDao == null ) {
-			this.audioConfigDao = this.getExceptionDao( AudioConfig.class );
-		}
-		return this.audioConfigDao;
-	}
-
-	/**
-	 * Returns DAO for ChallengeConfigSet model.<br/>
-	 * It either creates or returns a cached object.
-	 *
-	 * @return the DAO for ChallengeConfigSet model.
-	 */
-	public PersistenceExceptionDao<ChallengeConfigSet, Integer> getChallengeConfigSetDao() {
-		if ( this.challengeConfigSetDao == null ) {
-			this.challengeConfigSetDao = this.getExceptionDao( ChallengeConfigSet.class );
-		}
-		return this.challengeConfigSetDao;
-	}
-
-	/**
-	 * Returns DAO for ChallengeConfig model.<br/>
-	 * It either creates or returns a cached object.
-	 *
-	 * @return the DAO for ChallengeConfig model.
-	 */
-	public PersistenceExceptionDao<ChallengeConfig, Integer> getChallengeConfigDao() {
-		if ( this.challengeConfigDao == null ) {
-			this.challengeConfigDao = this.getExceptionDao( ChallengeConfig.class );
-		}
-		return this.challengeConfigDao;
-	}
-
-	/**
-	 * Returns DAO for ChallengeParam model.<br/>
-	 * It either creates or returns a cached object.
-	 *
-	 * @return the DAO for ChallengeParam model.
-	 */
-	public PersistenceExceptionDao<ChallengeParam, Integer> getChallengeParamDao() {
-		if ( this.challengeParamDao == null ) {
-			this.challengeParamDao = this.getExceptionDao( ChallengeParam.class );
-		}
-		return this.challengeParamDao;
-	}
-
-	/**
-	 * Returns DAO for SnoozeConfig model.<br/>
-	 * It either creates or returns a cached object.
-	 *
-	 * @return the DAO for SnoozeConfig model.
-	 */
-	public PersistenceExceptionDao<SnoozeConfig, Integer> getSnoozeConfigDao() {
-		if (this.snoozeConfigDao == null) {
-			this.snoozeConfigDao = this.getExceptionDao(SnoozeConfig.class);
-		}
-		return this.snoozeConfigDao;
-	}
-
-	/**
-	 * Returns DAO for GPSFilterArea model.<br/>
-	 * It either creates or returns a cached object.
-	 *
-	 * @return the DAO for GPSFilterArea model.
-	 */
-	public PersistenceExceptionDao<GPSFilterArea, Integer> getGPSFilterAreaDao() {
-		if (this.gpsFilterAreaDao == null) {
-			this.gpsFilterAreaDao = this.getExceptionDao(GPSFilterArea.class);
-		}
-		return this.gpsFilterAreaDao;
 	}
 
 	/**
@@ -301,7 +151,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 *
 	 * @param clazz the class object to get Dao for.
 	 */
-	public <D extends PersistenceExceptionDao<T, ?>, T> D getExceptionDao(Class<T> clazz) {
+	private <D extends PersistenceExceptionDao<T, ?>, T> D getExceptionDao(Class<T> clazz) {
 		try {
 			Dao<T, ?> dao = getDao(clazz);
 			@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -313,12 +163,157 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	}
 
 	/**
+	 * Constructs the helper from a given context.
+	 *
+	 * @param context the context to use.
+	 */
+	public OrmHelper( Context context ) {
+		super( context, DATABASE_NAME, null, DATABASE_VERSION );
+	}
+
+	/**
+	 * Called when database is created (on install of android app).<br/>
+	 * Creates all tables, etc.
+	 */
+	@Override
+	public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
+		try {
+			for ( Class<?> clazz : CLASSES ) {
+				TableUtils.createTable( connectionSource, clazz );
+			}
+		} catch ( SQLException e ) {
+			Log.e( OrmHelper.class.getName(), "Fatal error: Couldn't create database." );
+			throw new PersistenceException( e );
+		}
+	}
+
+	/**
+	 * <p>Called when application is updates from google play or something<br/>
+	 * and this entails a changed model and therefore changed DB structure.</p>
+	 */
+	@Override
+	public void onUpgrade(SQLiteDatabase db, ConnectionSource cs, int oldVersion, int newVersion) {
+		if ( oldVersion == newVersion ) {
+			return;
+		}
+
+		// Execute the migration.
+		MigrationExecutor mig = new MigrationExecutor();
+		boolean success = mig.execute( cs, db, oldVersion, newVersion );
+
+		// Rebuild on failure.
+		if ( !success ) {
+			Log.e( OrmHelper.class.getName(), "Fatal error: Couldn't upgrade database." );
+			this.rebuild();
+		}
+
+		// Nuke caches.
+		this.nukeCache();
+	}
+
+	/**
+	 * Returns a Dao which you can run raw statements on.
+	 *
+	 * @return the Dao.
+	 */
+	public PersistenceExceptionDao<?, Integer> rawDao() {
+		return this.dao( Alarm.class );
+	}
+
+	/**
+	 * Drops all DB tables for clazzes.
+	 *
+	 * @param clazzes the classes to drop tables for.
+	 * @return this.
+	 */
+	public OrmHelper drop( Class<?>[] clazzes ) {
+		try {
+			for ( Class<?> clazz : clazzes ) {
+				TableUtils.dropTable( this.getConnectionSource(), clazz, true );
+			}
+		} catch ( SQLException e ) {
+			Log.e( OrmHelper.class.getName(), "Can't drop databases", e );
+			throw new PersistenceException( e );
+		}
+		return this;
+	}
+
+	/**
+	 * Clears all DB tables for clazzes.
+	 *
+	 * @param clazzes the classes to clear tables for.
+	 * @return this.
+	 */
+	public OrmHelper clear( Class<?>[] clazzes ) {
+		try {
+			for ( Class<?> clazz : clazzes ) {
+				TableUtils.clearTable( this.getConnectionSource(), clazz );
+			}
+		} catch ( SQLException e ) {
+			Log.e( OrmHelper.class.getName(), "Can't drop databases", e );
+			throw new PersistenceException( e );
+		}
+		return this;
+	}
+
+	/**
+	 * Drops a DB table for given clazz.
+	 *
+	 * @param clazz the class to drop table for.
+	 * @return this.
+	 */
+	public OrmHelper drop( Class<?> clazz ) {
+		try {
+			TableUtils.dropTable( this.getConnectionSource(), clazz, true );
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
+
+		return this;
+	}
+
+	/**
+	 * Clears a DB table for given clazz.
+	 *
+	 * @param clazz the class to clear table for.
+	 * @return this.
+	 */
+	public OrmHelper clear( Class<?> clazz ) {
+		try {
+			TableUtils.clearTable( this.getConnectionSource(), clazz );
+		} catch ( SQLException e ) {
+			throw new PersistenceException( e );
+		}
+
+		return this;
+	}
+
+	/**
+	 * Rebuilds database. Any data is lost.
+	 */
+	public void rebuild() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		this.drop( CLASSES );
+		this.onCreate( db, this.getConnectionSource() );
+	}
+
+	/**
 	 * Closes the database connections and clear any cached DAOs.
 	 */
 	@Override
 	public void close() {
 		super.close();
+		this.nukeCache();
+	}
 
-		this.alarmDao = null;
+	/**
+	 * Nukes the cache if any (Dao + Object.
+	 */
+	private void nukeCache() {
+		// Get rid of reference.
+		this.daoMap.clear();
+
+		// Clear all caches (Dao + Object).
+		DaoManager.clearCache();
 	}
 }

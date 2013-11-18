@@ -18,10 +18,11 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter;
 
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
+import se.toxbee.sleepfighter.android.utils.ActivityUtils;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.factory.FromPresetAlarmFactory;
@@ -31,33 +32,30 @@ import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.persist.PersistenceManager;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
-import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
 import android.speech.tts.TextToSpeech;
-import android.view.ViewConfiguration;
 
 /**
  * A custom implementation of Application for SleepFighter.
  */
 public class SFApplication extends Application implements TextToSpeech.OnInitListener {
 	private static final boolean CLEAN_START = false;
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 	private static SFApplication app;
 
+	// State that is is initialized in onCreate:
+	private MessageBus<Message> bus;
+	private PersistenceManager persistenceManager;
 	private GlobalPreferencesManager prefs;
+	private TextToSpeech tts;
 
 	private AlarmList alarmList;
 	private Alarm ringingAlarm;
-	private MessageBus<Message> bus;
-
-	private PersistenceManager persistenceManager;
-
-	private AlarmPlannerService.ChangeHandler alarmPlanner;
 
 	private AudioDriver audioDriver;
 	private AudioDriverFactory audioDriverFactory;
@@ -65,10 +63,6 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	private FromPresetAlarmFactory fromPresetFactory;
 
 	private GPSFilterAreaSet gpsAreaManaged;
-	
-	//private String weather;
-	
-	private TextToSpeech tts;
 
 	// called when the text to speech engine is initialized. 
 	@Override
@@ -77,21 +71,19 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
 		TextToSpeechUtil.config(tts);
 	}
-	
-	
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		app = this;
 
-		tts = new TextToSpeech(this, this);
+		this.initPersister();
+
+		this.tts = new TextToSpeech(this, this);
 		
 		this.prefs = new GlobalPreferencesManager( this );
 
-		this.persistenceManager = new PersistenceManager( this );
-		this.getBus().subscribe( this.persistenceManager );
-
-		forceActionBarOverflow();
+		ActivityUtils.forceActionBarOverflow( this );
 	}
 
 	/**
@@ -104,27 +96,21 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	}
 
 	/**
-	 * Show the triple-dot action bar overflow icon even on devices with a
-	 * dedicated menu button.
-	 * 
-	 * <p>
-	 * Solution from stackoverflow post found 
-	 * <a href="http://stackoverflow.com/questions/9286822/
-	 * how-to-force-use-of-overflow-menu-on-devices-with-menu-button/
-	 * 11438245#11438245">here</a>.
-	 * </p>
+	 * Returns the current time in milliseconds.
+	 *
+	 * @return now.
 	 */
-	private void forceActionBarOverflow() {
-	    try {
-	        ViewConfiguration config = ViewConfiguration.get(this);
-	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-	        if(menuKeyField != null) {
-	            menuKeyField.setAccessible(true);
-	            menuKeyField.setBoolean(config, false);
-	        }
-	    } catch (Exception ex) {
-	        // Ignore
-	    }
+	public long now() {
+		return System.currentTimeMillis();
+	}
+
+	/**
+	 * Returns the currently used locale.
+	 *
+	 * @return the locale.
+	 */
+	public Locale locale() {
+		return Locale.getDefault();
 	}
 
 	/**
@@ -190,25 +176,14 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 */
 	public synchronized AlarmList getAlarms() {
 		if ( this.alarmList == null ) {
-			if ( CLEAN_START ) {
-				this.persistenceManager.cleanStart();
-			}
-
 			List<Alarm> alarms = this.getPersister().fetchAlarms();
 			this.filterPresetAlarm( alarms );
 
 			this.alarmList = new AlarmList( alarms );
-			this.alarmList.setMessageBus(this.getBus());
-
-			this.registerAlarmPlanner();
+			this.alarmList.setMessageBus( this.getBus() );
 		}
 
 		return alarmList;
-	}
-
-	private void registerAlarmPlanner() {
-		this.alarmPlanner = new AlarmPlannerService.ChangeHandler( this, this.alarmList );
-		this.bus.subscribe( this.alarmPlanner );
 	}
 
 	/**
@@ -230,6 +205,19 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 */
 	public synchronized PersistenceManager getPersister() {
 		return this.persistenceManager;
+	}
+
+	/**
+	 * Initializes the persister.
+	 */
+	private void initPersister() {
+		this.persistenceManager = new PersistenceManager( this );
+
+		this.getBus().subscribe( this.persistenceManager );
+
+		if ( CLEAN_START ) {
+			this.persistenceManager.cleanStart();
+		}
 	}
 
 	/**
@@ -290,8 +278,12 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	public synchronized void releaseGPSSet() {
 		this.gpsAreaManaged = null;
 	}
-	
-	
+
+	/**
+	 * Returns the TextToSpeech engine.
+	 *
+	 * @return the TTS engine.
+	 */
 	public TextToSpeech getTts() {
 		return this.tts;
 	}

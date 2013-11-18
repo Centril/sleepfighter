@@ -32,7 +32,6 @@ import se.toxbee.sleepfighter.audio.VibrationManager;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.NotificationHelper;
 import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
@@ -97,6 +96,25 @@ public class AlarmActivity extends Activity {
 	private boolean turnScreenOn = true;
 	private boolean bypassLockscreen = true;
 
+	/**
+	 * Enforces that no alarm is currently ringing,<br/>
+	 * If one is, AlarmActivity is immediately started<br/>
+	 * and the passed activity is finished.
+	 *
+	 * @param activity the activity to finish if needed.
+	 */
+	public static void startIfRinging( Activity activity ) {
+		SFApplication app = SFApplication.get();
+
+		// Check if an alarm is ringing, if so, send the user to AlarmActivity
+		Alarm ringingAlarm = app.getRingingAlarm();
+		if ( ringingAlarm != null ) {
+			Intent i = new Intent( app, AlarmActivity.class );
+			activity.startActivity( new AlarmIntentHelper( i ).setAlarmId( ringingAlarm ).intent() );
+			activity.finish();
+		}
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -104,11 +122,9 @@ public class AlarmActivity extends Activity {
 		// Turn and/or keep screen on.
 		this.setScreenFlags();
 		this.setContentView(R.layout.activity_alarm);
-		SFApplication app = SFApplication.get();
 
-		// Fetch alarm Id.
-		int alarmId = new AlarmIntentHelper(this.getIntent()).getAlarmId();
-		this.alarm = app.getPersister().fetchAlarmById(alarmId);
+		// Fetch alarm.
+		this.fetchAlarm();
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
@@ -118,6 +134,15 @@ public class AlarmActivity extends Activity {
 		setupStopButton();
 		setupSnoozeButton();
 		setupFooter();
+	}
+
+	private void fetchAlarm() {
+		// Fetch it.
+		int alarmId = new AlarmIntentHelper( this.getIntent() ).getAlarmId();
+		this.alarm = SFApplication.get().getPersister().fetchAlarmById( alarmId );
+
+		// Init the planner.
+		AlarmPlannerService.register();
 	}
 
 	@Override
@@ -276,24 +301,18 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void performRescheduling() {
-		SFApplication app = SFApplication.get();
-
-		// Disable alarm if not repeating.
-		if (!this.alarm.isRepeating()) {
-			if (this.alarm.getMessageBus() == null) {
-				this.alarm.setMessageBus(app.getBus());
-			}
-
-			this.alarm.setActivated(false);
-		} else {
-			// Reschedule earliest alarm (if any).
-			AlarmTimestamp at = app.getAlarms().getEarliestAlarm(
-					new DateTime().getMillis());
-			if (at != AlarmTimestamp.INVALID) {
-				AlarmPlannerService.call(app, Command.CREATE, at.getAlarm()
-						.getId());
-			}
+		// Debug mode might have issued an inactive alarm, don't need to re-issue it.
+		if ( !this.alarm.isActivated() ) {
+			return;
 		}
+
+		// Make sure alarm has a bus.
+		if ( this.alarm.getMessageBus() == null ) {
+			this.alarm.setMessageBus( SFApplication.get().getBus() );
+		}
+
+		// Tell the alarm it has been issued, rescheduling if necessary.
+		this.alarm.issued();
 	}
 
 	/**

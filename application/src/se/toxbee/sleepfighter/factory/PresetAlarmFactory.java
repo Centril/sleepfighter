@@ -18,9 +18,6 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.factory;
 
-import java.util.Arrays;
-
-import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.SnoozeConfig;
 import se.toxbee.sleepfighter.model.audio.AudioConfig;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
@@ -28,6 +25,8 @@ import se.toxbee.sleepfighter.model.audio.AudioSourceType;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfig;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
+import se.toxbee.sleepfighter.model.time.ExactTime;
+import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import android.provider.Settings;
 
 /**
@@ -40,18 +39,8 @@ import android.provider.Settings;
  */
 public class PresetAlarmFactory extends AbstractAlarmFactory {
 	@Override
-	protected Alarm instantiateAlarm() {
-		return new Alarm( 8, 0 );
-	}
-
-	@Override
-	protected void setTime( Alarm alarm ) {
-		// Already set time.
-	}
-
-	@Override
-	protected boolean createIsRepeatingFlag() {
-		return false;
+	protected ExactTime createTime() {
+		return new ExactTime( 8, 0 );
 	}
 
 	@Override
@@ -71,10 +60,7 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 
 	@Override
 	protected boolean[] createEnabledDays() {
-		boolean[] enabledDays = new boolean[7];
-		Arrays.fill( enabledDays, true );
-
-		return enabledDays;
+		return PrimitiveArrays.filled( true, 7 );
 	}
 
 	@Override
@@ -87,7 +73,6 @@ public class PresetAlarmFactory extends AbstractAlarmFactory {
 	protected AudioConfig createAudioConfig() {
 		return new AudioConfig(100, createVibrationFlag());
 	}
-	
 
 	@Override
 	protected SnoozeConfig createSnoozeConfig() {
