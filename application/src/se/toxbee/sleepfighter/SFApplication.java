@@ -18,10 +18,11 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter;
 
-import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
+import se.toxbee.sleepfighter.android.utils.ActivityUtils;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.factory.FromPresetAlarmFactory;
@@ -37,7 +38,6 @@ import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import android.app.Application;
 import android.speech.tts.TextToSpeech;
-import android.view.ViewConfiguration;
 
 /**
  * A custom implementation of Application for SleepFighter.
@@ -82,7 +82,8 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		this.tts = new TextToSpeech(this, this);
 		
 		this.prefs = new GlobalPreferencesManager( this );
-		this.forceActionBarOverflow();
+
+		ActivityUtils.forceActionBarOverflow( this );
 	}
 
 	/**
@@ -95,25 +96,21 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	}
 
 	/**
-	 * Show the triple-dot action bar overflow icon even on devices with a
-	 * dedicated menu button.
-	 * 
-	 * <p>
-	 * Solution from stackoverflow post found 
-	 * <a href="http://stackoverflow.com/questions/9286822/how-to-force-use-of-overflow-menu-on-devices-with-menu-button/11438245#11438245">here</a>.
-	 * </p>
+	 * Returns the current time in milliseconds.
+	 *
+	 * @return now.
 	 */
-	private void forceActionBarOverflow() {
-	    try {
-	        ViewConfiguration config = ViewConfiguration.get(this);
-	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-	        if(menuKeyField != null) {
-	            menuKeyField.setAccessible(true);
-	            menuKeyField.setBoolean(config, false);
-	        }
-	    } catch (Exception ex) {
-	        // Ignore
-	    }
+	public long now() {
+		return System.currentTimeMillis();
+	}
+
+	/**
+	 * Returns the currently used locale.
+	 *
+	 * @return the locale.
+	 */
+	public Locale locale() {
+		return Locale.getDefault();
 	}
 
 	/**
