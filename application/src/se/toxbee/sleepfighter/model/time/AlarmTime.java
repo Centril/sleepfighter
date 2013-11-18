@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.model.time;
 
+import se.toxbee.sleepfighter.utils.model.Refreshable;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.collect.ComparisonChain;
@@ -29,7 +30,7 @@ import com.google.common.collect.ComparisonChain;
  * @version 1.0
  * @since Nov 11, 2013
  */
-public abstract class AlarmTime implements Comparable<AlarmTime> {
+public abstract class AlarmTime implements Comparable<AlarmTime>, Refreshable {
 	protected int second;
 	protected int minute;
 	protected int hour;
