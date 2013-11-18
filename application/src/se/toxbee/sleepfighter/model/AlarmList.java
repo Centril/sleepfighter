@@ -101,7 +101,7 @@ public class AlarmList extends ObservableList<Alarm> {
 		arr.shrink();
 
 		// Set all bits < N
-		BitSet bits = new BitSet(arr.size);
+		BitSet bits = new BitSet( arr.size );
 		for ( int i = 0; i < arr.size; ++i ) {
 			int v = arr.get( i ) - 1;
 			if ( v < arr.size ) {
@@ -116,7 +116,7 @@ public class AlarmList extends ObservableList<Alarm> {
 	/**
 	 * Sets the message bus, if not set, no events will be received.
 	 *
-	 * @param messageBus the buss that receives events.
+	 * @param messageBus the bus that receives events.
 	 */
 	public void setMessageBus( MessageBus<Message> messageBus ) {
 		super.setMessageBus( messageBus );
@@ -154,12 +154,13 @@ public class AlarmList extends ObservableList<Alarm> {
 	 * @param id the unique id of the alarm.
 	 * @return the alarm, if not found it returns null.
 	 */
-	public Alarm getById(int id) {
-		for (int i = 0; i < size(); i++) {
-			if (get(i).getId() == id) {
-				return get(i);
+	public Alarm getById( int id ) {
+		for ( Alarm a : this ) {
+			if ( a.getId() == id ) {
+				return a;
 			}
 		}
+
 		return null;
 	}
 }
