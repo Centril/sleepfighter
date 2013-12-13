@@ -20,6 +20,8 @@ package se.toxbee.sleepfighter.model;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import se.toxbee.sleepfighter.utils.collect.ObservableList;
@@ -29,22 +31,22 @@ import se.toxbee.sleepfighter.utils.message.MessageBus;
 import com.badlogic.gdx.utils.IntArray;
 
 /**
- * Manages all the existing alarms.
+ * {@link AlarmList} manages all the existing alarms.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
- * @version 1.0
+ * @version 1.1
  * @since Sep 18, 2013
  */
 public class AlarmList extends ObservableList<Alarm> {
 	/**
-	 * Constructs the manager with no initial alarms.
+	 * Constructs the list with no initial alarms.
 	 */	
 	public AlarmList() {
 		this( new ArrayList<Alarm>() );
 	}
 
 	/**
-	 * Constructs the manager starting with given alarms.
+	 * Constructs the list starting with given alarms.
 	 *
 	 * @param alarms list of given alarms. Don't modify this list directly.
 	 */
@@ -130,7 +132,7 @@ public class AlarmList extends ObservableList<Alarm> {
 	 * Returns info about the earliest alarm.<br/>
 	 * The info contains info about milliseconds and the alarm.
 	 *
-	 * @param now current time in unix epoch timestamp.
+	 * @param now current time in UNIX epoch timestamp.
 	 * @return info about the earliest alarm. 
 	 */
 	public AlarmTimestamp getEarliestAlarm( long now ) {
@@ -162,5 +164,22 @@ public class AlarmList extends ObservableList<Alarm> {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Restores the ordering of list<br/>
+	 * using natural order (by {@link Alarm#getId()}.
+	 */
+	public void restoreOrder() {
+		Collections.sort( this );
+	}
+
+	/**
+	 * Orders the list given a comparator.
+	 * 
+	 * @param comparator the comparator to order with.
+	 */
+	public void order( Comparator<Alarm> comparator ) {
+		Collections.sort( this, comparator );
 	}
 }

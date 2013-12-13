@@ -214,8 +214,6 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	/** The value for unnamed strings is {@value #UNNAMED} */
 	public static final String UNNAMED = null;
 
-	private static LocalizationProvider localizationProvider;
-
 	/** Whether this alarm is the preset alarm (the default alarm). */
 	@DatabaseField
 	private boolean isPresetAlarm = false;
@@ -439,6 +437,8 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 		return this.printName( this.getLocalizationProvider().format( Field.NAME ) );
 	}
 
+	private static LocalizationProvider localizationProvider;
+
 	/**
 	 * Sets the {@link LocalizationProvider} to use.
 	 *
@@ -585,6 +585,13 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 		// Pretend like the alarms scheduling was altered even tho it might not have been.
 		this.bus = bus;
 		this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, !this.isActivated() ) );
+	}
+
+	/**
+	 * {@link #getNextMillis(long)}
+	 */
+	public synchronized Long scheduledTimestamp() {
+		return this.getNextMillis( this.getLocalizationProvider().now() );
 	}
 
 	/**
