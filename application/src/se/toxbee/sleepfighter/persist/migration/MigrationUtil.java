@@ -78,7 +78,7 @@ public class MigrationUtil {
 	 * @param tableName the table name.
 	 * @return the list of columns.
 	 */
-	private List<String> getTableColumns( String tableName ) {
+	public List<String> getTableColumns() {
 		ArrayList<String> columns = new ArrayList<String>();
 		String cmd = "pragma table_info(" + tableName + ");";
 		Cursor cur = db.rawQuery( cmd, null );
@@ -97,7 +97,7 @@ public class MigrationUtil {
 	 * @param tableName the name of the table.
 	 * @return the SQL statement string.
 	 */
-	private String fetchCreateStmt( String tableName ) {
+	public String fetchCreateStmt() {
 		StringBuilder s = new StringBuilder();
 
 		Cursor cur = db.rawQuery( "SELECT sql FROM sqlite_master WHERE name = ?", new String[] { tableName } );
@@ -119,12 +119,12 @@ public class MigrationUtil {
 	 */
 	public MigrationUtil dropColumns( String[] colsToRemove ) throws java.sql.SQLException {
 		// Fetch create statement.
-		String createStmt = fetchCreateStmt( tableName );
+		String createStmt = fetchCreateStmt();
 
 		// Assemble columns.
 		String columnsSeperated;
 		{
-			List<String> updatedTableColumns = getTableColumns( tableName );
+			List<String> updatedTableColumns = getTableColumns();
 
 			// Remove the columns we don't want anymore from the table's list of columns
 			updatedTableColumns.removeAll( Arrays.asList( colsToRemove ) );
