@@ -26,6 +26,13 @@ import android.app.Application;
 import android.os.Build;
 import android.view.ViewConfiguration;
 
+/**
+ * ActivityUtils provides utilities for activities.
+ *
+ * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+ * @version 1.0
+ * @since Dec 13, 2013
+ */
 public class ActivityUtils {
 	/**
 	 * Show the triple-dot action bar overflow icon even on devices with a dedicated menu button.
