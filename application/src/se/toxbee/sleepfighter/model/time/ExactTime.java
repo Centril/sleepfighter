@@ -18,12 +18,13 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.model.time;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
-import com.google.common.primitives.Booleans;
-
 import se.toxbee.sleepfighter.utils.model.Codifiable;
+
+import com.google.common.primitives.Booleans;
 
 /**
  * <p>ExactTime is a time where the timestamp is actually inexact but
@@ -83,6 +84,24 @@ public class ExactTime extends AlarmTime implements Codifiable {
 	 */
 	public ExactTime( int i ) {
 		this( i >> 12, (i >> 6) & 0x3F, i & 0x3F );
+	}
+
+	/**
+	 * Constructs time using HH:MM:SS from a UNIX epoch timestamp.
+	 *
+	 * @param timestamp the timestamp.
+	 */
+	public ExactTime( long timestamp ) {
+		this( new DateTime( timestamp ) );
+	}
+
+	/**
+	 * Constructs time using a DateTime.
+	 *
+	 * @param timestamp the timestamp.
+	 */
+	public ExactTime( DateTime dt ) {
+		this( dt.getHourOfDay(), dt.getMinuteOfHour(), dt.getSecondOfMinute() );
 	}
 
 	/**
@@ -166,11 +185,15 @@ public class ExactTime extends AlarmTime implements Codifiable {
 		// Nothing to refresh.
 	}
 
-
 	@Override
 	public boolean canHappen( Object... inject ) {
 		// Fetch enabledDays from injected parameters, expected at index 0.
 		boolean[] enabledDays = (boolean[]) inject[0];
 		return Booleans.contains( enabledDays, true );
+	}
+
+	@Override
+	public AlarmTime exact() {
+		return this;
 	}
 }

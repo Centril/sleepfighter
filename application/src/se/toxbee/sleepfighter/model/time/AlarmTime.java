@@ -182,4 +182,11 @@ public abstract class AlarmTime implements Comparable<AlarmTime>, Refreshable {
 	protected abstract boolean equalsImpl( AlarmTime t );
 
 	public abstract int hashCode();
+
+	/**
+	 * Returns a {@link #AlarmTime()} that functions like an {@link ExactTime}.
+	 *
+	 * @return the time.
+	 */
+	public abstract AlarmTime exact();
 }
