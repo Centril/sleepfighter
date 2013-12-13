@@ -24,7 +24,6 @@ import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.activity.ManageGPSFilterAreasActivity;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterMode;
-import se.toxbee.sleepfighter.text.GPSFilterTextUtils;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,7 +77,7 @@ public class GPSFilterAreaAdapter extends ArrayAdapter<GPSFilterArea> {
 
 	private void setupName( final GPSFilterArea area, View convertView ) {
 		TextView nameTextView = (TextView) convertView.findViewById( R.id.manage_gpsfilter_area_name );
-		nameTextView.setText( GPSFilterTextUtils.printName( convertView.getResources(), area.getName() ) );
+		nameTextView.setText( area.printName() );
 	}
 
 	private void setupEnabledSwitch( final GPSFilterArea area, View convertView ) {

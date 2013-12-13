@@ -30,6 +30,7 @@ import se.toxbee.sleepfighter.factory.FromPresetAlarmFactory;
 import se.toxbee.sleepfighter.factory.PresetAlarmFactory;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmList;
+import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.persist.PersistenceManager;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
@@ -319,5 +320,9 @@ public class SFApplication extends Application implements LocalizationProvider, 
 		// Alarm related formats:
 		Alarm.setLocalizationProvider( this.localizationProvider );
 		this.localizationProvider.setFormat( Alarm.Field.NAME, R.string.alarm_unnamed_format );
+
+		// Location filter related formats:
+		GPSFilterArea.setLocalizationProvider( this.localizationProvider );
+		this.localizationProvider.setFormat( GPSFilterArea.Field.NAME, R.string.alarm_unnamed_format );
 	}
 }
