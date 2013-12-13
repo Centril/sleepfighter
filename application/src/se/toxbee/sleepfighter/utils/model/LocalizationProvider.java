@@ -41,7 +41,7 @@ public interface LocalizationProvider {
 	 *
 	 * @return the locale.
 	 */
-	public Locale getLocale();
+	public Locale locale();
 
 	/**
 	 * Returns the format for a given key.
@@ -49,5 +49,5 @@ public interface LocalizationProvider {
 	 * @param key the key.
 	 * @return the format.
 	 */
-	public String getFormat( Object key );
+	public String format( Object key );
 }
