@@ -18,6 +18,8 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.model;
 
+import java.util.Locale;
+
 
 /**
  * LocalizationProvider provides locale dependent information for keys.
@@ -33,6 +35,13 @@ public interface LocalizationProvider {
 	 * @return the timestamp.
 	 */
 	public long now();
+
+	/**
+	 * Returns the locale used.
+	 *
+	 * @return the locale.
+	 */
+	public Locale getLocale();
 
 	/**
 	 * Returns the format for a given key.
