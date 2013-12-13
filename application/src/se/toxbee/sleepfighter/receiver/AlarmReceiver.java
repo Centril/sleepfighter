@@ -31,7 +31,6 @@ import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.service.FadeVolumeService;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
-import se.toxbee.sleepfighter.text.MetaTextUtils;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -39,7 +38,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;;
+import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 
 /**
  * <p>AlarmReceiver is responsible for receiving broadcasts<br/>
@@ -155,7 +154,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
 				activityIntent, 0);
 
-		String name = MetaTextUtils.printAlarmName(context, this.alarm);
+		String name = this.alarm.printName();
 
 		// Localized string the name is inserted into
 		String formatTitle = context.getString(R.string.notification_ringing_title);

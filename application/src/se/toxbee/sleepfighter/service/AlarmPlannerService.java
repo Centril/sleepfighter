@@ -38,7 +38,6 @@ import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.receiver.AlarmReceiver;
 import se.toxbee.sleepfighter.receiver.GPSFilterRefreshReceiver;
 import se.toxbee.sleepfighter.receiver.LocationReceiver;
-import se.toxbee.sleepfighter.text.MetaTextUtils;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -266,7 +265,7 @@ public class AlarmPlannerService extends IntentService {
 		PendingIntent mainActPI = PendingIntent.getActivity(this, 0,
 				mainActIntent, 0);
 
-		String name = MetaTextUtils.printAlarmName(this, alarm);
+		String name = alarm.printName();
 		String time = alarm.getTime().getTimeString();
 
 		// Localized strings which we inserts current time and name into
@@ -298,7 +297,7 @@ public class AlarmPlannerService extends IntentService {
 		PendingIntent alarmPI = PendingIntent.getActivity(this, 0,
 				alarmIntent, 0);
 
-		String name = MetaTextUtils.printAlarmName(this, alarm);
+		String name = alarm.printName();
 
 		// Localized strings which we inserts current time and name into
 		String titleFormat = getString(R.string.notification_snooze_title);

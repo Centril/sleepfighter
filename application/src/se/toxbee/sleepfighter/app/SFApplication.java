@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.android.utils.ActivityUtils;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
@@ -36,13 +37,14 @@ import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
+import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
 import android.app.Application;
 import android.speech.tts.TextToSpeech;
 
 /**
  * A custom implementation of Application for SleepFighter.
  */
-public class SFApplication extends Application implements TextToSpeech.OnInitListener {
+public class SFApplication extends Application implements LocalizationProvider, TextToSpeech.OnInitListener {
 	private static final boolean CLEAN_START = false;
 	public static final boolean DEBUG = true;
 
@@ -64,6 +66,8 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 
 	private GPSFilterAreaSet gpsAreaManaged;
 
+	private SFLocalizationProvider localizationProvider;
+
 	// called when the text to speech engine is initialized. 
 	@Override
 	public void onInit(int status) {
@@ -84,6 +88,8 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		this.prefs = new GlobalPreferencesManager( this );
 
 		ActivityUtils.forceActionBarOverflow( this );
+
+		this.initLocalizationProvider();
 	}
 
 	/**
@@ -95,22 +101,17 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		return app;
 	}
 
-	/**
-	 * Returns the current time in milliseconds.
-	 *
-	 * @return now.
-	 */
 	public long now() {
-		return System.currentTimeMillis();
+		return this.localizationProvider.now();
 	}
 
-	/**
-	 * Returns the currently used locale.
-	 *
-	 * @return the locale.
-	 */
 	public Locale locale() {
-		return Locale.getDefault();
+		return this.localizationProvider.locale();
+	}
+
+	@Override
+	public String format( Object key ) {
+		return this.localizationProvider.format( key );
 	}
 
 	/**
@@ -310,5 +311,13 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 */
 	public void setRingingAlarm(Alarm alarm) {
 		this.ringingAlarm = alarm;
+	}
+
+	private void initLocalizationProvider() {
+		this.localizationProvider = new SFLocalizationProvider( this );
+
+		// Alarm related formats:
+		Alarm.setLocalizationProvider( this.localizationProvider );
+		this.localizationProvider.setFormat( Alarm.Field.NAME, R.string.alarm_unnamed_format );
 	}
 }

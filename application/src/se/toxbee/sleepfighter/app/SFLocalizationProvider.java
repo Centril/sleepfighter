@@ -16,39 +16,53 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.text;
+package se.toxbee.sleepfighter.app;
 
-import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.model.Alarm;
+import java.util.Locale;
+import java.util.Map;
+
+import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
 import android.content.Context;
 
+import com.google.common.collect.Maps;
+
 /**
- * MetaTextUtils provides text utilities for meta information in Alarm.
+ * SFLocalizationProvider is the LocalizationProvider for SFApplication.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Sep 25, 2013
+ * @since Dec 13, 2013
  */
-public class MetaTextUtils {
-	/**
-	 * Prints (returns) the name of alarm as a string.
-	 *
-	 * @param context android context.
-	 * @param alarm the alarm.
-	 * @return the alarm name as text.
-	 */
-	public static final String printAlarmName( Context context, final Alarm alarm ) {
-		if ( !alarm.isUnnamed() ) {
-			return alarm.getName();
-		}
+public class SFLocalizationProvider implements LocalizationProvider {
+	private Map<Object, String> formats = Maps.newHashMap();
 
-		String format = context.getResources().getString( R.string.alarm_unnamed_format );
-		return String.format( format, alarm.getUnnamedPlacement() );
+	private Context context;
+
+	/**
+	 * Constructs the SFLocalizationProvider given a context.
+	 *
+	 * @param ctx android os context.
+	 */
+	public SFLocalizationProvider( Context ctx ) {
+		this.context = ctx;
 	}
 
-	/**
-	 * Construction forbidden.
-	 */
-	private MetaTextUtils() {
+	@Override
+	public long now() {
+		return System.currentTimeMillis();
+	}
+
+	@Override
+	public Locale locale() {
+		return Locale.getDefault();
+	}
+
+	@Override
+	public String format( Object key ) {
+		return this.formats.get( key );
+	}
+
+	public void setFormat( Object key, int id ) {
+		this.formats.put( key, this.context.getString( id ) );
 	}
 }

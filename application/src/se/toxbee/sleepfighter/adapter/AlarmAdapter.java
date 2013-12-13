@@ -28,7 +28,6 @@ import se.toxbee.sleepfighter.model.time.AlarmTime;
 import se.toxbee.sleepfighter.model.time.CountdownTime;
 import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.text.DateTextUtils;
-import se.toxbee.sleepfighter.text.MetaTextUtils;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
@@ -176,8 +175,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	}
 
 	private void setupName( final Alarm alarm, ViewHolder holder ) {
-		String name = MetaTextUtils.printAlarmName( this.getContext(), alarm );
-		holder.name.setText( name );
+		holder.name.setText( alarm.printName() );
 	}
 
 	private void setupWeekdays( final Alarm alarm, ViewHolder holder ) {

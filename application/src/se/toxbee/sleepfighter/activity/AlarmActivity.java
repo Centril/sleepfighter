@@ -36,7 +36,6 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.service.AlarmPlannerService.Command;
-import se.toxbee.sleepfighter.text.MetaTextUtils;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.app.Activity;
@@ -128,7 +127,7 @@ public class AlarmActivity extends Activity {
 
 		// Get the name and time of the current ringing alarm
 		tvName = (TextView) findViewById(R.id.tvAlarmName);
-		tvName.setText(MetaTextUtils.printAlarmName(this, alarm));
+		tvName.setText( alarm.printName() );
 		tvTime = (TextView) findViewById(R.id.tvAlarmTime);
 
 		setupStopButton();
