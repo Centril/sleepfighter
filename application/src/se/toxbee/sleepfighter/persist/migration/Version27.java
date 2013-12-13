@@ -18,26 +18,26 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.migration;
 
+import java.sql.SQLException;
+
+import se.toxbee.sleepfighter.persist.migration.Migrater.Adapter;
+
 /**
- * DefinedMigrations provides all defined migrations.
+ * Migration to version 27.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Nov 14, 2013
+ * @since Dec 13, 2013
  */
-public class DefinedMigrations {
-	// Any version below this will cause the database to be rebuilt.
-	public static final int REBUILD_BELOW_VERSION = 23;
-
-	/**
-	 * Returns the defined migrations, avoid class loading before we don't need migration.
-	 *
-	 * @return the available migrations.
-	 */
-	public static final Class<?>[] get() {
-		// reflections was thought of, but is error prone.
-		return new Class<?>[] {
-			Version25.class, Version27.class
-		};
+public class Version27 extends Adapter {
+	@Override
+	public void applyMigration( MigrationUtil util ) throws MigrationException {
+		try {
+			util.table( "alarm" )
+				.addColumn( "order", "INTEGER DEFAULT 0" )
+				.update( "`order` = `id`", null );
+		} catch ( SQLException e ) {
+			throw new MigrationException( "Migration v27 failed.", e, this );
+		}
 	}
 }

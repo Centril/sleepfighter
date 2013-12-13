@@ -16,28 +16,34 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.persist.migration;
+package se.toxbee.sleepfighter.persist.dao;
+
+import java.sql.SQLException;
+
+import se.toxbee.sleepfighter.model.Alarm;
+
+import com.j256.ormlite.dao.BaseDaoImpl;
+import com.j256.ormlite.support.ConnectionSource;
 
 /**
- * DefinedMigrations provides all defined migrations.
+ * AlarmDao is the DAO for {@link Alarm}.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Nov 14, 2013
+ * @since Dec 13, 2013
  */
-public class DefinedMigrations {
-	// Any version below this will cause the database to be rebuilt.
-	public static final int REBUILD_BELOW_VERSION = 23;
+public class AlarmDao extends BaseDaoImpl<Alarm, Integer> {
+	@Override
+	public int create( Alarm data ) throws SQLException {
+		int affected = super.create( data );
+		if ( affected == 1 ) {
+			data.setOrder();
+		}
+		return affected;
+	}
 
-	/**
-	 * Returns the defined migrations, avoid class loading before we don't need migration.
-	 *
-	 * @return the available migrations.
-	 */
-	public static final Class<?>[] get() {
-		// reflections was thought of, but is error prone.
-		return new Class<?>[] {
-			Version25.class, Version27.class
-		};
+	// this constructor must be defined
+	public AlarmDao( ConnectionSource connectionSource ) throws SQLException {
+		super( connectionSource, Alarm.class );
 	}
 }

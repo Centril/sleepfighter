@@ -440,16 +440,21 @@ public class PersistenceManager {
 	public void updateAlarm( Alarm alarm, AlarmEvent evt ) {
 		OrmHelper helper = this.getHelper();
 
-		boolean updateAlarmTable = false;
+		boolean updateAlarmTable = true;
 
 		// First handle any updates to foreign fields that are set directly in Alarm.
+		// Also handle swaps, etc.
 		switch ( evt.getModifiedField() ) {
 		case AUDIO_SOURCE:
 			updateAlarmTable = this.updateAudioSource( alarm.getAudioSource(), (AudioSource) evt.getOldValue() );
 			break;
 
+		case ORDER:
+			// We must update the other alarm (in old value).
+			helper.dao( Alarm.class ).update( (Alarm) evt.getOldValue() );
+			break;
+
 		default:
-			updateAlarmTable = true;
 			break;
 		}
 
