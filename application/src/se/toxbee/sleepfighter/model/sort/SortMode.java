@@ -20,6 +20,8 @@ package se.toxbee.sleepfighter.model.sort;
 
 import java.util.Comparator;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
 
 import se.toxbee.sleepfighter.model.Alarm;
@@ -48,14 +50,21 @@ public class SortMode {
 	private boolean direction;
 
 	/**
-	 * The sort mode.
+	 * Constructs the default sort mode.
+	 */
+	public SortMode() {
+		this( Field.ID, true );
+	}
+
+	/**
+	 * Constructs a sort mode.
 	 *
 	 * @param field see {@link #field()}
 	 * @param direction see {@link #direction()}
 	 */
 	public SortMode( Field field, boolean direction ) {
-		this.field = field;
-		this.direction = direction;
+		this.field = Preconditions.checkNotNull( field );
+		this.direction = Preconditions.checkNotNull( direction );
 	}
 
 	/**
@@ -115,5 +124,34 @@ public class SortMode {
 		}
 
 		return this.direction ? ordering : ordering.reverse();
+	}
+
+	/**
+	 * Returns true if the given {@link SortMode} is reverse to this.
+	 *
+	 * @param rhs the other {@link SortMode}.
+	 * @return true if it is reverse.
+	 */
+	public boolean isReverse( SortMode rhs ) {
+		return this.field == rhs.field && this.direction != rhs.direction;
+	}
+
+	@Override
+	public boolean equals( Object o ) {
+		if ( this == o ) {
+			return true;
+		}
+
+		if ( o instanceof SortMode ) {
+			SortMode rhs = (SortMode) o;
+			return this.field == rhs.field && this.direction == rhs.direction;
+		}
+
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode( this.field, this.direction );
 	}
 }

@@ -21,14 +21,15 @@ package se.toxbee.sleepfighter.model;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
+import se.toxbee.sleepfighter.model.sort.SortMode;
 import se.toxbee.sleepfighter.utils.collect.ObservableList;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 
 import com.badlogic.gdx.utils.IntArray;
+import com.google.common.collect.Ordering;
 
 /**
  * {@link AlarmList} manages all the existing alarms.
@@ -38,6 +39,20 @@ import com.badlogic.gdx.utils.IntArray;
  * @since Sep 18, 2013
  */
 public class AlarmList extends ObservableList<Alarm> {
+	/* --------------------------------
+	 * Fields: Sorting.
+	 * --------------------------------
+	 */
+
+	private SortMode sortMode;
+	private Ordering<Alarm> ordering;
+
+	/* --------------------------------
+	 * Constructors.
+	 * --------------------------------
+	 */
+
+
 	/**
 	 * Constructs the list with no initial alarms.
 	 */	
@@ -52,7 +67,15 @@ public class AlarmList extends ObservableList<Alarm> {
 	 */
 	public AlarmList( List<Alarm> alarms ) {
 		this.setDelegate( alarms );
+
+		this.sortMode = new SortMode();
+		this.ordering = this.sortMode.ordering();
 	}
+
+	/* --------------------------------
+	 * Event interception / DI.
+	 * --------------------------------
+	 */
 
 	@Override
 	protected void fireEvent( Event e ) {
@@ -67,6 +90,19 @@ public class AlarmList extends ObservableList<Alarm> {
 
 		super.fireEvent( e );
 	}
+
+	public void setMessageBus( MessageBus<Message> messageBus ) {
+		super.setMessageBus( messageBus );
+
+		for ( Alarm alarm : this ) {
+			alarm.setMessageBus( messageBus );
+		}
+	}
+
+	/* --------------------------------
+	 * Public methods: etc.
+	 * --------------------------------
+	 */
 
 	/**
 	 * <p>Finds the lowest unnamed placement number.</p>
@@ -116,19 +152,6 @@ public class AlarmList extends ObservableList<Alarm> {
 	}
 
 	/**
-	 * Sets the message bus, if not set, no events will be received.
-	 *
-	 * @param messageBus the bus that receives events.
-	 */
-	public void setMessageBus( MessageBus<Message> messageBus ) {
-		super.setMessageBus( messageBus );
-
-		for ( Alarm alarm : this ) {
-			alarm.setMessageBus( messageBus );
-		}
-	}
-
-	/**
 	 * Returns info about the earliest alarm.<br/>
 	 * The info contains info about milliseconds and the alarm.
 	 *
@@ -166,20 +189,44 @@ public class AlarmList extends ObservableList<Alarm> {
 		return null;
 	}
 
-	/**
-	 * Restores the ordering of list<br/>
-	 * using natural order (by {@link Alarm#getId()}.
+	/* --------------------------------
+	 * Public methods: Sorting.
+	 * --------------------------------
 	 */
-	public void restoreOrder() {
-		Collections.sort( this );
+
+	/**
+	 * Returns the current sort mode.
+	 *
+	 * @return the mode.
+	 */
+	public SortMode getSortMode() {
+		return this.sortMode;
 	}
 
 	/**
-	 * Orders the list given a comparator.
-	 * 
-	 * @param comparator the comparator to order with.
+	 * Orders the list using the result of {@link #getSortMode()}.
 	 */
-	public void order( Comparator<Alarm> comparator ) {
-		Collections.sort( this, comparator );
+	public void order() {
+		Collections.sort( this, this.ordering );
+	}
+
+	/**
+	 * Sets the result of {@link #getSortMode()} and calls {@link #order()}.
+	 *
+	 * @param mode the {@link SortMode} to use.
+	 */
+	public void order( SortMode mode ) {
+		if ( this.sortMode.equals( mode ) ) {
+			return;
+		}
+
+		SortMode old = this.sortMode;
+		this.sortMode = mode;
+
+		if ( old.isReverse( this.sortMode ) ) {
+			this.ordering = this.ordering.reverse();
+		}
+
+		this.order();
 	}
 }
