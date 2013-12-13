@@ -21,9 +21,6 @@ package se.toxbee.sleepfighter.persist.migration;
 import java.util.Collection;
 
 import se.toxbee.sleepfighter.utils.string.StringUtils;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.j256.ormlite.support.ConnectionSource;
 
 /**
  * Migrater is an interface all migrations must implement.<br/>
@@ -77,11 +74,9 @@ public interface Migrater {
 	/**
 	 * Applies a migration.
 	 *
-	 * @param cs a ConnectionSource.
-	 * @param db a SQLiteDatabase.
-	 * @param rawDao a Dao to run raw statements on.
+	 * @param util the utility object to perform work with.
 	 */
-	public void applyMigration( ConnectionSource cs, SQLiteDatabase db ) throws MigrationException;
+	public void applyMigration( MigrationUtil util ) throws MigrationException;
 
 	/**
 	 * Returns the version-code (database) the migration is upgrading for.

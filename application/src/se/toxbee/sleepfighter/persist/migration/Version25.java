@@ -20,10 +20,6 @@ package se.toxbee.sleepfighter.persist.migration;
 
 import java.sql.SQLException;
 
-import android.database.sqlite.SQLiteDatabase;
-
-import com.j256.ormlite.support.ConnectionSource;
-
 /**
  * Migration to version 25.
  *
@@ -33,13 +29,13 @@ import com.j256.ormlite.support.ConnectionSource;
  */
 public class Version25 extends Migrater.Adapter {
 	@Override
-	public void applyMigration( ConnectionSource cs, SQLiteDatabase db ) throws MigrationException {
+	public void applyMigration( MigrationUtil util ) throws MigrationException {
 		try {
-			MigrationUtil.addColumn( db, "alarm", "time", "INTEGER DEFAULT 0" );
-			MigrationUtil.addColumn( db, "alarm", "countdownTime", "BIGINT" );
-			MigrationUtil.update( db, "alarm", "time = (hour << 12) | (minute << 6) | second", null );
-
-			MigrationUtil.dropColumns( db, "alarm", new String[] { "hour", "minute", "second" } );
+			util.table( "alarm" )
+				.addColumn( "time", "INTEGER DEFAULT 0" )
+				.addColumn( "countdownTime", "BIGINT" )
+				.update( "time = (hour << 12) | (minute << 6) | second", null )
+				.dropColumns( new String[] { "hour", "minute", "second" } );
 		} catch ( SQLException e ) {
 			throw new MigrationException( "Migration v25 failed.", e, this );
 		}

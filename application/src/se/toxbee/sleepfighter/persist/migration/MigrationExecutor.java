@@ -92,9 +92,11 @@ public class MigrationExecutor {
 			// Filter out ones to skip.
 			this.filter( migraters, originVersion, targetVersion );
 
+			MigrationUtil util = new MigrationUtil( db, cs );
+
 			// Apply migrations.
 			for ( Migrater m : migraters.values() ) {
-				m.applyMigration( cs, db );
+				m.applyMigration( util );
 			}
 
 			return true;
