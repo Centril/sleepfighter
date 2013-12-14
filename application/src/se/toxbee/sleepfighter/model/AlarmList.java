@@ -25,8 +25,6 @@ import java.util.List;
 
 import se.toxbee.sleepfighter.model.Alarm.AlarmEvent;
 import se.toxbee.sleepfighter.utils.collect.ObservableList;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
 
 import com.badlogic.gdx.utils.IntArray;
 import com.google.common.collect.Ordering;
@@ -52,7 +50,6 @@ public class AlarmList extends ObservableList<Alarm> {
 	 * --------------------------------
 	 */
 
-
 	/**
 	 * Constructs the list with no initial alarms.
 	 */	
@@ -73,22 +70,20 @@ public class AlarmList extends ObservableList<Alarm> {
 	}
 
 	/* --------------------------------
-	 * Event interception / DI.
+	 * Unnamed placements.
 	 * --------------------------------
 	 */
 
 	@Override
 	protected void fireEvent( Event e ) {
 		if ( !e.operation().isRemove() ) {
-			// Intercept add/update events and inject message bus.
-			MessageBus<Message> bus = this.getMessageBus();
-
+			// Set unnamed placements.
 			if ( e.operation() == Operation.ADD ) {
 				for ( Object obj : e.elements() ) {
-					((Alarm) obj).setMessageBus( bus );
+					this.setPlacement( (Alarm) obj );
 				}
 			} else if ( e.operation() == Operation.UPDATE ) {
-				this.get( e.index() ).setMessageBus( bus );
+				this.setPlacement( this.get( e.index() ) );
 			}
 
 			// Reorder the list.
@@ -98,18 +93,11 @@ public class AlarmList extends ObservableList<Alarm> {
 		super.fireEvent( e );
 	}
 
-	public void setMessageBus( MessageBus<Message> messageBus ) {
-		super.setMessageBus( messageBus );
-
-		for ( Alarm alarm : this ) {
-			alarm.setMessageBus( messageBus );
+	private void setPlacement( Alarm alarm ) {
+		if ( alarm.isUnnamed() ) {
+			alarm.setUnnamedPlacement( this.findLowestUnnamedPlacement() );
 		}
 	}
-
-	/* --------------------------------
-	 * Public methods: etc.
-	 * --------------------------------
-	 */
 
 	/**
 	 * <p>Finds the lowest unnamed placement number.</p>
@@ -157,6 +145,11 @@ public class AlarmList extends ObservableList<Alarm> {
 		// Find first false bit.
 		return bits.nextClearBit( 0 ) + 1;
 	}
+
+	/* --------------------------------
+	 * Public methods: etc.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Returns info about the earliest alarm.<br/>

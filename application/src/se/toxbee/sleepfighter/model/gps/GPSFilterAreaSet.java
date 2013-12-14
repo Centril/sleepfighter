@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.toxbee.sleepfighter.utils.collect.ObservableList;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
 
 /**
  * GPSFilterAreaSet defines a set of GPSFilterArea:s that an alarm has.<br/>
@@ -66,29 +64,6 @@ public class GPSFilterAreaSet extends ObservableList<GPSFilterArea> {
 		}
 
 		return null;
-	}
-
-	@Override
-	public void setMessageBus( MessageBus<Message> messageBus ) {
-		super.setMessageBus( messageBus );
-
-		for ( GPSFilterArea area : this ) {
-			area.setMessageBus( messageBus );
-		}
-	}
-
-	@Override
-	protected void fireEvent( Event e ) {
-		// Intercept add/update events and inject message bus.
-		if ( e.operation() == Operation.ADD ) {
-			for ( Object obj : e.elements() ) {
-				((GPSFilterArea) obj).setMessageBus( this.getMessageBus() );
-			}
-		} else if ( e.operation() == Operation.UPDATE ) {
-			this.get( e.index() ).setMessageBus( this.getMessageBus() );
-		}
-
-		super.fireEvent( e );
 	}
 
 	/**
