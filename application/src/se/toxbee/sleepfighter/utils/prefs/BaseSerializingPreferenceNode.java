@@ -100,4 +100,13 @@ public abstract class BaseSerializingPreferenceNode implements SerializingPrefer
 	public SerializingPreferenceNode remove( String key ) {
 		return this.setc( key, null );
 	}
+
+	@Override
+	public SerializingPreferenceNode clear() {
+		for ( String key : this.getAll().keySet() ) {
+			this.remove( key );
+		}
+
+		return this;
+	}
 }
