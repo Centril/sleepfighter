@@ -21,7 +21,7 @@ package se.toxbee.sleepfighter.model.gps;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.toxbee.sleepfighter.utils.collect.ObservableList;
+import se.toxbee.sleepfighter.utils.collect.IdObservableList;
 
 /**
  * GPSFilterAreaSet defines a set of GPSFilterArea:s that an alarm has.<br/>
@@ -32,7 +32,7 @@ import se.toxbee.sleepfighter.utils.collect.ObservableList;
  * @version 1.0
  * @since Oct 5, 2013
  */
-public class GPSFilterAreaSet extends ObservableList<GPSFilterArea> {
+public class GPSFilterAreaSet extends IdObservableList<GPSFilterArea> {
 	/**
 	 * Default constructor.
 	 */
@@ -47,23 +47,6 @@ public class GPSFilterAreaSet extends ObservableList<GPSFilterArea> {
 	 */
 	public GPSFilterAreaSet( List<GPSFilterArea> areas ) {
 		this.setDelegate( areas );
-	}
-
-	/**
-	 * Returns an the area with the unique id provided.
-	 * 
-	 * @param id the unique id of the area.
-	 * @return the area, if not found it returns null.
-	 */
-	public GPSFilterArea getById( int id ) {
-		for ( int i = 0; i < size(); i++ ) {
-			GPSFilterArea area = this.get( i );
-			if ( area.getId() == id ) {
-				return area;
-			}
-		}
-
-		return null;
 	}
 
 	/**

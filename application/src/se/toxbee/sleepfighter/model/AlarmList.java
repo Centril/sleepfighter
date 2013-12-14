@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import se.toxbee.sleepfighter.model.Alarm.AlarmEvent;
-import se.toxbee.sleepfighter.utils.collect.ObservableList;
+import se.toxbee.sleepfighter.utils.collect.IdObservableList;
 
 import com.badlogic.gdx.utils.IntArray;
 import com.google.common.collect.Ordering;
@@ -36,7 +36,7 @@ import com.google.common.collect.Ordering;
  * @version 1.1
  * @since Sep 18, 2013
  */
-public class AlarmList extends ObservableList<Alarm> {
+public class AlarmList extends IdObservableList<Alarm> {
 	/* --------------------------------
 	 * Fields: Sorting.
 	 * --------------------------------
@@ -171,22 +171,6 @@ public class AlarmList extends ObservableList<Alarm> {
 		}
 
 		return earliestIndex == -1 ? AlarmTimestamp.INVALID : new AlarmTimestamp( millis, this.get( earliestIndex) );
-	}
-	
-	/**
-	 * Returns an the alarm with the unique id provided.
-	 * 
-	 * @param id the unique id of the alarm.
-	 * @return the alarm, if not found it returns null.
-	 */
-	public Alarm getById( int id ) {
-		for ( Alarm a : this ) {
-			if ( a.getId() == id ) {
-				return a;
-			}
-		}
-
-		return null;
 	}
 
 	/* --------------------------------
