@@ -108,7 +108,7 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 	public PreferenceNode setBoolean( String key, boolean val ) {
 		this.edit();
 		this.edit.putBoolean( key, val );
-		return this;
+		return this.tryAutoCommit();
 	}
 
 	@Override
@@ -125,21 +125,21 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 	public PreferenceNode setInt( String key, int val ) {
 		this.edit();
 		this.edit.putInt( key, val );
-		return this;
+		return this.tryAutoCommit();
 	}
 
 	@Override
 	public PreferenceNode setLong( String key, long val ) {
 		this.edit();
 		this.edit.putLong( key, val );
-		return this;
+		return this.tryAutoCommit();
 	}
 
 	@Override
 	public PreferenceNode setFloat( String key, float val ) {
 		this.edit();
 		this.edit.putFloat( key, val );
-		return this;
+		return this.tryAutoCommit();
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 	public PreferenceNode remove( String key ) {
 		this.edit();
 		this.edit.remove( key );
-		return this;
+		return this.tryAutoCommit();
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 	public PreferenceNode clear() {
 		this.edit();
 		this.edit.clear();
-		return this;
+		return this.tryAutoCommit();
 	}
 
 	@Override
@@ -207,6 +207,14 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 	@Override
 	public boolean isAutoCommit() {
 		return this.autoCommit;
+	}
+
+	private PreferenceNode tryAutoCommit() {
+		if ( this.isAutoCommit() ) {
+			this.apply();
+		}
+
+		return this;
 	}
 
 	private static class Sub extends ChildPreferenceNode implements SharedPreferenceNode {

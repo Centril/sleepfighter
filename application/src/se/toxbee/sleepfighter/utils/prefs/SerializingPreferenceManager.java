@@ -109,18 +109,15 @@ public abstract class SerializingPreferenceManager implements SerializingPrefere
 		return this;
 	}
 
-
 	@Override
 	public SerializingPreferenceNode edit() {
 		return this;
 	}
 
-
 	@Override
 	public SerializingPreferenceNode apply() {
 		return this;
 	}
-
 
 	@Override
 	public boolean commit() {
