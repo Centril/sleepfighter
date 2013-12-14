@@ -23,7 +23,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 
-import se.toxbee.sleepfighter.model.sort.SortMode;
+import se.toxbee.sleepfighter.model.Alarm.AlarmEvent;
 import se.toxbee.sleepfighter.utils.collect.ObservableList;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
@@ -79,13 +79,20 @@ public class AlarmList extends ObservableList<Alarm> {
 
 	@Override
 	protected void fireEvent( Event e ) {
-		// Intercept add/update events and inject message bus.
-		if ( e.operation() == Operation.ADD ) {
-			for ( Object obj : e.elements() ) {
-				((Alarm) obj).setMessageBus( this.getMessageBus() );
+		if ( !e.operation().isRemove() ) {
+			// Intercept add/update events and inject message bus.
+			MessageBus<Message> bus = this.getMessageBus();
+
+			if ( e.operation() == Operation.ADD ) {
+				for ( Object obj : e.elements() ) {
+					((Alarm) obj).setMessageBus( bus );
+				}
+			} else if ( e.operation() == Operation.UPDATE ) {
+				this.get( e.index() ).setMessageBus( bus );
 			}
-		} else if ( e.operation() == Operation.UPDATE ) {
-			this.get( e.index() ).setMessageBus( this.getMessageBus() );
+
+			// Reorder the list.
+			this.order();
 		}
 
 		super.fireEvent( e );
@@ -208,6 +215,20 @@ public class AlarmList extends ObservableList<Alarm> {
 	 */
 	public void order() {
 		Collections.sort( this, this.ordering );
+	}
+
+	/**
+	 * Orders if needed according to current result of {@link #getSortMode()}.
+	 *
+	 * @param evt the event.
+	 */
+	public boolean orderIfNeeded( AlarmEvent evt ) {
+		if ( this.sortMode.requiresReordering( evt ) ) {
+			this.order();
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

@@ -16,16 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.model.sort;
+package se.toxbee.sleepfighter.model;
 
-import java.util.Comparator;
+import se.toxbee.sleepfighter.model.Alarm.AlarmEvent;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.utils.collect.IdFallbackOrdering;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
-
-import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.AlarmList;
 
 /**
  * {@link SortMode} models the sort mode of {@link AlarmList}.
@@ -43,7 +42,58 @@ public class SortMode {
 	 * @since Nov 18, 2013
 	 */
 	public static enum Field {
-		ID, NAME, TIMESTAMP, ALARM_TIME, MANUAL
+		ID( Ordering.<Alarm>natural() ),
+		NAME( new IdFallbackOrdering<Alarm, String>() {
+				@Override
+				protected String fieldToComparable( Alarm val ) {
+					return val.printName();
+				}
+			}
+		),
+		TIMESTAMP( new IdFallbackOrdering<Alarm, Long>() {
+					@Override
+					protected Long fieldToComparable( Alarm val ) {
+						return val.scheduledTimestamp();
+					}
+				}.nullsLast()
+		),
+		ALARM_TIME( new IdFallbackOrdering<Alarm, AlarmTime>() {
+					@Override
+					protected AlarmTime fieldToComparable( Alarm val ) {
+						return val.getTime().exact();
+					}
+				} ),
+		MANUAL( new IdFallbackOrdering<Alarm, Integer>() {
+			@Override
+			protected Integer fieldToComparable( Alarm val ) {
+				return val.getOrder();
+			}
+		} );
+
+		protected Ordering<Alarm> ordering;
+		protected Ordering<Alarm> ordering() {
+			return this.ordering;
+		}
+		Field( Ordering<Alarm> o ) {
+			this.ordering = o;
+		}
+
+		protected boolean requiresReordering( AlarmEvent evt ) {
+			switch ( this ) {
+			case MANUAL:
+				return evt.getModifiedField() == Alarm.Field.ORDER;
+
+			case NAME:
+				return evt.getModifiedField() == Alarm.Field.NAME;
+
+			case ALARM_TIME:
+			case TIMESTAMP:
+				return evt instanceof Alarm.ScheduleChangeEvent;
+
+			default:
+				return false;
+			}
+		}
 	}
 
 	private Field field;
@@ -91,39 +141,19 @@ public class SortMode {
 	 * @return the ordering.
 	 */
 	public Ordering<Alarm> ordering() {
-		Ordering<Alarm> natural = Ordering.natural();
-
-		Ordering<Alarm> ordering;
-
-		if ( this.field == Field.ID ) {
-			ordering = natural;
-		} else {
-			Comparator<Alarm> cmp;
-			switch ( this.field ) {
-			case MANUAL:
-				cmp = new ManualComparator();
-				break;
-
-			case NAME:
-				cmp = new NameComparator();
-				break;
-
-			case ALARM_TIME:
-				cmp = new AlarmTimeComparator();
-				break;
-
-			case TIMESTAMP:
-				cmp = new TimestampComparator();
-				break;
-
-			default:
-				throw new AssertionError();
-			}
-
-			ordering = Ordering.from( cmp ).compound( natural );
-		}
-
+		Ordering<Alarm> ordering = this.field.ordering();
 		return this.direction ? ordering : ordering.reverse();
+	}
+
+	/**
+	 * Returns true if reordering is required as a result of evt being fired.
+	 *
+	 * @param evt the {@link AlarmEvent} that was fired.
+	 * @return true = reorder.
+	 */
+	public boolean requiresReordering( AlarmEvent evt ) {
+		// Facade.
+		return this.field.requiresReordering( evt );
 	}
 
 	/**
