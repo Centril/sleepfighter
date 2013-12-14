@@ -39,12 +39,33 @@ public abstract class TopSerializingPreferenceNode extends BaseSerializingPrefer
 	protected abstract Map<String, Serializable> memory();
 
 	/**
-	 * Stores the key-value pair in backend.
+	 * Sets the key-value pair in backend.
 	 *
 	 * @param key the key.
-	 * @param value the value. If value is null, then the key should be removed.
+	 * @param value the value.
 	 */
-	protected abstract <U extends Serializable> void storeBackend( String key, U value );
+	protected abstract <U extends Serializable> void backendSet( String key, U value );
+
+	/**
+	 * Removes the key-value pair in backend.
+	 *
+	 * @param key the key.
+	 */
+	protected abstract <U extends Serializable> void backendRemove( String key );
+
+	/**
+	 * Loads the given preference into the in-memory map given by {@link #memory()}.
+	 *
+	 * @param prefs the preferences to load.
+	 * @return this.
+	 */
+	protected TopSerializingPreferenceNode load( Iterable<? extends SerializablePreference> prefs ) {
+		for ( SerializablePreference p : prefs ) {
+			this.memory().put( p.key(), p.value() );
+		}
+
+		return this;
+	}
 
 	@Override
 	public boolean contains( String key ) {
@@ -62,7 +83,11 @@ public abstract class TopSerializingPreferenceNode extends BaseSerializingPrefer
 
 		// Write to persistence if changed.
 		if ( old != value ) {
-			this.storeBackend( key, value );
+			if ( value == null ) {
+				this.backendRemove( key );
+			} else {
+				this.backendSet( key, value );
+			}
 		}
 
 		return old;
