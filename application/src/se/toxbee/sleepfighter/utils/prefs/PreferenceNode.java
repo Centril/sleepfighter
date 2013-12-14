@@ -109,4 +109,13 @@ public interface PreferenceNode {
 	 * The in-memory changes will be immediate.
 	 */
 	public PreferenceNode apply();
+
+	/**
+	 * Returns whether or not the node is in auto-commit mode.<br/>
+	 * When in auto-commit mode, {@link #commit()} will always return true,<br/>
+	 * and all non-accessors will be atomic operations.
+	 *
+	 * @return true if in auto-commit mode.
+	 */
+	public boolean isAutoCommit();
 }

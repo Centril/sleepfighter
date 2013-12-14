@@ -19,93 +19,83 @@
 package se.toxbee.sleepfighter.utils.prefs;
 
 import java.io.Serializable;
-import java.util.Map;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
 
 /**
- * {@link ChildSerializingPreferenceNode} handles namespace hierarchy for {@link SerializingPreferenceNode}.
+ * {@link ChildSerializingPreferenceNode} is the {@link ChildPreferenceNode} for {@link SerializingPreferenceNode}.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Dec 14, 2013
  */
-public class ChildSerializingPreferenceNode extends BaseSerializingPreferenceNode {
-	private final SerializingPreferenceNode m;
-	private final String namespace;
-
-	public ChildSerializingPreferenceNode( SerializingPreferenceNode m, String ns ) {
-		this.m = m;
-		this.namespace = ns;
-	}
-
-	private String ns( String key ) {
-		return this.namespace + key;
+public class ChildSerializingPreferenceNode extends ChildPreferenceNode implements SerializingPreferenceNode {
+	protected ChildSerializingPreferenceNode( SerializingPreferenceNode root, String ns ) {
+		super( root, ns );
 	}
 
 	@Override
+	protected PreferenceNode makeSubNode( PreferenceNode root, String ns ) {
+		return new ChildSerializingPreferenceNode( (SerializingPreferenceNode) root, ns );
+	}
+
 	public SerializingPreferenceNode sub( String ns ) {
-		return new ChildSerializingPreferenceNode( m, this.namespace + '.' + ns );
+		return (SerializingPreferenceNode)super.sub( ns );
 	}
 
-	@Override
 	public SerializingPreferenceNode parent() {
-		int idx = this.namespace.lastIndexOf( this.namespace );
-		String parentNs = this.namespace.substring( 0, idx );
-		return parentNs.isEmpty() ? m : new ChildSerializingPreferenceNode( m, parentNs );
+		return (SerializingPreferenceNode)super.parent();
+	}
+
+	public SerializingPreferenceNode remove( String key ) {
+		return (SerializingPreferenceNode)super.remove( key );
+	}
+
+	public SerializingPreferenceNode setBoolean( String key, boolean val ) {
+		return (SerializingPreferenceNode)super.setBoolean( key, val );
+	}
+
+	public SerializingPreferenceNode setChar( String key, char val ) {
+		return (SerializingPreferenceNode)super.setChar( key, val );
+	}
+
+	public SerializingPreferenceNode setShort( String key, short val ) {
+		return (SerializingPreferenceNode)super.setShort( key, val );
+	}
+
+	public SerializingPreferenceNode setInt( String key, int val ) {
+		return (SerializingPreferenceNode)super.setInt( key, val );
+	}
+
+	public SerializingPreferenceNode setLong( String key, long val ) {
+		return (SerializingPreferenceNode)super.setLong( key, val );
+	}
+
+	public SerializingPreferenceNode setFloat( String key, float val ) {
+		return (SerializingPreferenceNode)super.setFloat( key, val );
+	}
+
+	public SerializingPreferenceNode setDouble( String key, double val ) {
+		return (SerializingPreferenceNode)super.setDouble( key, val );
+	}
+
+	public SerializingPreferenceNode edit() {
+		return (SerializingPreferenceNode)super.edit();
+	}
+
+	public SerializingPreferenceNode clear() {
+		return (SerializingPreferenceNode)super.clear();
+	}
+
+	public SerializingPreferenceNode apply() {
+		return (SerializingPreferenceNode)super.apply();
 	}
 
 	@Override
 	public <U extends Serializable> U set( String key, U value ) {
-		return m.set( ns( key ), value );
+		return ((SerializingPreferenceNode)delegate()).set( key( key ), value );
 	}
 
 	@Override
 	public <U extends Serializable> U get( String key, U def ) {
-		return m.get( ns( key ), def );
-	}
-
-	@Override
-	public boolean contains( String key ) {
-		return m.contains( ns( key ) );
-	}
-
-	@Override
-	public Map<String, ?> getAll() {
-		return Maps.newHashMap( this.liveMap() );
-	}
-
-	protected Map<String, ?> liveMap() {
-		// Live map of all entries with keys starting with namespace.
-		return Maps.filterKeys( m.getAll(), new Predicate<String>() {
-			@Override
-			public boolean apply( String key ) {
-				return key.startsWith( namespace );
-			}
-		} );
-	}
-
-	@Override
-	public SerializingPreferenceNode clear() {
-		for ( String key : this.liveMap().keySet() ) {
-			this.remove( key );
-		}
-		return this;
-	}
-
-	@Override
-	public SerializingPreferenceNode edit() {
-		return m.edit();
-	}
-
-	@Override
-	public SerializingPreferenceNode apply() {
-		return m.apply();
-	}
-
-	@Override
-	public boolean commit() {
-		return m.commit();
+		return ((SerializingPreferenceNode)delegate()).set( key( key ), def );
 	}
 }

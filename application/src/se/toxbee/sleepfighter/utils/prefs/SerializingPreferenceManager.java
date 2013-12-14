@@ -24,13 +24,13 @@ import java.util.Map;
 import com.google.common.base.Preconditions;
 
 /**
- * {@link TopSerializingPreferenceNode} is the top node for a {@link SerializingPreferenceNode}.
+ * {@link SerializingPreferenceManager} is the top node for a {@link SerializingPreferenceNode}.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Dec 14, 2013
  */
-public abstract class TopSerializingPreferenceNode extends BaseSerializingPreferenceNode {
+public abstract class SerializingPreferenceManager implements SerializingPreferenceNode {
 	/**
 	 * Returns the in-memory map of entities.
 	 *
@@ -59,7 +59,7 @@ public abstract class TopSerializingPreferenceNode extends BaseSerializingPrefer
 	 * @param prefs the preferences to load.
 	 * @return this.
 	 */
-	protected TopSerializingPreferenceNode load( Iterable<? extends SerializablePreference> prefs ) {
+	protected SerializingPreferenceManager load( Iterable<? extends SerializablePreference> prefs ) {
 		for ( SerializablePreference p : prefs ) {
 			this.memory().put( p.key(), p.value() );
 		}
@@ -106,6 +106,113 @@ public abstract class TopSerializingPreferenceNode extends BaseSerializingPrefer
 
 	@Override
 	public SerializingPreferenceNode parent() {
+		return this;
+	}
+
+
+	@Override
+	public SerializingPreferenceNode edit() {
+		return this;
+	}
+
+
+	@Override
+	public SerializingPreferenceNode apply() {
+		return this;
+	}
+
+
+	@Override
+	public boolean commit() {
+		return true;
+	}
+
+	@Override
+	public boolean getBoolean( String key, boolean def ) {
+		return this.get( key, def );
+	}
+
+	@Override
+	public char getChar( String key, char def ) {
+		return this.get( key, def );
+	}
+
+	@Override
+	public short getShort( String key, short def ) {
+		return this.get( key, def );
+	}
+
+	@Override
+	public int getInt( String key, int def ) {
+		return this.get( key, def );
+	}
+
+	@Override
+	public long getLong( String key, long def ) {
+		return this.get( key, def );
+	}
+
+	@Override
+	public float getFloat( String key, float def ) {
+		return this.get( key, def );
+	}
+
+	@Override
+	public double getDouble( String key, double def ) {
+		return this.get( key, def );
+	}
+
+	private <U extends Serializable> SerializingPreferenceNode setc( String key, U value ) {
+		this.set( key, value );
+		return this;
+	}
+
+	@Override
+	public SerializingPreferenceNode setBoolean( String key, boolean val ) {
+		return this.setc( key, val );
+	}
+
+	@Override
+	public SerializingPreferenceNode setChar( String key, char val ) {
+		return this.setc( key, val );
+	}
+
+	@Override
+	public SerializingPreferenceNode setShort( String key, short val ) {
+		return this.setc( key, val );
+	}
+
+	@Override
+	public SerializingPreferenceNode setInt( String key, int val ) {
+		return this.setc( key, val );
+	}
+
+	@Override
+	public SerializingPreferenceNode setLong( String key, long val ) {
+		return this.setc( key, val );
+	}
+
+	@Override
+	public SerializingPreferenceNode setFloat( String key, float val ) {
+		return this.setc( key, val );
+	}
+
+	@Override
+	public SerializingPreferenceNode setDouble( String key, double val ) {
+		return this.setc( key, val );
+	}
+
+	@Override
+	public SerializingPreferenceNode remove( String key ) {
+		return this.setc( key, null );
+	}
+
+	@Override
+	public SerializingPreferenceNode clear() {
+		for ( String key : this.getAll().keySet() ) {
+			this.remove( key );
+		}
+
 		return this;
 	}
 }
