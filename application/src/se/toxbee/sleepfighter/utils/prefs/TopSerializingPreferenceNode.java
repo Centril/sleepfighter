@@ -21,6 +21,8 @@ package se.toxbee.sleepfighter.utils.prefs;
 import java.io.Serializable;
 import java.util.Map;
 
+import com.google.common.base.Preconditions;
+
 /**
  * {@link TopSerializingPreferenceNode} is the top node for a {@link SerializingPreferenceNode}.
  *
@@ -29,15 +31,56 @@ import java.util.Map;
  * @since Dec 14, 2013
  */
 public abstract class TopSerializingPreferenceNode extends BaseSerializingPreferenceNode {
-	protected abstract Map<String, Serializable> backend();
+	/**
+	 * Returns the in-memory map of entities.
+	 *
+	 * @return the map.
+	 */
+	protected abstract Map<String, Serializable> memory();
+
+	/**
+	 * Stores the key-value pair in backend.
+	 *
+	 * @param key the key.
+	 * @param value the value. If value is null, then the key should be removed.
+	 */
+	protected abstract <U extends Serializable> void storeBackend( String key, U value );
 
 	@Override
 	public boolean contains( String key ) {
-		return this.backend().containsKey( key );
+		return this.memory().containsKey( key );
 	}
 
 	@Override
 	public Map<String, ?> getAll() {
-		return this.backend();
+		return this.memory();
+	}
+
+	public <U extends Serializable> U set( String key, U value ) {
+		@SuppressWarnings( "unchecked" )
+		U old = (U) this.memory().put( Preconditions.checkNotNull( key ), value );
+
+		// Write to persistence if changed.
+		if ( old != value ) {
+			this.storeBackend( key, value );
+		}
+
+		return old;
+	}
+
+	public <U extends Serializable> U get( String key, U def ) {
+		@SuppressWarnings( "unchecked" )
+		U val = (U) this.memory().get( key );
+		return val == null ? def : val;
+	}
+
+	@Override
+	public SerializingPreferenceNode sub( String ns ) {
+		return new ChildSerializingPreferenceNode( this, ns );
+	}
+
+	@Override
+	public SerializingPreferenceNode parent() {
+		return this;
 	}
 }
