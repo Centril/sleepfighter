@@ -18,7 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.prefs;
 
-import java.io.Serializable;
+import se.toxbee.sleepfighter.utils.prefs.SerializablePreference;
 
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -35,7 +35,7 @@ public class PersistPreference extends OrmPreference {
 	public PersistPreference() {
 		super();
 	}
-	public PersistPreference( String key, Serializable value ) {
-		super( key, value );
+	public PersistPreference( SerializablePreference p ) {
+		super( p );
 	}
 }

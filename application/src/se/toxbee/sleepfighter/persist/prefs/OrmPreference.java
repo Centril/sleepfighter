@@ -49,6 +49,16 @@ public abstract class OrmPreference implements SerializablePreference {
 		this.value = value;
 	}
 
+	/**
+	 * Constructs the preference with key and value.
+	 *
+	 * @param p copy source.
+	 */
+	public OrmPreference( SerializablePreference p ) {
+		this.key = p.key();
+		this.value = p.value();
+	}
+
 	@DatabaseField(id = true)
 	protected String key;
 

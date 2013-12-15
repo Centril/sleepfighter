@@ -42,9 +42,13 @@ import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.persist.dao.PersistenceException;
 import se.toxbee.sleepfighter.persist.dao.PersistenceExceptionDao;
+import se.toxbee.sleepfighter.persist.prefs.OrmPreferenceManager;
+import se.toxbee.sleepfighter.persist.prefs.PersistPreference;
 import se.toxbee.sleepfighter.persist.type.TypeBootstrapper;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.sleepfighter.utils.prefs.PreferenceManager;
+import se.toxbee.sleepfighter.utils.prefs.SerializablePreference;
 import android.content.Context;
 import android.util.Log;
 
@@ -75,6 +79,21 @@ public class PersistenceManager {
 	private volatile OrmHelper ormHelper = null;
 
 	private Context context;
+
+	/**
+	 * Constructs a {@link PreferenceManager} for use.
+	 *
+	 * @return the manager.
+	 */
+	public PreferenceManager makePreferenceManager() {
+		// Create the manager and load all preferences into memory.
+		return OrmPreferenceManager.make( this.dao_s( PersistPreference.class ), new OrmPreferenceManager.Factory<PersistPreference>() {
+			@Override
+			public PersistPreference produce( SerializablePreference p ) {
+				return new PersistPreference( p );
+			}
+		} ).load();
+	}
 
 	/**
 	 * Handles changes in alarm-list (the list itself, additions, deletions, etc).
@@ -707,7 +726,7 @@ public class PersistenceManager {
 	 *
 	 * @return the helper.
 	 */
-	public OrmHelper getHelper() {
+	private OrmHelper getHelper() {
 		if ( this.ormHelper == null ) {
 			this.ormHelper = OpenHelperManager.getHelper( this.context, OrmHelper.class );
 			this.init();
@@ -717,7 +736,27 @@ public class PersistenceManager {
 	}
 
 	/**
-	 * Facade: returns the DAO from {@link #getHelper()}.
+	 * Facade: returns DAO from {@link #getHelper()}.
+	 *
+	 * @param clazz the {@link Class} to get DAO for.
+	 * @return the DAO.
+	 */
+	public <T, I> PersistenceExceptionDao<T, I> dao( Class<T> clazz ) {
+		return this.getHelper().dao( clazz );
+	}
+
+	/**
+	 * Facade: returns DAO from {@link #getHelper()}.
+	 *
+	 * @param clazz the {@link Class} to get DAO for.
+	 * @return the DAO.
+	 */
+	public <T> PersistenceExceptionDao<T, String> dao_s( Class<T> clazz ) {
+		return this.getHelper().dao_s( clazz );
+	}
+
+	/**
+	 * Facade: returns DAO from {@link #getHelper()}.
 	 *
 	 * @param clazz the {@link Class} to get DAO for.
 	 * @return the DAO.
