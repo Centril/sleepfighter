@@ -187,8 +187,9 @@ public abstract class ForwardingPreferenceNode implements PreferenceNode {
 		return this;
 	}
 
+
 	@Override
-	public <U extends Serializable> U set( String key, Serializable val ) {
+	public <U extends Serializable> U set( String key, U val ) {
 		return delegate().set( key( key ), val );
 	}
 }

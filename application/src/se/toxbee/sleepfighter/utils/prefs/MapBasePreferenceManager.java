@@ -135,6 +135,11 @@ public abstract class MapBasePreferenceManager extends BasePreferenceManager {
 		return this.get( key, def );
 	}
 
+	@Override
+	public String getString( String key, String def ) {
+		return this.get( key, def );
+	}
+
 	private <U extends Serializable> PreferenceNode setc( String key, U value ) {
 		this.set( key, value );
 		return this;
@@ -172,6 +177,11 @@ public abstract class MapBasePreferenceManager extends BasePreferenceManager {
 
 	@Override
 	public PreferenceNode setDouble( String key, double val ) {
+		return this.setc( key, val );
+	}
+
+	@Override
+	public PreferenceNode setString( String key, String val ) {
 		return this.setc( key, val );
 	}
 
