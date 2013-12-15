@@ -18,9 +18,11 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.android.settings;
 
+import java.io.Serializable;
 import java.util.Map;
 
-import se.toxbee.sleepfighter.utils.prefs.ChildPreferenceNode;
+import se.toxbee.sleepfighter.utils.prefs.BasePreferenceManager;
+import se.toxbee.sleepfighter.utils.prefs.PreferenceManager;
 import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -32,10 +34,9 @@ import android.content.SharedPreferences.Editor;
  * @version 1.0
  * @since Dec 14, 2013
  */
-public class SharedPreferenceManager implements SharedPreferenceNode {
+public class SharedPreferenceManager extends BasePreferenceManager {
 	private final SharedPreferences prefs;
 	private Editor edit;
-	private boolean autoCommit;
 
 	/**
 	 * Constructs a SharedPreferenceNode.
@@ -45,17 +46,6 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 	public SharedPreferenceManager( SharedPreferences prefs ) {
 		this.prefs = prefs;
 		this.edit = null;
-		this.setAutoCommit( false );
-	}
-
-	@Override
-	public PreferenceNode sub( String ns ) {
-		return new Sub( this, ns );
-	}
-
-	@Override
-	public PreferenceNode parent() {
-		return this;
 	}
 
 	@Override
@@ -106,9 +96,7 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 
 	@Override
 	public PreferenceNode setBoolean( String key, boolean val ) {
-		this.edit();
-		this.edit.putBoolean( key, val );
-		return this.tryAutoCommit();
+		return tryac( edit(), edit.putBoolean( key, val ) );
 	}
 
 	@Override
@@ -123,23 +111,17 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 
 	@Override
 	public PreferenceNode setInt( String key, int val ) {
-		this.edit();
-		this.edit.putInt( key, val );
-		return this.tryAutoCommit();
+		return tryac( edit(), edit.putInt( key, val ) );
 	}
 
 	@Override
 	public PreferenceNode setLong( String key, long val ) {
-		this.edit();
-		this.edit.putLong( key, val );
-		return this.tryAutoCommit();
+		return tryac( edit(), edit.putLong( key, val ) );
 	}
 
 	@Override
 	public PreferenceNode setFloat( String key, float val ) {
-		this.edit();
-		this.edit.putFloat( key, val );
-		return this.tryAutoCommit();
+		return tryac( edit(), edit.putFloat( key, val ) );
 	}
 
 	@Override
@@ -149,87 +131,65 @@ public class SharedPreferenceManager implements SharedPreferenceNode {
 
 	@Override
 	public PreferenceNode remove( String key ) {
-		this.edit();
-		this.edit.remove( key );
-		return this.tryAutoCommit();
-	}
-
-	@Override
-	public PreferenceNode edit() {
-		if ( this.edit == null ) {
-			this.edit = this.prefs.edit();
-		}
-
-		return this;
+		return tryac( edit(), edit.remove( key ) );
 	}
 
 	@Override
 	public PreferenceNode clear() {
-		this.edit();
-		this.edit.clear();
-		return this.tryAutoCommit();
+		return tryac( edit(), edit.clear() );
 	}
 
 	@Override
-	public boolean commit() {
-		boolean r = false;
+	public boolean isApplying() {
+		return this.edit != null;
+	}
 
-		if ( this.edit != null ) {
-			r = this.edit.commit();
-			this.edit = null;
+	private boolean edit() {
+		boolean isNotApplying = this.edit == null;
+
+		if ( isNotApplying ) {
+			this.edit = this.prefs.edit();
 		}
 
-		return r;
+		return isNotApplying;
 	}
 
-	@Override
-	public PreferenceNode apply() {
-		if ( this.edit != null ) {
+	private PreferenceNode tryac( boolean autoCommit, Editor editor ) {
+		if ( autoCommit && this.isApplying() ) {
 			this.edit.apply();
-			this.edit = null;
 		}
 
-		return this;
-	}
-
-	/**
-	 * Sets whether or not we are in auto-commit mode.
-	 *
-	 * @see #isAutoCommit()
-	 * @param flag the mode.
-	 * @return this.
-	 */
-	public SharedPreferenceNode setAutoCommit( boolean flag ) {
-		this.autoCommit = flag;
 		return this;
 	}
 
 	@Override
-	public boolean isAutoCommit() {
-		return this.autoCommit;
-	}
+	public PreferenceManager _apply( PreferenceNode node, PreferenceEditCallback cb ) {
+		this.edit();
 
-	private PreferenceNode tryAutoCommit() {
-		if ( this.isAutoCommit() ) {
-			this.apply();
-		}
+		cb.editPreference( node );
 
+		this.edit.apply();
 		return this;
 	}
 
-	private static class Sub extends ChildPreferenceNode implements SharedPreferenceNode {
-		protected Sub( SharedPreferenceNode root, String ns ) {
-			super( root, ns );
-		}
+	@Override
+	public boolean _applyForResult( PreferenceNode node, PreferenceEditCallback cb ) {
+		this.edit();
 
-		@Override
-		protected PreferenceNode makeSubNode( PreferenceNode root, String ns ) {
-			return new Sub( (SharedPreferenceNode) root, ns );
-		}
+		cb.editPreference( node );
 
-		@Override
-		public SharedPreferenceNode setAutoCommit( boolean flag ) {
-			return ((SharedPreferenceNode) delegate()).setAutoCommit( flag );
-		}
+		return this.edit.commit();
+	}
+
+	@Override
+	public <U extends Serializable> U set( String key, U value ) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <U extends Serializable> U get( String key, U def ) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
