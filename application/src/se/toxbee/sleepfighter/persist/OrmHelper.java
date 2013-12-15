@@ -32,6 +32,7 @@ import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.persist.dao.PersistenceException;
 import se.toxbee.sleepfighter.persist.dao.PersistenceExceptionDao;
 import se.toxbee.sleepfighter.persist.migration.MigrationExecutor;
+import se.toxbee.sleepfighter.persist.prefs.PersistPreference;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
