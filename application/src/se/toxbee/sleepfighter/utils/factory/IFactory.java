@@ -18,27 +18,19 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.factory;
 
-import java.util.Set;
-
 /**
- * A factory interface that given a key can produce a well-defined object.
+ * {@link IFactory} is the most basic factory interface.
  *
- * @param <K> Key type restriction.
- * @param <V> Value type restriction. All items produced from factory must be at least of this super-class.
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
- * @since 2012-12-14
- * @version 1.1
+ * @version 1.0
+ * @since Dec 15, 2013
  */
-public interface Factory<K, V> extends IFactory<K, V> {
+public interface IFactory<K, V> {
 	/**
-	 * Returns set with public keys relating to what this factory can produce.
+	 * Returns a produced object from a related key.
 	 *
-	 * @return List of keys relating to what factory can produce.
+	 * @param key the key.
+	 * @return the produced object.
 	 */
-	public Set<K> getKeys();
-
-	/**
-	 * Alias for {@link #produce(K)}
-	 */
-	public V get( final K key );
+	public V produce( final K key );
 }
