@@ -18,6 +18,12 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.android.preference;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -26,6 +32,9 @@ import se.toxbee.sleepfighter.utils.prefs.PreferenceManager;
 import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Base64;
+import android.util.Base64InputStream;
+import android.util.Base64OutputStream;
 
 /**
  * {@link SharedPreferenceNode} is an adapter for {@link SharedPreferences}.
@@ -95,6 +104,11 @@ public class SharedPreferenceManager extends BasePreferenceManager {
 	}
 
 	@Override
+	public String getString( String key, String def ) {
+		return this.prefs.getString( key, def );
+	}
+
+	@Override
 	public PreferenceNode setBoolean( String key, boolean val ) {
 		return tryac( edit(), edit.putBoolean( key, val ) );
 	}
@@ -127,6 +141,11 @@ public class SharedPreferenceManager extends BasePreferenceManager {
 	@Override
 	public PreferenceNode setDouble( String key, double val ) {
 		return this.setLong( key, Double.doubleToRawLongBits( val ) );
+	}
+
+	@Override
+	public PreferenceNode setString( String key, String val ) {
+		return tryac( edit(), edit.putString( key, val ) );
 	}
 
 	@Override
@@ -181,15 +200,134 @@ public class SharedPreferenceManager extends BasePreferenceManager {
 		return this.edit.commit();
 	}
 
+	@SuppressWarnings( "unchecked" )
 	@Override
 	public <U extends Serializable> U set( String key, U value ) {
-		// TODO Auto-generated method stub
-		return null;
+		// Remove if null.
+		if ( value == null ) {
+			this.edit.remove( key );
+			return this.get( key, null );
+		}
+
+		// If we've got a "primitive", redirect to correct setter.
+		if ( value.getClass().isPrimitive() ) {
+			Object old = null;
+			
+			if ( value instanceof Boolean ) {
+				old = this.contains( key ) ? this.getBoolean( key, false ) : null;
+				this.setBoolean( key, (Boolean) value );
+			} else if ( value instanceof Character ) {
+				old = this.contains( key ) ? this.getChar( key, (char) 0 ) : null;
+				this.setChar( key, (Character) value );
+			} else if ( value instanceof Short ) {
+				old = this.contains( key ) ? this.getShort( key, (short) 0 ) : null;
+				this.setShort( key, (Short) value );
+			} else if ( value instanceof Integer ) {
+				old = this.contains( key ) ? this.getInt( key, 0 ) : null;
+				this.setInt( key, (Integer) value );
+			} else if ( value instanceof Long ) {
+				old = this.contains( key ) ? this.getLong( key, 0 ) : null;
+				this.setLong( key, (Long) value );
+			} else if ( value instanceof Float ) {
+				old = this.contains( key ) ? this.getFloat( key, 0 ) : null;
+				this.setFloat( key, (Float) value );
+			} else if ( value instanceof Double ) {
+				old = this.contains( key ) ? this.getDouble( key, 0 ) : null;
+				this.setDouble( key, (Double) value );
+			}
+
+			return (U) old;
+		} else if ( value instanceof String ) {
+			Object old = this.contains( key ) ? this.getString( key, null ) : null;
+			this.setString( key, (String) value );
+			return (U) old;
+		}
+
+		// Convert the value to an object.
+	    ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+		ObjectOutputStream objectOutput;
+		try {
+			objectOutput = new ObjectOutputStream( arrayOutputStream );
+			objectOutput.writeObject( value );
+			byte[] data = arrayOutputStream.toByteArray();
+			objectOutput.close();
+			arrayOutputStream.close();
+
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			Base64OutputStream b64 = new Base64OutputStream( out, Base64.DEFAULT );
+			b64.write( data );
+			b64.close();
+			out.close();
+
+			U old = this.get( key, null );
+			this.setString( key, new String( out.toByteArray() ) );
+			return old;
+		} catch ( IOException e ) {
+			throw new RuntimeException( e );
+		}
 	}
 
+	@SuppressWarnings( "unchecked" )
 	@Override
 	public <U extends Serializable> U get( String key, U def ) {
-		// TODO Auto-generated method stub
-		return null;
+		// If we've got a "primitive", redirect to correct getter.
+		if ( def != null ) {
+			if ( def.getClass().isPrimitive() ) {
+				Object retr = null;
+				if ( def instanceof Boolean ) {
+					retr = this.getBoolean( key, (Boolean) def );
+				} else if ( def instanceof Character ) {
+					retr = this.getChar( key, (Character) def );
+				} else if ( def instanceof Short ) {
+					retr = this.getShort( key, (Short) def );
+				} else if ( def instanceof Integer ) {
+					retr = this.getInt( key, (Integer) def );
+				} else if ( def instanceof Long ) {
+					retr = this.getLong( key, (Long) def );
+				} else if ( def instanceof Float ) {
+					retr = this.getFloat( key, (Float) def );
+				} else if ( def instanceof Double ) {
+					retr = this.getDouble( key, (Double) def );
+				}
+				return (U) retr;
+			} else if ( def instanceof String ) {
+				return (U) this.getString( key, (String) def );
+			}
+		}
+
+		String str = this.prefs.getString( key, null );
+		if ( str == null ) {
+			return def;
+		}
+
+		byte[] bytes = str.getBytes();
+		if ( bytes.length == 0 ) {
+			return def;
+		}
+
+		U r = def;
+
+		// Read the value.
+		ObjectInputStream in = null;
+		try {
+			ByteArrayInputStream byteArray = new ByteArrayInputStream( bytes );
+			Base64InputStream base64InputStream = new Base64InputStream( byteArray, Base64.DEFAULT );
+			in = new ObjectInputStream( base64InputStream );
+			r = (U) in.readObject();
+		} catch ( ObjectStreamException e ) {
+			e.printStackTrace();
+		} catch ( ClassNotFoundException e ) {
+			e.printStackTrace();
+		} catch ( IOException e ) {
+			e.printStackTrace();
+		} finally {
+			try {
+				in.close();
+			} catch ( IOException e ) {
+				e.printStackTrace();
+			}
+		}
+
+		return r;
 	}
 }
