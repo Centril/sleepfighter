@@ -24,13 +24,14 @@ import java.util.Map;
 import com.google.common.base.Preconditions;
 
 /**
- * {@link SerializingPreferenceManager} is the top node for a {@link SerializingPreferenceNode}.
+ * {@link MapBasePreferenceManager} builds on {@link BasePreferenceManager}<br/>
+ * using a {@link Map} as in-memory backend and provides hooks for persistence.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
  * @since Dec 14, 2013
  */
-public abstract class SerializingPreferenceManager implements SerializingPreferenceNode {
+public abstract class MapBasePreferenceManager extends BasePreferenceManager {
 	/**
 	 * Returns the in-memory map of entities.
 	 *
@@ -59,7 +60,7 @@ public abstract class SerializingPreferenceManager implements SerializingPrefere
 	 * @param prefs the preferences to load.
 	 * @return this.
 	 */
-	protected SerializingPreferenceManager load( Iterable<? extends SerializablePreference> prefs ) {
+	protected MapBasePreferenceManager load( Iterable<? extends SerializablePreference> prefs ) {
 		for ( SerializablePreference p : prefs ) {
 			this.memory().put( p.key(), p.value() );
 		}
@@ -100,31 +101,6 @@ public abstract class SerializingPreferenceManager implements SerializingPrefere
 	}
 
 	@Override
-	public SerializingPreferenceNode sub( String ns ) {
-		return new ChildSerializingPreferenceNode( this, ns );
-	}
-
-	@Override
-	public SerializingPreferenceNode parent() {
-		return this;
-	}
-
-	@Override
-	public SerializingPreferenceNode edit() {
-		return this;
-	}
-
-	@Override
-	public SerializingPreferenceNode apply() {
-		return this;
-	}
-
-	@Override
-	public boolean commit() {
-		return true;
-	}
-
-	@Override
 	public boolean getBoolean( String key, boolean def ) {
 		return this.get( key, def );
 	}
@@ -159,53 +135,53 @@ public abstract class SerializingPreferenceManager implements SerializingPrefere
 		return this.get( key, def );
 	}
 
-	private <U extends Serializable> SerializingPreferenceNode setc( String key, U value ) {
+	private <U extends Serializable> PreferenceNode setc( String key, U value ) {
 		this.set( key, value );
 		return this;
 	}
 
 	@Override
-	public SerializingPreferenceNode setBoolean( String key, boolean val ) {
+	public PreferenceNode setBoolean( String key, boolean val ) {
 		return this.setc( key, val );
 	}
 
 	@Override
-	public SerializingPreferenceNode setChar( String key, char val ) {
+	public PreferenceNode setChar( String key, char val ) {
 		return this.setc( key, val );
 	}
 
 	@Override
-	public SerializingPreferenceNode setShort( String key, short val ) {
+	public PreferenceNode setShort( String key, short val ) {
 		return this.setc( key, val );
 	}
 
 	@Override
-	public SerializingPreferenceNode setInt( String key, int val ) {
+	public PreferenceNode setInt( String key, int val ) {
 		return this.setc( key, val );
 	}
 
 	@Override
-	public SerializingPreferenceNode setLong( String key, long val ) {
+	public PreferenceNode setLong( String key, long val ) {
 		return this.setc( key, val );
 	}
 
 	@Override
-	public SerializingPreferenceNode setFloat( String key, float val ) {
+	public PreferenceNode setFloat( String key, float val ) {
 		return this.setc( key, val );
 	}
 
 	@Override
-	public SerializingPreferenceNode setDouble( String key, double val ) {
+	public PreferenceNode setDouble( String key, double val ) {
 		return this.setc( key, val );
 	}
 
 	@Override
-	public SerializingPreferenceNode remove( String key ) {
+	public PreferenceNode remove( String key ) {
 		return this.setc( key, null );
 	}
 
 	@Override
-	public SerializingPreferenceNode clear() {
+	public PreferenceNode clear() {
 		for ( String key : this.getAll().keySet() ) {
 			this.remove( key );
 		}

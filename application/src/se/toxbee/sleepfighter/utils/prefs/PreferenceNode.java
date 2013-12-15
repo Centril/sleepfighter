@@ -21,6 +21,9 @@ package se.toxbee.sleepfighter.utils.prefs;
 import java.io.Serializable;
 import java.util.Map;
 
+import se.toxbee.sleepfighter.utils.model.PrimitiveDefaultGetters;
+import se.toxbee.sleepfighter.utils.model.PrimitiveFluidSetters;
+
 /**
  * {@link PreferenceNode} provides an interface for preference managers.
  *
@@ -28,7 +31,28 @@ import java.util.Map;
  * @version 1.0
  * @since Dec 14, 2013
  */
-public interface PreferenceNode {
+public interface PreferenceNode extends PrimitiveDefaultGetters<String>, PrimitiveFluidSetters<String, PreferenceNode> {
+	/**
+	 * {@link PreferenceEditCallback}s can be passed to PreferenceNode 
+	 *
+	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
+	 * @version 1.0
+	 * @since Dec 14, 2013
+	 */
+	public static interface PreferenceEditCallback {
+		/**
+		 * Performs an edit in a {@link PreferenceNode}.
+		 *
+		 * @param pref the {@link PreferenceNode}.
+		 */
+		public void editPreference( PreferenceNode pref );
+	}
+
+	/* --------------------------------
+	 * Hierarchy logic.
+	 * --------------------------------
+	 */
+
 	/**
 	 * Returns a sub node one level deeper with the namespace ns.
 	 *
@@ -43,6 +67,11 @@ public interface PreferenceNode {
 	 * @return the parent node.
 	 */
 	public PreferenceNode parent();
+
+	/* --------------------------------
+	 * Abstract Accessor API.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Returns true if preference with key exists in manager.
@@ -60,24 +89,6 @@ public interface PreferenceNode {
 	 */
 	public Map<String, ?> getAll();
 
-	// All primitive types:
-
-	public boolean getBoolean( String key, boolean def );
-	public char getChar( String key, char def );
-	public short getShort( String key, short def );
-	public int getInt( String key, int def );
-	public long getLong( String key, long def );
-	public float getFloat( String key, float def );
-	public double getDouble( String key, double def );
-
-	public PreferenceNode setBoolean( String key, boolean val );
-	public PreferenceNode setChar( String key, char val );
-	public PreferenceNode setShort( String key, short val );
-	public PreferenceNode setInt( String key, int val );
-	public PreferenceNode setLong( String key, long val );
-	public PreferenceNode setFloat( String key, float val );
-	public PreferenceNode setDouble( String key, double val );
-
 	/**
 	 * Removes the key.<br/>
 	 * Equivalent of calling {@link #set(String, Serializable)} with null as value.
@@ -87,35 +98,56 @@ public interface PreferenceNode {
 	public PreferenceNode remove( String key );
 
 	/**
-	 * Begins a transaction which may be
-	 * completed with {@link #commit()} or {@link #apply()}.
-	 */
-	public PreferenceNode edit();
-
-	/**
 	 * Clears all preferences.
 	 */
 	public PreferenceNode clear();
 
 	/**
-	 * Commits all the changes that were made.
+	 * Sets a value to key.<br/>
+	 * Passing null as value deletes the key.
 	 *
-	 * @return true if the changes were successful.
+	 * @param key the key to store value under.
+	 * @param value the value to set to key.
+	 * @return the old value or null if not previously set.
 	 */
-	public boolean commit();
+	public <U extends Serializable> U set( String key, U value );
 
 	/**
-	 * The same as {@link #commit()} but might depending on implementation run asynchronously.
-	 * The in-memory changes will be immediate.
+	 * Returns a value for key or def if not set.
+	 *
+	 * @param key the key to get value for.
+	 * @param def default value.
+	 * @return the value.
 	 */
-	public PreferenceNode apply();
+	public <U extends Serializable> U get( String key, U def );
+
+	/* --------------------------------
+	 * Transaction logic.
+	 * --------------------------------
+	 */
 
 	/**
-	 * Returns whether or not the node is in auto-commit mode.<br/>
-	 * When in auto-commit mode, {@link #commit()} will always return true,<br/>
-	 * and all non-accessors will be atomic operations.
+	 * Begins a transaction and returns success/failure.
 	 *
-	 * @return true if in auto-commit mode.
+	 * @param cb the callback to run.
+	 * @return the result, true if success.
 	 */
-	public boolean isAutoCommit();
+	public boolean applyForResult( PreferenceEditCallback cb );
+
+	/**
+	 * Begins a transaction and ignores the result.<br/>
+	 * Might run asynchronously depending on implementation.<br/>
+	 * The in-memory changes are immediate.
+	 *
+	 * @param cb the callback to run.
+	 * @return this.
+	 */
+	public PreferenceNode apply( PreferenceEditCallback cb );
+
+	/**
+	 * Returns true if the node is currently applying.
+	 *
+	 * @return true if applying.
+	 */
+	public boolean isApplying();
 }

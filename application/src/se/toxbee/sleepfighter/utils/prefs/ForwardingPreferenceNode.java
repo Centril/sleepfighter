@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.prefs;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -57,7 +58,8 @@ public abstract class ForwardingPreferenceNode implements PreferenceNode {
 
 	@Override
 	public PreferenceNode clear() {
-		return delegate().clear();
+		delegate().clear();
+		return this;
 	}
 
 	@Override
@@ -68,6 +70,38 @@ public abstract class ForwardingPreferenceNode implements PreferenceNode {
 	@Override
 	public boolean contains( String key ) {
 		return delegate().contains( key( key ) );
+	}
+
+	@Override
+	public <U extends Serializable> U set( String key, U value ) {
+		return delegate().set( key( key ), value );
+	}
+
+	@Override
+	public <U extends Serializable> U get( String key, U def ) {
+		return delegate().set( key( key ), def );
+	}
+
+	@Override
+	public PreferenceNode remove( String key ) {
+		delegate().remove( key( key ) );
+		return this;
+	}
+
+	@Override
+	public boolean applyForResult( PreferenceEditCallback cb ) {
+		return delegate().applyForResult( cb );
+	}
+
+	@Override
+	public PreferenceNode apply( PreferenceEditCallback cb ) {
+		delegate().apply( cb );
+		return this;
+	}
+
+	@Override
+	public boolean isApplying() {
+		return delegate().isApplying();
 	}
 
 	@Override
@@ -107,61 +141,43 @@ public abstract class ForwardingPreferenceNode implements PreferenceNode {
 
 	@Override
 	public PreferenceNode setBoolean( String key, boolean val ) {
-		return delegate().setBoolean( key( key ), val );
+		delegate().setBoolean( key( key ), val );
+		return this;
 	}
 
 	@Override
 	public PreferenceNode setChar( String key, char val ) {
-		return delegate().setChar( key( key ), val );
+		delegate().setChar( key( key ), val );
+		return this;
 	}
 
 	@Override
 	public PreferenceNode setShort( String key, short val ) {
-		return delegate().setShort( key( key ), val );
+		delegate().setShort( key( key ), val );
+		return this;
 	}
 
 	@Override
 	public PreferenceNode setInt( String key, int val ) {
-		return delegate().setInt( key( key ), val );
+		delegate().setInt( key( key ), val );
+		return this;
 	}
 
 	@Override
 	public PreferenceNode setLong( String key, long val ) {
-		return delegate().setLong( key( key ), val );
+		delegate().setLong( key( key ), val );
+		return this;
 	}
 
 	@Override
 	public PreferenceNode setFloat( String key, float val ) {
-		return delegate().setFloat( key( key ), val );
+		delegate().setFloat( key( key ), val );
+		return this;
 	}
 
 	@Override
 	public PreferenceNode setDouble( String key, double val ) {
-		return delegate().setDouble( key( key ), val );
-	}
-
-	@Override
-	public PreferenceNode remove( String key ) {
-		return delegate().remove( key( key ) );
-	}
-
-	@Override
-	public PreferenceNode edit() {
-		return delegate().edit();
-	}
-
-	@Override
-	public boolean commit() {
-		return delegate().commit();
-	}
-
-	@Override
-	public PreferenceNode apply() {
-		return delegate().apply();
-	}
-
-	@Override
-	public boolean isAutoCommit() {
-		return delegate().isAutoCommit();
+		delegate().setDouble( key( key ), val );
+		return this;
 	}
 }

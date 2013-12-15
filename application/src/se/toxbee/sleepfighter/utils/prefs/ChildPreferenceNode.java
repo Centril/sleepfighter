@@ -30,9 +30,9 @@ import com.google.common.collect.Maps;
  * @version 1.0
  * @since Dec 14, 2013
  */
-public abstract class ChildPreferenceNode extends ForwardingPreferenceNode {
+public class ChildPreferenceNode extends ForwardingPreferenceNode {
 	protected final String namespace;
-	protected final PreferenceNode root;
+	protected final PreferenceManager root;
 
 	/**
 	 * Constructs the ChildPreferenceNode given the root and the child's namespace.
@@ -40,12 +40,14 @@ public abstract class ChildPreferenceNode extends ForwardingPreferenceNode {
 	 * @param root the root node.
 	 * @param ns the namespace of child.
 	 */
-	public ChildPreferenceNode( PreferenceNode root, String ns ) {
+	public ChildPreferenceNode( PreferenceManager root, String ns ) {
 		this.root = root;
 		this.namespace = this.makeNSString( ns );
 	}
 
-	protected abstract PreferenceNode makeSubNode( PreferenceNode root, String ns );
+	protected PreferenceNode makeSubNode( String ns ) {
+		return new ChildPreferenceNode( this.root, ns );
+	}
 
 	/**
 	 * Creates the NS string at construction.<br/>
@@ -74,19 +76,19 @@ public abstract class ChildPreferenceNode extends ForwardingPreferenceNode {
 	}
 
 	@Override
-	protected PreferenceNode delegate() {
+	protected PreferenceManager delegate() {
 		return this.root;
 	}
 
 	@Override
 	public PreferenceNode sub( String ns ) {
-		return this.makeSubNode( this.root, key( ns ) );
+		return this.makeSubNode( key( ns ) );
 	}
 
 	@Override
 	public PreferenceNode parent() {
 		String parentNs = this.parentNSString();
-		return parentNs.isEmpty() ? this.root : this.makeSubNode( root, parentNs );
+		return parentNs.isEmpty() ? this.root : this.makeSubNode( parentNs );
 	}
 
 	@Override
@@ -109,6 +111,17 @@ public abstract class ChildPreferenceNode extends ForwardingPreferenceNode {
 		for ( String key : this.liveMap().keySet() ) {
 			this.remove( key );
 		}
+		return this;
+	}
+
+	@Override
+	public boolean applyForResult( PreferenceEditCallback cb ) {
+		return delegate()._applyForResult( this, cb );
+	}
+
+	@Override
+	public PreferenceNode apply( PreferenceEditCallback cb ) {
+		delegate()._apply( this, cb );
 		return this;
 	}
 }
