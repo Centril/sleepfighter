@@ -33,5 +33,5 @@ public interface StringGetter<K> {
 	 * @param key the key to get value for.
 	 * @return the value.
 	 */
-	public boolean getString( K key );
+	public String getString( K key );
 }
