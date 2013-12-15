@@ -21,8 +21,12 @@ package se.toxbee.sleepfighter.utils.prefs;
 import java.io.Serializable;
 import java.util.Map;
 
+import se.toxbee.sleepfighter.utils.model.ArbitraryDefaultGetter;
+import se.toxbee.sleepfighter.utils.model.ArbitraryOldSetter;
 import se.toxbee.sleepfighter.utils.model.PrimitiveDefaultGetters;
 import se.toxbee.sleepfighter.utils.model.PrimitiveFluidSetters;
+import se.toxbee.sleepfighter.utils.model.StringDefaultGetter;
+import se.toxbee.sleepfighter.utils.model.StringFluidSetter;
 
 /**
  * {@link PreferenceNode} provides an interface for preference managers.
@@ -31,7 +35,10 @@ import se.toxbee.sleepfighter.utils.model.PrimitiveFluidSetters;
  * @version 1.0
  * @since Dec 14, 2013
  */
-public interface PreferenceNode extends PrimitiveDefaultGetters<String>, PrimitiveFluidSetters<String, PreferenceNode> {
+public interface PreferenceNode extends PrimitiveDefaultGetters<String>,
+		PrimitiveFluidSetters<String, PreferenceNode>,
+		StringDefaultGetter<String>, StringFluidSetter<String, PreferenceNode>,
+		ArbitraryDefaultGetter<String, Serializable>, ArbitraryOldSetter<String, Serializable> {
 	/**
 	 * {@link PreferenceEditCallback}s can be passed to PreferenceNode 
 	 *
@@ -101,25 +108,6 @@ public interface PreferenceNode extends PrimitiveDefaultGetters<String>, Primiti
 	 * Clears all preferences.
 	 */
 	public PreferenceNode clear();
-
-	/**
-	 * Sets a value to key.<br/>
-	 * Passing null as value deletes the key.
-	 *
-	 * @param key the key to store value under.
-	 * @param value the value to set to key.
-	 * @return the old value or null if not previously set.
-	 */
-	public <U extends Serializable> U set( String key, U value );
-
-	/**
-	 * Returns a value for key or def if not set.
-	 *
-	 * @param key the key to get value for.
-	 * @param def default value.
-	 * @return the value.
-	 */
-	public <U extends Serializable> U get( String key, U def );
 
 	/* --------------------------------
 	 * Transaction logic.

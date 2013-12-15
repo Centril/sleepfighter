@@ -73,16 +73,6 @@ public abstract class ForwardingPreferenceNode implements PreferenceNode {
 	}
 
 	@Override
-	public <U extends Serializable> U set( String key, U value ) {
-		return delegate().set( key( key ), value );
-	}
-
-	@Override
-	public <U extends Serializable> U get( String key, U def ) {
-		return delegate().set( key( key ), def );
-	}
-
-	@Override
 	public PreferenceNode remove( String key ) {
 		delegate().remove( key( key ) );
 		return this;
@@ -140,6 +130,16 @@ public abstract class ForwardingPreferenceNode implements PreferenceNode {
 	}
 
 	@Override
+	public String getString( String key, String def ) {
+		return delegate().getString( key( key ), def );
+	}
+
+	@Override
+	public <U extends Serializable> U get( String key, U def ) {
+		return delegate().get( key( key ), def );
+	}
+
+	@Override
 	public PreferenceNode setBoolean( String key, boolean val ) {
 		delegate().setBoolean( key( key ), val );
 		return this;
@@ -179,5 +179,16 @@ public abstract class ForwardingPreferenceNode implements PreferenceNode {
 	public PreferenceNode setDouble( String key, double val ) {
 		delegate().setDouble( key( key ), val );
 		return this;
+	}
+
+	@Override
+	public PreferenceNode setString( String key, String val ) {
+		delegate().setString( key( key ), val );
+		return this;
+	}
+
+	@Override
+	public <U extends Serializable> U set( String key, Serializable val ) {
+		return delegate().set( key( key ), val );
 	}
 }
