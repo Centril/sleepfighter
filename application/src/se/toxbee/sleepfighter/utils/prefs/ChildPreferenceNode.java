@@ -82,7 +82,7 @@ public class ChildPreferenceNode extends ForwardingPreferenceNode {
 
 	@Override
 	public PreferenceNode sub( String ns ) {
-		return this.makeSubNode( key( ns ) );
+		return ns == null ? this : this.makeSubNode( key( ns ) );
 	}
 
 	@Override

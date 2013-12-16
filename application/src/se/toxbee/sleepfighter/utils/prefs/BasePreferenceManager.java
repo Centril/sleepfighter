@@ -20,7 +20,7 @@ public abstract class BasePreferenceManager implements PreferenceManager {
 
 	@Override
 	public PreferenceNode sub( String ns ) {
-		return new ChildPreferenceNode( this, ns );
+		return ns == null ? this : new ChildPreferenceNode( this, ns );
 	}
 
 	@Override

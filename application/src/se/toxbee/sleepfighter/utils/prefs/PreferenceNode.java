@@ -58,7 +58,8 @@ public interface PreferenceNode extends PrimitiveDefaultGetters<String>,
 	 */
 
 	/**
-	 * Returns a sub node one level deeper with the namespace ns.
+	 * Returns a sub node one level deeper with the namespace ns.<br/>
+	 * If ns == null, this node will be returned.
 	 *
 	 * @param ns the namespace of the sub node.
 	 * @return the sub node.
