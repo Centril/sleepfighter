@@ -153,7 +153,7 @@ public abstract class IMigrationExecutor<U, T extends IMigration<U>> {
 			int v = migrater.versionCode();
 
 			// Double check to ensure migrater version is appropriate.
-			if ( originVersion > v ) {
+			if ( originVersion >= v ) {
 				continue;
 			}
 
