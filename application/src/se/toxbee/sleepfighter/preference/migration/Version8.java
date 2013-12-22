@@ -27,38 +27,38 @@ public class Version8 extends Migrater.Adapter {
 		p.remove( "pref_temp_weather" );
 
 		// control
-		tfb( p, "pref_alarm_turn_screen_on", "alarmControl.turnScreenOn", true );
-		tfb( p, "pref_alarm_bypass_lock_screen", "alarmControl.bypassLockScreen", true );
+		b( p, "pref_alarm_turn_screen_on", "alarmControl.turnScreenOn", true );
+		b( p, "pref_alarm_bypass_lock_screen", "alarmControl.bypassLockScreen", true );
 
 		// location filter
-		tfb( p, "pref_location_filter_enabled", "locfilter.isEnabled", true );
-		tfi( p, "pref_location_filter_ttff", "locfilter.firstRequestDT", 15 );
-		tfi( p, "pref_location_filter_refresh_interval", "locfilter.requestRefreshInterval", 1 );
-		tfi( p, "pref_location_filter_min_distance", "locfilter.minDistance", 100 );
-		tfi( p, "pref_location_filter_max_age", "locfilter.maxAllowedAge", 20 );
+		b( p, "pref_location_filter_enabled", "locfilter.isEnabled", true );
+		i( p, "pref_location_filter_ttff", "locfilter.firstRequestDT", 15 );
+		i( p, "pref_location_filter_refresh_interval", "locfilter.requestRefreshInterval", 1 );
+		i( p, "pref_location_filter_min_distance", "locfilter.minDistance", 100 );
+		i( p, "pref_location_filter_max_age", "locfilter.maxAllowedAge", 20 );
 
 		// challenge points
-		tfb( p, "challenges_activated", "challenges.isActivated", true );
-		tfi( p, "challenge_points", "challenges.points", 0 );
-		tfl( p, "lastChallengePointsGained", "challenges.lastTimeEarned", 0 );
+		b( p, "challenges_activated", "challenges.isActivated", true );
+		i( p, "challenge_points", "challenges.points", 0 );
+		l( p, "lastChallengePointsGained", "challenges.lastTimeEarned", 0 );
 
 		// display
-		tfb( p, "pref_global_when_or_in_how_much", "display.earliestAsPeriod", false );
+		b( p, "pref_global_when_or_in_how_much", "display.earliestAsPeriod", false );
 	}
 
-	private void tfb( PreferenceNode p, String f, String t, boolean d ) {
+	private void b( PreferenceNode p, String f, String t, boolean d ) {
 		boolean v = p.getBoolean( f, d );
 		p.remove( f );
 		p.setBoolean( t, v );
 	}
 
-	private void tfi( PreferenceNode p, String f, String t, int d ) {
+	private void i( PreferenceNode p, String f, String t, int d ) {
 		int v = p.getInt( f, d );
 		p.remove( f );
 		p.setInt( t, v );
 	}
 
-	private void tfl( PreferenceNode p, String f, String t, long d ) {
+	private void l( PreferenceNode p, String f, String t, long d ) {
 		long v = p.getLong( f, d );
 		p.remove( f );
 		p.setLong( t, v );
