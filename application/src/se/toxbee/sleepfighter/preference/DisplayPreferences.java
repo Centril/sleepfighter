@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.preference;
 
+import se.toxbee.sleepfighter.model.SortMode;
 import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
 
 /**
@@ -40,5 +41,24 @@ public class DisplayPreferences extends AppPreferenceNode {
 	 */
 	public boolean earliestAsPeriod() {
 		return p.getBoolean( "earliestAsPeriod", false );
+	}
+
+	/**
+	 * Returns the sort mode currently used.
+	 *
+	 * @return the sort mode.
+	 */
+	public SortMode getSortMode() {
+		return new SortMode( SortMode.Field.from( p.getInt( "sortField", 0 ) ),
+				p.getBoolean( "sortDirection", true ) );
+	}
+
+	/**
+	 * Sets the sort mode to currently use.
+	 *
+	 * @param mode the mode to use.
+	 */
+	public void setSortMode( SortMode mode ) {
+		p.setInt( "sortField", mode.field().ordinal() ).setBoolean( "sortDirection", mode.direction() );
 	}
 }

@@ -75,6 +75,8 @@ public class MainActivity extends Activity {
 		this.setContentView( R.layout.activity_main );
 
 		this.alarmList = this.app().getAlarms();
+		this.alarmList.order( app().getPrefs().display.getSortMode() );
+
 		this.alarmAdapter = new AlarmAdapter( this, this.alarmList );
 
 		this.app().getBus().subscribe( this );

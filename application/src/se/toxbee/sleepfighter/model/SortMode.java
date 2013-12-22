@@ -94,6 +94,16 @@ public class SortMode {
 				return false;
 			}
 		}
+
+		/**
+		 * Returns a {@link Field} given the ordinalty of the field.
+		 *
+		 * @param ordinal the ordinality.
+		 * @return the {@link Field}.
+		 */
+		public static Field from( int ordinal ) {
+			return values()[ordinal];
+		}
 	}
 
 	private Field field;
