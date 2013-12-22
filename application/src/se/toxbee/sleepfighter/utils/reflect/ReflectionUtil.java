@@ -20,6 +20,7 @@ package se.toxbee.sleepfighter.utils.reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 
@@ -34,6 +35,47 @@ import com.google.common.reflect.TypeToken;
  * @since Nov 5, 2013
  */
 public class ReflectionUtil {
+	/**
+	 * {@link Method#invoke(Object, Object...)}
+	 */
+	public static Object invoke( Method m, Object receiver, Object... args ) {
+		try {
+			return m.invoke( receiver, args );
+		} catch ( IllegalArgumentException e ) {
+			ROJava6Exception.reThrow( e );
+		} catch ( IllegalAccessException e ) {
+			ROJava6Exception.reThrow( e );
+		} catch ( InvocationTargetException e ) {
+			ROJava6Exception.reThrow( e );
+		}
+
+		return null;
+	}
+
+	/**
+	 * {@link Class#getDeclaredMethod(String, Class...)}
+	 */
+	public static Method declaredMethod( Class<?> clazz, String name, Class<?>... parameterTypes ) {
+		try {
+			return clazz.getDeclaredMethod( name, parameterTypes );
+		} catch ( NoSuchMethodException e ) {
+			ROJava6Exception.reThrow( e );
+			return null;
+		}
+	}
+
+	/**
+	 * {@link Class#getMethod(String, Class...)}
+	 */
+	public static Method method( Class<?> clazz, String name, Class<?>... parameterTypes ) {
+		try {
+			return clazz.getMethod( name, parameterTypes );
+		} catch ( NoSuchMethodException e ) {
+			ROJava6Exception.reThrow( e );
+			return null;
+		}
+	}
+
 	/**
 	 * Creates a generic array of size with component type U given a generic object o.<br/>
 	 * Only works if o actually has a generic type U.
