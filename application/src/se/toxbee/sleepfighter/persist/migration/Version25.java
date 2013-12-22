@@ -37,7 +37,7 @@ public class Version25 extends Migrater.Adapter {
 				.update( "time = (hour << 12) | (minute << 6) | second", null )
 				.dropColumns( new String[] { "hour", "minute", "second" } );
 		} catch ( SQLException e ) {
-			throw new MigrationException( "Migration v25 failed.", e, this );
+			MigrationException.fail( e, this );
 		}
 	}
 }

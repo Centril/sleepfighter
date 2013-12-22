@@ -18,70 +18,25 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.persist.migration;
 
-import java.util.Collection;
-
-import se.toxbee.sleepfighter.utils.string.StringUtils;
+import se.toxbee.sleepfighter.utils.migration.IMigration;
 
 /**
- * Migrater is an interface all migrations must implement.<br/>
+ * {@link Migrater} is an interface all migrations must implement.<br/>
  * Note that the migrater must have a no-argument constructor.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
- * @version 1.0
+ * @version 2.0
  * @since Nov 12, 2013
  */
-public interface Migrater {
+public interface Migrater extends IMigration<MigrationUtil> {
 	/**
-	 * MigrationAdapter is the base implementation of Migrater.<br/>
+	 * {@link Adapter} is the base implementation of {@link Migrater}.<br/>
 	 * It basically doesn't skip any versions.
 	 *
 	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
-	 * @version 1.0
+	 * @version 2.0
 	 * @since Nov 13, 2013
 	 */
-	public abstract class Adapter implements Migrater {
-		private int version = -1;
-
-		@Override
-		public Collection<Integer> skipVersions( int originVersion, int targetVersion ) {
-			return null;
-		}
-
-		/**
-		 * <p>Default behavior is to deduce the version from the class name using any digits in it.</p>
-		 *
-		 * {@inheritDoc}
-		 */
-		public int versionCode() {
-			if ( this.version == -1 ) {
-				this.version = StringUtils.getDigitsIn( this.getClass().getSimpleName() );
-			}
-
-			return this.version;
-		}
+	public abstract class Adapter extends IMigration.Adapter<MigrationUtil> implements Migrater {
 	}
-
-	/**
-	 * Returns a list of versions this migrater considers unnecessary.<br/>
-	 * These migrations will not be run.
-	 *
-	 * @param originVersion the origin version that the client started from.
-	 * @param targetVersion the target version that the client will land in.
-	 * @return list of version codes to skip - or null if none.
-	 */
-	public Collection<Integer> skipVersions( int originVersion, int targetVersion );
-
-	/**
-	 * Applies a migration.
-	 *
-	 * @param util the utility object to perform work with.
-	 */
-	public void applyMigration( MigrationUtil util ) throws MigrationException;
-
-	/**
-	 * Returns the version-code (database) the migration is upgrading for.
-	 *
-	 * @return the version.
-	 */
-	public int versionCode();
 }

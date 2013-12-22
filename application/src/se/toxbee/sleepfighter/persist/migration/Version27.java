@@ -37,7 +37,7 @@ public class Version27 extends Adapter {
 				.addColumn( "order", "INTEGER DEFAULT 0" )
 				.update( "`order` = `id`", null );
 		} catch ( SQLException e ) {
-			throw new MigrationException( "Migration v27 failed.", e, this );
+			MigrationException.fail( e, this );
 		}
 	}
 }
