@@ -45,50 +45,63 @@ public class GPSFilterAreaAdapter extends ArrayAdapter<GPSFilterArea> {
 		super(context, 0, areas );
 	}
 
+	private static class ViewHolder {
+		View mode;
+		TextView name;
+		CompoundButton activated;
+
+		public ViewHolder( View cv ) {
+			// Find all views needed.
+			mode = cv.findViewById( R.id.manage_gpsfilter_area_mode_summary );
+			name = (TextView) cv.findViewById( R.id.manage_gpsfilter_area_name );
+			activated = (CompoundButton) cv.findViewById( R.id.manage_gpsfilter_area_enabled );
+		}
+	}
+
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		ViewHolder holder;
+
 		if (convertView == null) {
 			// A view isn't being recycled, so make a new one from definition
 			convertView = LayoutInflater.from(getContext()).inflate( R.layout.gpsfilter_areas_list_item, null);
+
+			// Make & store holder.
+			holder = new ViewHolder( convertView );
+			convertView.setTag( holder );
+		} else {
+			// Recycle holder.
+			holder = (ViewHolder) convertView.getTag();
 		}
 
 		// The area associated with the row
 		final GPSFilterArea area = this.getItem( position );
 
 		// Set properties of view elements to reflect model state
-		this.setupEnabledSwitch( area, convertView );
-
-		this.setupName( area, convertView );
-
-		this.setupModeSummary( area, convertView );
+		this.setupEnabledSwitch( area, holder );
+		this.setupName( area, holder );
+		this.setupModeSummary( area, holder );
 		
 		return convertView;
 	}
 
-	private void setupModeSummary( final GPSFilterArea area, View convertView ) {
-		View modeView = convertView.findViewById( R.id.manage_gpsfilter_area_mode_summary );
-
+	private void setupModeSummary( final GPSFilterArea area, ViewHolder holder ) {
 		int colorId = area.getMode() == GPSFilterMode.INCLUDE
 					? R.color.gpsfilter_polygon_fill_include
 					: R.color.gpsfilter_polygon_fill_exclude;
 
-		modeView.setBackgroundColor( modeView.getResources().getColor( colorId ) );
+		holder.mode.setBackgroundColor( holder.mode.getResources().getColor( colorId ) );
 	}
 
-	private void setupName( final GPSFilterArea area, View convertView ) {
-		TextView nameTextView = (TextView) convertView.findViewById( R.id.manage_gpsfilter_area_name );
-		nameTextView.setText( area.printName() );
+	private void setupName( final GPSFilterArea area, ViewHolder holder ) {
+		holder.name.setText( area.printName() );
 	}
 
-	private void setupEnabledSwitch( final GPSFilterArea area, View convertView ) {
-		final CompoundButton activatedSwitch = (CompoundButton) convertView.findViewById( R.id.manage_gpsfilter_area_enabled );
-
+	private void setupEnabledSwitch( final GPSFilterArea area, ViewHolder holder ) {
 		// Makes sure that previous area for a recycled view won't get changed when setting initial value
-		activatedSwitch.setOnCheckedChangeListener( null );
-
-		activatedSwitch.setChecked( area.isEnabled() );
-
-		activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
+		holder.activated.setOnCheckedChangeListener( null );
+		holder.activated.setChecked( area.isEnabled() );
+		holder.activated.setOnCheckedChangeListener( new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
 				area.setEnabled( isChecked );
