@@ -30,6 +30,14 @@ import se.toxbee.sleepfighter.utils.prefs.PreferenceNode.PreferenceEditCallback;
  * @since Dec 15, 2013
  */
 public class ChallengeGlobalPreferences extends AppPreferenceNode {
+	private static final int CHALLENGE_COMPLETED_EARNING = 5;
+
+	private static final int EMERGENCY_COST_MAX = 100;
+	private static final float EMERGENCY_COST_FACTOR = 0.2f;
+
+	private static final int SNOOZE_COST_MAX = 10;
+	private static final float SNOOZE_COST_FACTOR = 0.05f;
+
 	private static final int HOURS_BETWEEN_POINTS = 6;
 	private static final int MAX_POINTS = 9999;
 	private static final int MIN_POINTS = -MAX_POINTS;
@@ -66,6 +74,47 @@ public class ChallengeGlobalPreferences extends AppPreferenceNode {
 	 */
 	public int getChallengePoints() {
 		return p.getInt( "points", 0 );
+	}
+
+	/**
+	 * Earn points for a completed challenge.
+	 */
+	public void earnCompleted() {
+		this.addChallengePoints( CHALLENGE_COMPLETED_EARNING );
+	}
+
+	/**
+	 * Computes the emergency cost.
+	 *
+	 * @return the emergency cost.
+	 */
+	public int calcEmergencyCost() {
+		int p = this.getChallengePoints();
+		return Math.max( EMERGENCY_COST_MAX, (int) EMERGENCY_COST_FACTOR * p );
+	}
+
+	/**
+	 * Withdraws the emergency cost from points.
+	 */
+	public void withdrawEmergencyCost() {
+		this.addChallengePoints( -this.calcEmergencyCost() );
+	}
+
+	/**
+	 * Computes the snooze cost.
+	 *
+	 * @return the cost of snoozing.
+	 */
+	public int calcSnoozeCost() {
+		int p = this.getChallengePoints();
+		return Math.max( SNOOZE_COST_MAX, (int) SNOOZE_COST_FACTOR * p );
+	}
+
+	/**
+	 * Withdraws the snooze cost from points.
+	 */
+	public void withdrawSnoozeCost() {
+		this.addChallengePoints( -this.calcSnoozeCost() );
 	}
 
 	private long lastTimeEarned() {
