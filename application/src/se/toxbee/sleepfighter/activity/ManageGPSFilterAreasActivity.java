@@ -18,9 +18,10 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.activity;
 
+import net.engio.mbassy.listener.Handler;
+
 import org.joda.time.DateTime;
 
-import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.adapter.GPSFilterAreaAdapter;
 import se.toxbee.sleepfighter.app.SFApplication;
@@ -29,7 +30,7 @@ import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea.Field;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.model.gps.GPSFilterMode;
-import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
+import se.toxbee.sleepfighter.preference.LocationFilterPreferences;
 import se.toxbee.sleepfighter.receiver.GPSFilterRefreshReceiver;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -45,8 +46,8 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -77,6 +78,10 @@ public class ManageGPSFilterAreasActivity extends Activity {
 	private Animation splashFadeOut;
 	private ViewGroup splashInfoContainer;
 
+	private LocationFilterPreferences prefs() {
+		return SFApplication.get().getPrefs().locFilter;
+	}
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if ( Build.VERSION.SDK_INT >= 11 ) {
@@ -89,15 +94,13 @@ public class ManageGPSFilterAreasActivity extends Activity {
 
 			View customView = actionBar.getCustomView();
 
-			final GlobalPreferencesManager manager = SFApplication.get().getPrefs();
-
 			// Setup enabled switch.
 			CompoundButton activatedSwitch = (CompoundButton) customView.findViewById( R.id.manage_gpsfilter_toggle );
-			activatedSwitch.setChecked( manager.isLocationFilterEnabled() );
+			activatedSwitch.setChecked( prefs().isEnabled() );
 			activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-					manager.setLocationFilterEnabled( isChecked );
+					prefs().setEnabled( isChecked );
 				}
 			} );
 		}
@@ -110,11 +113,9 @@ public class ManageGPSFilterAreasActivity extends Activity {
 			ActionBar actionBar = getActionBar();
 			View customView = actionBar.getCustomView();
 
-			final GlobalPreferencesManager manager = SFApplication.get().getPrefs();
-
 			// Setup enabled switch.
 			CompoundButton activatedSwitch = (CompoundButton) customView.findViewById( R.id.manage_gpsfilter_toggle );
-			activatedSwitch.setChecked( manager.isLocationFilterEnabled() );
+			activatedSwitch.setChecked( prefs().isEnabled() );
 		}
 	}
 
@@ -217,7 +218,6 @@ public class ManageGPSFilterAreasActivity extends Activity {
 		this.splashInfoContainer.startAnimation( this.splashFadeOut );
 	}
 
-	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -393,7 +393,6 @@ public class ManageGPSFilterAreasActivity extends Activity {
 			return super.onOptionsItemSelected( item );
 		}
 	}
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

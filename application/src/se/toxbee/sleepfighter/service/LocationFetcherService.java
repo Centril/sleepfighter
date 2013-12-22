@@ -22,8 +22,9 @@ import android.os.IBinder;
 /*
  * Retrieves the current location, then fetches the weather of that location, and then shuts down. 
  */
-public class LocationFetcherService extends Service implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener, LocationListener
-{
+public class LocationFetcherService extends Service implements
+		GooglePlayServicesClient.ConnectionCallbacks,
+		GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 	private LocationClient locationClient;
 
 	@Override
@@ -51,7 +52,6 @@ public class LocationFetcherService extends Service implements GooglePlayService
 		}
 	}
 
-	
 	@Override
 	public void onConnected(Bundle arg0) {
 		
@@ -73,7 +73,6 @@ public class LocationFetcherService extends Service implements GooglePlayService
 		this.fetchWeatherData(location);	
 		this.stopSelf();
 	}
-	
 
 	/*
 	 * Called by Location Services if the attempt to Location Services fails.
@@ -111,7 +110,6 @@ public class LocationFetcherService extends Service implements GooglePlayService
 		Debug.d("Disconnected. Please re-connect.");
 	}
 
-
 	@Override
 	public IBinder onBind(Intent arg0) {
 		Debug.d("LocationService onBind");
@@ -126,15 +124,9 @@ public class LocationFetcherService extends Service implements GooglePlayService
 	}
 	
 	private static class WeatherDataTask extends AsyncTask<Double, Void, WeatherDataFetcher> {
-
 		protected void onPostExecute(WeatherDataFetcher weather) {
 			Debug.d("done loading url");
-			
-			if(weather == null) {
-				SFApplication.get().getPrefs().setWeather(null);
-			} else {
-				SFApplication.get().getPrefs().setWeather(weather.getSummary());
-			}
+			SFApplication.get().getPrefs().weather.setTemp( weather == null ? null : weather.getSummary() );
 		}
 
 		@Override

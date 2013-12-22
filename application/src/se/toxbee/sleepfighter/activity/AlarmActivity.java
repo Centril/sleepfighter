@@ -18,7 +18,6 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.activity;
 
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,8 +31,9 @@ import se.toxbee.sleepfighter.audio.VibrationManager;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.NotificationHelper;
 import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.challenge.ChallengeType;
-import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
+import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.toxbee.sleepfighter.preference.AlarmControlPreferences;
+import se.toxbee.sleepfighter.preference.ChallengeGlobalPreferences;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.service.AlarmPlannerService.Command;
 import se.toxbee.sleepfighter.utils.debug.Debug;
@@ -74,17 +74,10 @@ public class AlarmActivity extends Activity {
 
 	public static final int CHALLENGE_REQUEST_CODE = 1;
 
+	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 	private static final int WINDOW_FLAGS_SCREEN_ON = WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
 			| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
 			| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
-
-	private static final int WINDOW_FLAGS_LOCKSCREEN = WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-
-	private static final int EMERGENCY_COST = 100;
-	private static final int EMERGENCY_PERCENTAGE_COST = 20;
-	private static final int SNOOZE_COST = 10;
-	private static final int SNOOZE_PERCENTAGE_COST = 5;
-	private static final int CHALLENGE_POINTS_GET = 5;
 
 	private Parameters p;
 	private TextView tvName, tvTime;
@@ -187,16 +180,17 @@ public class AlarmActivity extends Activity {
 		}
 	}
 
+	private ChallengeGlobalPreferences cprefs() {
+		return SFApplication.get().getPrefs().challenge;
+	}
+
 	private void setupFooter() {
 		boolean usingChallenge = useChallenges();
 		if (usingChallenge) {
-			TextView pointText = (TextView) findViewById(R.id.challenge_points_text);
+			TextView pointText = (TextView) findViewById( R.id.challenge_points_text );
 
-			String challengePointsStr = this.getResources().getString(
-					R.string.challenge_points);
-			pointText.setText(SFApplication.get().getPrefs()
-					.getChallengePoints()
-					+ " " + challengePointsStr);
+			int p = cprefs().getChallengePoints();
+			pointText.setText( p + " " + this.getString( R.string.challenge_points ) );
 		} else {
 			findViewById(R.id.footer).setVisibility(View.INVISIBLE);
 		}
@@ -221,17 +215,14 @@ public class AlarmActivity extends Activity {
 	 * skipped by showing confirmation dialog.
 	 */
 	private void skipChallengeConfirm() {
-		final int emergencyCost = Math.max(EMERGENCY_COST, SFApplication.get()
-				.getPrefs().getChallengePoints()
-				/ (100 / EMERGENCY_PERCENTAGE_COST));
+		int emergencyCost = cprefs().calcEmergencyCost();
 
 		// Show confirmation dialog where the user has to confirm skipping the
 		// challenge, and in turn lose a lot of points
 		DialogInterface.OnClickListener yesAction = new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				SFApplication.get().getPrefs()
-						.addChallengePoints(-emergencyCost);
+				cprefs().withdrawEmergencyCost();
 				stopAlarm();
 				performRescheduling();
 			}
@@ -241,8 +232,7 @@ public class AlarmActivity extends Activity {
 		// Get the correct string with the correct value inserted.
 		DialogUtils.showConfirmationDialog(String.format(res
 				.getString(R.string.alarm_emergency_dialog), res
-				.getQuantityString(R.plurals.alarm_emergency_cost,
-						emergencyCost, emergencyCost)), this, yesAction);
+				.getQuantityString( R.plurals.alarm_emergency_cost, emergencyCost, emergencyCost)), this, yesAction);
 
 	}
 
@@ -281,14 +271,8 @@ public class AlarmActivity extends Activity {
 
 		// Remove some challenge points if skipping challenge
 		boolean skippingChallenge = useChallenges();
-		if (skippingChallenge) {
-			GlobalPreferencesManager prefs = SFApplication.get()
-					.getPrefs();
-
-			int snoozeCost = Math.max(SNOOZE_COST,
-					prefs.getChallengePoints()
-							/ (100 / SNOOZE_PERCENTAGE_COST));
-			prefs.addChallengePoints(-snoozeCost);
+		if ( skippingChallenge ) {
+			cprefs().withdrawSnoozeCost();
 		}
 	}
 
@@ -328,10 +312,10 @@ public class AlarmActivity extends Activity {
 	}
 
 	private void readPreferences() {
-		GlobalPreferencesManager prefs = SFApplication.get().getPrefs();
+		AlarmControlPreferences acp = SFApplication.get().getPrefs().alarmControl;
 
-		this.turnScreenOn = prefs.turnScreenOn();
-		this.bypassLockscreen = prefs.bypassLockscreen();
+		this.turnScreenOn = acp.turnScreenOn();
+		this.bypassLockscreen = acp.bypassLockscreen();
 	}
 
 	/**
@@ -367,7 +351,7 @@ public class AlarmActivity extends Activity {
 				performRescheduling();
 				
 				// Add points
-				SFApplication.get().getPrefs().addChallengePoints(CHALLENGE_POINTS_GET);
+				cprefs().earnCompleted();
 			}
 		}  else {
 			super.onActivityResult(requestCode, resultCode, data);
@@ -455,17 +439,9 @@ public class AlarmActivity extends Activity {
 	 * @return true if a challenge should be shown
 	 */
 	private boolean useChallenges() {
-		boolean challengeEnabled = this.alarm.getChallengeSet().isEnabled();
-
-		boolean globallyEnabled = SFApplication.get().getPrefs()
-				.isChallengesActivated();
-
-		// Checks if any of the individual challenges are enabled
-		Set<ChallengeType> enabledChallenges = this.alarm.getChallengeSet()
-				.getEnabledTypes();
-		boolean anyChallengeEnabled = !enabledChallenges.isEmpty();
-
-		return challengeEnabled && globallyEnabled && anyChallengeEnabled;
+		// True if in order: enabled for alarm, globally enabled, any enabled individual challenge for alarm.
+		ChallengeConfigSet c = this.alarm.getChallengeSet();
+		return c.isEnabled() && cprefs().isActivated() && !c.getEnabledTypes().isEmpty();
 	}
 
 	/*

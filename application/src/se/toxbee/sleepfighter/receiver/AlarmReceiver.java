@@ -28,6 +28,7 @@ import se.toxbee.sleepfighter.gps.GPSFilterRequisitor;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.NotificationHelper;
 import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.preference.WeatherPreferences;
 import se.toxbee.sleepfighter.service.FadeVolumeService;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
@@ -185,14 +186,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 	private void startSpeech() {
 		TextToSpeech tts = SFApplication.get().getTts();
+
+		WeatherPreferences prefs = SFApplication.get().getPrefs().weather;
 		
-		doSpeech(SFApplication.get().getPrefs().getWeather());
-		
-		// Remove the old weather information 
-		SFApplication.get().getPrefs().setWeather(null);
+		doSpeech( prefs.getWeather() );
+
+		// Remove the old weather information
+		prefs.setTemp( null );
 		
 		// UtteranceProgressListener not available in api < 15
-		
 		tts.setOnUtteranceCompletedListener(utteranceListener);
 	}
 

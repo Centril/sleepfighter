@@ -37,7 +37,6 @@ import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.model.time.AlarmTime;
 import se.toxbee.sleepfighter.model.time.ExactTime;
-import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -67,8 +66,7 @@ public class DateTextUtils {
 	 */
 	public static final String printTime( long now, AlarmTimestamp stamp ) {
 		SFApplication app = SFApplication.get();
-
-		boolean periodOrTime = app.getPrefs().displayPeriodOrTime();
+		boolean periodOrTime = app.getPrefs().display.earliestAsPeriod();
 
 		Resources res = app.getResources();
 

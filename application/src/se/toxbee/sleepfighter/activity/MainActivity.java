@@ -32,6 +32,7 @@ import se.toxbee.sleepfighter.model.Alarm.Field;
 import se.toxbee.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
+import se.toxbee.sleepfighter.preference.ChallengeGlobalPreferences;
 import se.toxbee.sleepfighter.receiver.AlarmReceiver;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.text.DateTextUtils;
@@ -135,10 +136,12 @@ public class MainActivity extends Activity {
 	}
 
 	private void setupChallengeToggle() {
+		final ChallengeGlobalPreferences cp = app().getPrefs().challenge;
+
 		ImageView toggleImage = (ImageView) findViewById(R.id.challenge_toggle);
 		ImageView pointImage = (ImageView) findViewById(R.id.challenge_points_icon);
 		
-		if (app().getPrefs().isChallengesActivated()) {
+		if ( cp.isActivated() ) {
 			toggleImage.setImageResource(R.drawable.ic_action_challenge_toggled);
 			pointImage.setImageResource(R.drawable.ic_sun_enabled);
 		}
@@ -151,14 +154,14 @@ public class MainActivity extends Activity {
 		toggleImage.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (app().getPrefs().isChallengesActivated()) {
-					app().getPrefs().setChallengesActivated(false);
+				boolean wasActive = cp.isActivated();
+				cp.setActivated( !wasActive );
+
+				if ( wasActive ) {
 					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_untoggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(false);
 					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_disabled);
-				}
-				else {
-					app().getPrefs().setChallengesActivated(true);
+				} else {
 					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_toggled);
 					findViewById(R.id.mainChallengePoints).setEnabled(true);
 					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_enabled);
@@ -342,7 +345,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void updateChallengePoints() {
-		this.challengePointText.setText( this.app().getPrefs().getChallengePoints() + " " );
+		this.challengePointText.setText( this.app().getPrefs().challenge.getChallengePoints() + " " );
 	}
 	
 	/**
