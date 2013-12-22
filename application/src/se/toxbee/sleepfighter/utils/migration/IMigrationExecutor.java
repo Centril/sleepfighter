@@ -55,10 +55,10 @@ public abstract class IMigrationExecutor<U, T extends IMigration<U>> {
 	/**
 	 * Called when execution of migration fails.
 	 *
-	 * @param e the MigrationException that caused failure.
+	 * @param e the Throwable that caused failure.
 	 * @return false.
 	 */
-	protected boolean fail( IMigrationException e ) {
+	protected boolean fail( Throwable e ) {
 		return false;
 	}
 

@@ -25,6 +25,7 @@ import se.toxbee.sleepfighter.utils.migration.IMigrationExecutor;
 import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
 import se.toxbee.sleepfighter.utils.prefs.PreferenceNode.PreferenceEditCallback;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * {@link UpgradeExecutor} runs upgrades for the entire app.
@@ -34,6 +35,8 @@ import android.content.Context;
  * @since Dec 16, 2013
  */
 public class UpgradeExecutor extends IMigrationExecutor<PreferenceNode, Migrater> {
+	private static final String TAG = UpgradeExecutor.class.getSimpleName();
+
 	public boolean execute( Context ctx, AppPreferenceManager prefs ) {
 		int ovc = prefs.versionCode();
 		int nvc = ContextUtils.versionCode( ctx );
@@ -51,23 +54,28 @@ public class UpgradeExecutor extends IMigrationExecutor<PreferenceNode, Migrater
 	private boolean executeImpl( Context ctx, AppPreferenceManager prefs, final int ovc, final int nvc ) {
 		final PreferenceNode p = prefs.backend().parent();
 
-		p.apply( new PreferenceEditCallback() {
-			@Override
-			public void editPreference( PreferenceNode pref ) {
-				edit( p, ovc, nvc );
-			}
-		} );
+		try {
+			p.applyForResult( new PreferenceEditCallback() {
+				@Override
+				public void editPreference( PreferenceNode pref ) {
+					try {
+						apply( p, ovc, nvc );
+					} catch ( IMigrationException e ) {
+						throw new RuntimeException( e );
+					}
+				}
+			} );
+		} catch ( RuntimeException e ) {
+			return fail( e );
+		}
 
 		return true;
 	}
 
-	protected void edit( PreferenceNode p, int ovc, int nvc ) {
-		try {
-			this.apply( p, ovc, nvc );
-		} catch ( IMigrationException e ) {
-			p.clear();
-			fail( e );
-		}
+	@Override
+	protected boolean fail( Throwable e ) {
+		Log.e( TAG, "Error during migration.", e );
+		return super.fail( e );
 	}
 
 	@Override

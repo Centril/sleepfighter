@@ -49,7 +49,7 @@ public final class MigrationExecutor extends IMigrationExecutor<MigrationUtil, M
 		return DefinedMigrations.get();
 	}
 
-	private boolean fail( Throwable e ) {
+	protected boolean fail( Throwable e ) {
 		Log.e( TAG, "Error during migration.", e );
 		return false;
 	}
@@ -95,5 +95,4 @@ public final class MigrationExecutor extends IMigrationExecutor<MigrationUtil, M
 			return fail( e );
 		}
 	}
-
 }
