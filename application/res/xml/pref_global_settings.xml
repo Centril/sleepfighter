@@ -21,19 +21,19 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto" >
 
     <CheckBoxPreference
-        android:key="pref_alarm_turn_screen_on"
+        android:key="alarmControl.turnScreenOn"
         android:title="@string/pref_alarm_turn_screen_on"
         android:summary="@string/pref_alarm_turn_screen_on_summary"
         android:defaultValue="true" />
 
     <CheckBoxPreference
-        android:key="pref_alarm_bypass_lock_screen"
+        android:key="alarmControl.bypassLockScreen"
         android:title="@string/pref_alarm_bypass_lock_screen"
         android:summary="@string/pref_alarm_bypass_lock_screen_summary"
         android:defaultValue="true" />
     
     <CheckBoxPreference 
-        android:key="pref_global_when_or_in_how_much"
+        android:key="display.earliestAsPeriod"
         android:title="@string/display_when_next_alarm_rings"
         android:summary="@string/display_when_next_alarm_rings_summary"
         android:defaultValue="false" />
@@ -49,13 +49,13 @@
         android:title="@string/pref_location_filter" >
 
 	    <CheckBoxPreference
-            android:key="pref_location_filter_enabled"
+            android:key="locfilter.isEnabled"
             android:title="@string/pref_location_filter_enabled"
             android:summary="@string/pref_location_filter_enabled_summary"
             android:defaultValue="true" />
 
 	    <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
-	        android:key="pref_location_filter_ttff"
+	        android:key="locfilter.firstRequestDT"
 			android:title="@string/pref_location_filter_ttff"
 			android:defaultValue="15"
 			android:dialogMessage="@string/pref_location_filter_ttff_message"
@@ -64,7 +64,7 @@
 			custom:min="0" />
 
 	    <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
-	        android:key="pref_location_filter_refresh_interval"
+	        android:key="locfilter.requestRefreshInterval"
 			android:title="@string/pref_location_filter_refresh_interval"
 			android:defaultValue="1"
 			android:dialogMessage="@string/pref_location_filter_refresh_interval_message"
@@ -73,7 +73,7 @@
 			custom:min="0" />
 
 	    <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
-	        android:key="pref_location_filter_min_distance"
+	        android:key="locfilter.minDistance"
 			android:title="@string/pref_location_filter_min_distance"
 			android:defaultValue="100"
 			android:dialogMessage="@string/pref_location_filter_min_distance_message"
@@ -82,7 +82,7 @@
 			custom:min="0" />
 
 	    <se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference
-	        android:key="pref_location_filter_location_max_age"
+	        android:key="locfilter.maxAllowedAge"
 			android:title="@string/pref_location_filter_max_age"
 			android:defaultValue="20"
 			android:dialogMessage="@string/pref_location_filter_max_age_message"
