@@ -175,10 +175,15 @@ public class SharedPreferenceManager extends BasePreferenceManager {
 
 	private PreferenceNode tryac( boolean autoCommit, Editor editor ) {
 		if ( autoCommit && this.isApplying() ) {
-			this.edit.apply();
+			this._apply();
 		}
 
 		return this;
+	}
+
+	private void _apply() {
+		this.edit.apply();
+		this.edit = null;
 	}
 
 	@Override
@@ -187,7 +192,7 @@ public class SharedPreferenceManager extends BasePreferenceManager {
 
 		cb.editPreference( node );
 
-		this.edit.apply();
+		this._apply();
 		return this;
 	}
 
@@ -197,7 +202,9 @@ public class SharedPreferenceManager extends BasePreferenceManager {
 
 		cb.editPreference( node );
 
-		return this.edit.commit();
+		boolean r = this.edit.commit();
+		this.edit = null;
+		return r;
 	}
 
 	@SuppressWarnings( "unchecked" )
