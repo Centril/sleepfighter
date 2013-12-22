@@ -55,6 +55,20 @@ public class ReflectionUtil {
 	/**
 	 * {@link Class#getDeclaredMethod(String, Class...)}
 	 */
+	public static Method declaredMethod( Class<?> clazz, String name, Object args ) {
+		return declaredMethod( clazz, name, getClasses( args ) );
+	}
+
+	/**
+	 * {@link Class#getDeclaredMethod(String, Class...)}
+	 */
+	public static Method method( Class<?> clazz, String name, Object args ) {
+		return method( clazz, name, getClasses( args ) );
+	}
+
+	/**
+	 * {@link Class#getDeclaredMethod(String, Class...)}
+	 */
 	public static Method declaredMethod( Class<?> clazz, String name, Class<?>... parameterTypes ) {
 		try {
 			return clazz.getDeclaredMethod( name, parameterTypes );
