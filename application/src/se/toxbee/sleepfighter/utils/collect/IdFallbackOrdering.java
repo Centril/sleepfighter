@@ -21,7 +21,7 @@ package se.toxbee.sleepfighter.utils.collect;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
 
 /**
- * {@link IdFallbackOrdering} futher simplifies the creation of {@link FieldOrdering}s by<br/>
+ * {@link IdFallbackOrdering} further simplifies the creation of {@link FieldOrdering}s by<br/>
  * falling back to {@link IdProvider#getId()} when {@link #compare(IdProvider, IdProvider)} ties.
  *
  * @param <T> The type being compared extending {@link IdProvider}.
