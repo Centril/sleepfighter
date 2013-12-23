@@ -35,8 +35,8 @@ public class ResourcesDynamicUtil {
 	 * @param context android context.
 	 * @return address in memory.
 	 */
-	public static int getResourceStringId( String name, Context context ) {
-		return context.getResources().getIdentifier( name, "string", context.getApplicationInfo().packageName );
+	public static int getStringId( String name, Context context ) {
+		return getId( name, context, "string" );
 	}
 
 	/**
@@ -47,8 +47,8 @@ public class ResourcesDynamicUtil {
 	 * @param context android context.
 	 * @return the string
 	 */
-	public static String getResourceStringCheck( String name, Context context ) {
-		String str = getResourceString( name, context );
+	public static String getStringCheck( String name, Context context ) {
+		String str = getString( name, context );
 		if ( str == null ) {
 			throw new IllegalArgumentException( "No resource string found with name " + name );
 		}
@@ -62,8 +62,31 @@ public class ResourcesDynamicUtil {
 	 * @param context android context.
 	 * @return the string, or null if not found.
 	 */
-	public static String getResourceString( String name, Context context ) {
-		int nameResourceID = getResourceStringId( name, context );
+	public static String getString( String name, Context context ) {
+		int nameResourceID = getStringId( name, context );
 		return nameResourceID == 0 ? null : context.getString( nameResourceID );
+	}
+
+	/**
+	 * Returns an address in memory for name identifier given by a string.
+	 *
+	 * @param name the name/identifier given in XML or anywhere else.
+	 * @param context android context.
+	 * @return address in memory.
+	 */
+	public static int getId( String name, Context context ) {
+		return getId( name, context, "id" );
+	}
+
+	/**
+	 * Returns an address in memory for name identifier given by a string.
+	 *
+	 * @param name the name/identifier given in XML or anywhere else.
+	 * @param context android context.
+	 * @param type the type of the identifier.
+	 * @return address in memory.
+	 */
+	public static int getId( String name, Context context, String type ) {
+		return context.getResources().getIdentifier( name, type, context.getApplicationInfo().packageName );
 	}
 }

@@ -337,7 +337,7 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 	private String getChallengeString( String case_string, boolean checked ) {
 		String name = "challenge_" + StringUtils.castLower( this.definition.getType().toString() ) + "_" + case_string;
 
-		return checked ? ResourcesDynamicUtil.getResourceStringCheck( name, this ) : ResourcesDynamicUtil.getResourceString( name, this );
+		return checked ? ResourcesDynamicUtil.getStringCheck( name, this ) : ResourcesDynamicUtil.getString( name, this );
 	}
 
 	@SuppressWarnings( "deprecation" )
