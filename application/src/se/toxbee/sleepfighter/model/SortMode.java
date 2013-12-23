@@ -20,8 +20,8 @@ package se.toxbee.sleepfighter.model;
 
 import se.toxbee.sleepfighter.model.Alarm.AlarmEvent;
 import se.toxbee.sleepfighter.model.time.AlarmTime;
-import se.toxbee.sleepfighter.utils.collect.IdFallbackOrdering;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
@@ -43,30 +43,28 @@ public class SortMode {
 	 */
 	public static enum Field {
 		ID( Ordering.<Alarm>natural() ),
-		NAME( new IdFallbackOrdering<Alarm, String>() {
-				@Override
-				protected String fieldToComparable( Alarm val ) {
-					return val.printName();
-				}
-			}
-		),
-		TIMESTAMP( new IdFallbackOrdering<Alarm, Long>() {
-					@Override
-					protected Long fieldToComparable( Alarm val ) {
-						return val.scheduledTimestamp();
-					}
-				}.nullsLast()
-		),
-		ALARM_TIME( new IdFallbackOrdering<Alarm, AlarmTime>() {
-					@Override
-					protected AlarmTime fieldToComparable( Alarm val ) {
-						return val.getTime().exact();
-					}
-				} ),
-		MANUAL( new IdFallbackOrdering<Alarm, Integer>() {
+		NAME( new Function<Alarm, String>() {
 			@Override
-			protected Integer fieldToComparable( Alarm val ) {
-				return val.getOrder();
+			public String apply( Alarm input ) {
+				return input.printName();
+			}
+		} ),
+		TIMESTAMP( new Function<Alarm, Long>() {
+			@Override
+			public Long apply( Alarm input ) {
+				return input.scheduledTimestamp();
+			}
+		} ),
+		ALARM_TIME( new Function<Alarm, AlarmTime>() {
+			@Override
+			public AlarmTime apply( Alarm input ) {
+				return input.getTime().exact();
+			}
+		} ),
+		MANUAL( new Function<Alarm, Integer>() {
+			@Override
+			public Integer apply( Alarm input ) {
+				return input.getOrder();
 			}
 		} );
 
@@ -76,6 +74,10 @@ public class SortMode {
 		}
 		Field( Ordering<Alarm> o ) {
 			this.ordering = o;
+		}
+
+		Field( Function<Alarm, ? extends Comparable<?>> fn ) {
+			this( Ordering.natural().nullsLast().onResultOf( fn ) );
 		}
 
 		protected boolean requiresReordering( AlarmEvent evt ) {
@@ -96,7 +98,7 @@ public class SortMode {
 		}
 
 		/**
-		 * Returns a {@link Field} given the ordinalty of the field.
+		 * Returns a {@link Field} given the ordinality of the field.
 		 *
 		 * @param ordinal the ordinality.
 		 * @return the {@link Field}.
