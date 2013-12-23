@@ -76,21 +76,23 @@ public class AlarmList extends IdObservableList<Alarm> {
 
 	@Override
 	protected void fireEvent( Event e ) {
-		if ( !e.operation().isRemove() ) {
-			// Set unnamed placements.
-			if ( e.operation() == Operation.ADD ) {
-				for ( Object obj : e.elements() ) {
-					this.setPlacement( (Alarm) obj );
-				}
-			} else if ( e.operation() == Operation.UPDATE ) {
-				this.setPlacement( this.get( e.index() ) );
+		switch( e.operation() ) {
+		case UPDATE:
+			// order() will cause an infinite loop if we dont bail here.
+			return;
+
+		case ADD:
+			for ( Object obj : e.elements() ) {
+				this.setPlacement( (Alarm) obj );
 			}
 
 			// Reorder the list.
 			this.order();
-		}
 
-		super.fireEvent( e );
+			// FALLTROUGH
+		default:
+			super.fireEvent( e );
+		}
 	}
 
 	private void setPlacement( Alarm alarm ) {
@@ -218,13 +220,8 @@ public class AlarmList extends IdObservableList<Alarm> {
 			return;
 		}
 
-		SortMode old = this.sortMode;
 		this.sortMode = mode;
-
-		if ( old.isReverse( this.sortMode ) ) {
-			this.ordering = this.ordering.reverse();
-		}
-
+		this.ordering = mode.ordering();
 		this.order();
 	}
 }
