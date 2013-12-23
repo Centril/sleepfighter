@@ -73,6 +73,25 @@
         <item>@string/menu_set_alarm_countdown</item>
     </string-array>
 
+    <!-- Sort Mode -->
+    <string name="action_sort_mode">Sort</string>
+    <string name="sort_modes_dialog_title">Sort</string>
+    <string name="sort_modes_dialog_toggle_label">Reverse</string>
+    <string-array name="sort_modes_dialog_strings">
+    	<item>Sort manually</item>
+    	<item>Sort by when</item>
+    	<item>Sort by creation date</item>
+    	<item>Sort by name</item>
+    	<item>Sort by alarm time</item>
+    </string-array>
+    <string-array name="sort_modes_dialog_fields" tools:ignore="MissingTranslation">
+    	<item>MANUAL</item>
+    	<item>TIMESTAMP</item>
+    	<item>ID</item>
+    	<item>NAME</item>
+    	<item>ALARM_TIME</item>
+    </string-array>
+
     <!-- Location Filter -->
     <string name="action_gpsfilter_area_edit">Location Filter</string>
 

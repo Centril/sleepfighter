@@ -18,6 +18,8 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.activity;
 
+import java.util.Arrays;
+
 import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.adapter.AlarmAdapter;
@@ -32,11 +34,13 @@ import se.toxbee.sleepfighter.model.Alarm.Field;
 import se.toxbee.sleepfighter.model.Alarm.ScheduleChangeEvent;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
+import se.toxbee.sleepfighter.model.SortMode;
 import se.toxbee.sleepfighter.preference.ChallengeGlobalPreferences;
 import se.toxbee.sleepfighter.receiver.AlarmReceiver;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.text.DateTextUtils;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -48,6 +52,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -197,12 +202,10 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void startAlarm(Alarm alarm) {
-	    // Send intent directly to receiver
-		   Intent intent = new Intent(this, AlarmReceiver.class);
-		    new AlarmIntentHelper(intent).setAlarmId(alarm.getId());
-		   sendBroadcast(intent);
-	 }
+	private void startAlarm( Alarm alarm ) {
+		this.sendBroadcast( new AlarmIntentHelper( new Intent( this,
+				AlarmReceiver.class ) ).setAlarm( alarm ).intent() );
+	}
 
 	@Override
 	public boolean onContextItemSelected( MenuItem item ) {
@@ -358,6 +361,53 @@ public class MainActivity extends Activity {
 		this.startActivity( i );
 	}
 
+	private void sortModeEdit() {
+		SortMode mode = this.alarmList.getSortMode();
+
+		final String[] fields = getResources().getStringArray( R.array.sort_modes_dialog_fields );
+
+		// Deduce current field "which".
+		String name = mode.field().name();
+		int currField = Arrays.asList( fields ).indexOf( name );
+
+		// Config title-bar.
+		View titleBar = this.getLayoutInflater().inflate( R.layout.dialog_titlebar_toggle, null );
+		((TextView) titleBar.findViewById( R.id.title )).setText( R.string.sort_modes_dialog_title );
+		((TextView) titleBar.findViewById( R.id.toggle_label )).setText( R.string.sort_modes_dialog_toggle_label );
+
+		// Config toggle.
+		final CheckBox toggler = (CheckBox) titleBar.findViewById( R.id.toggle );
+		toggler.setChecked( !mode.direction() );
+		titleBar.findViewById( R.id.toggle_bg ).setOnClickListener( new View.OnClickListener() {
+			@Override
+			public void onClick( View v ) {
+				toggler.toggle();
+			}
+		} );
+
+		// Build dialog.
+		new AlertDialog.Builder( this )
+			.setCustomTitle( titleBar )
+			.setSingleChoiceItems( R.array.sort_modes_dialog_strings, currField, new OnClickListener() {
+				@Override
+				public void onClick( DialogInterface dialog, int which ) {
+					dialog.dismiss();
+
+					sortModeSelected( SortMode.Field.valueOf( fields[which] ), !toggler.isChecked() );
+				}
+			} ).show();
+	}
+
+	private void sortModeSelected( SortMode.Field field, boolean direction ) {
+		SortMode mode = new SortMode( field, direction );
+
+		this.app().getPrefs().display.setSortMode( mode );
+		this.alarmList.order( mode );
+
+		this.alarmAdapter.notifyDataSetChanged();
+	}
+
+
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -379,6 +429,10 @@ public class MainActivity extends Activity {
 
 		case R.id.action_gpsfilter_area_edit:
 			this.startGPSFilterAreaEdit();
+			return true;
+
+		case R.id.action_sort_mode:
+			this.sortModeEdit();
 			return true;
 
 		default:
