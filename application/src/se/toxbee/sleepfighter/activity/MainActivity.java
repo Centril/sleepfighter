@@ -62,7 +62,10 @@ public class MainActivity extends Activity {
 	private AlarmAdapter alarmAdapter;
 
 	private TextView earliestTimeText;
-	private TextView challengePointText;
+
+	private ImageView challengeToggler;
+	private TextView challengePointsText;
+	private ImageView challengePointsIcon;
 
 	public SFApplication app() {
 		return SFApplication.get();
@@ -96,8 +99,10 @@ public class MainActivity extends Activity {
 		AlarmActivity.startIfRinging( this );
 
 		// Find all constant views.
-		this.challengePointText = (TextView) findViewById( R.id.mainChallengePoints );
 		this.earliestTimeText = (TextView) findViewById( R.id.earliestTimeText );
+		this.challengeToggler = (ImageView) findViewById( R.id.challenge_toggle );
+		this.challengePointsText = (TextView) findViewById( R.id.mainChallengePoints );
+		this.challengePointsIcon = (ImageView) findViewById( R.id.challenge_points_icon );
 
 		this.updateEarliestText();
 
@@ -140,42 +145,6 @@ public class MainActivity extends Activity {
 
 		// Register to get context menu events associated with listView
 		this.registerForContextMenu(listView);
-	}
-
-	private void setupChallengeToggle() {
-		final ChallengeGlobalPreferences cp = app().getPrefs().challenge;
-
-		ImageView toggleImage = (ImageView) findViewById(R.id.challenge_toggle);
-		ImageView pointImage = (ImageView) findViewById(R.id.challenge_points_icon);
-		
-		if ( cp.isActivated() ) {
-			toggleImage.setImageResource(R.drawable.ic_action_challenge_toggled);
-			pointImage.setImageResource(R.drawable.ic_sun_enabled);
-		}
-		else {
-			toggleImage.setImageResource(R.drawable.ic_action_challenge_untoggled);
-			pointImage.setImageResource(R.drawable.ic_sun_disabled);
-			findViewById(R.id.mainChallengePoints).setEnabled(false);
-		}
-		
-		toggleImage.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				boolean wasActive = cp.isActivated();
-				cp.setActivated( !wasActive );
-
-				if ( wasActive ) {
-					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_untoggled);
-					findViewById(R.id.mainChallengePoints).setEnabled(false);
-					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_disabled);
-				} else {
-					((ImageView) v).setImageResource(R.drawable.ic_action_challenge_toggled);
-					findViewById(R.id.mainChallengePoints).setEnabled(true);
-					((ImageView) findViewById(R.id.challenge_points_icon)).setImageResource(R.drawable.ic_sun_enabled);
-				}
-			}
-			
-		});
 	}
 
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
@@ -349,10 +318,29 @@ public class MainActivity extends Activity {
 		earliestTimeText.setText( DateTextUtils.printTime( now, stamp ) );
 	}
 
-	private void updateChallengePoints() {
-		this.challengePointText.setText( this.app().getPrefs().challenge.getChallengePoints() + " " );
+	private void setupChallengeToggle() {
+		final ChallengeGlobalPreferences cp = app().getPrefs().challenge;
+		this.updateChallengeToggler( cp.isActivated() );
+		this.challengeToggler.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				boolean nowActive = !cp.isActivated();
+				cp.setActivated( nowActive );
+				updateChallengeToggler( nowActive );
+			}
+		});
 	}
-	
+
+	private void updateChallengeToggler( boolean active ) {
+		this.challengeToggler.setImageResource( active ? R.drawable.ic_action_challenge_toggled : R.drawable.ic_action_challenge_untoggled );
+		this.challengePointsIcon.setImageResource( active ? R.drawable.ic_sun_enabled : R.drawable.ic_sun_disabled );
+		this.challengePointsText.setEnabled( active );
+	}
+
+	private void updateChallengePoints() {
+		this.challengePointsText.setText( this.app().getPrefs().challenge.getChallengePoints() + " " );
+	}
+
 	/**
 	 * Sends the user to the activity for editing GPSFilterArea:s.
 	 */
