@@ -51,8 +51,8 @@ public class ReflectiveRunnable implements Runnable {
 	 * @param name the name of the static method in clazz.
 	 * @param a the arguments (varargs).
 	 */
-	public ReflectiveRunnable( Class<?> clazz, Object r, String name, Object... a) {
-		this( ReflectionUtil.declaredMethod( clazz, name, a ), r, a );
+	public ReflectiveRunnable( Object r, String name, Object... a) {
+		this( ReflectionUtil.declaredMethod( r.getClass(), name, a ), r, a );
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class ReflectiveRunnable implements Runnable {
 	 * @param a the arguments (varargs).
 	 */
 	public ReflectiveRunnable( Method m, Object... a ) {
-		this( m, null, a );
+		this( m, (Object) null, a );
 	}
 
 	/**
