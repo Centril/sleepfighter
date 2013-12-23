@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.utils.reflect;
+package se.toxbee.sleepfighter.utils.collect;
 
-import se.toxbee.sleepfighter.utils.collect.IdDispatcher;
 
 /**
  * {@link ReflectiveIdDispatcher} adds reflection utilities on top of {@link IdDispatcher}

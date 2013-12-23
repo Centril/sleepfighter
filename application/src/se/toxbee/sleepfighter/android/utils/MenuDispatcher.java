@@ -18,7 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.android.utils;
 
-import se.toxbee.sleepfighter.utils.reflect.ReflectiveIdDispatcher;
+import se.toxbee.sleepfighter.utils.collect.ReflectiveIdDispatcher;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
