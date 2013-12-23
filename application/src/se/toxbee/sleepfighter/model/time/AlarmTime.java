@@ -142,7 +142,7 @@ public abstract class AlarmTime implements Comparable<AlarmTime>, Refreshable {
 	}
 
 	/**
-	 * <p>Compares with following order: {@link #getSecond()}, {@link #getMinute()}, {@link #getHour()}.</p>
+	 * <p>Compares with following order: {@link #getHour()}, {@link #getMinute()}, {@link #getSecond()}.</p>
 	 * <p>Issues a call to {@link #refresh()}.</p>
 	 */
 	@Override
@@ -150,9 +150,9 @@ public abstract class AlarmTime implements Comparable<AlarmTime>, Refreshable {
 		this.refresh();
 
 		return ComparisonChain.start()
-			.compare( this.second, r.second )
-			.compare( this.minute, r.minute )
 			.compare( this.hour, r.hour )
+			.compare( this.minute, r.minute )
+			.compare( this.second, r.second )
 			.result();
 	}
 

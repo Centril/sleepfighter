@@ -77,7 +77,7 @@ public class SortMode {
 		}
 
 		Field( Function<Alarm, ? extends Comparable<?>> fn ) {
-			this( Ordering.natural().nullsLast().onResultOf( fn ) );
+			this( Ordering.natural().nullsLast().onResultOf( fn ).compound( Ordering.natural() ) );
 		}
 
 		protected boolean requiresReordering( AlarmEvent evt ) {
