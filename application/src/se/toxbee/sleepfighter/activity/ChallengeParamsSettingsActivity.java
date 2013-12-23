@@ -19,8 +19,8 @@
 package se.toxbee.sleepfighter.activity;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.android.resources.ResourcesDynamicUtil;
 import se.toxbee.sleepfighter.android.utils.ActivityUtils;
+import se.toxbee.sleepfighter.android.utils.ResourcesDynamicUtil;
 import se.toxbee.sleepfighter.challenge.ChallengeParamsReadWriter;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition.ParameterDefinition;
