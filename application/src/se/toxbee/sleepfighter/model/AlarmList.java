@@ -214,14 +214,16 @@ public class AlarmList extends IdObservableList<Alarm> {
 	 * Sets the result of {@link #getSortMode()} and calls {@link #order()}.
 	 *
 	 * @param mode the {@link SortMode} to use.
+	 * @return true if the mode was changed.
 	 */
-	public void order( SortMode mode ) {
+	public boolean order( SortMode mode ) {
 		if ( this.sortMode.equals( mode ) ) {
-			return;
+			return false;
 		}
 
 		this.sortMode = mode;
 		this.ordering = mode.ordering();
 		this.order();
+		return true;
 	}
 }
