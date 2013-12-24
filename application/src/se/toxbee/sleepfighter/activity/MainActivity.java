@@ -23,6 +23,7 @@ import java.util.Arrays;
 import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.adapter.AlarmAdapter;
+import se.toxbee.sleepfighter.android.component.dialog.TogglableTitleBar;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
 import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
@@ -36,6 +37,7 @@ import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.model.SortMode;
 import se.toxbee.sleepfighter.preference.ChallengeGlobalPreferences;
+import se.toxbee.sleepfighter.preference.DisplayPreferences;
 import se.toxbee.sleepfighter.receiver.AlarmReceiver;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.text.DateTextUtils;
@@ -52,7 +54,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -60,6 +61,8 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 	private AlarmList alarmList;
 	private AlarmAdapter alarmAdapter;
+
+	private ListView listView;
 
 	private TextView earliestTimeText;
 
@@ -83,7 +86,7 @@ public class MainActivity extends Activity {
 		this.setContentView( R.layout.activity_main );
 
 		this.alarmList = this.app().getAlarms();
-		this.alarmList.order( app().getPrefs().display.getSortMode() );
+		this.alarmList.order( this.dprefs().getSortMode() );
 
 		this.alarmAdapter = new AlarmAdapter( this, this.alarmList );
 
@@ -139,12 +142,12 @@ public class MainActivity extends Activity {
 	}
 
 	private void setupListView() {
-		ListView listView = (ListView) findViewById(R.id.mainAlarmsList);
-		listView.setAdapter(this.alarmAdapter);
-		listView.setOnItemClickListener(listClickListener);
+		this.listView = (ListView) findViewById( R.id.mainAlarmsList );
+		this.listView.setAdapter( this.alarmAdapter );
+		this.listView.setOnItemClickListener( listClickListener );
 
 		// Register to get context menu events associated with listView
-		this.registerForContextMenu(listView);
+		this.registerForContextMenu( this.listView );
 	}
 
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
@@ -155,18 +158,16 @@ public class MainActivity extends Activity {
 	};
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		if (v.getId() == R.id.mainAlarmsList) {
 			String[] menuItems = getResources().getStringArray( R.array.main_list_context_menu );
-			for (int i = 0; i < menuItems.length; i++) {
-				menu.add(0, i, i, menuItems[i]);
+			for ( int i = 0; i < menuItems.length; i++ ) {
+				menu.add( 0, i, i, menuItems[i] );
 			}
 
-			if (SFApplication.DEBUG) {
+			if ( SFApplication.DEBUG ) {
 				// adds an extra context menu item for starting an alarm
-				menu.add(0, menuItems.length, menuItems.length,
-						"DEBUG: Start alarm");
+				menu.add( 0, menuItems.length, menuItems.length, "DEBUG: Start alarm" );
 			}
 		}
 	}
@@ -358,20 +359,10 @@ public class MainActivity extends Activity {
 		String name = mode.field().name();
 		int currField = Arrays.asList( fields ).indexOf( name );
 
-		// Config title-bar.
-		View titleBar = this.getLayoutInflater().inflate( R.layout.dialog_titlebar_toggle, null );
-		((TextView) titleBar.findViewById( R.id.title )).setText( R.string.sort_modes_dialog_title );
-		((TextView) titleBar.findViewById( R.id.toggle_label )).setText( R.string.sort_modes_dialog_toggle_label );
-
-		// Config toggle.
-		final CheckBox toggler = (CheckBox) titleBar.findViewById( R.id.toggle );
-		toggler.setChecked( !mode.direction() );
-		titleBar.findViewById( R.id.toggle_bg ).setOnClickListener( new View.OnClickListener() {
-			@Override
-			public void onClick( View v ) {
-				toggler.toggle();
-			}
-		} );
+		final TogglableTitleBar titleBar = new TogglableTitleBar( this );
+		titleBar.setTitle( R.string.sort_modes_dialog_title );
+		titleBar.setToggleLabel( R.string.sort_modes_dialog_toggle_label );
+		titleBar.setChecked( !mode.direction() );
 
 		// Build dialog.
 		new AlertDialog.Builder( this )
@@ -381,20 +372,37 @@ public class MainActivity extends Activity {
 				public void onClick( DialogInterface dialog, int which ) {
 					dialog.dismiss();
 
-					sortModeSelected( SortMode.Field.valueOf( fields[which] ), !toggler.isChecked() );
+					sortModeSelected( new SortMode( SortMode.Field.valueOf( fields[which] ), !titleBar.isChecked() ) );
 				}
 			} ).show();
 	}
 
-	private void sortModeSelected( SortMode.Field field, boolean direction ) {
-		SortMode mode = new SortMode( field, direction );
+	private void sortModeSelected( SortMode mode ) {
+		boolean altered = this.alarmList.order( mode );
 
-		this.app().getPrefs().display.setSortMode( mode );
-		this.alarmList.order( mode );
+		if ( mode.field() != SortMode.Field.MANUAL ) {
+			this.enterReorderMode();
+		}
 
-		this.alarmAdapter.notifyDataSetChanged();
+		if ( altered ) {
+			this.dprefs().setSortMode( mode );
+			this.alarmAdapter.notifyDataSetChanged();
+		}
 	}
 
+	private void enterReorderMode() {
+		// Show drag handle.
+		// TODO
+
+		// Inflate view.
+
+		// Replace the view.
+		//ViewGroupUtils.replaceView( this.listView, reorderView );
+	}
+
+	private DisplayPreferences dprefs() {
+		return this.app().getPrefs().display;
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu( Menu menu ) {
