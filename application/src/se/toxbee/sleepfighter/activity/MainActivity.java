@@ -359,10 +359,8 @@ public class MainActivity extends Activity {
 		String name = mode.field().name();
 		int currField = Arrays.asList( fields ).indexOf( name );
 
-		final TogglableTitleBar titleBar = new TogglableTitleBar( this );
-		titleBar.setTitle( R.string.sort_modes_dialog_title );
-		titleBar.setToggleLabel( R.string.sort_modes_dialog_toggle_label );
-		titleBar.setChecked( !mode.direction() );
+		final TogglableTitleBar titleBar = new TogglableTitleBar( this )
+			.setAll( R.string.sort_modes_dialog_title, R.string.sort_modes_dialog_toggle_label, !mode.direction() );
 
 		// Build dialog.
 		new AlertDialog.Builder( this )

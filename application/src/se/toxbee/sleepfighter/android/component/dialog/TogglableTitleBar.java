@@ -130,39 +130,73 @@ public class TogglableTitleBar extends LinearLayout implements Checkable {
 	}
 
 	/**
+	 * Sets the title, label and checked state.
+	 *
+	 * @param title the title.
+	 * @param label the label of toggle.
+	 * @param checked the checked state of toggle.
+	 * @return this.
+	 */
+	public TogglableTitleBar setAll( CharSequence title, CharSequence label, boolean checked ) {
+		this.setTitle( title ).setToggleLabel( label ).setChecked( checked );
+		return this;
+	}
+
+	/**
+	 * Sets the title and label via resource ids, and checked state.
+	 *
+	 * @param title the title.
+	 * @param label the label of toggle.
+	 * @param checked the checked state of toggle.
+	 * @return this.
+	 */
+	public TogglableTitleBar setAll( int title, int label, boolean checked ) {
+		this.setTitle( title ).setToggleLabel( label ).setChecked( checked );
+		return this;
+	}
+
+	/**
 	 * Sets the title of the bar.
 	 *
 	 * @param title the title text.
+	 * @return this.
 	 */
-	public void setTitle( CharSequence title ) {
+	public TogglableTitleBar setTitle( CharSequence title ) {
 		this.titleView.setText( title );
+		return this;
 	}
 
 	/**
 	 * Sets the title of the bar.
 	 *
 	 * @param title the title resource id.
+	 * @return this.
 	 */
-	public void setTitle( int resid ) {
+	public TogglableTitleBar setTitle( int resid ) {
 		this.titleView.setText( resid );
+		return this;
 	}
 
 	/**
 	 * Sets the label of the toggle switch.
 	 *
 	 * @param label the label text to set.
+	 * @return this.
 	 */
-	public void setToggleLabel( CharSequence label ) {
+	public TogglableTitleBar setToggleLabel( CharSequence label ) {
 		this.toggleLabel.setText( label );
+		return this;
 	}
 
 	/**
 	 * Sets the label of the toggle switch.
 	 *
 	 * @param resid  the text resource id.
+	 * @return this.
 	 */
-	public void setToggleLabel( int resid ) {
+	public TogglableTitleBar setToggleLabel( int resid ) {
 		this.toggleLabel.setText( resid );
+		return this;
 	}
 
 	/**
@@ -191,5 +225,4 @@ public class TogglableTitleBar extends LinearLayout implements Checkable {
 	public CompoundButton togger() {
 		return this.toggleBox;
 	}
-
 }
