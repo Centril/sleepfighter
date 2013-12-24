@@ -20,6 +20,6 @@
     	<item>ALARM_TIME</item>
     </string-array>
 
-    <string name="sort_modes_manual_done">Done</string>
+    <string name="sort_modes_manual_done">done</string>
     <string name="sort_modes_manual_toast">Drag alarms to reorder.</string>
 </resources>
