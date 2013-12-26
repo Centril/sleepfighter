@@ -82,8 +82,13 @@ public class AlarmList extends IdObservableList<Alarm> {
 			return;
 
 		case ADD:
+			int maxId = this.maxId();
+
+			// Set placement and order for all added alarms.
 			for ( Object obj : e.elements() ) {
-				this.setPlacement( (Alarm) obj );
+				Alarm curr = (Alarm) obj;
+				this.setPlacement( curr );
+				curr.setOrder( ++maxId );
 			}
 
 			// Reorder the list.
@@ -93,6 +98,28 @@ public class AlarmList extends IdObservableList<Alarm> {
 		default:
 			super.fireEvent( e );
 		}
+	}
+
+	/**
+	 * Returns the maximum id in the list.
+	 *
+	 * @return the maximum id.
+	 */
+	public int maxId() {
+		int maxId = 0;
+		if ( this.sortMode.field() == SortMode.Field.ID ) {
+			// Optimized since we're already sorting by id.
+			maxId = this.get( this.sortMode.direction() ? this.size() - 1 : 0 ).getId();
+		} else {
+			for ( Alarm elem : this.delegate() ) {
+				int currId = elem.getId();
+				if ( currId > maxId ) {
+					maxId = currId;
+				}
+			}
+		}
+
+		return maxId;
 	}
 
 	private void setPlacement( Alarm alarm ) {
@@ -176,9 +203,9 @@ public class AlarmList extends IdObservableList<Alarm> {
 	}
 
 	/* --------------------------------
-	 * Public methods: Sorting.
-	 * --------------------------------
+	 * Public methods: Sorting.	 * --------------------------------
 	 */
+
 
 	/**
 	 * Returns the current sort mode.

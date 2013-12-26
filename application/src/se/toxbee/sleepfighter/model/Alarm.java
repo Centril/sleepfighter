@@ -536,6 +536,10 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 		return this.isPresetAlarm;
 	}
 
+	void setOrder( int order ) {
+		this.order = order;
+	}
+
 	/**
 	 * Returns the manual sort order of this alarm.
 	 *
@@ -922,16 +926,6 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	public void setChallenges( ChallengeConfigSet challenges ) {
 		this.challenges = challenges;
 		this.challenges.setMessageBus( this.getMessageBus() );
-	}
-
-	/**
-	 * <p><strong>NOTE:</strong> this method is only intended for persistence purposes and factorization.<br/>
-	 * This method is motivated and needed due to OrmLite not supporting triggers.</p>
-	 *
-	 * <p>Sets the order to {@link #getId()}, bypassing any and all checks, and does not send any event to bus.</p>
-	 */
-	public void setOrder() {
-		this.order = this.id;
 	}
 
 	/* --------------------------------
