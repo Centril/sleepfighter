@@ -41,8 +41,7 @@
 		android:paddingTop="0dp"
 		android:text="@string/sort_modes_manual_done"
 		android:textSize="22sp"
-		android:textStyle="bold"
-		android:typeface="serif" />
+		android:textStyle="bold" />
 
 	<View
 		android:layout_width="match_parent"

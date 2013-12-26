@@ -25,6 +25,8 @@ import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.adapter.AlarmAdapter;
 import se.toxbee.sleepfighter.android.component.dialog.TogglableTitleBar;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
+import se.toxbee.sleepfighter.android.utils.Toaster;
+import se.toxbee.sleepfighter.android.utils.ViewGroupUtils;
 import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.AlarmTimeRefresher;
@@ -52,17 +54,24 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.DragSortListView.DropListener;
+
 public class MainActivity extends Activity {
+	private static final String EXTRAS_IS_REORDER_MODE = "is_reorder_mode";
+
 	private AlarmList alarmList;
 	private AlarmAdapter alarmAdapter;
 
 	private ListView listView;
+	private ListView listViewShadow;
 
 	private TextView earliestTimeText;
 
@@ -93,7 +102,17 @@ public class MainActivity extends Activity {
 		this.app().getBus().subscribe( this );
 
 		this.setupListView();
+
+		this.tryEnterReorderMode( savedInstanceState );
 	}
+	
+	@Override
+	protected void onSaveInstanceState( Bundle outState ) {
+		super.onSaveInstanceState( outState );
+
+		this.saveReorderMode( outState );
+	}
+
 
 	@Override
 	protected void onResume() {
@@ -148,6 +167,17 @@ public class MainActivity extends Activity {
 
 		// Register to get context menu events associated with listView
 		this.registerForContextMenu( this.listView );
+	}
+
+	private void replaceListView() {
+		// Unregister everything set in setupListView().
+		this.listView.setAdapter( null );
+		this.listView.setOnItemClickListener( null );
+		this.unregisterForContextMenu( this.listView );
+
+		this.listViewShadow = this.listView;
+
+		this.setupListView();
 	}
 
 	private OnItemClickListener listClickListener = new OnItemClickListener() {
@@ -378,8 +408,8 @@ public class MainActivity extends Activity {
 	private void sortModeSelected( SortMode mode ) {
 		boolean altered = this.alarmList.order( mode );
 
-		if ( mode.field() != SortMode.Field.MANUAL ) {
-			this.enterReorderMode();
+		if ( mode.field() == SortMode.Field.MANUAL ) {
+			this.startReorderMode();
 		}
 
 		if ( altered ) {
@@ -388,14 +418,45 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	private void startReorderMode() {
+		Toaster.out( this, R.string.sort_modes_manual_toast );
+		this.enterReorderMode();
+	}
+
 	private void enterReorderMode() {
-		// Show drag handle.
-		// TODO
+		// Replace list.
+		final View reorderView = this.getLayoutInflater().inflate( R.layout.reorder_mode_view, (ViewGroup) this.listView.getParent(), false );
+		ViewGroupUtils.replaceView( this.listView, reorderView );
+		this.replaceListView();
 
-		// Inflate view.
+		// Config done button.
+		reorderView.findViewById( R.id.reorder_mode_done_button ).setOnClickListener( new View.OnClickListener() {
+			@Override
+			public void onClick( View v ) {
+				ViewGroupUtils.replaceView( reorderView, listViewShadow );
+				replaceListView();
+				listViewShadow = null;
+			}
+		} );
 
-		// Replace the view.
-		//ViewGroupUtils.replaceView( this.listView, reorderView );
+		// Config reorder logic.
+		((DragSortListView) this.listView).setDropListener( new DropListener() {
+			@Override
+			public void drop( int from, int to ) {
+				getAlarm( from ).swapOrder( getAlarm( to ) );
+			}
+		} );
+	}
+
+	private void saveReorderMode( Bundle outState ) {
+		outState.putBoolean( EXTRAS_IS_REORDER_MODE,
+				this.listView instanceof DragSortListView );
+	}
+
+	private void tryEnterReorderMode( Bundle inState ) {
+		if ( inState != null && inState.getBoolean( EXTRAS_IS_REORDER_MODE ) ) {
+			this.enterReorderMode();
+		}
 	}
 
 	private DisplayPreferences dprefs() {
