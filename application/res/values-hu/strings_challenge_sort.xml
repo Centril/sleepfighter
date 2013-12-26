@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    <string name="challenge_sort_ascending">Alacsonyról magasra</string>
+    <string name="challenge_sort_descending">Magasról alacsonyra</string>
+    <string name="challenge_sort_done">Kész!</string>
+
+    <string name="challenge_sort_settings_title">Kihívás: Számrendezési beállítások</string>
+    <string name="challenge_sort_color_confusion_title">Színzavarás</string>
+    <string name="challenge_sort_color_confusion_summary">Ha be van kapcsolva, a számok háttere szabálytalanul lesznek beszínezve, hogy nagyobb legyen a zűrzavar.</string>
+    
+    <string name="challenge_sort_color_saturation_confusion_title">Átitászavarás</string>
+    <string name="challenge_sort_color_saturation_confusion_summary">
+		Ha be van kapcsolva, a számok háttere szabálytalanul lesznek átitatva, hogy nagyobb legyen a zűrzavar.
+        Csak akkor működik, ha a színzavarás is be van kapcsolva.
+    </string>
+</resources>

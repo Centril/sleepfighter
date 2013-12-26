@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    
+ 
+    <string name="speech_translation_done">true</string>
+    
+
+    
+    <string name="speech_wake_up_format">おはようございます。お目覚めの時間です。</string>
+     <string name="speech_time_format">時刻は　%s　です。</string>
+     <string name="speech_weather_format">天気は　%s。</string>
+      
+      <string name="clear_weather">晴れています　晴れていて</string>
+     
+     <string name="possible_very_light_rain">霧雨の可能性です 霧雨の可能性で</string>
+     <string name="very_light_rain">霧雨です 霧雨で</string>
+     <string name="possible_light_rain">弱い雨の可能性です　弱い雨の可能性で</string>
+     <string name="light_rain">弱い雨です　弱い雨で</string>
+     <string name="medium_rain">雨です　雨で</string>
+     <string name="heavy_rain">強い雨です　強い雨で</string>
+     
+     <string name="possible_very_light_sleet">とても弱いみぞれの可能性です とても弱いみぞれの可能性で</string>
+     <string name="very_light_sleet">とても弱いみぞれです とても弱いみぞれで</string>
+     <string name="possible_light_sleet">弱いみぞれの可能性です 弱いみぞれの可能性で</string>
+     <string name="light_sleet">弱いみぞれです 弱いみぞれで</string>
+     <string name="medium_sleet">みぞれです　みぞれで</string>
+     <string name="heavy_sleet">強いみぞれです　強いみぞれで</string>
+        
+      <string name="possible_very_light_snow">とても弱い雪の可能性です　とても弱い雪の可能性で</string>
+      <string name="very_light_snow">とても弱い雪です　とても弱い雪で</string>
+  
+      <string name="possible_light_snow">弱い雪の可能性です　弱い雪の可能性で</string>
+      <string name="light_snow">弱い雪です　弱い雪で</string>
+    
+      <string name="medium_snow">雪です　雪で</string>
+      <string name="heavy_snow">強い雪です　強い雪で</string>
+      
+      <string name="light_wind">弱い風です　弱い風で</string>
+      <string name="medium_wind">やや強い風です　やや強い風で</string> 
+      <string name="heavy_wind">強い風です　強い風で</string>
+      
+      <string name="low_humidity">乾燥しています　乾燥していて</string> 
+      <string name="high_humidity">湿っています　湿っていて</string> 
+      <string name="fog">霧です　霧で</string> 
+      
+      <string name="light_clouds">やや曇っています　やや曇っていて</string> 
+      <string name="medium_clouds">曇っています　曇っていて</string> 
+      <string name="heavy_clouds">曇っています　曇っていて</string> 
+      
+     <!--  
+      "clear": "clear",
+  "possible-very-light-rain": "possible drizzle",
+  "very-light-rain": "drizzle",
+  "possible-light-rain": "possible light rain",
+  "light-rain": "light rain",
+  "medium-rain": "rain",
+  "heavy-rain": "heavy rain",
+  
+  "possible-very-light-sleet": "possible light sleet",
+  "very-light-sleet": "light sleet",
+  "possible-light-sleet": "possible light sleet",
+  "light-sleet": "light sleet",
+  "medium-sleet": "sleet",
+  "heavy-sleet": "heavy sleet",
+  
+  "possible-very-light-snow": "possible flurries",
+  "very-light-snow": "flurries",
+  "possible-light-snow": "possible light snow",
+  "light-snow": "light snow",
+  "medium-snow": "snow",
+  "heavy-snow": "heavy snow",
+  
+  "light-wind": "breezy",
+  "medium-wind": "windy",
+  "heavy-wind": "dangerously windy",
+  
+  
+  "low-humidity": "dry",
+  "high-humidity": "humid",
+  "fog": "foggy",
+  "light-clouds": "partly cloudy",
+  "medium-clouds": "mostly cloudy",
+  "heavy-clouds": "overcast",
+     -->
+     
+    
+     
+</resources>

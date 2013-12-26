@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="app_name">SleepFighter</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="add">Hinzufügen</string>
+    <string name="alarm_unnamed_format">Alarm %1$d</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nein</string>
+    <string name="confirm_delete">Sind Sie sicher, dass Sie den Alarm löschen möchte?"</string>
+    <string name="pre_chal_act">Herausforderung annehmen?!</string>
+    <string name="snooze">Schlummern</string>
+    <string name="alarm_emergency_stop">Notstopp</string>
+    <string name="alarm_emergency_dialog">Bist du sicher? Du wirst %1$s verlieren (aber dieser Alarm klingelt nicht wieder).</string>
+
+    <plurals name="alarm_emergency_cost">
+        <item quantity="one">Ein Punkt</item>
+        <item quantity="other">%d Punkte</item>
+    </plurals>
+
+    <!-- Challenges -->
+    <string name="start_challenge">Den Wahnsinn beendenen!</string>
+    <string name="challenge_points">Herausforderungspunkte</string>
+    <string name="challenge_toggle_content_desc">Herausforderung umschalten</string>
+
+    <string-array name="earliest_time_formats">
+        <item>Kein Alarm</item>
+        <item>In &lt; 1 minut</item>
+        <item>In %1$s</item>
+        <item>In %1$s und %2$s</item>
+        <item>In %1$s, %2$s und %3$s</item>
+    </string-array>
+    <string-array name="earliest_time_formats_parts">
+        <item>%1$dt</item>
+        <item>%2$ds</item>
+        <item>%3$dm</item>
+    </string-array>
+    <string-array name="exact_time_formats">
+        <item>Heute %1$s</item>
+        <item>Morgen %1$s</item>
+        <item>%2$s %1$s</item><!-- %2$s = [Monday, ...] -->
+    </string-array>
+    
+    <string-array name="main_list_context_menu">
+        <item>Alarm redigieren</item>
+        <item>Alarm löschen</item>
+        <item>Kopiera alarm</item>
+    </string-array>
+
+    <!-- Exclude Area (GPS) -->
+    <string name="action_gpsfilter_area_edit">Fläche ausschließen/GPS</string>
+
+    <string name="install_google_play_music_message">Bitte Google Play Music installieren</string>
+    
+</resources>

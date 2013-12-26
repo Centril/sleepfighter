@@ -1,0 +1,39 @@
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <string name="title_activity_global_settings">Beállítások</string>
+
+    <string name="pref_alarm_turn_screen_on">A képernyőt bekapcsolni</string>
+    <string name="pref_alarm_turn_screen_on_summary">A képernyő magátol bekapcsol, mikor a riasztó beindul</string>    
+
+    <string name="pref_alarm_bypass_lock_screen">Képernyőzárat körbejárni</string>
+    <string name="pref_alarm_bypass_lock_screen_summary">A képernyőzár magátol kinyil, mikor a riasztó beindul</string>    
+
+    <string name="pref_about">Info</string>
+    <string name="pref_version">Változat</string>
+    
+    <string name="display_when_next_alarm_rings">Következő riasztót kiírni</string>
+    <string name="display_when_next_alarm_rings_summary">Kiírja, mikor fog a következő riasztó szolni, ahelyett, hogy mennyi idő mulva</string>
+
+    <string name="pref_global_preset_alarm">Alapriasztó</string>
+
+    <string name="developers_title">Fejlesztők</string>
+    
+</resources>

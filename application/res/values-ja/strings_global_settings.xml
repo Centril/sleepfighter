@@ -1,0 +1,66 @@
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+
+    <string name="title_activity_global_settings">設定</string>
+
+    <string name="pref_alarm_turn_screen_on">画面をつける</string>
+    <string name="pref_alarm_turn_screen_on_summary">アラームが鳴っているとき、画面をつける</string>
+
+    <string name="pref_alarm_bypass_lock_screen">ロック画面</string>
+    <string name="pref_alarm_bypass_lock_screen_summary">アラームが鳴っているとき、ロック画面されています。</string>
+    
+    <string name="display_when_next_alarm_rings">次のアラームが鳴る時間を表示します</string>
+    <!-- TODO: translate -->
+    <string name="display_when_next_alarm_rings_summary">
+       次のアラームが鳴るまで残っている時間ではなく鳴る時間を表示します</string>
+
+    <string name="pref_about">スリープファイターについて</string>
+    <string name="pref_version">バージョン</string>
+
+    <string name="pref_global_preset_alarm">デフォルトアラーム</string>
+    
+        <string name="developers_title">開発元</string>
+      
+        <string name="pref_location_filter">位置設定</string>
+    <string name="pref_location_filter_enabled">オンのします</string>
+    <string name="pref_location_filter_enabled_summary">オンにすると、位置フィルタがオフになります。</string>
+ 
+    <string name="pref_location_filter_ttff">最初の位置チェエクするまでの期間</string>
+    <string name="pref_location_filter_ttff_message">
+        アラームが鳴る前の位置チェエクの何分前を設定します。      
+        ０ならば、前の位置チェックがオフになります。しかし、その場合、位置情報は不正確になる可能性があります。
+           </string>
+
+    <string name="pref_location_filter_refresh_interval">更新間隔</string>
+    <string name="pref_location_filter_refresh_interval_message">
+        更新間隔を分で設定します。０ならば、更新はオフになります</string>
+
+    <string name="pref_location_filter_min_distance">最低距離</string>
+    <string name="pref_location_filter_min_distance_message">
+        あなたは最低距離移動すると、位置更新します。
+        ０ならば、最低距離はオフになります。</string>
+ 
+    <string name="pref_location_filter_max_age">既知の位置の最大寿命</string>   
+  
+    <string name="pref_location_filter_max_age_message">
+        既知の位置の最大寿命を分で設定します
+        寿命はそれを越えると、位置フィルターは実行しなくなります。
+        ０ならば、無限の寿命となります。</string>
+</resources>

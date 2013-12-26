@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="app_name">SleepFighter</string>
+    <string name="add">Lägg till</string>
+    <string name="pre_chal_act">Antar du utmaningen?!</string>
+    <string name="action_settings">Inställningar</string>
+    <string name="alarm_unnamed_format">Alarm %1$d</string>
+    <string name="yes">Ja</string>
+    <string name="no">Nej</string>
+    <string name="confirm_delete">Är du säker på att du vill ta bort alarmet?"</string>
+    <string name="snooze">Snooze</string>
+    <string name="alarm_emergency_stop">Nödstopp</string>
+    <string name="alarm_emergency_dialog">Säker på att du vill stoppa alarmet? Du kommer förlora %1$s.</string>
+    <plurals name="alarm_emergency_cost">
+        <item quantity="one">en poäng</item>
+        <item quantity="other">%d poäng</item>
+    </plurals>
+    <plurals name="minute">
+        <item quantity="one">minut</item>
+        <item quantity="other">minuter</item>
+    </plurals>
+
+    <!-- Challenges -->
+    <string name="btn_complete">Lyckas!</string>
+    <string name="btn_fail">Misslyckas!</string>
+    <string name="start_challenge">Avsluta galenskapen!</string>
+    <string name="challenge_points">Utmaningspoäng</string>
+    <string name="challenge_toggle_content_desc">Sätt på/av utmaningar</string>
+    <string name="deactivate">Alarm avaktiverad!</string>
+
+    <string-array name="earliest_time_formats">
+        <item>Inget alarm är aktivt</item>
+        <item>Om &lt; 1 minut</item>
+        <item>Om %1$s</item>
+        <item>Om %1$s och %2$s</item>
+        <item>Om %1$s, %2$s och %3$s</item>
+    </string-array>
+    <string-array name="earliest_time_formats_parts">
+        <item>%1$dd</item>
+        <item>%2$dt</item>
+        <item>%3$dm</item>
+    </string-array>
+    <string-array name="exact_time_formats">
+        <item>Idag %1$s</item>
+        <item>Imorgon %1$s</item>
+        <item>%2$s %1$s</item> <!-- %2$s = [Monday, ...] -->
+    </string-array>
+    <string-array name="main_list_context_menu">
+        <item>Redigera alarm</item>
+        <item>Ta bort alarm</item>
+        <item>Kopiera alarm</item>
+    </string-array>
+    
+    <!-- Exclude Area (GPS) -->
+    <string name="action_gpsfilter_area_edit">Områdesfilter</string>
+    
+    <string name="install_google_play_music_message">Vänligen installera Google Play Music</string>
+
+    <string name="do_not_show_again">Visa inte igen</string>
+    
+    <string name="no_voice_installed_title">Ingen röst installerad</string>
+    <string name="no_voice_installed_message">Det finns ingen röst för ditt språk,
+         så engelska kommer att användas istället.
+         Om du vill ha en röst för ditt språk, installera vänligen den via en app
+         som SVOX</string>
+    
+    
+</resources>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (c) 2013 See AUTHORS file.
+  
+  This file is part of SleepFighter.
+  
+  SleepFighter is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  SleepFighter is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  See the GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+-->
+<resources>
+    
+    <string name="speech_translation_done">true</string>
+    
+    <string name="speech_wake_up_format">Godmorgon, det är dags att vakna.</string>
+     <string name="speech_time_format">Klockan är %s</string>
+     <string name="speech_weather_format">och vädret är %s</string>
+  
+     <!-- 
+     These pages were used as references when translating the various weather conditions:
+     http://www.smhi.se/kunskapsbanken/meteorologi/vaderspraket-1.3847
+     http://www.smhi.se/kunskapsbanken/meteorologi/skalor-for-vindhastighet-1.252
+     http://sv.wikipedia.org/wiki/Molnm%C3%A4ngd
+     
+      -->
+      <string name="and_word">och</string>
+     
+     
+      <string name="clear_weather">klart</string>
+     
+     <string name="possible_very_light_rain">möjligt duggregn</string>
+     <string name="very_light_rain">duggregn</string>
+     <string name="possible_light_rain">möjligt lätt regn</string>
+     <string name="light_rain">lätt regn</string>
+     <string name="medium_rain">regn</string>
+     <string name="heavy_rain">kraftigt regn</string>
+    
+     	  	
+     <string name="possible_very_light_sleet">möjligt lätt snöblandat regn</string>
+     <string name="very_light_sleet">lätt snöblandat regn</string>
+     <string name="possible_light_sleet">möjligt lätt snöblandat regn</string>
+     <string name="light_sleet">lätt snöblandat regn</string>
+     <string name="medium_sleet">snöblandat regn</string>
+     <string name="heavy_sleet">kraftigt snöblandat regn</string>     
+     
+     <!-- light-snow is flurries in English. And
+     "A snow flurry is a brief instance of light snow, with very little or no accumulation of snow on the ground. -->
+      <string name="possible_very_light_snow">möjligt lätt snöfall</string>
+      <string name="very_light_snow">lätt snöfall</string>
+    
+      
+      <string name="possible_light_snow">möjligt måttligt snöfall</string>
+      <string name="light_snow">måttligt snöfall</string>
+    
+      <string name="medium_snow">snöfall</string>
+      <string name="heavy_snow">kraftigt snöfall</string>
+      
+      <string name="light_wind">svag vind</string>
+      <string name="medium_wind">måttlig vind</string> 
+      <string name="heavy_wind">blåsigt</string>
+      
+      <string name="low_humidity">torrt</string> 
+      <string name="high_humidity">fuktigt</string> 
+      <string name="fog">dimma</string> 
+      
+      <string name="light_clouds">delvis monligt</string> 
+      <string name="medium_clouds">monligt</string> 
+      <string name="heavy_clouds">mulet</string> 
+
+     <!--  
+      "clear": "clear",
+  "possible-very-light-rain": "possible drizzle",
+  "very-light-rain": "drizzle",
+  "possible-light-rain": "possible light rain",
+  "light-rain": "light rain",
+  "medium-rain": "rain",
+  "heavy-rain": "heavy rain",
+  
+  "possible-very-light-sleet": "possible light sleet",
+  "very-light-sleet": "light sleet",
+  "possible-light-sleet": "possible light sleet",
+  "light-sleet": "light sleet",
+  "medium-sleet": "sleet",
+  "heavy-sleet": "heavy sleet",
+  
+  "possible-very-light-snow": "possible flurries",
+  "very-light-snow": "flurries",
+  "possible-light-snow": "possible light snow",
+  "light-snow": "light snow",
+  "medium-snow": "snow",
+  "heavy-snow": "heavy snow",
+  
+  "light-wind": "breezy",
+  "medium-wind": "windy",
+  "heavy-wind": "dangerously windy",
+  
+  
+  "low-humidity": "dry",
+  "high-humidity": "humid",
+  "fog": "foggy",
+  "light-clouds": "partly cloudy",
+  "medium-clouds": "mostly cloudy",
+  "heavy-clouds": "overcast",
+     -->
+     
+</resources>
