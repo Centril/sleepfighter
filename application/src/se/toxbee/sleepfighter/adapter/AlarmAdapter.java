@@ -74,8 +74,8 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
 		if (convertView == null) {
 			// A view isn't being recycled, so make a new one from definition
-			convertView = LayoutInflater.from( getContext() ).inflate( R.layout.alarm_list_item, null );
-	
+			convertView = LayoutInflater.from( getContext() ).inflate( R.layout.alarm_list_item, parent, false );
+
 			// Make & store holder.
 			holder = new ViewHolder( convertView );
 			convertView.setTag( holder );
