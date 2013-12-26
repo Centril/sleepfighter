@@ -55,7 +55,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	private static final String DATABASE_NAME = "sleep_fighter.db";
 
 	// Current database version, change when database structure changes.
-	private static final int DATABASE_VERSION = 25;
+	private static final int DATABASE_VERSION = 27;
 
 	// List of all classes that is managed by helper.
 	private static final Class<?>[] CLASSES = new Class<?>[] {
@@ -73,7 +73,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 		GPSFilterArea.class
 	};
 
-	private final Map<Class<?>, PersistenceExceptionDao<Class<?>, Integer>> daoMap = Maps.newHashMap();
+	private final Map<Class<?>, PersistenceExceptionDao<Class<?>, ?>> daoMap = Maps.newHashMap();
 	private final Map<Class<?>, DaoInitRunner<?>> daoInitRunners = Maps.newHashMap();
 
 	/**
@@ -91,7 +91,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 		 * @param daoClazz the Class of the Dao.
 		 * @param dao the Dao itself.
 		 */
-		public <D extends PersistenceExceptionDao<T, Integer>> void daoInit( OrmHelper helper, Class<T> daoClazz, D dao );
+		public <D extends PersistenceExceptionDao<T, ?>> void daoInit( OrmHelper helper, Class<T> daoClazz, D dao );
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 */
 	public class CacheEnabler<T> implements DaoInitRunner<T> {
 		@Override
-		public <D extends PersistenceExceptionDao<T, Integer>> void daoInit( OrmHelper helper, Class<T> daoClazz, D dao ) {
+		public <D extends PersistenceExceptionDao<T, ?>> void daoInit( OrmHelper helper, Class<T> daoClazz, D dao ) {
 			dao.setObjectCache( true );
 		}
 	}
@@ -114,9 +114,9 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 		r.put( Alarm.class, new CacheEnabler<Alarm>() );
 	}
 
-	public <D extends PersistenceExceptionDao<T, Integer>, T> D dao( Class<T> clazz ) {
+	public <T, I> PersistenceExceptionDao<T, I> dao( Class<T> clazz ) {
 		@SuppressWarnings( "unchecked" )
-		D dao = (D) this.daoMap.get( clazz );
+		PersistenceExceptionDao<T, I> dao = (PersistenceExceptionDao<T, I>) this.daoMap.get( clazz );
 
 		if ( dao == null ) {
 			dao = this.getExceptionDao( clazz );
@@ -124,12 +124,20 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 			this.runDaoInit( clazz, dao );
 
 			@SuppressWarnings( "unchecked" )
-			PersistenceExceptionDao<Class<?>, Integer> castDao = (PersistenceExceptionDao<Class<?>, Integer>) dao;
+			PersistenceExceptionDao<Class<?>, ?> castDao = (PersistenceExceptionDao<Class<?>, ?>) dao;
 
 			this.daoMap.put( clazz, castDao );
 		}
 
 		return dao;
+	}
+
+	public <T> PersistenceExceptionDao<T, String> dao_s( Class<T> clazz ) {
+		return this.dao( clazz );
+	}
+
+	public <T> PersistenceExceptionDao<T, Integer> dao_i( Class<T> clazz ) {
+		return this.dao( clazz );
 	}
 
 	/**
@@ -138,7 +146,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 * @param clazz the to run for.
 	 * @param dao the dao for the clazz.
 	 */
-	private <D extends PersistenceExceptionDao<T, Integer>, T> void runDaoInit( Class<T> clazz, D dao ) {
+	private <D extends PersistenceExceptionDao<T, ?>, T> void runDaoInit( Class<T> clazz, D dao ) {
 		@SuppressWarnings( "unchecked" )
 		DaoInitRunner<T> onInit = (DaoInitRunner<T>) this.daoInitRunners.get( clazz );
 		if ( onInit != null ) {
@@ -216,7 +224,7 @@ public class OrmHelper extends OrmLiteSqliteOpenHelper {
 	 *
 	 * @return the Dao.
 	 */
-	public PersistenceExceptionDao<?, Integer> rawDao() {
+	public PersistenceExceptionDao<?, ?> rawDao() {
 		return this.dao( Alarm.class );
 	}
 

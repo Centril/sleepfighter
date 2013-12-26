@@ -29,7 +29,6 @@ import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.audio.AudioSource;
 import se.toxbee.sleepfighter.model.audio.AudioSourceType;
-import se.toxbee.sleepfighter.text.MetaTextUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -147,7 +146,7 @@ public class RingerSettingsActivity extends PreferenceActivity {
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= 11) {
 			ActionBar actionBar = this.getActionBar();
-			actionBar.setTitle(MetaTextUtils.printAlarmName(this, alarm));
+			actionBar.setTitle( alarm.printName() );
 			ActivityUtils.setupStandardActionBar(this);
 		}
 	}

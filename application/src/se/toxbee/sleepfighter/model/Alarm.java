@@ -32,6 +32,7 @@ import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
 import android.provider.Settings;
 
 import com.google.common.base.Objects;
@@ -48,7 +49,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * @since Sep 16, 2013
  */	
 @DatabaseTable(tableName = "alarm")
-public class Alarm implements IdProvider, MessageBusHolder {
+public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	/**
 	 * Enumeration of fields in an Alarm.
 	 *
@@ -57,8 +58,11 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * @since Sep 19, 2013
 	 */
 	public static enum Field {
-		ID, NAME,
+		// Meta
+		ID, NAME, ORDER,
+		// Scheduling
 		TIME, REPEATING, ACTIVATED, ENABLED_DAYS,
+		// "Peripherals"
 		AUDIO_SOURCE, AUDIO_CONFIG, SPEECH, FLASH
 	}
 
@@ -210,9 +214,12 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	/** The value for unnamed strings is {@value #UNNAMED} */
 	public static final String UNNAMED = null;
 
-	// whether this alarm is the preset alarm(the default alarm)
+	/** Whether this alarm is the preset alarm (the default alarm). */
 	@DatabaseField
 	private boolean isPresetAlarm = false;
+
+	@DatabaseField
+	private int order;
 
 	/* --------------------------------
 	 * Fields: Scheduling.
@@ -377,8 +384,13 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals( Object obj ) {
 		return this == obj || obj != null && this.getClass() == obj.getClass() && this.id == ((Alarm) obj).id;
+	}
+
+	@Override
+	public int compareTo( Alarm rhs ) {
+		return this.id - rhs.id;
 	}
 
 	@Override
@@ -402,6 +414,42 @@ public class Alarm implements IdProvider, MessageBusHolder {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * "Prints" the name of the Alarm - formatted, taking {@link #isUnnamed()} into account.
+	 *
+	 * @param format the format to use when {@link #isUnnamed()}.
+	 * @return the formatted name.
+	 */
+	public String printName( String format ) {
+		return	this.isUnnamed()
+			?	String.format( format, this.getUnnamedPlacement() )
+			:	this.getName();
+	}
+
+	/**
+	 * "Prints" the name of the Alarm using the format given by using the format key {@link Field#NAME} with {@link #getLocalizationProvider()}.
+	 *
+	 * @return the formatted name.
+	 */
+	public String printName() {
+		return this.printName( this.getLocalizationProvider().format( Field.NAME ) );
+	}
+
+	private static LocalizationProvider localizationProvider;
+
+	/**
+	 * Sets the {@link LocalizationProvider} to use.
+	 *
+	 * @param provider the provider to use.
+	 */
+	public static void setLocalizationProvider( LocalizationProvider provider ) {
+		localizationProvider = Preconditions.checkNotNull( provider );
+	}
+
+	public LocalizationProvider getLocalizationProvider() {
+		return localizationProvider;
 	}
 
 	/**
@@ -488,6 +536,33 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		return this.isPresetAlarm;
 	}
 
+	void setOrder( int order ) {
+		this.order = order;
+	}
+
+	/**
+	 * Returns the manual sort order of this alarm.
+	 *
+	 * @return the order.
+	 */
+	public int getOrder() {
+		return this.order;
+	}
+
+	/**
+	 * Swaps the manual sort order of this and the given alarm.<br/>
+	 * Publishes a {@link MetaChangeEvent} with the ids in old.
+	 *
+	 * @param rhs the alarm to swap with.
+	 */
+	public void swapOrder( Alarm rhs ) {
+		int temp = this.order;
+		this.order = rhs.order;
+		rhs.order = temp;
+
+		this.publish( new MetaChangeEvent( this, Field.ORDER, rhs ) );
+	}
+
 	/* --------------------------------
 	 * Public methods: Scheduling.
 	 * --------------------------------
@@ -514,6 +589,13 @@ public class Alarm implements IdProvider, MessageBusHolder {
 		// Pretend like the alarms scheduling was altered even tho it might not have been.
 		this.bus = bus;
 		this.publish( new ScheduleChangeEvent( this, Field.ACTIVATED, !this.isActivated() ) );
+	}
+
+	/**
+	 * {@link #getNextMillis(long)}
+	 */
+	public synchronized Long scheduledTimestamp() {
+		return this.getNextMillis( this.getLocalizationProvider().now() );
 	}
 
 	/**

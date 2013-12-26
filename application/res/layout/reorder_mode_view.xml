@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dslv="http://schemas.android.com/apk/res/se.toxbee.sleepfighter"
+    android:id="@+id/reorder_mode_view_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="0dp">
+
+	<com.mobeta.android.dslv.DragSortListView
+		android:id="@+id/mainAlarmsList"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+		dslv:collapsed_height="1px"
+		dslv:drag_enabled="true"
+		dslv:drag_handle_id="@id/alarm_list_item_container"
+		dslv:drag_scroll_start="0.33"
+		dslv:drag_start_mode="onMove"
+		dslv:float_alpha="1"
+		dslv:float_background_color="@color/highlighted_text_holo_dark"
+		dslv:max_drag_scroll_speed="0.5"
+		dslv:remove_enabled="false"
+		dslv:slide_shuffle_speed="0.5"
+		dslv:sort_enabled="true"
+		dslv:use_default_controller="true" />
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="@color/black"/>
+
+	<Button
+		android:id="@+id/reorder_mode_done_button"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@color/highlighted_text_light"
+		android:paddingBottom="0dp"
+		android:paddingLeft="20dp"
+		android:paddingRight="20dp"
+		android:paddingTop="0dp"
+		android:text="@string/sort_modes_manual_done"
+		android:textSize="22sp"
+		android:textStyle="bold" />
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="@color/black"/>
+
+</LinearLayout>

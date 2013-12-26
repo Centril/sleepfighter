@@ -24,9 +24,11 @@ import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
 import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
@@ -205,6 +207,40 @@ public class GPSFilterArea implements IdProvider, MessageBusHolder {
 		return this.name;
 	}
 
+	/**
+	 * "Prints" the name of the Alarm - formatted, using unnamedFormat if name is empty.
+	 *
+	 * @param unnamedFormat the format to use when empty.
+	 * @return the formatted name.
+	 */
+	public String printName( String unnamedFormat ) {
+		return name == null || name.trim().equals( "" ) ? unnamedFormat : name;
+	}
+
+	/**
+	 * "Prints" the name of the area using the format given by using the format key {@link Field#NAME} with {@link #getLocalizationProvider()}.
+	 *
+	 * @return the formatted name.
+	 */
+	public String printName() {
+		return this.printName( this.getLocalizationProvider().format( Field.NAME ) );
+	}
+
+	private static LocalizationProvider localizationProvider;
+
+	/**
+	 * Sets the {@link LocalizationProvider} to use.
+	 *
+	 * @param provider the provider to use.
+	 */
+	public static void setLocalizationProvider( LocalizationProvider provider ) {
+		localizationProvider = Preconditions.checkNotNull( provider );
+	}
+
+	public LocalizationProvider getLocalizationProvider() {
+		return localizationProvider;
+	}
+
 	public GPSFilterMode getMode() {
 		return this.mode;
 	}
@@ -341,4 +377,5 @@ public class GPSFilterArea implements IdProvider, MessageBusHolder {
 
 		this.bus.publish( event );
 	}
+
 }

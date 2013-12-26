@@ -20,10 +20,12 @@ package se.toxbee.sleepfighter.utils.reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.collect.ObjectArrays;
+import com.google.common.reflect.TypeToken;
 
 /**
  * ReflectionUtil provides very basic reflection utilities.
@@ -33,6 +35,88 @@ import com.google.common.collect.ObjectArrays;
  * @since Nov 5, 2013
  */
 public class ReflectionUtil {
+	/**
+	 * {@link Method#invoke(Object, Object...)}
+	 */
+	public static Object invoke( Method m, Object receiver, Object... args ) {
+		try {
+			return m.invoke( receiver, args );
+		} catch ( IllegalArgumentException e ) {
+			ROJava6Exception.reThrow( e );
+		} catch ( IllegalAccessException e ) {
+			ROJava6Exception.reThrow( e );
+		} catch ( InvocationTargetException e ) {
+			ROJava6Exception.reThrow( e );
+		}
+
+		return null;
+	}
+
+	/**
+	 * {@link Class#getDeclaredMethod(String, Class...)}
+	 */
+	public static Method declaredMethod( Class<?> clazz, String name, Object args ) {
+		return declaredMethod( clazz, name, getClasses( args ) );
+	}
+
+	/**
+	 * {@link Class#getDeclaredMethod(String, Class...)}
+	 */
+	public static Method method( Class<?> clazz, String name, Object args ) {
+		return method( clazz, name, getClasses( args ) );
+	}
+
+	/**
+	 * {@link Class#getDeclaredMethod(String, Class...)}
+	 */
+	public static Method declaredMethod( Class<?> clazz, String name, Class<?>... parameterTypes ) {
+		try {
+			return clazz.getDeclaredMethod( name, parameterTypes );
+		} catch ( NoSuchMethodException e ) {
+			ROJava6Exception.reThrow( e );
+			return null;
+		}
+	}
+
+	/**
+	 * {@link Class#getMethod(String, Class...)}
+	 */
+	public static Method method( Class<?> clazz, String name, Class<?>... parameterTypes ) {
+		try {
+			return clazz.getMethod( name, parameterTypes );
+		} catch ( NoSuchMethodException e ) {
+			ROJava6Exception.reThrow( e );
+			return null;
+		}
+	}
+
+	/**
+	 * Creates a generic array of size with component type U given a generic object o.<br/>
+	 * Only works if o actually has a generic type U.
+	 *
+	 * @param o the generic object.
+	 * @param size
+	 * @return
+	 */
+	public static <U> U[] genericArray( Object o, int size ) {
+		Class<U> type = genericType( o );
+		return makeArray( type, size );
+	}
+
+	/**
+	 * Returns the generic type of object o.<br/>
+	 * Only works if o actually has a generic type U.
+	 *
+	 * @param o the generic object.
+	 * @return the {@link Class} of U.
+	 */
+	@SuppressWarnings( "unchecked" )
+	public static <U> Class<U> genericType( Object o ) {
+		@SuppressWarnings( "serial" )
+		TypeToken<U> t = new TypeToken<U>( o.getClass() ) {};
+		return (Class<U>) t.getRawType();
+	}
+
 	/**
 	 * Returns a nested class/enum/interface from containing type as a subtype of target.
 	 *

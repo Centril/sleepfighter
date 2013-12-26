@@ -21,7 +21,8 @@ package se.toxbee.sleepfighter.gps;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.model.gps.GPSLatLng;
-import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
+import se.toxbee.sleepfighter.preference.AppPreferenceManager;
+import se.toxbee.sleepfighter.preference.LocationFilterPreferences;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
@@ -39,14 +40,14 @@ public class GPSFilterRequisitor {
 	private static final String TAG = GPSFilterRequisitor.class.getSimpleName();
 
 	private GPSFilterAreaSet set;
-	private GlobalPreferencesManager prefs;
+	private LocationFilterPreferences prefs;
 
 	/**
 	 * Constructs the GPSFilterRequisitor given a set of areas.
 	 */
-	public GPSFilterRequisitor( GPSFilterAreaSet set, GlobalPreferencesManager prefManager ) {
+	public GPSFilterRequisitor( GPSFilterAreaSet set, AppPreferenceManager prefManager ) {
 		this.set = set;
-		this.prefs = prefManager;
+		this.prefs = prefManager.locFilter;
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class GPSFilterRequisitor {
 	 */
 	public boolean isSatisfied( Context context ) {
 		// Not globally enabled or no enabled and valid areas? Then we're satisfied!
-		if ( !(this.prefs.isLocationFilterEnabled() && this.set.hasEnabledAndValid()) ) {
+		if ( !(this.prefs.isEnabled() && this.set.hasEnabledAndValid()) ) {
 			return this.returnSatisfaction( true );
 		}
 
@@ -64,7 +65,7 @@ public class GPSFilterRequisitor {
 		GPSFilterLocationRetriever locRet = new GPSFilterLocationRetriever( new Criteria() );
 		Location loc = locRet.getLocation( context );
 
-		int maxAge = this.prefs.getLocationMaxAge();
+		int maxAge = this.prefs.maxAllowedAge();
 		if ( maxAge > 0 ) {
 			long locAge = System.currentTimeMillis() - loc.getTime();
 			if ( locAge > (long)maxAge * 60000 ) {

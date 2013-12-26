@@ -16,39 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.text;
-
-import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.model.Alarm;
-import android.content.Context;
+package se.toxbee.sleepfighter.utils.model;
 
 /**
- * MetaTextUtils provides text utilities for meta information in Alarm.
+ * {@link StringSetter} provides setters for {@link String}<br/>
+ * on a key-value data structure where the key is K.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Sep 25, 2013
+ * @since Dec 15, 2013
  */
-public class MetaTextUtils {
+public interface StringSetter<K> {
 	/**
-	 * Prints (returns) the name of alarm as a string.
+	 * Sets a string value to key.
 	 *
-	 * @param context android context.
-	 * @param alarm the alarm.
-	 * @return the alarm name as text.
+	 * @param key the key to set value for.
+	 * @param val the value to set for given key.
 	 */
-	public static final String printAlarmName( Context context, final Alarm alarm ) {
-		if ( !alarm.isUnnamed() ) {
-			return alarm.getName();
-		}
-
-		String format = context.getResources().getString( R.string.alarm_unnamed_format );
-		return String.format( format, alarm.getUnnamedPlacement() );
-	}
-
-	/**
-	 * Construction forbidden.
-	 */
-	private MetaTextUtils() {
-	}
+	public void setString( K key, String val );
 }

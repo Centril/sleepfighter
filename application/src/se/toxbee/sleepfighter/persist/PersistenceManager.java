@@ -277,7 +277,7 @@ public class PersistenceManager {
 	 * @return the query builder.
 	 */
 	private QueryBuilder<Alarm, Integer> makeAlarmQB() {
-		return this.getHelper().dao( Alarm.class ).queryBuilder();
+		return this.dao_i( Alarm.class ).queryBuilder();
 	}
 
 	/**
@@ -423,7 +423,7 @@ public class PersistenceManager {
 	 */
 	private <T extends IdProvider> List<T> queryInIds( Class<T> clazz, String idColumn, Map<Integer, ?> lookup ) {
 		try {
-			QueryBuilder<T, Integer> qb = this.getHelper().dao( clazz ).queryBuilder();
+			QueryBuilder<T, Integer> qb = this.dao_i( clazz ).queryBuilder();
 			return qb.where().in( idColumn, lookup.keySet().toArray() ).query();
 		} catch ( SQLException e ) {
 			throw new PersistenceException( e );
@@ -440,16 +440,21 @@ public class PersistenceManager {
 	public void updateAlarm( Alarm alarm, AlarmEvent evt ) {
 		OrmHelper helper = this.getHelper();
 
-		boolean updateAlarmTable = false;
+		boolean updateAlarmTable = true;
 
 		// First handle any updates to foreign fields that are set directly in Alarm.
+		// Also handle swaps, etc.
 		switch ( evt.getModifiedField() ) {
 		case AUDIO_SOURCE:
 			updateAlarmTable = this.updateAudioSource( alarm.getAudioSource(), (AudioSource) evt.getOldValue() );
 			break;
 
+		case ORDER:
+			// We must update the other alarm (in old value).
+			helper.dao( Alarm.class ).update( (Alarm) evt.getOldValue() );
+			break;
+
 		default:
-			updateAlarmTable = true;
 			break;
 		}
 
@@ -466,8 +471,7 @@ public class PersistenceManager {
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void updateAudioConfig( AudioConfig.ChangeEvent evt ) {
-		OrmHelper helper = this.getHelper();
-		helper.dao( AudioConfig.class ).update( evt.getAudioConfig() );
+		this.dao_i( AudioConfig.class ).update( evt.getAudioConfig() );
 	}
 
 	/**
@@ -478,7 +482,7 @@ public class PersistenceManager {
 	 * @throws PersistenceException if some SQL error happens.
 	 */
 	public void updateSnoozeConfig( SnoozeConfig.ChangeEvent evt ) {
-		this.getHelper().dao( SnoozeConfig.class ).update( evt.getSnoozeConfig() );
+		this.dao_i( SnoozeConfig.class ).update( evt.getSnoozeConfig() );
 	}
 
 	/**
@@ -489,8 +493,7 @@ public class PersistenceManager {
 	 * @return true if the alarm table must be updated as a result.
 	 */
 	private boolean updateAudioSource( AudioSource source, AudioSource old ) {
-		OrmHelper helper = this.getHelper();
-		PersistenceExceptionDao<AudioSource, Integer> asDao = helper.dao( AudioSource.class );
+		PersistenceExceptionDao<AudioSource, Integer> asDao = this.dao_i( AudioSource.class );
 
 		if ( old != null ) {
 			if ( source == null ) {
@@ -646,11 +649,11 @@ public class PersistenceManager {
 		}
 
 		// Remove all challenge configs & params.
-		helper.dao( ChallengeConfig.class ).deleteIds( removeIds );
-		helper.dao( ChallengeParam.class ).deleteIds( removeIds );
+		helper.dao_i( ChallengeConfig.class ).deleteIds( removeIds );
+		helper.dao_i( ChallengeParam.class ).deleteIds( removeIds );
 
 		// Finally remove set.
-		helper.dao( ChallengeConfigSet.class ).delete( set );
+		helper.dao_i( ChallengeConfigSet.class ).delete( set );
 	}
 
 	/**
@@ -704,13 +707,43 @@ public class PersistenceManager {
 	 *
 	 * @return the helper.
 	 */
-	public OrmHelper getHelper() {
+	private OrmHelper getHelper() {
 		if ( this.ormHelper == null ) {
 			this.ormHelper = OpenHelperManager.getHelper( this.context, OrmHelper.class );
 			this.init();
 		}
 
 		return this.ormHelper;
+	}
+
+	/**
+	 * Facade: returns DAO from {@link #getHelper()}.
+	 *
+	 * @param clazz the {@link Class} to get DAO for.
+	 * @return the DAO.
+	 */
+	public <T, I> PersistenceExceptionDao<T, I> dao( Class<T> clazz ) {
+		return this.getHelper().dao( clazz );
+	}
+
+	/**
+	 * Facade: returns DAO from {@link #getHelper()}.
+	 *
+	 * @param clazz the {@link Class} to get DAO for.
+	 * @return the DAO.
+	 */
+	public <T> PersistenceExceptionDao<T, String> dao_s( Class<T> clazz ) {
+		return this.getHelper().dao_s( clazz );
+	}
+
+	/**
+	 * Facade: returns DAO from {@link #getHelper()}.
+	 *
+	 * @param clazz the {@link Class} to get DAO for.
+	 * @return the DAO.
+	 */
+	public <T> PersistenceExceptionDao<T, Integer> dao_i( Class<T> clazz ) {
+		return this.getHelper().dao_i( clazz );
 	}
 
 	/**

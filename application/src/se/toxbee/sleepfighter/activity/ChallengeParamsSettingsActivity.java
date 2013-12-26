@@ -19,8 +19,8 @@
 package se.toxbee.sleepfighter.activity;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.android.resources.ResourcesDynamicUtil;
 import se.toxbee.sleepfighter.android.utils.ActivityUtils;
+import se.toxbee.sleepfighter.android.utils.ResourcesDynamicUtil;
 import se.toxbee.sleepfighter.challenge.ChallengeParamsReadWriter;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition.ParameterDefinition;
@@ -337,7 +337,7 @@ public class ChallengeParamsSettingsActivity extends PreferenceActivity {
 	private String getChallengeString( String case_string, boolean checked ) {
 		String name = "challenge_" + StringUtils.castLower( this.definition.getType().toString() ) + "_" + case_string;
 
-		return checked ? ResourcesDynamicUtil.getResourceStringCheck( name, this ) : ResourcesDynamicUtil.getResourceString( name, this );
+		return checked ? ResourcesDynamicUtil.getStringCheck( name, this ) : ResourcesDynamicUtil.getString( name, this );
 	}
 
 	@SuppressWarnings( "deprecation" )

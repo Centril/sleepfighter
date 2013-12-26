@@ -25,7 +25,7 @@ import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.gps.GPSFilterLocationRetriever;
 import se.toxbee.sleepfighter.model.AlarmList;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
-import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
+import se.toxbee.sleepfighter.preference.LocationFilterPreferences;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -49,6 +49,10 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 
 	private static final int MINUTE_TO_MS_FACTOR = 60000;
 
+	private static LocationFilterPreferences prefs() {
+		return SFApplication.get().getPrefs().locFilter;
+	}
+
 	@Override
 	public void onReceive( Context context, Intent intent ) {
 		WakeLocker.acquire( context );
@@ -70,8 +74,8 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 			locRet.requestSingleUpdate( context, pi );
 		} else {
 			// Get refresh interval.
-			GlobalPreferencesManager manager = SFApplication.get().getPrefs();
-			int interval = manager.getLocationRefreshInterval();
+			LocationFilterPreferences prefs = prefs();
+			int interval = prefs.requestRefreshInterval();
 
 			boolean reqSingle = intent.getBooleanExtra( REQUESTING_SINGLE, false );
 
@@ -101,11 +105,10 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 				// We've made our single requests and interval updates are on, start requesting them.
 				Bundle bundle = new Bundle();
 				PendingIntent pi = makePi( context, bundle );
-				getLocRet( context ).requestUpdates( context, pi, interval, manager.getLocationMinDistance() );
+				getLocRet( context ).requestUpdates( context, pi, interval, prefs.minDistance() );
 			}
 		}
 	}
-
 
 	/**
 	 * Schedules for a fix.
@@ -115,17 +118,17 @@ public class GPSFilterRefreshReceiver extends BroadcastReceiver {
 	 */
 	public static void scheduleFix( Context context, long alarmTime ) {
 		SFApplication app = SFApplication.get();
-		GlobalPreferencesManager manager = app.getPrefs();
+		LocationFilterPreferences prefs = prefs();
 
 		// Make sure we're allowed to make refreshes and that there are any areas to refresh for.
-		if ( !(manager.isLocationFilterEnabled() && app.getPersister().fetchGPSFilterAreas().hasEnabledAndValid()) ) {
+		if ( !(prefs.isEnabled() && app.getPersister().fetchGPSFilterAreas().hasEnabledAndValid()) ) {
 			// No areas, unschedule instead.
 			unscheduleUpdates( context );
 			return;
 		}
 
 		// Figure out Unix time of when to make the first fix.
-		int frtd = manager.getLocationFRTD();
+		int frtd = prefs.firstRequestDT();
 
 		// If first request time delta = 0 then it is disabled.
 		if ( frtd == 0 ) {

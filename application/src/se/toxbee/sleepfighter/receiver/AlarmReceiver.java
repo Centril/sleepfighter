@@ -28,10 +28,10 @@ import se.toxbee.sleepfighter.gps.GPSFilterRequisitor;
 import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.helper.NotificationHelper;
 import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.preference.WeatherPreferences;
 import se.toxbee.sleepfighter.service.FadeVolumeService;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
-import se.toxbee.sleepfighter.text.MetaTextUtils;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -39,7 +39,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;;
+import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
 
 /**
  * <p>AlarmReceiver is responsible for receiving broadcasts<br/>
@@ -155,7 +155,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
 				activityIntent, 0);
 
-		String name = MetaTextUtils.printAlarmName(context, this.alarm);
+		String name = this.alarm.printName();
 
 		// Localized string the name is inserted into
 		String formatTitle = context.getString(R.string.notification_ringing_title);
@@ -186,14 +186,15 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 	private void startSpeech() {
 		TextToSpeech tts = SFApplication.get().getTts();
+
+		WeatherPreferences prefs = SFApplication.get().getPrefs().weather;
 		
-		doSpeech(SFApplication.get().getPrefs().getWeather());
-		
-		// Remove the old weather information 
-		SFApplication.get().getPrefs().setWeather(null);
+		doSpeech( prefs.getWeather() );
+
+		// Remove the old weather information
+		prefs.setTemp( null );
 		
 		// UtteranceProgressListener not available in api < 15
-		
 		tts.setOnUtteranceCompletedListener(utteranceListener);
 	}
 

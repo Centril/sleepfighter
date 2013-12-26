@@ -137,6 +137,13 @@ public class ObservableList<E> extends ForwardingList<E> implements MessageBusHo
 	 */
 	public void setMessageBus( MessageBus<Message> bus ) {
 		this.bus = bus;
+
+		// Inject bus to elements if wanted.
+		if ( this.injectBusElement() ) {
+			for ( E elem : this ) {
+				this.injectBus( elem );
+			}
+		}
 	}
 
 	/**
@@ -228,7 +235,40 @@ public class ObservableList<E> extends ForwardingList<E> implements MessageBusHo
 		}
 	}
 
+	/**
+	 * If true, the {@link #getMessageBus()} will be injected to all elements that accept it.
+	 *
+	 * @return ...
+	 */
+	protected boolean injectBusElement() {
+		return true;
+	}
+
+	/**
+	 * Injects the message bus to element implementing {@link MessageBusHolder}.
+	 *
+	 * @param elem the element.
+	 */
+	protected void injectBus( Object elem ) {
+		if ( elem instanceof MessageBusHolder ) {
+			MessageBusHolder mbh = (MessageBusHolder) elem;
+			mbh.setMessageBus( this.bus );
+		}
+	}
+
 	protected void fireEvent( Event e ) {
+		// Intercept add/update events and inject message bus.
+		Operation op = e.operation();
+		if ( !op.isRemove() && this.injectBusElement() ) {
+			if ( e.operation() == Operation.ADD ) {
+				for ( Object obj : e.elements() ) {
+					this.injectBus( obj );
+				}
+			} else if ( e.operation() == Operation.UPDATE ) {
+				this.injectBus( this.get( e.index() ) );
+			}
+		}
+
 		if ( this.bus == null ) {
 			return;
 		}

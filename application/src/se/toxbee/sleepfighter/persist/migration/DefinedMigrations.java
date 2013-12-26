@@ -37,7 +37,7 @@ public class DefinedMigrations {
 	public static final Class<?>[] get() {
 		// reflections was thought of, but is error prone.
 		return new Class<?>[] {
-			Version25.class
+			Version25.class, Version27.class
 		};
 	}
 }

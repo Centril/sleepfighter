@@ -163,4 +163,9 @@ public class CountdownTime extends AlarmTime implements CodifiableLong {
 	public long toCodeLong() {
 		return this.timestamp;
 	}
+
+	@Override
+	public AlarmTime exact() {
+		return new ExactTime( this.timestamp );
+	}
 }

@@ -47,7 +47,6 @@ import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.text.DateTextUtils;
-import se.toxbee.sleepfighter.text.MetaTextUtils;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -124,7 +123,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		    // Setup name field.
 		    getActionBar().getCustomView().findViewById(R.id.global_alarm_hidden_title).setVisibility(View.INVISIBLE);
 		    EditText edit_title_field = (EditText) customView.findViewById(R.id.alarm_edit_title_field);
-		    edit_title_field.setText(MetaTextUtils.printAlarmName(this, alarm));
+		    edit_title_field.setText( alarm.printName() );
 		    edit_title_field.setOnEditorActionListener(new OnEditorActionListener() {
 				@Override
 				public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -231,7 +230,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 	@Handler
 	public void handleNameChange(MetaChangeEvent e) {
 		if (e.getModifiedField() == Field.NAME) {
-			String name = MetaTextUtils.printAlarmName(this, e.getAlarm());
+			String name = alarm.printName();
 			Preference namePref = findPreference(NAME);
 
 			// null if preference removed due to API level
@@ -313,7 +312,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 		this.alarm = AlarmIntentHelper.fetchAlarmOrPreset( this );
 
-		this.setTitle(MetaTextUtils.printAlarmName(this, alarm));
+		this.setTitle( alarm.printName() );
 
 		setupSimplePreferencesScreen();
 
@@ -581,8 +580,9 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		preference.setPersistent(false);
 		
 		if (NAME.equals(preference.getKey())) {
-			((EditTextPreference) preference).setText(MetaTextUtils.printAlarmName(this, alarm));
-			preference.setSummary(MetaTextUtils.printAlarmName(this, alarm));
+			String name = alarm.printName();
+			((EditTextPreference) preference).setText( name );
+			preference.setSummary( name );
 		}
 		else if (TIME.equals(preference.getKey())) {
 			initiateTimePicker((TimepickerPreference)preference);

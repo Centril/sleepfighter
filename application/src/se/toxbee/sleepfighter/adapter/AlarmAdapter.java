@@ -28,7 +28,6 @@ import se.toxbee.sleepfighter.model.time.AlarmTime;
 import se.toxbee.sleepfighter.model.time.CountdownTime;
 import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.text.DateTextUtils;
-import se.toxbee.sleepfighter.text.MetaTextUtils;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
@@ -44,44 +43,67 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class AlarmAdapter extends ArrayAdapter<Alarm> {
-
-	public AlarmAdapter(Context context, List<Alarm> alarms) {
-		super(context, 0, alarms);
+	public AlarmAdapter( Context context, List<Alarm> alarms ) {
+		super( context, 0, alarms );
 	}
-	
-	public void makeTimeTextViewHitboxBigger(View convertView) {
-		View container = convertView.findViewById(R.id.time_view_container);
-		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
-		container.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				timeTextView.performClick();
-			}
-		});	
+
+	private static class ViewHolder {
+		TextView name;
+		View timeContainer;
+		TextView time;
+		TextView seconds;
+		TextView weekdays;
+		CompoundButton activatedSwitch;
+		View activatedBackground;
+
+		public ViewHolder( View cv ) {
+			// Find all views needed.
+			name = (TextView) cv.findViewById( R.id.name_view );
+			timeContainer = cv.findViewById( R.id.time_view_container );
+			time = (TextView) cv.findViewById( R.id.time_view );
+			seconds = (TextView) cv.findViewById( R.id.time_view_seconds );
+			weekdays = (TextView) cv.findViewById( R.id.weekdaysText );
+			activatedSwitch = (CompoundButton) cv.findViewById( R.id.activated );
+			activatedBackground = cv.findViewById( R.id.activated_background );
+		}
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		ViewHolder holder;
+
 		if (convertView == null) {
 			// A view isn't being recycled, so make a new one from definition
-			convertView = LayoutInflater.from(getContext()).inflate( R.layout.alarm_list_item, null);
+			convertView = LayoutInflater.from( getContext() ).inflate( R.layout.alarm_list_item, parent, false );
+
+			// Make & store holder.
+			holder = new ViewHolder( convertView );
+			convertView.setTag( holder );
+		} else {
+			// Recycle holder.
+			holder = (ViewHolder) convertView.getTag();
 		}
-		
-		makeTimeTextViewHitboxBigger(convertView);
-	
-		// The alarm associated with the row
-		final Alarm alarm = getItem(position);
 
-		// Set properties of view elements to reflect model state
-		this.setupActivatedSwitch( alarm, convertView );
+		// Get alarm associated with the row.
+		final Alarm alarm = this.getItem( position );
 
-		this.setupTimeText( alarm, convertView );
+		// Setup the view.
+		this.makeTimeTextViewHitboxBigger( holder );
+		this.setupActivatedSwitch( alarm, holder );
+		this.setupTimeText( alarm, holder );
+		this.setupName( alarm, holder );
+		this.setupWeekdays( alarm, holder );
 
-		this.setupName( alarm, convertView );
-
-		this.setupWeekdays( alarm, convertView );
-		
 		return convertView;
+	}
+
+	private void makeTimeTextViewHitboxBigger( final ViewHolder holder ) {
+		holder.timeContainer.setOnClickListener( new OnClickListener() {
+			@Override
+			public void onClick( View v ) {
+				holder.time.performClick();
+			}
+		} );
 	}
 
 	public void pickTime( final Alarm alarm ) {
@@ -132,65 +154,53 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 		tpd.show();
 	}
 
-	private void setupTimeText( final Alarm alarm, View convertView ) {
+	private void setupTimeText( final Alarm alarm, ViewHolder holder ) {
 		AlarmTime time = alarm.getTime();
 		time.refresh();
 
-		final TextView timeTextView = (TextView) convertView.findViewById( R.id.time_view );
-		timeTextView.setText( time.getTimeString() );
-
 		// Set countdown if needed.
-		final TextView secTextView = (TextView) convertView.findViewById( R.id.time_view_seconds );
 		if ( alarm.isCountdown() ) {
-			secTextView.setVisibility( View.VISIBLE );
-			secTextView.setText( StringUtils.joinTime( time.getSecond() ) + "\"" );
+			holder.seconds.setVisibility( View.VISIBLE );
+			holder.seconds.setText( StringUtils.joinTime( time.getSecond() ) + "\"" );
 		} else {
-			secTextView.setVisibility( View.GONE );
+			holder.seconds.setVisibility( View.GONE );
 		}
 
-		timeTextView.setOnClickListener( new OnClickListener() {
+		holder.time.setText( time.getTimeString() );
+		holder.time.setOnClickListener( new OnClickListener() {
 			public void onClick( View v ) {
 				pickTime( alarm );
 			}
 		});
 	}
 
-	private void setupName( final Alarm alarm, View convertView ) {
-		TextView nameTextView = (TextView) convertView.findViewById(R.id.name_view);
-		String name = MetaTextUtils.printAlarmName( this.getContext(), alarm );
-		nameTextView.setText(name);
+	private void setupName( final Alarm alarm, ViewHolder holder ) {
+		holder.name.setText( alarm.printName() );
 	}
 
-	private void setupWeekdays( final Alarm alarm, View convertView ) {
-		TextView view = (TextView) convertView.findViewById(R.id.weekdaysText);
-		view.setText( DateTextUtils.makeEnabledDaysText( alarm ) );
+	private void setupWeekdays( final Alarm alarm, ViewHolder holder ) {
+		holder.weekdays.setText( DateTextUtils.makeEnabledDaysText( alarm ) );
 	}
 
-	private void setupActivatedSwitch(final Alarm alarm, View convertView) {
-		
-		final CompoundButton activatedSwitch = (CompoundButton) convertView.findViewById(R.id.activated);
-
-		View activatedBackground =  convertView.findViewById(R.id.activated_background);
+	private void setupActivatedSwitch( final Alarm alarm, final ViewHolder holder ) {
+		final CompoundButton activated = holder.activatedSwitch;
 
 		// Makes sure that previous alarm for a recycled view won't get changed
 		// when setting initial value
-		activatedSwitch.setOnCheckedChangeListener(null);
-
-		activatedSwitch.setChecked(alarm.isActivated());
-
-		activatedSwitch.setOnCheckedChangeListener( new OnCheckedChangeListener() {
+		activated.setOnCheckedChangeListener( null );
+		activated.setChecked( alarm.isActivated() );
+		activated.setOnCheckedChangeListener( new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-				alarm.setActivated(isChecked);
+				alarm.setActivated( isChecked );
 			}
 		} );
-		
+
 		// Allow pressing in area next to checkbox/switch to toggle
-		activatedBackground.setOnClickListener(new OnClickListener() {
-			
+		holder.activatedBackground.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				activatedSwitch.toggle();
+				activated.toggle();
 			}
 		});
 	}

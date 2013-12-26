@@ -1,22 +1,22 @@
 <!-- A layout for a list item representing an alarm -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res/se.toxbee.sleepfighter"
+    android:id="@+id/alarm_list_item_container"
     android:layout_width="match_parent"
     android:layout_height="70dp"
+    android:minHeight="70dp"
     android:baselineAligned="true"
     android:descendantFocusability="blocksDescendants"
-    android:gravity="center_vertical"
-    android:minHeight="70dp"
     android:orientation="horizontal"
     android:paddingLeft="5dp"
-    android:paddingRight="5dp" >
+    android:paddingRight="5dp">
 
     <LinearLayout
         android:id="@+id/time_view_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="left|center_vertical"
+        android:layout_gravity="left|center_vertical"
+        android:gravity="center_vertical"
         android:orientation="vertical" >
 
         <TextView
@@ -48,6 +48,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingLeft="8dp"
@@ -75,13 +76,15 @@
         android:id="@+id/activated_background"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_weight="0"
         android:layout_gravity="left|center_vertical"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:orientation="horizontal" >
 
         <include
             android:id="@+id/activated"
             layout="@layout/switch_component" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -18,6 +18,7 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.model.time;
 
+import se.toxbee.sleepfighter.utils.model.Refreshable;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 import com.google.common.collect.ComparisonChain;
@@ -29,7 +30,7 @@ import com.google.common.collect.ComparisonChain;
  * @version 1.0
  * @since Nov 11, 2013
  */
-public abstract class AlarmTime implements Comparable<AlarmTime> {
+public abstract class AlarmTime implements Comparable<AlarmTime>, Refreshable {
 	protected int second;
 	protected int minute;
 	protected int hour;
@@ -141,7 +142,7 @@ public abstract class AlarmTime implements Comparable<AlarmTime> {
 	}
 
 	/**
-	 * <p>Compares with following order: {@link #getSecond()}, {@link #getMinute()}, {@link #getHour()}.</p>
+	 * <p>Compares with following order: {@link #getHour()}, {@link #getMinute()}, {@link #getSecond()}.</p>
 	 * <p>Issues a call to {@link #refresh()}.</p>
 	 */
 	@Override
@@ -149,9 +150,9 @@ public abstract class AlarmTime implements Comparable<AlarmTime> {
 		this.refresh();
 
 		return ComparisonChain.start()
-			.compare( this.second, r.second )
-			.compare( this.minute, r.minute )
 			.compare( this.hour, r.hour )
+			.compare( this.minute, r.minute )
+			.compare( this.second, r.second )
 			.result();
 	}
 
@@ -181,4 +182,11 @@ public abstract class AlarmTime implements Comparable<AlarmTime> {
 	protected abstract boolean equalsImpl( AlarmTime t );
 
 	public abstract int hashCode();
+
+	/**
+	 * Returns a {@link #AlarmTime()} that functions like an {@link ExactTime}.
+	 *
+	 * @return the time.
+	 */
+	public abstract AlarmTime exact();
 }

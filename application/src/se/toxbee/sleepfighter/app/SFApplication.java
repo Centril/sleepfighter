@@ -22,27 +22,35 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import se.toxbee.sleepfighter.R;
+import se.toxbee.sleepfighter.android.preference.SharedPreferenceManager;
 import se.toxbee.sleepfighter.android.utils.ActivityUtils;
+import se.toxbee.sleepfighter.android.utils.ApplicationUtils;
 import se.toxbee.sleepfighter.audio.AudioDriver;
 import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
 import se.toxbee.sleepfighter.factory.FromPresetAlarmFactory;
 import se.toxbee.sleepfighter.factory.PresetAlarmFactory;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmList;
+import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.persist.PersistenceManager;
-import se.toxbee.sleepfighter.preference.GlobalPreferencesManager;
+import se.toxbee.sleepfighter.preference.AppPreferenceManager;
+import se.toxbee.sleepfighter.preference.migration.UpgradeExecutor;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.utils.debug.Debug;
 import se.toxbee.sleepfighter.utils.message.Message;
 import se.toxbee.sleepfighter.utils.message.MessageBus;
+import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 
 /**
  * A custom implementation of Application for SleepFighter.
  */
-public class SFApplication extends Application implements TextToSpeech.OnInitListener {
+public class SFApplication extends Application implements LocalizationProvider, TextToSpeech.OnInitListener {
 	private static final boolean CLEAN_START = false;
 	public static final boolean DEBUG = true;
 
@@ -51,7 +59,7 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	// State that is is initialized in onCreate:
 	private MessageBus<Message> bus;
 	private PersistenceManager persistenceManager;
-	private GlobalPreferencesManager prefs;
+	private AppPreferenceManager prefs;
 	private TextToSpeech tts;
 
 	private AlarmList alarmList;
@@ -63,6 +71,8 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	private FromPresetAlarmFactory fromPresetFactory;
 
 	private GPSFilterAreaSet gpsAreaManaged;
+
+	private SFLocalizationProvider localizationProvider;
 
 	// called when the text to speech engine is initialized. 
 	@Override
@@ -77,14 +87,19 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		super.onCreate();
 		app = this;
 
+		this.initLocalizationProvider();
+
+		this.initPreferences();
+
+		this.tryUpgrade();
+
 		this.initPersister();
 
 		this.tts = new TextToSpeech(this, this);
-		
-		this.prefs = new GlobalPreferencesManager( this );
 
 		ActivityUtils.forceActionBarOverflow( this );
 	}
+
 
 	/**
 	 * Returns the one and only SFApplication in town.
@@ -95,22 +110,17 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		return app;
 	}
 
-	/**
-	 * Returns the current time in milliseconds.
-	 *
-	 * @return now.
-	 */
 	public long now() {
-		return System.currentTimeMillis();
+		return this.localizationProvider.now();
 	}
 
-	/**
-	 * Returns the currently used locale.
-	 *
-	 * @return the locale.
-	 */
 	public Locale locale() {
-		return Locale.getDefault();
+		return this.localizationProvider.locale();
+	}
+
+	@Override
+	public String format( Object key ) {
+		return this.localizationProvider.format( key );
 	}
 
 	/**
@@ -118,7 +128,7 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 *
 	 * @return the GlobalPreferencesReader.
 	 */
-	public synchronized GlobalPreferencesManager getPrefs() {
+	public synchronized AppPreferenceManager getPrefs() {
 		return this.prefs;
 	}
 
@@ -208,6 +218,16 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	}
 
 	/**
+	 * Tries to upgrade app, and kills app if failure.
+	 */
+	private void tryUpgrade() {
+		boolean success = new UpgradeExecutor().execute( this, this.prefs );
+		if ( !success ) {
+			ApplicationUtils.kill( false );
+		}
+	}
+
+	/**
 	 * Initializes the persister.
 	 */
 	private void initPersister() {
@@ -218,6 +238,15 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 		if ( CLEAN_START ) {
 			this.persistenceManager.cleanStart();
 		}
+	}
+
+	/**
+	 * Initializes the preferences manager.
+	 */
+	private void initPreferences() {
+		SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences( this );
+		SharedPreferenceManager backend = new SharedPreferenceManager( sharedPrefs );
+		this.prefs = new AppPreferenceManager( backend, this.localizationProvider );
 	}
 
 	/**
@@ -310,5 +339,17 @@ public class SFApplication extends Application implements TextToSpeech.OnInitLis
 	 */
 	public void setRingingAlarm(Alarm alarm) {
 		this.ringingAlarm = alarm;
+	}
+
+	private void initLocalizationProvider() {
+		this.localizationProvider = new SFLocalizationProvider( this );
+
+		// Alarm related formats:
+		Alarm.setLocalizationProvider( this.localizationProvider );
+		this.localizationProvider.setFormat( Alarm.Field.NAME, R.string.alarm_unnamed_format );
+
+		// Location filter related formats:
+		GPSFilterArea.setLocalizationProvider( this.localizationProvider );
+		this.localizationProvider.setFormat( GPSFilterArea.Field.NAME, R.string.alarm_unnamed_format );
 	}
 }

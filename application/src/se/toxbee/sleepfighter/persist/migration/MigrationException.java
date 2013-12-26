@@ -19,9 +19,8 @@
 package se.toxbee.sleepfighter.persist.migration;
 
 import java.sql.SQLException;
-import java.util.Locale;
 
-import se.toxbee.sleepfighter.persist.dao.PersistenceException;
+import se.toxbee.sleepfighter.utils.migration.IMigrationException;
 
 /**
  * MigrationException thrown when an error occurs in migration.
@@ -30,110 +29,14 @@ import se.toxbee.sleepfighter.persist.dao.PersistenceException;
  * @version 1.0
  * @since Nov 13, 2013
  */
-public final class MigrationException extends Exception {
-	/**
-	 * Indicates the reason that the migration failed.
-	 *
-	 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
-	 * @version 1.0
-	 * @since Nov 13, 2013
-	 */
-	public enum Reason {
-		SQL_FAILURE, RUNTIME_FAILURE, TOO_OLD, UNKNOWN
+public final class MigrationException extends IMigrationException {
+	public static MigrationException fail( SQLException e, Migrater m ) throws MigrationException {
+		throw new MigrationException( "Migration v" + m.versionCode() + " failed.", e, m );
+	}
+
+	private MigrationException( String msg, Throwable cause, Migrater vm ) {
+		super( msg, cause, vm );
 	}
 
 	private static final long serialVersionUID = -6934930583715968324L;
-
-	private final Migrater vm;
-	private final Reason reason;
-	private int version;
-
-	/**
-	 * Constructs migration failure with message, reason and a version code.<br/>
-	 * Use this for when an exception is not behind the error.
-	 *
-	 * @param msg the message.
-	 * @param reason the reason.
-	 * @param version the version.
-	 */
-	public MigrationException( String msg, Reason reason, int version ) {
-		this( msg, null, null, reason );
-		this.version = version;
-	}
-
-	/**
-	 * Constructs the migration failure with message, a throwable and a version code.
-	 *
-	 * @param msg the message.
-	 * @param cause the cause, used to deduce the reason.
-	 * @param version the version.
-	 */
-	public MigrationException( String msg, Throwable cause, int version ) {
-		this( msg, cause, null );
-		this.version = version;
-	}
-
-	/**
-	 * Constructs the migration failure with message, a throwable and a migrater.
-	 * 
-	 * @param msg the message.
-	 * @param cause the cause, used to deduce the reason.
-	 * @param vm the migrater, used to deduce version code.
-	 */
-	public MigrationException( String msg, Throwable cause, Migrater vm ) {
-		this(
-			msg, cause, vm,
-			// Deduce reason from exception.
-			(
-				(cause instanceof SQLException || cause instanceof PersistenceException)
-			?	Reason.SQL_FAILURE
-			:	(
-					(cause instanceof RuntimeException)
-				?	Reason.RUNTIME_FAILURE
-				:	null
-				)
-			)
-		);
-	}
-
-	private MigrationException( String msg, Throwable cause, Migrater vm, Reason reason ) {
-		super( msg, cause );
-		this.vm = vm;
-		this.reason = reason == null ? Reason.UNKNOWN : reason;
-		this.version = vm.versionCode();
-	}
-
-	/**
-	 * The reason that migration failed.
-	 *
-	 * @return the reason.
-	 */
-	public Reason getReason() {
-		return this.reason;
-	}
-
-	/**
-	 * Returns the version that the failure originated from.
-	 *
-	 * @return the version.
-	 */
-	public int getVersion() {
-		return this.version;
-	}
-
-	/**
-	 * Returns the migrater that the failure originated from.
-	 *
-	 * @return the migrater.
-	 */
-	public Migrater getMigrater() {
-		return this.vm;
-	}
-
-	@Override
-	public String toString() {
-		return String.format( Locale.getDefault(),
-			"Migration failed for version-code %d, with reason: %s, and message: %s",
-			this.version, this.reason, this.getMessage() );
-	}
 }

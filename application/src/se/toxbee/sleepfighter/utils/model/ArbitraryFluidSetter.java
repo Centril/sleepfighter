@@ -16,28 +16,23 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.text;
-
-import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
-import android.content.res.Resources;
+package se.toxbee.sleepfighter.utils.model;
 
 /**
- * Text utilities for GPSFilter feature.
+ * {@link ArbitraryFluidSetter} provides setter for V<br/>
+ * on a key-value data structure where the key is K.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
- * @since Oct 7, 2013
+ * @since Dec 15, 2013
  */
-public class GPSFilterTextUtils {
+public interface ArbitraryFluidSetter<K, V, R extends ArbitraryFluidSetter<K, V, R>> {
 	/**
-	 * Prints the name of a {@link GPSFilterArea} to human readable form.
+	 * Sets a V value to key.
 	 *
-	 * @param res android resources.
-	 * @param name the name of the area.
-	 * @return the name, printed.
+	 * @param key the key to set value for.
+	 * @param val the value to set for given key.
+	 * @return this.
 	 */
-	public static final String printName( Resources res, String name ) {
-		return name == null || name.trim().equals( "" ) ? res.getString( R.string.edit_gpsfilter_area_unnamed ) : name;
-	}
+	public R set( K key, V val );
 }

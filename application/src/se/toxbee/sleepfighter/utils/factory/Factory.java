@@ -29,7 +29,7 @@ import java.util.Set;
  * @since 2012-12-14
  * @version 1.1
  */
-public interface Factory<K, V> {
+public interface Factory<K, V> extends IFactory<K, V> {
 	/**
 	 * Returns set with public keys relating to what this factory can produce.
 	 *
@@ -41,12 +41,4 @@ public interface Factory<K, V> {
 	 * Alias for {@link #produce(K)}
 	 */
 	public V get( final K key );
-
-	/**
-	 * Returns a produced/constructed/instantiated object from a related key.
-	 *
-	 * @param key The key as given by getKeys()
-	 * @return The produced object.
-	 */
-	public V produce( final K key );
 }

@@ -30,7 +30,6 @@ import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.model.gps.GPSFilterMode;
 import se.toxbee.sleepfighter.model.gps.GPSFilterPolygon;
 import se.toxbee.sleepfighter.model.gps.GPSLatLng;
-import se.toxbee.sleepfighter.text.GPSFilterTextUtils;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -132,7 +131,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
-		String name = this.printName();
+		String name = this.area.printName();
 
 		if ( Build.VERSION.SDK_INT >= 11 ) {
 			// add the custom view to the action bar.
@@ -150,7 +149,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 			editNameView.setOnEditorActionListener( new OnEditorActionListener() {
 				@Override
 				public boolean onEditorAction( TextView v, int actionId, KeyEvent event ) {
-					area.setName( GPSFilterTextUtils.printName( getResources(), v.getText().toString() ) );
+					area.setName( v.getText().toString() );
 					InputMethodManager imm = (InputMethodManager) getSystemService( Context.INPUT_METHOD_SERVICE );
 					imm.hideSoftInputFromWindow( v.getWindowToken(), 0 );
 					return false;
@@ -283,15 +282,6 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	}
 
 	/**
-	 * Prints the name of area to a human readable form.
-	 *
-	 * @return the area.
-	 */
-	private String printName() {
-		return GPSFilterTextUtils.printName( this.getResources(), this.area.getName() );
-	}
-
-	/**
 	 * Handles a change in area via event.
 	 *
 	 * @param evt the change event.
@@ -308,7 +298,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 			break;
 
 		case NAME:
-			String name =  this.printName();
+			String name =  this.area.printName();
 			if ( Build.VERSION.SDK_INT >= 11 ) {
 				((EditText) this.getActionBar().getCustomView().findViewById( R.id.edit_gpsfilter_area_title_edit )).setText( name );
 			} else {

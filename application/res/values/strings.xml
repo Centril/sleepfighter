@@ -73,18 +73,4 @@
         <item>@string/menu_set_alarm_countdown</item>
     </string-array>
 
-    <!-- Location Filter -->
-    <string name="action_gpsfilter_area_edit">Location Filter</string>
-
-    <string name="install_google_play_music_message">Please install Google Play Music</string>
-    
-    <string name="do_not_show_again">Do not show again</string>
-    
-    <string name="no_voice_installed_title">No voice installed</string>
-    <string name="no_voice_installed_message">There is no voice installed for your language,
-         so the language used will be English.
-         If you want a voice for your language, you must install it using an app like SVOX</string>
-    
-    				
-    
 </resources>
