@@ -49,6 +49,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -408,13 +409,27 @@ public class MainActivity extends Activity {
 	private void sortModeSelected( SortMode mode ) {
 		boolean altered = this.alarmList.order( mode );
 
-		if ( mode.field() == SortMode.Field.MANUAL ) {
-			this.startReorderMode();
-		}
+		this.toggleReorderMode( mode );
 
 		if ( altered ) {
 			this.dprefs().setSortMode( mode );
 			this.alarmAdapter.notifyDataSetChanged();
+		}
+	}
+
+	private void toggleReorderMode( SortMode mode ) {
+		if ( mode.field() == SortMode.Field.MANUAL ) {
+			if ( this.isReorderMode() ) {
+				return;
+			}
+
+			this.startReorderMode();
+		} else {
+			if ( !this.isReorderMode() ) {
+				return;
+			}
+
+			this.stopReorderMode();
 		}
 	}
 
@@ -424,6 +439,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void enterReorderMode() {
+
 		// Replace list.
 		final View reorderView = this.getLayoutInflater().inflate( R.layout.reorder_mode_view, (ViewGroup) this.listView.getParent(), false );
 		ViewGroupUtils.replaceView( this.listView, reorderView );
@@ -433,9 +449,7 @@ public class MainActivity extends Activity {
 		reorderView.findViewById( R.id.reorder_mode_done_button ).setOnClickListener( new View.OnClickListener() {
 			@Override
 			public void onClick( View v ) {
-				ViewGroupUtils.replaceView( reorderView, listViewShadow );
-				replaceListView();
-				listViewShadow = null;
+				stopReorderMode();
 			}
 		} );
 
@@ -443,14 +457,26 @@ public class MainActivity extends Activity {
 		((DragSortListView) this.listView).setDropListener( new DropListener() {
 			@Override
 			public void drop( int from, int to ) {
+				Log.d( MainActivity.class.getSimpleName(), Arrays.toString( new int[] {from, to} ) );
 				getAlarm( from ).swapOrder( getAlarm( to ) );
 			}
 		} );
 	}
 
+	private void stopReorderMode( ) {
+
+		View reorderView = this.findViewById( R.id.reorder_mode_view_container );
+		ViewGroupUtils.replaceView( reorderView, listViewShadow );
+		replaceListView();
+		listViewShadow = null;
+	}
+
+	private boolean isReorderMode() {
+		return this.listView instanceof DragSortListView;
+	}
+
 	private void saveReorderMode( Bundle outState ) {
-		outState.putBoolean( EXTRAS_IS_REORDER_MODE,
-				this.listView instanceof DragSortListView );
+		outState.putBoolean( EXTRAS_IS_REORDER_MODE, this.isReorderMode() );
 	}
 
 	private void tryEnterReorderMode( Bundle inState ) {
