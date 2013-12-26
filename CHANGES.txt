@@ -2,3 +2,4 @@
 ---------------------
 - Fixed BUG SortChallenge bugs, issues 11, 12, 14
 - Added FEATURE Countdown alarms.
+- Added FEATURE Sorting alarms.
