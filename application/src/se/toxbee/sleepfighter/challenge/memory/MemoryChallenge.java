@@ -33,6 +33,8 @@ import android.os.Handler;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import com.google.common.collect.Lists;
+
 /**
  * Example implementation of Challenge.
  *
@@ -162,39 +164,39 @@ public class MemoryChallenge extends BaseChallenge implements View.OnClickListen
 
 	// assign the buttons their listeners. 
 	private void commonStart(int flippedCardPosition) {
-		activity().setContentView(R.layout.activity_alarm_challenge_memory);
-	
-		this.cards = new ArrayList<MemoryCardView>();
-		//R.id.challenge_memory_button_1;
+		activity().setContentView( R.layout.challenge_memory );
 
-		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_1));
-		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_2));
-		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_3));
-		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_4));
-		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_5));
-		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_6));
-		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_7));
-		cards.add((MemoryCardView)this.activity().findViewById( R.id.challenge_memory_button_8));
-
-		int pos = 0;
-		for ( MemoryCardView card : cards ) {
-			if(mem.isUnoccupied(pos)) {
-				// already removed cards should not be shown. 
-				 card.setVisibility(View.INVISIBLE);
-			} else {
-				card.setOnClickListener( this );
-
-				card.setPosition(pos);
-
-				String image = database.getImage( mem.getCard(pos));
-				card.setImage(image);
-			}
-	        ++pos;
-		}
+		this.bindButtons();
 		
 		if(flippedCardPosition != -1) {
 			this.flippedCard = cards.get(flippedCardPosition);
 			this.flippedCard.show();
+		}
+	}
+
+	/**
+	 * Binds all memory cards/buttons.
+	 */
+	private void bindButtons() {
+		View buttonContainer = this.activity().findViewById( R.id.challenge_memory_button_container );
+		ArrayList<View> touchables = buttonContainer.getTouchables();
+
+		this.cards = Lists.newArrayListWithCapacity( touchables.size() );
+
+		for ( int pos = 0; pos < touchables.size(); ++pos ) {
+			MemoryCardView card = (MemoryCardView) touchables.get( pos );
+			this.cards.add( card );
+
+			if ( mem.isUnoccupied( pos ) ) {
+				// Already removed cards should not be shown.
+				card.setVisibility( View.INVISIBLE );
+			} else {
+				card.setOnClickListener( this );
+				card.setPosition( pos );
+
+				String image = database.getImage( mem.getCard( pos ) );
+				card.setImage( image );
+			}
 		}
 	}
 	

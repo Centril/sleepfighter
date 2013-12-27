@@ -17,14 +17,7 @@
   You should have received a copy of the GNU General Public License
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-<resources>
-    <color name="main_background">#161616</color>
-    <color name="time_view_background">#222222</color>
-    <color name="main_layout_bottom_color">#333333</color>
-
-    <color name="name_view_enabled">#ffffff</color>
-    <color name="name_view_disabled">#aaaaaa</color>
-
-   	<color name="weekday_short_enabled">#ffffff</color>
-   	<color name="weekday_short_disabled">#404040</color>
-</resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:color="@color/name_view_disabled" />
+    <item android:color="@color/name_view_enabled" />
+</selector>

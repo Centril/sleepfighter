@@ -17,22 +17,10 @@
   You should have received a copy of the GNU General Public License
   along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical" >
-
-    <Button
-        android:id="@+id/btn_complete"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_complete" />
-
-    <Button
-        android:id="@+id/btn_fail"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_fail" />
-
-</LinearLayout>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_weight="1" >
+	<se.toxbee.sleepfighter.challenge.memory.MemoryCardView style="@style/MemoryCardButton" />
+	<se.toxbee.sleepfighter.challenge.memory.MemoryCardView style="@style/MemoryCardButton" />
+</TableRow>

@@ -64,7 +64,8 @@ public class AlarmTimeRefresher {
 	 * Starts the refresher.
 	 */
 	public void start() {
-		if ( this.timer != null ) {
+		if ( this.timer == null ) {
+			this.timer = new Timer();
 			synchronized ( this.timer ) {
 				TimerTask task = new TimerTask() {
 					@Override
@@ -74,7 +75,6 @@ public class AlarmTimeRefresher {
 				};
 
 				// Refresh every second.
-				this.timer = new Timer();
 				this.timer.scheduleAtFixedRate( task, 0, REFRESH_INTERVAL );
 			}
 		}

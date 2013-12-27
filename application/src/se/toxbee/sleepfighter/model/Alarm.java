@@ -701,8 +701,7 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	}
 
 	/**
-	 * Returns the weekdays days this alarm is enabled for.<br/>
-	 * For performance, a direct reference is returned.
+	 * Returns the weekdays days this alarm is enabled for.
 	 *
 	 * @return the weekdays alarm is enabled for.
 	 */

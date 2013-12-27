@@ -73,4 +73,19 @@
         <item>@string/menu_set_alarm_countdown</item>
     </string-array>
 
+    <string name="time_view_default">00:00</string>
+    <string name="time_view_seconds_default"> 00\"</string>
+    <string name="name_view_default">Alarm 1</string>
+    <string name="weekdays_text_default">M  TU  W  TH  F  SA  SU</string>
+
+    <string-array name="weekdays_short_names">
+    	<item>M</item>
+    	<item>TU</item>
+    	<item>W</item>
+    	<item>TH</item>
+    	<item>F</item>
+    	<item>SA</item>
+    	<item>SU</item>
+    </string-array>
+
 </resources>

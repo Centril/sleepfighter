@@ -21,6 +21,8 @@ package se.toxbee.sleepfighter.utils.collect;
 import java.util.Arrays;
 import java.util.Random;
 
+import se.toxbee.sleepfighter.utils.reflect.ReflectionUtil;
+
 /**
  * PrimitiveArrays provides various operations for primitive arrays.
  *
@@ -231,5 +233,115 @@ public class PrimitiveArrays {
 		char[] a = new char[s];
 		Arrays.fill( a, v );
 		return a;
+	}
+
+	public static void shift( byte[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+		byte[] tmp = new byte[stepSize =  shiftStepSize( array.length, stepSize )];
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	public static void shift( short[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+		short[] tmp = new short[stepSize =  shiftStepSize( array.length, stepSize )];
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	/**
+	 * Shifts the elements of an array circularly to the right, or if stepSize < 0 to the left.
+	 *
+	 * @param array the array who's element to shift.
+	 * @param stepSize the number of steps to shift.
+	 */
+	public static void shift( int[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+	    int[] tmp = new int[stepSize =  shiftStepSize( array.length, stepSize )];
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	public static void shift( long[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+		long[] tmp = new long[stepSize =  shiftStepSize( array.length, stepSize )];
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	public static void shift( float[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+		float[] tmp = new float[stepSize =  shiftStepSize( array.length, stepSize )];
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	public static void shift( double[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+		double[] tmp = new double[stepSize =  shiftStepSize( array.length, stepSize )];
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	public static void shift( boolean[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+		boolean[] tmp = new boolean[stepSize =  shiftStepSize( array.length, stepSize )];
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	public static void shift( char[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+
+		char[] tmp = new char[stepSize =  shiftStepSize( array.length, stepSize )];
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	public static <T> void shift( T[] array, int stepSize ) {
+		if ( stepSize == 0 ) {
+			return;
+		}
+
+		if ( stepSize < 0 ) {
+			stepSize = (array.length + stepSize);
+		}
+
+		stepSize %= array.length;
+
+		T[] tmp = ReflectionUtil.genericArray( array, stepSize );
+		shift( array, tmp, array.length, stepSize );
+	}
+
+	private static int shiftStepSize( int length, int stepSize ) {
+		if ( stepSize < 0 ) {
+			stepSize = (length + stepSize);
+		}
+
+		stepSize %= length;
+
+		return stepSize;
+	}
+
+	private static void shift( Object array, Object tmp, int length, int stepSize ) {
+		System.arraycopy( array, length - stepSize, tmp, 0, stepSize );
+		System.arraycopy( array, 0, array, stepSize, length - stepSize );
+		System.arraycopy( tmp, 0, array, 0, stepSize );
 	}
 }

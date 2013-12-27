@@ -20,6 +20,7 @@ package se.toxbee.sleepfighter.text;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,14 +36,12 @@ import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
-import se.toxbee.sleepfighter.model.time.AlarmTime;
-import se.toxbee.sleepfighter.model.time.ExactTime;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
+import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
 /**
@@ -53,9 +52,8 @@ import com.google.common.base.Strings;
  * @since Sep 19, 2013
  */
 public class DateTextUtils {
-	//private final static String TAG = DateTextUtils.class.getSimpleName();
-
-	private static final int ENABLED_DAYS_INDICE_LENGTH = 2;
+	private static final int ENABLED_DAY_COLOR = R.color.weekday_short_enabled;
+	private static final int DISABLED_DAY_COLOR = R.color.weekday_short_disabled;
 
 	/**
 	 * Builds and returns the time of an {@link AlarmTimestamp} in the preferred manner<br/>
@@ -109,15 +107,10 @@ public class DateTextUtils {
 			return noActive;
 		} else {
 			// Due to threading, now could be after ats - so we're forgiving here.
-			Alarm alarm = ats.getAlarm();
-			AlarmTime time = alarm.getTime();
-
-			DateTime timeWork = new DateTime( ats.getMillis() );
-
 			// Prepare replacements.
-			String timeReplacement	= time instanceof ExactTime
-									? time.getTimeString()
-									: StringUtils.joinTime( timeWork.getHourOfDay(), timeWork.getMinuteOfHour() );
+			Alarm alarm = ats.getAlarm();
+			String timeReplacement = alarm.getTime().exact().getTimeString();
+			DateTime timeWork = new DateTime( ats.getMillis() );
 
 			// Calculate start of tomorrow.
 			DateTime nowTime = new DateTime( now );
@@ -256,20 +249,22 @@ public class DateTextUtils {
 	 */
 	public static final SpannableString makeEnabledDaysText( final Alarm alarm ) {
 		// Compute weekday names & join.
-		String[] names = DateTextUtils.getWeekdayNames( ENABLED_DAYS_INDICE_LENGTH, Locale.getDefault() );
-
-		SpannableString text = new SpannableString( StringUtils.WS_JOINER.join( names ) );
-
-		// Create spans for enabled days.
+		String[] names = getWeekdayNamesShort();
 		boolean[] enabledDays = alarm.getEnabledDays();
-		if ( enabledDays.length != names.length || names.length != 7 ) {
-			throw new AssertionError("A week has 7 days, wrong array lengths!");
-		}
 
+		// Shift weekdays.
+		Locale l = SFApplication.get().locale();
+		int shiftSteps = -(getFirstDayOfWeek( l ) - 1);
+		PrimitiveArrays.shift( enabledDays, shiftSteps );
+		PrimitiveArrays.shift( names, shiftSteps );
+
+		// Join string.
+		SpannableString text = new SpannableString( WEEKDAYS_JOINER.join( names ) );
+
+		// Stateful coloring.
 		Resources res = SFApplication.get().getResources();
-
-		int enabledColor = Color.WHITE;
-		int disabledColor = res.getColor( R.color.nearly_background_text );
+		int enabledColor = res.getColor( ENABLED_DAY_COLOR );
+		int disabledColor = res.getColor( DISABLED_DAY_COLOR );
 
 		int start = 0;
 		for ( int i = 0; i < enabledDays.length; i++ ) {
@@ -279,9 +274,21 @@ public class DateTextUtils {
 			int color = enabled ? enabledColor : disabledColor;
 			text.setSpan( new ForegroundColorSpan( color ), start, start + length, 0 );
 
-			start += length + 1;
+			start += length + 2;
 		}
 
 		return text;
 	}
+
+	private static final String[] getWeekdayNamesShort() {
+		Resources res = SFApplication.get().getResources();
+		String[] days = res.getStringArray( R.array.weekdays_short_names );
+		return days;
+	}
+
+	private static final int getFirstDayOfWeek( Locale l ) {
+	  return ((Calendar.getInstance( l ).getFirstDayOfWeek() + 5) % 7) + 1;
+	}
+
+	private static final Joiner WEEKDAYS_JOINER = Joiner.on( "  " );
 }
