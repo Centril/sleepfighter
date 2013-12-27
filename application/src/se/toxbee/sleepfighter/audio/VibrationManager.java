@@ -25,53 +25,48 @@ import android.os.Vibrator;
 /**
  * Responsible for making the device vibrate when the alarm goes off. 
  */
-public class VibrationManager {
+public enum VibrationManager {
+	INSTANCE;
 
-	private static VibrationManager instance = null;
-
-	private boolean startedVibration; 
-
-	private VibrationManager() {
-		startedVibration = false;
-	}
+	private static final long[] PATTERN = { 0, 1000, 1000 };
+	private boolean startedVibration = false; 
 	
-	public synchronized static VibrationManager getInstance() {
-		if (instance == null) {
-			instance = new VibrationManager();
-		}
-		return instance;
+	public static VibrationManager getInstance() {
+		return INSTANCE;
 	}
 	
 	public void startVibrate(Context context) {
-		if(startedVibration) {
+		if ( startedVibration ) {
 			return;
 		}
-		
-		Vibrator vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);	
-		
-		try {
-			long[] pattern = {0, 1000, 1000};
 
+		Vibrator vib = service( context );
+
+		try {
 			// 0 means vibrate indefinitely.
-			vib.vibrate(pattern, 0);
+			vib.vibrate( PATTERN, 0 );
 			this.startedVibration = true;
-		} catch (Exception e) {
-			Debug.e(e);
+		} catch ( Exception e ) {
+			Debug.e( e );
 		}
 	}
 
-	public void stopVibrate(Context context) {
-		if (!startedVibration) {
+	public void stopVibrate( Context context ) {
+		if ( !startedVibration ) {
 			return;
 		}
-		Vibrator vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);	
+
+		Vibrator vib = service( context );
 
 		try {
 			vib.cancel();
 			this.startedVibration = false;
-		} catch (Exception e) {
-			Debug.e(e);
+		} catch ( Exception e ) {
+			Debug.e( e );
 		}
 	}
-	
+
+	private Vibrator service( Context ctx ) {
+		return (Vibrator) ctx.getSystemService( Context.VIBRATOR_SERVICE );
+	}
 }
