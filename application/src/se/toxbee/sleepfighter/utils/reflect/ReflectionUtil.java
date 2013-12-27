@@ -104,6 +104,18 @@ public class ReflectionUtil {
 	}
 
 	/**
+	 * Creates a generic array of size with with component type the same as in arr.<br/>
+	 * Only works if arr's components actually has a generic type U.
+	 *
+	 * @param arr the array.
+	 * @param size
+	 * @return
+	 */
+	public static <U> U[] genericArray( U[] arr, int size ) {
+		return makeArray( arrayClass( arr ), size );
+	}
+
+	/**
 	 * Returns the generic type of object o.<br/>
 	 * Only works if o actually has a generic type U.
 	 *
