@@ -74,7 +74,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
 		if (convertView == null) {
 			// A view isn't being recycled, so make a new one from definition
-			convertView = LayoutInflater.from( getContext() ).inflate( R.layout.alarm_list_item, parent, false );
+			convertView = LayoutInflater.from( getContext() ).inflate( R.layout.alarm_list_item_htctheme, parent, false );
 
 			// Make & store holder.
 			holder = new ViewHolder( convertView );
@@ -163,7 +163,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 			holder.seconds.setVisibility( View.VISIBLE );
 			holder.seconds.setText( StringUtils.joinTime( time.getSecond() ) + "\"" );
 		} else {
-			holder.seconds.setVisibility( View.GONE );
+			holder.seconds.setVisibility( View.INVISIBLE );
 		}
 
 		holder.time.setText( time.getTimeString() );
@@ -176,6 +176,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
 	private void setupName( final Alarm alarm, ViewHolder holder ) {
 		holder.name.setText( alarm.printName() );
+		holder.name.setEnabled( alarm.isActivated() );
 	}
 
 	private void setupWeekdays( final Alarm alarm, ViewHolder holder ) {

@@ -38,7 +38,6 @@ import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
 import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 
@@ -53,6 +52,9 @@ import com.google.common.base.Strings;
  * @since Sep 19, 2013
  */
 public class DateTextUtils {
+	private static final int ENABLED_DAY_COLOR = R.color.weekday_short_enabled;
+	private static final int DISABLED_DAY_COLOR = R.color.weekday_short_disabled;
+
 	/**
 	 * Builds and returns the time of an {@link AlarmTimestamp} in the preferred manner<br/>
 	 * according to {@link GlobalPreferencesManager#displayPeriodOrTime()}.
@@ -261,8 +263,8 @@ public class DateTextUtils {
 
 		// Stateful coloring.
 		Resources res = SFApplication.get().getResources();
-		int enabledColor = Color.WHITE;
-		int disabledColor = res.getColor( R.color.nearly_background_text );
+		int enabledColor = res.getColor( ENABLED_DAY_COLOR );
+		int disabledColor = res.getColor( DISABLED_DAY_COLOR );
 
 		int start = 0;
 		for ( int i = 0; i < enabledDays.length; i++ ) {
