@@ -26,6 +26,6 @@
         android:right="10dp"
         android:top="10dp" />
 
-    <solid android:color="@color/main_layout_botton_color" />
+    <solid android:color="@color/main_layout_bottom_color" />
 
 </shape>
