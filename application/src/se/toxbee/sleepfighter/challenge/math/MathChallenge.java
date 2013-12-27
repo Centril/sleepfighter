@@ -125,7 +125,7 @@ public class MathChallenge extends BaseChallenge {
 	private void commonStart(final Activity activity, ChallengeResolvedParams params ) {
 		super.start( activity, params );
 
-		activity.setContentView(R.layout.alarm_challenge_math);
+		activity.setContentView(R.layout.challenge_math);
 
 		final EditText editText = (EditText) activity
 				.findViewById(R.id.answerField);
