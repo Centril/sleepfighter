@@ -49,7 +49,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -106,14 +105,13 @@ public class MainActivity extends Activity {
 
 		this.tryEnterReorderMode( savedInstanceState );
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState( Bundle outState ) {
 		super.onSaveInstanceState( outState );
 
 		this.saveReorderMode( outState );
 	}
-
 
 	@Override
 	protected void onResume() {
@@ -203,11 +201,6 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	private void startAlarm( Alarm alarm ) {
-		this.sendBroadcast( new AlarmIntentHelper( new Intent( this,
-				AlarmReceiver.class ) ).setAlarm( alarm ).intent() );
-	}
-
 	@Override
 	public boolean onContextItemSelected( MenuItem item ) {
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
@@ -243,6 +236,11 @@ public class MainActivity extends Activity {
 		}
 
 		return true;
+	}
+
+	private void startAlarm( Alarm alarm ) {
+		this.sendBroadcast( new AlarmIntentHelper( new Intent( this,
+				AlarmReceiver.class ) ).setAlarm( alarm ).intent() );
 	}
 
 	private void startAlarmEdit( Alarm alarm, boolean isNew ) {
@@ -439,7 +437,6 @@ public class MainActivity extends Activity {
 	}
 
 	private void enterReorderMode() {
-
 		// Replace list.
 		final View reorderView = this.getLayoutInflater().inflate( R.layout.reorder_mode_view, (ViewGroup) this.listView.getParent(), false );
 		ViewGroupUtils.replaceView( this.listView, reorderView );
@@ -457,7 +454,6 @@ public class MainActivity extends Activity {
 		((DragSortListView) this.listView).setDropListener( new DropListener() {
 			@Override
 			public void drop( int from, int to ) {
-				Log.d( MainActivity.class.getSimpleName(), Arrays.toString( new int[] {from, to} ) );
 				getAlarm( from ).swapOrder( getAlarm( to ) );
 			}
 		} );
