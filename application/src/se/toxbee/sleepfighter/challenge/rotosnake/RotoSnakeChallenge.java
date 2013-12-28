@@ -23,13 +23,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import se.toxbee.sleepfighter.R;
+import se.toxbee.sleepfighter.android.motion.NoSensorException;
+import se.toxbee.sleepfighter.android.motion.RotationControl;
 import se.toxbee.sleepfighter.challenge.BaseChallenge;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.utils.geom.Direction;
-import se.toxbee.sleepfighter.utils.motion.NoSensorException;
-import se.toxbee.sleepfighter.utils.motion.RotationControl;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;

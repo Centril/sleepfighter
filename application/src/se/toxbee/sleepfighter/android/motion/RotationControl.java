@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
-package se.toxbee.sleepfighter.utils.motion;
+package se.toxbee.sleepfighter.android.motion;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -34,7 +33,6 @@ import android.hardware.SensorManager;
  * code inspired by http://stackoverflow.com/a/12098469
  */
 public class RotationControl implements SensorEventListener {
-
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
 	private static int sensorType = Sensor.TYPE_ACCELEROMETER;
@@ -166,5 +164,4 @@ public class RotationControl implements SensorEventListener {
 		this.mSensorManager.registerListener(this, this.mSensor,
 				SensorManager.SENSOR_DELAY_NORMAL);
 	}
-
 }

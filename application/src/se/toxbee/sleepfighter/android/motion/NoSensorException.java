@@ -16,18 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-
-package se.toxbee.sleepfighter.utils.motion;
+package se.toxbee.sleepfighter.android.motion;
 
 /**
  * Used to signal that a certain Sensor is missing on the device.
  */
 public class NoSensorException extends Exception {
-
 	private static final long serialVersionUID = 858451799792946532L;
 
 	public NoSensorException() {
 		super("Required Sensor is not available on the current device.");
 	}
-
 }
