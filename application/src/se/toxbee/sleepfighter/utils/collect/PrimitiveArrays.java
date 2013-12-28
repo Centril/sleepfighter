@@ -236,21 +236,17 @@ public class PrimitiveArrays {
 	}
 
 	public static void shift( byte[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+			byte[] tmp = new byte[stepSize =  shiftStepSize( array.length, stepSize )];
+			shift( array, tmp, array.length, stepSize );
 		}
-
-		byte[] tmp = new byte[stepSize =  shiftStepSize( array.length, stepSize )];
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	public static void shift( short[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+			short[] tmp = new short[stepSize =  shiftStepSize( array.length, stepSize )];
+			shift( array, tmp, array.length, stepSize );
 		}
-
-		short[] tmp = new short[stepSize =  shiftStepSize( array.length, stepSize )];
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	/**
@@ -260,83 +256,56 @@ public class PrimitiveArrays {
 	 * @param stepSize the number of steps to shift.
 	 */
 	public static void shift( int[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+		    int[] tmp = new int[stepSize =  shiftStepSize( array.length, stepSize )];
+			shift( array, tmp, array.length, stepSize );
 		}
-
-	    int[] tmp = new int[stepSize =  shiftStepSize( array.length, stepSize )];
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	public static void shift( long[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+			long[] tmp = new long[stepSize = shiftStepSize( array.length, stepSize )];
+			shift( array, tmp, array.length, stepSize );
 		}
-
-		long[] tmp = new long[stepSize =  shiftStepSize( array.length, stepSize )];
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	public static void shift( float[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+			float[] tmp = new float[stepSize = shiftStepSize( array.length, stepSize )];
+			shift( array, tmp, array.length, stepSize );
 		}
-
-		float[] tmp = new float[stepSize =  shiftStepSize( array.length, stepSize )];
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	public static void shift( double[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+			double[] tmp = new double[stepSize = shiftStepSize( array.length, stepSize )];
+			shift( array, tmp, array.length, stepSize );
 		}
-
-		double[] tmp = new double[stepSize =  shiftStepSize( array.length, stepSize )];
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	public static void shift( boolean[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+			boolean[] tmp = new boolean[stepSize = shiftStepSize( array.length, stepSize )];
+			shift( array, tmp, array.length, stepSize );
 		}
-
-		boolean[] tmp = new boolean[stepSize =  shiftStepSize( array.length, stepSize )];
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	public static void shift( char[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+			char[] tmp = new char[stepSize = shiftStepSize( array.length, stepSize )];
+			shift( array, tmp, array.length, stepSize );
 		}
-
-
-		char[] tmp = new char[stepSize =  shiftStepSize( array.length, stepSize )];
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	public static <T> void shift( T[] array, int stepSize ) {
-		if ( stepSize == 0 ) {
-			return;
+		if ( stepSize != 0 ) {
+			T[] tmp = ReflectionUtil.genericArray( array, stepSize = shiftStepSize( array.length, stepSize ) );
+			shift( array, tmp, array.length, stepSize );
 		}
-
-		if ( stepSize < 0 ) {
-			stepSize = (array.length + stepSize);
-		}
-
-		stepSize %= array.length;
-
-		T[] tmp = ReflectionUtil.genericArray( array, stepSize );
-		shift( array, tmp, array.length, stepSize );
 	}
 
 	private static int shiftStepSize( int length, int stepSize ) {
-		if ( stepSize < 0 ) {
-			stepSize = (length + stepSize);
-		}
-
-		stepSize %= length;
-
-		return stepSize;
+		return (stepSize < 0 ? length + stepSize : stepSize) % length;
 	}
 
 	private static void shift( Object array, Object tmp, int length, int stepSize ) {
