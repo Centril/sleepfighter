@@ -8,6 +8,8 @@ buildscript {
     }
 }
 
+apply plugin: 'idea'
+
 allprojects {
     repositories {
         mavenCentral()

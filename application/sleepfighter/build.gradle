@@ -1,4 +1,5 @@
 apply plugin: 'android'
+apply plugin: 'idea'
 
 // Config:
 def getVersionCode() { 8 }
