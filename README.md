@@ -11,11 +11,24 @@ For sleepy people who want a fun way to quickly wake up, SleepFighter is an alar
 
 Find an APK file for the latest version in the "build" folder and install it onto your device.
 
-## Set up development environment (Eclipse)
+## Set up development environment (Android Studio)
 
-**Android API Target (required):** 18 (4.3)
+**Android API Target (required):** 19 (4.4)
 
-Import all projects in the following locations:
- - application/
- - application/lib-projects/
- - applicationTests-test/
+Open up command line / terminal and cd to /application/
+Note: / is the root of the local git clone.
+Run the following:
+
+    ./gradlew cleanIdea idea
+
+Intellij files should have been generated, open up the project in Android Studio.
+
+## Set up development environment (Gradle)
+
+**Android API Target (required):** 19 (4.4)
+
+Open up command line / terminal and cd to /application/
+Note: / is the root of the local git clone.
+Run the following to build the project:
+
+    ./gradlew assemble

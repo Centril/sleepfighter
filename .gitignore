@@ -60,7 +60,20 @@ proguard/
 *.iml
 *.ipr
 *.iws
-.idea/
+*.swp
+*/.idea/*
 
-# Other stuff #
-*keystore_txt
+# Code styles are checked in #
+!*/.idea/codeStyleSettings.xml
+
+# Keystore #
+*keystore*
+release.signing
+!*.debug.keystore
+!*.debug.keystore.gen
+
+# Gradle #
+.gradle/
+!+.gradle
+!/gradle/
+/*/*/build/
