@@ -18,18 +18,6 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.activity;
 
-import java.util.List;
-
-import net.engio.mbassy.listener.Handler;
-import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.android.location.LocationAdapter;
-import se.toxbee.sleepfighter.app.SFApplication;
-import se.toxbee.sleepfighter.gps.GPSFilterLocationRetriever;
-import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
-import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
-import se.toxbee.sleepfighter.model.gps.GPSFilterMode;
-import se.toxbee.sleepfighter.model.gps.GPSFilterPolygon;
-import se.toxbee.sleepfighter.model.gps.GPSLatLng;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -43,7 +31,6 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -53,6 +40,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -69,24 +57,28 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.common.collect.Lists;
+
+import net.engio.mbassy.listener.Handler;
+
+import java.util.List;
+
+import se.toxbee.sleepfighter.R;
+import se.toxbee.sleepfighter.android.location.LocationAdapter;
+import se.toxbee.sleepfighter.android.utils.DialogUtils;
+import se.toxbee.sleepfighter.android.utils.Toaster;
+import se.toxbee.sleepfighter.app.SFApplication;
+import se.toxbee.sleepfighter.gps.GPSFilterLocationRetriever;
+import se.toxbee.sleepfighter.gps.LocationGUIHandler;
+import se.toxbee.sleepfighter.gps.LocationGUIHandler.LocationGUIClient;
+import se.toxbee.sleepfighter.gps.LocationGUIProvider;
+import se.toxbee.sleepfighter.gps.LocationGUIProvider.LocationGUIReceiver;
+import se.toxbee.sleepfighter.gps.google.GoogleLocationProvider;
+import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
+import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
+import se.toxbee.sleepfighter.model.gps.GPSFilterMode;
+import se.toxbee.sleepfighter.model.gps.GPSFilterPolygon;
+import se.toxbee.sleepfighter.model.gps.GPSLatLng;
 
 /**
  * EditGPSFilterAreaActivity is the activity for editing an GPSFilterArea.
@@ -95,29 +87,13 @@ import com.google.common.collect.Lists;
  * @version 1.0
  * @since Oct 6, 2013
  */
-public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMapClickListener, OnMarkerDragListener, OnMarkerClickListener {
+public class EditGPSFilterAreaActivity extends FragmentActivity implements LocationGUIClient {
 	private static final String TAG = EditGPSFilterAreaActivity.class.getSimpleName();
 
 	public static final String EXTRAS_AREA_ID = "gpsfilter_area_id";
 	public static final String EXTRAS_AREA_IS_NEW = "gpsfilter_are_isnew";
 
-	private static final int POLYGON_EXCLUDE_FILL_COLOR = R.color.gpsfilter_polygon_fill_exclude;
-	private static final int POLYGON_INCLUDE_FILL_COLOR = R.color.gpsfilter_polygon_fill_include;
-	private static final int POLYGON_STROKE_COLOR = R.color.shadow;
-	private static final boolean POLYGON_GEODESIC = true; // The earth is a sphere, so bend polygon?
-
-	private static final float MAP_MY_LOCATION_ZOOM = 13f;
-	private static final float CAMERA_MOVE_BOUNDS_PADDING = 0.2f; // padding as a % of lowest of screen width/height.
-
-	private static final long MAX_LOCATION_FIX_AGE = 5 * 60 * 1000; // 5 minutes.
-
 	private static final long SPLASH_FADE_DELAY = 150;
-
-	private GoogleMap googleMap;
-
-	private List<Marker> markers;
-
-	private Polygon poly;
 
 	private LinearLayout splashInfoContainer;
 
@@ -128,6 +104,29 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	private GPSFilterAreaSet set;
 
 	private boolean isNew;
+
+	private LocationGUIHandler mapHandler;
+
+	@Override
+	protected void onCreate( Bundle savedInstanceState ) {
+		super.onCreate( savedInstanceState );
+
+		this.setContentView( R.layout.activity_edit_gpsfilter_area );
+
+		this.fetchArea();
+
+		this.setupMap();
+
+		this.setupActionBar();
+
+		this.setupSplash();
+
+		this.setupModeSpinner();
+
+		this.setupBottomUndo();
+
+		this.area.getMessageBus().subscribe( this );
+	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
@@ -193,11 +192,11 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 			return true;
 
 		case R.id.action_edit_gpsfilter_area_clear:
-			this.clearPoints();
+			this.mapHandler.clearPoints();
 			return true;
 
 		case R.id.action_edit_gpsfilter_area_undo:
-			this.undoLastPoint();
+			this.mapHandler.undoLastPoint();
 			return true;
 
 		case R.id.action_edit_gpsfilter_area_remove:
@@ -205,7 +204,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 			return true;
 
 		case R.id.action_edit_gpsfilter_area_zoom:
-			this.moveCameraToPolygon( true );
+			this.mapHandler.zoomToArea();
 			return true;
 
 		case R.id.action_gpsfilter_settings:
@@ -217,68 +216,12 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		}
 	}
 
-	@Override
-	protected void onCreate( Bundle savedInstanceState ) {
-		super.onCreate( savedInstanceState );
-
-		this.setContentView( R.layout.activity_edit_gpsfilter_area );
-
-		this.setupMap();
-
-		this.fetchArea();
-
-		if ( this.isConsideredFresh() ) {
-			this.moveToCurrentLocation();
-		}
-
-		this.setupActionBar();
-
-		this.setupMarkers();
-
-		this.setupSplash();
-
-		this.setupModeSpinner();
-
-		this.setupBottomUndo();
-
-		this.area.getMessageBus().subscribe( this );
-	}
-
 	/**
 	 * Moves the user to global options > location filter.
 	 */
 	private void gotoSettings() {
 		Intent i = new Intent( this, GlobalSettingsActivity.class );
 		this.startActivity( i );
-	}
-
-	/**
-	 * Moves the user to its current location.
-	 */
-	private void moveToCurrentLocation() {
-		GPSFilterLocationRetriever retriever = new GPSFilterLocationRetriever( new Criteria() );
-		Location loc = retriever.getLocation( this );
-
-		if ( loc == null ) {
-			// User turned off GPS, send it to device location settings.
-			Intent i = new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
-			this.startActivity( i );
-		} else {
-			// First move to the last known location..
-			this.moveCameraToLocation( loc, false );
-
-			// Check if location fix is out dated, if it is, request a new location, ONCE.
-			long elapsedTime = System.currentTimeMillis() - loc.getTime();
-			if ( elapsedTime > MAX_LOCATION_FIX_AGE ) {
-				// Therefore, we request a single fix.
-				retriever.requestSingleUpdate( this, new LocationAdapter() {
-					@Override
-					public void onLocationChanged( Location loc ) {
-						moveCameraToLocation( loc, true );
-					}
-				} );
-			}
-		}
 	}
 
 	/**
@@ -307,8 +250,6 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 			break;
 
 		case MODE:
-			break;
-
 		case POLYGON:
 		default:
 			break;
@@ -322,131 +263,9 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		this.findViewById( R.id.action_edit_gpsfilter_area_undo_button ).setOnClickListener( new OnClickListener() {
 			@Override
 			public void onClick( View v ) {
-				undoLastPoint();
+				mapHandler.undoLastPoint();
 			}
 		} );
-	}
-
-	/**
-	 * Sets up the markers if available.
-	 */
-	private void setupMarkers() {
-		GPSFilterPolygon polygon = this.area.getPolygon();
-
-		if ( polygon != null ) {
-			final LatLngBounds.Builder builder = LatLngBounds.builder();
-
-			// Put markers for each edge.
-			for ( GPSLatLng pos : polygon.getPoints() ) {
-				LatLng point = this.convertLatLng( pos );
-
-				builder.include( point );
-
-				this.addMarker( point );
-			}
-
-			// Add listener that moves camera so that all markers are in users view.
-			this.googleMap.setOnCameraChangeListener( new OnCameraChangeListener() {
-				@Override
-				public void onCameraChange( CameraPosition arg0 ) {
-					// Move camera.
-					moveCameraToPolygon( builder, false );
-
-					// Remove listener to prevent position reset on camera move.
-					googleMap.setOnCameraChangeListener( null );
-				}
-			} );
-
-			this.updateGuiPolygon();
-		}
-	}
-
-	/**
-	 * Converts from model {@link GPSLatLng} to {@link LatLng}
-	 *
-	 * @param pos the model object.
-	 * @return google:s version.
-	 */
-	private LatLng convertLatLng( GPSLatLng pos ) {
-		return new LatLng( pos.getLat(), pos.getLng() );
-	}
-
-	/**
-	 * Moves the camera to a given a Location.
-	 *
-	 * @param loc the Location object to use for location.
-	 * @param animate whether or not to animate the movement.
-	 */
-	private void moveCameraToLocation( Location loc, boolean animate ) {
-		LatLng pos = new LatLng( loc.getLatitude(), loc.getLongitude() );
-		CameraUpdate update = CameraUpdateFactory.newLatLngZoom( pos, MAP_MY_LOCATION_ZOOM );
-		this.cameraAnimateOrMove( update, animate );
-	}
-
-	/**
-	 * Moves and zooms the camera so that all the markers are visible in users view.
-	 *
-	 * @param builder the builder containing to use for making bounds.
-	 */
-	private void moveCameraToPolygon( boolean animate ) {
-		if ( this.markers.isEmpty() ) {
-			return;
-		}
-
-		final LatLngBounds.Builder builder = LatLngBounds.builder();
-		for ( GPSLatLng pos : this.area.getPolygon().getPoints() ) {
-			builder.include( this.convertLatLng( pos ) );
-		}
-
-		this.moveCameraToPolygon( builder, animate );
-	}
-
-	/**
-	 * Moves and zooms the camera so that all the markers are visible in users view.
-	 *
-	 * @param builder the builder containing to use for making bounds.
-	 */
-	private void moveCameraToPolygon( LatLngBounds.Builder builder, boolean animate ) {
-		CameraUpdate update = CameraUpdateFactory.newLatLngBounds( builder.build(), this.computeMoveCameraPadding() );
-		this.cameraAnimateOrMove( update, animate );
-	}
-
-	/**
-	 * Computes the padding to use when moving camera to polygon.
-	 *
-	 * @return the padding.
-	 */
-	private int computeMoveCameraPadding() {
-		Point dim = this.getScreenDim();
-		int min = Math.min( dim.x, dim.y );
-		return (int) (CAMERA_MOVE_BOUNDS_PADDING * min);
-	}
-
-	/**
-	 * Returns the screen dimensions as a Point.
-	 *
-	 * @return the screen dimensions.
-	 */
-	private Point getScreenDim() {
-		Display display = this.getWindowManager().getDefaultDisplay();
-
-		@SuppressWarnings( "deprecation" )
-		Point size = new Point( display.getWidth(), display.getHeight() );
-		return size;
-	}
-
-	/**
-	 * Moves or animates the camera with update.
-	 *
-	 * @param update the camera update to perform.
-	 * @param animate whether or not to animate, otherwise it instantaneously moves.
-	 */
-	private void cameraAnimateOrMove( CameraUpdate update, boolean animate ) {
-		if ( animate ) {
-			this.googleMap.animateCamera( update );
-		} else {
-			this.googleMap.moveCamera( update );
-		}
 	}
 
 	/**
@@ -473,11 +292,10 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		// Find area in set.
 		this.area = this.set.getById( id );
 
-		Log.d(TAG, "Fetched area " + this.area);
+		Log.d( TAG, "Fetched area " + this.area );
 
-		if (this.area == null) {
-			Toast.makeText(this, "The area ID provided did not exist in set.",
-					Toast.LENGTH_LONG).show();
+		if ( this.area == null ) {
+			Toaster.out( this, "The area ID provided did not exist in set." );
 			this.finish();
 		}
 	}
@@ -521,7 +339,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	protected void updateMode( int position ) {
 		GPSFilterMode mode = position == 0 ? GPSFilterMode.INCLUDE : GPSFilterMode.EXCLUDE;
 		this.area.setMode( mode );
-		this.updateGuiPolygon();
+		this.mapHandler.updatePolygon();
 	}
 
 	/**
@@ -541,11 +359,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 				area.setName( input.getText().toString() );
 			}
 		} );
-
-		alert.setNegativeButton( android.R.string.cancel, new DialogInterface.OnClickListener() {
-			public void onClick( DialogInterface dialog, int whichButton ) {
-			}
-		} );
+		alert.setNegativeButton( android.R.string.cancel, DialogUtils.getNoopClickListener() );
 
 		alert.show();
 	}
@@ -559,7 +373,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		TextView textView = (TextView) this.splashInfoContainer.findViewById( R.id.edit_gpsfilter_area_splash_text );
 		textView.setText( Html.fromHtml( this.getString( R.string.edit_gpsfilter_area_splash_text ) ) );
 
-		textView.setMovementMethod(new ScrollingMovementMethod());
+		textView.setMovementMethod( new ScrollingMovementMethod() );
 		
 		// Define fade out animation.
 		this.splashFadeOut = new AlphaAnimation( 1.00f, 0.00f );
@@ -577,19 +391,9 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		} );
 
 		// Don't show if not new and we got polygon.
-		if ( !this.isConsideredFresh() ) {
+		if ( !(this.isNew || this.mapHandler.isFresh() ) ) {
 			this.splashInfoContainer.setVisibility( View.GONE );
 		}
-	}
-
-	/**
-	 * Returns whether or not this activity instance is considered<br/>
-	 * fresh. It is fresh when the area is either new, or the polygon is undefined.
-	 *
-	 * @return true if new & undefined polygon.
-	 */
-	private boolean isConsideredFresh() {
-		return this.isNew || this.area.getPolygon() == null;
 	}
 
 	/**
@@ -606,233 +410,30 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 		this.splashInfoContainer.startAnimation( this.splashFadeOut );
 	}
 
-	/**
-	 * Adds a point to polygon at point.<br/>
-	 * Also adds a marker to GUI.
-	 *
-	 * @param point the point to add to polygon and where to place marker.
-	 */
-	private void addPoint( LatLng point ) {
-		this.addMarker( point );
-		this.commitPolygon();
-	}
-
-	/**
-	 * Adds a marker on map at point.
-	 *
-	 * @param point the point to add maker at.
-	 */
-	private void addMarker( LatLng point ) {
-		this.markers.add( this.googleMap.addMarker( this.makeMarkerAt( point ) ) );
-	}
-
-	/**
-	 * Makes a marker at point.
-	 *
-	 * @param point the point in LatLng.
-	 * @return the marker.
-	 */
-	private MarkerOptions makeMarkerAt( LatLng point ) {
-		return new MarkerOptions().flat( true ).draggable( true ).position( point );
-	}
-
-	/**
-	 * Removes the last added marker/point.
-	 */
-	private void undoLastPoint() {
-		if ( this.markers.isEmpty() ) {
-			return;
-		}
-
-		this.markers.remove( this.markers.size() - 1 ).remove();
-		this.commitPolygon();
-
-		if ( this.markers.size() > 1 ) {
-			this.moveCameraToPolygon( true );
-		}
-
-		this.disableIfDissatisfied();
-	}
-
-	/**
-	 * Whether or not the current markers satisfy being a polygon (having 3 edges / markers).
-	 *
-	 * @return true if it satisfies being a polygon.
-	 */
-	private boolean satisfiesPolygon() {
-		return this.markers.size() >= 3;
-	}
-
-	/**
-	 * Clears all markers/points.
-	 */
-	private void clearPoints() {
-		for ( Marker marker : this.markers ) {
-			marker.remove();
-		}
-
-		this.markers.clear();
-		this.commitPolygon();
-		this.disableIfDissatisfied();
-	}
-
-	/**
-	 * Disables the area when/if dissatisfied.
-	 */
-	private void disableIfDissatisfied() {
-		if ( !this.satisfiesPolygon() ) {
-			this.area.setEnabled( false );
-		}
-	}
-
-	/**
-	 * Commits the polygon saving it while also performing a GUI update.<br/>
-	 * If the polygon doesn't honor {@link #satisfiesPolygon()}, the area is disabled.
-	 */
-	private void commitPolygon() {
-		this.updateGuiPolygon();
-		this.area.setPolygon( this.toFilterPolygon() );
-	}
-
-	/**
-	 * Converts the list of markers to a {@link GPSFilterPolygon}.
-	 *
-	 * @return the filter polygon object.
-	 */
-	private GPSFilterPolygon toFilterPolygon() {
-		if ( this.markers.isEmpty() ) {
-			return null;
-		} else {
-			List<GPSLatLng> points = Lists.newArrayListWithCapacity( this.markers.size() );
-			for ( Marker marker : this.markers ) {
-				LatLng pos = marker.getPosition();
-				points.add( new GPSLatLng( pos.latitude, pos.longitude ) );
-			}
-
-			return new GPSFilterPolygon( points );
-		}
-	}
-
-	/**
-	 * Updates the GUI polygon, removing the old one,<br/>
-	 * adding a new one if we have >= 3 points.
-	 */
-	private void updateGuiPolygon() {
-		if ( this.poly != null ) {
-			this.poly.remove();
-		}
-
-		// A polygon is at minimum a triangle.
-		if ( !this.satisfiesPolygon() ) {
-			return;
-		}
-
-		PolygonOptions options = new PolygonOptions();
-		options
-			.geodesic( POLYGON_GEODESIC )
-			.strokeWidth( 2 )
-			.fillColor( this.getFillColor() )
-			.strokeColor( this.getResources().getColor( POLYGON_STROKE_COLOR ) );
-
-		for ( Marker marker : this.markers ) {
-			options.add( marker.getPosition() );
-		}
-
-		this.poly = this.googleMap.addPolygon( options );
-	}
-
-	/**
-	 * Returns the fill-color to use.
-	 *
-	 * @return the color value.
-	 */
-	private int getFillColor() {
-		int id = this.area.getMode() == GPSFilterMode.INCLUDE ? POLYGON_INCLUDE_FILL_COLOR : POLYGON_EXCLUDE_FILL_COLOR;
-		return adjustAlpha( this.getResources().getColor( id ), 255 * 0.5f );
-	}
-
-	/**
-	 * Sets up the map.
-	 */
 	private void setupMap() {
-		this.markers = Lists.newArrayList();
+		ViewGroup viewContainer = (ViewGroup) this.findViewById( R.id.edit_gpsfilter_area_mapcontainer );
 
-        int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
-		if ( status != ConnectionResult.SUCCESS ) {
-			// Google Play Services are not available.
-			int requestCode = 10;
-			GooglePlayServicesUtil.getErrorDialog( status, this, requestCode ).show();
-		} else {
-			// Google Play Services are available.
-			if ( this.googleMap == null ) {
-				FragmentManager fragManager = this.getSupportFragmentManager();
-				SupportMapFragment mapFrag = (SupportMapFragment) fragManager.findFragmentById( R.id.edit_gpsfilter_area_google_map );
-				this.googleMap = mapFrag.getMap();
-
-				if ( this.googleMap != null ) {
-					// The Map is verified. It is now safe to manipulate the map.
-					this.configMap();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Configures the map.
-	 */
-	private void configMap() {
-		// Enable all gestures.
-		this.googleMap.getUiSettings().setAllGesturesEnabled( true );
-
-		// Add button for my location.
-		this.googleMap.setMyLocationEnabled( true );
-
-		// Bind events for markers.
-		this.googleMap.setOnMapClickListener( this );
-		this.googleMap.setOnMarkerDragListener( this );
-		this.googleMap.setOnMarkerClickListener( this );
+		this.mapHandler = new LocationGUIHandler( this );
+		this.mapHandler.setupMap( viewContainer );
 	}
 
 	@Override
-	public void onMapClick( LatLng point ) {
+	public GPSFilterArea getArea() {
+		return this.area;
+	}
+
+	@Override
+	public FragmentActivity getActivity() {
+		return this;
+	}
+
+	@Override
+	public boolean onMapClick( GPSLatLng loc ) {
 		if ( this.splashInfoContainer.getVisibility() == View.VISIBLE ) {
 			this.hideSplash();
-		} else {
-			this.addPoint( point );
+			return true;
 		}
-	}
 
-	@Override
-	public void onMarkerDrag( Marker marker ) {
-		this.updateGuiPolygon();
-	}
-
-	@Override
-	public void onMarkerDragEnd( Marker marker ) {
-		this.commitPolygon();
-	}
-
-	@Override
-	public void onMarkerDragStart( Marker marker ) {
-	}
-
-	@Override
-	public boolean onMarkerClick( final Marker marker ) {
 		return false;
-	}
-
-	/**
-	 * Alpha-adjusts a given color setting the alpha-component to alphaArg, rounded.
-	 *
-	 * @param color the color.
-	 * @param alphaArg the alpha value to use.
-	 * @return the color.
-	 */
-	private int adjustAlpha( int color, float alphaArg ) {
-		int alpha = Math.round( alphaArg );
-		int red = Color.red( color );
-		int green = Color.green( color );
-		int blue = Color.blue( color );
-		return Color.argb( alpha, red, green, blue );
 	}
 }

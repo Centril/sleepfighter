@@ -18,6 +18,16 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.model.gps;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.j256.ormlite.field.DataType;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import se.toxbee.sleepfighter.utils.message.Message;
@@ -26,13 +36,6 @@ import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
 import se.toxbee.sleepfighter.utils.model.IdProvider;
 import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
 import se.toxbee.sleepfighter.utils.string.StringUtils;
-
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-import com.j256.ormlite.field.DataType;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * GPSFilterArea defines an exclusion area.<br/>
@@ -183,9 +186,9 @@ public class GPSFilterArea implements IdProvider, MessageBusHolder {
 
 	/**
 	 * Returns Whether or not the polygon contains the given GPSLatLng point.<br/>
-	 * {@link #getPolygon()} may not return null before a call to {@link #contains(GPSGPSLatLng)}.
+	 * {@link #getPolygon()} may not return null before a call to {@link #contains(GPSLatLng)}.
 	 *
-	 * @see GPSFilterArea#contains(GPSGPSLatLng)
+	 * @see GPSFilterArea#contains(GPSLatLng)
 	 * @param pos the point to check for.
 	 * @return true if it contains the point, otherwise false.
 	 */
@@ -252,6 +255,16 @@ public class GPSFilterArea implements IdProvider, MessageBusHolder {
 	 */
 	public GPSFilterPolygon getPolygon() {
 		return this.poly;
+	}
+
+	/**
+	 * Returns the points that defines this area, an empty list if {@link #getPolygon()} yields null.
+	 *
+	 * @return a list of points, changes to this list will not be reflected in the area.
+	 */
+	public List<GPSLatLng> getPoints() {
+		GPSFilterPolygon poly = this.getPolygon();
+		return poly == null ? new ArrayList<GPSLatLng>() : poly.getPoints();
 	}
 
 	/**
