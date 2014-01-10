@@ -21,6 +21,7 @@ package se.toxbee.sleepfighter.activity;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -205,6 +206,10 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements Locat
 
 		case R.id.action_edit_gpsfilter_area_zoom:
 			this.mapHandler.zoomToArea();
+			return true;
+
+		case R.id.action_edit_gpsfilter_area_manual:
+			this.addManualDialog();
 			return true;
 
 		case R.id.action_gpsfilter_settings:
@@ -435,5 +440,23 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements Locat
 		}
 
 		return false;
+	}
+
+	private void addManualDialog() {
+		ViewGroup inputs = (ViewGroup) this.getLayoutInflater().inflate( R.layout.edit_gpsfilter_area_manual, null );
+		final EditText lat = (EditText) inputs.findViewById( R.id.latitude );
+		final EditText lng = (EditText) inputs.findViewById( R.id.longitude );
+
+		AlertDialog.Builder alert = new AlertDialog.Builder( this );
+		alert.setTitle( R.string.action_edit_gpsfilter_area_manual );
+		alert.setView( inputs );
+		alert.setNegativeButton( android.R.string.cancel, DialogUtils.getNoopClickListener() );
+		alert.setPositiveButton( R.string.add, new DialogInterface.OnClickListener() {
+			public void onClick( DialogInterface dialog, int whichButton ) {
+				mapHandler.addPoint( lat.getText(), lng.getText() );
+			}
+		} );
+
+		alert.show();
 	}
 }

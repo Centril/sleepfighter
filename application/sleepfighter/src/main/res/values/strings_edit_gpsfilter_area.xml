@@ -33,8 +33,12 @@
     <string name="action_edit_gpsfilter_area_clear">Clear</string>
     <string name="action_edit_gpsfilter_area_remove">Remove</string>
     <string name="action_edit_gpsfilter_area_zoom">Zoom to markers</string>
+	<string name="action_edit_gpsfilter_area_manual">Add coordinate</string>
 
-    <string-array name="action_edit_gpsfilter_area_mode">
+	<string name="edit_gpsfilter_area_latitude">latitude</string>
+	<string name="edit_gpsfilter_area_longitude">longitude</string>
+
+	<string-array name="action_edit_gpsfilter_area_mode">
         <item>Include</item>
         <item>Exclude</item>
     </string-array>

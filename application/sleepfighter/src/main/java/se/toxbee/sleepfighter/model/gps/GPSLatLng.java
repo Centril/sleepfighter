@@ -50,6 +50,16 @@ public class GPSLatLng {
 	}
 
 	/**
+	 * Constructs a GPSLatLng with (lat, lng) from character sequences.
+	 *
+	 * @param lat the latitude.
+	 * @param lng the longitude.
+	 */
+	public GPSLatLng( CharSequence lat, CharSequence lng ) {
+		this( Double.parseDouble( lat.toString() ), Double.parseDouble( lng.toString() ) );
+	}
+
+	/**
 	 * Copy constructor.
 	 *
 	 * @param rhs the GPSLatLng to copy from.

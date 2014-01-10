@@ -189,6 +189,17 @@ public class LocationGUIHandler implements LocationGUIReceiver {
 	}
 
 	/**
+	 * Adds a point to polygon at point.<br/>
+	 * Also adds a marker to GUI.
+	 *
+	 * @param lat the latitude of point.
+	 * @param lng the longitude of point.
+	 */
+	public void addPoint( CharSequence lat, CharSequence lng ) {
+		this.addPoint( new GPSLatLng( lat, lng ) );
+	}
+
+	/**
 	 * Removes the last added marker/point.
 	 */
 	public void undoLastPoint() {
