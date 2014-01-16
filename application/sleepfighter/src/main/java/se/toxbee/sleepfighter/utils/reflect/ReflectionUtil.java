@@ -18,14 +18,14 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.utils.reflect;
 
+import com.google.common.collect.ObjectArrays;
+import com.google.common.reflect.TypeToken;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import se.toxbee.sleepfighter.utils.string.StringUtils;
-
-import com.google.common.collect.ObjectArrays;
-import com.google.common.reflect.TypeToken;
 
 /**
  * ReflectionUtil provides very basic reflection utilities.
@@ -95,8 +95,8 @@ public class ReflectionUtil {
 	 * Only works if o actually has a generic type U.
 	 *
 	 * @param o the generic object.
-	 * @param size
-	 * @return
+	 * @param size the size of array.
+	 * @return the array.
 	 */
 	public static <U> U[] genericArray( Object o, int size ) {
 		Class<U> type = genericType( o );
@@ -108,8 +108,8 @@ public class ReflectionUtil {
 	 * Only works if arr's components actually has a generic type U.
 	 *
 	 * @param arr the array.
-	 * @param size
-	 * @return
+	 * @param size the size of array.
+	 * @return the array.
 	 */
 	public static <U> U[] genericArray( U[] arr, int size ) {
 		return makeArray( arrayClass( arr ), size );
@@ -150,7 +150,7 @@ public class ReflectionUtil {
 	/**
 	 * Constructs a new instance of type U given a {@link Class} & a set of parameters.
 	 *
-	 * @param ctor the {@link Constructor}
+	 * @param clazz the {@link Constructor}
 	 * @param params the parameters to pass to constructor.
 	 * @return the new instance.
 	 */
@@ -244,7 +244,7 @@ public class ReflectionUtil {
 	 * @param name the fully qualified name of class.
 	 * @param target the target class/interface.
 	 * @return the resulting {@link Class}.
-	 * @throws ClassNotFoundException when there's no class with name.
+	 * @throws ROJava6Exception when there's no class with name.
 	 */
 	public static <U> Class<? extends U> classForName( String name, Class<U> target ) {
 		Class<?> dirty = null;
