@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
  * 
- * You should have received a copy of the GNU General Public License
+ * You should have received a.json copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package se.toxbee.sleepfighter.preference;
@@ -44,6 +44,25 @@ public final class AppPreferenceManager extends AppPreferenceNode {
 	public final LocationFilterPreferences locFilter;
 	public final ChallengeGlobalPreferences challenge;
 	public final WeatherPreferences weather;
+
+	/**
+	 * Returns whether or not proprietary code is allowed.<br/>
+	 * If this returns false NOTHING proprietary is allowed to run.
+	 *
+	 * @return
+	 */
+	public boolean isProprietaryAllowed() {
+		return p.getBoolean( "isProprietaryAllowed", true );
+	}
+
+	/**
+	 * Returns
+	 *
+	 * @return
+	 */
+	public boolean isOpenSourceOnly() {
+		return !this.isProprietaryAllowed();
+	}
 
 	/**
 	 * Sets the current versionCode in preferences.
