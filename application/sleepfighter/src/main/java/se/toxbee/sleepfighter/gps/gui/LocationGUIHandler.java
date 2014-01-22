@@ -1,4 +1,22 @@
-package se.toxbee.sleepfighter.gps;
+/*
+ * Copyright (c) 2014. See AUTHORS file.
+ *
+ * This file is part of SleepFighter.
+ *
+ * SleepFighter is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SleepFighter is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
+ */
+package se.toxbee.sleepfighter.gps.gui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,15 +33,14 @@ import java.util.List;
 
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.android.location.LocationAdapter;
-import se.toxbee.sleepfighter.gps.LocationGUIProvider.LocationGUIReceiver;
-import se.toxbee.sleepfighter.gps.google.GoogleLocationProvider;
+import se.toxbee.sleepfighter.gps.GPSFilterLocationRetriever;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterMode;
 import se.toxbee.sleepfighter.model.gps.GPSFilterPolygon;
 import se.toxbee.sleepfighter.model.gps.GPSLatLng;
 
 /**
-* {@link LocationGUIHandler} handles all interaction with maps for a {@link LocationGUIClient}
+* {@link LocationGUIHandler} handles all interaction with maps.
 *
 *
 * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
@@ -42,35 +59,21 @@ public class LocationGUIHandler implements LocationGUIReceiver {
 	private static final float MAP_MY_LOCATION_ZOOM = 13f;
 	private static final float CAMERA_MOVE_BOUNDS_PADDING = 0.2f; // padding as a % of lowest of screen width/height.
 
-	public static interface LocationGUIClient {
-		public GPSFilterArea getArea();
-		public FragmentActivity getActivity();
+	private final FragmentActivity activity;
+	private final GPSFilterArea area;
+	private final OnMapClick clickListener;
 
-		public boolean onMapClick( GPSLatLng loc );
-	}
-
-	private LocationGUIClient client;
 	private LocationGUIProvider provider;
 
 	private List<GPSLatLng> points;
 
-	public LocationGUIHandler( LocationGUIClient client ) {
-		this.client = client;
+	public LocationGUIHandler( FragmentActivity activity, GPSFilterArea area, OnMapClick clickListener ) {
+		this.area = area;
+		this.activity = activity;
+		this.clickListener = clickListener;
 
 		// Get a working list of points.
-		this.points = this.client.getArea().getPoints();
-	}
-
-	@Override
-	public FragmentActivity getActivity() {
-		return this.client.getActivity();
-	}
-
-	@Override
-	public int computeMoveCameraPadding() {
-		Point dim = this.getScreenDim();
-		int min = Math.min( dim.x, dim.y );
-		return (int) (CAMERA_MOVE_BOUNDS_PADDING * min);
+		this.points = this.area.getPoints();
 	}
 
 	/**
@@ -79,92 +82,16 @@ public class LocationGUIHandler implements LocationGUIReceiver {
 	 * @return the screen dimensions.
 	 */
 	private Point getScreenDim() {
-		Display display = getActivity().getWindowManager().getDefaultDisplay();
+		Display display = this.activity.getWindowManager().getDefaultDisplay();
 
 		@SuppressWarnings( "deprecation" )
 		Point size = new Point( display.getWidth(), display.getHeight() );
 		return size;
 	}
 
-	@Override
-	public int getPolygonFillColor() {
-		int id = this.client.getArea().getMode() == GPSFilterMode.INCLUDE ? POLYGON_INCLUDE_FILL_COLOR : POLYGON_EXCLUDE_FILL_COLOR;
-		return adjustAlpha( getActivity().getResources().getColor( id ), 255 * 0.5f );
-	}
-
-	@Override
-	public int getPolygonStrokeColor() {
-		return getActivity().getResources().getColor( POLYGON_STROKE_COLOR );
-	}
-
-	/**
-	 * Alpha-adjusts a given color setting the alpha-component to alphaArg, rounded.
-	 *
-	 * @param color the color.
-	 * @param alphaArg the alpha value to use.
-	 * @return the color.
-	 */
-	private int adjustAlpha( int color, float alphaArg ) {
-		int alpha = Math.round( alphaArg );
-		int red = Color.red( color );
-		int green = Color.green( color );
-		int blue = Color.blue( color );
-		return Color.argb( alpha, red, green, blue );
-	}
-
-	@Override
-	public float getZoomFactor() {
-		return MAP_MY_LOCATION_ZOOM;
-	}
-
-	@Override
-	public boolean satisfiesPolygon() {
-		return this.points.size() >= 3;
-	}
-
-	public void setupMap( ViewGroup viewContainer ) {
-		this.provider = new GoogleLocationProvider( this );
-		this.provider.initMap( viewContainer, true );
-	}
-
-	@Override
-	public void onMapReady() {
-		if ( this.isFresh() ) {
-			this.moveToCurrentLocation();
-		}
-
-		this.setupMarkers();
-	}
-
-	@Override
-	public void onMapClick( GPSLatLng loc ) {
-		if ( !this.client.onMapClick( loc ) ) {
-			this.addPoint( loc );
-		}
-	}
-
-	@Override
-	public void onMarkerDrag( GPSLatLng loc ) {
-		this.provider.updateGuiPolygon();
-	}
-
-	@Override
-	public void onMarkerDragEnd( int pointIndex, GPSLatLng loc ) {
-		if ( pointIndex == -1 ) {
-			Log.wtf( TAG, "Should never happen!" );
-			return;
-		}
-
-		this.replacePoint( pointIndex, loc );
-	}
-
-	@Override
-	public void onMarkerDragStart( GPSLatLng loc ) {
-	}
-
-	@Override
-	public boolean onMarkerClick( GPSLatLng loc ) {
-		return false;
+	public void setupMap( LocationGUIProvider provider, ViewGroup viewContainer ) {
+		this.provider = provider;
+		this.provider.initMap( viewContainer );
 	}
 
 	public void zoomToArea() {
@@ -231,24 +158,18 @@ public class LocationGUIHandler implements LocationGUIReceiver {
 		this.disableIfDissatisfied();
 	}
 
-	private void replacePoint( int pointIndex, GPSLatLng point ) {
-		this.points.set( pointIndex, point );
-
-		this.commit();
-	}
-
 	/**
 	 * Disables the area when/if dissatisfied.
 	 */
 	private void disableIfDissatisfied() {
 		if ( !this.satisfiesPolygon() ) {
-			this.client.getArea().setEnabled( false );
+			this.area.setEnabled( false );
 		}
 	}
 
 	/**
 	 * Commits the polygon saving it while also performing a GUI update.<br/>
-	 * If the polygon doesn't honor {@link se.toxbee.sleepfighter.gps.LocationGUIProvider#satisfiesPolygon()}, the area is disabled.
+	 * If the polygon doesn't honor {@link LocationGUIProvider#satisfiesPolygon()}, the area is disabled.
 	 */
 	private void commit() {
 		this.provider.updateGuiPolygon();
@@ -256,7 +177,114 @@ public class LocationGUIHandler implements LocationGUIReceiver {
 	}
 
 	private void commitPolygon() {
-		this.client.getArea().setPolygon( this.points.isEmpty() ? null : new GPSFilterPolygon( this.points ) );
+		this.area.setPolygon( this.points.isEmpty() ? null : new GPSFilterPolygon( this.points ) );
+	}
+
+	/**
+	 * Returns whether or not this activity instance is considered<br/>
+	 * fresh. It is fresh when the area is either new, or the polygon is undefined.
+	 *
+	 * @return true if new & undefined polygon.
+	 */
+	public boolean isFresh() {
+		return this.points.isEmpty();
+	}
+
+	/* -----------------------------------
+	 * LocationGUIReceiver implementation.
+	 * -----------------------------------
+	 */
+
+	@Override
+	public FragmentActivity getActivity() {
+		return this.activity;
+	}
+
+	@Override
+	public int computeMoveCameraPadding() {
+		Point dim = this.getScreenDim();
+		int min = Math.min( dim.x, dim.y );
+		return (int) (CAMERA_MOVE_BOUNDS_PADDING * min);
+	}
+
+	@Override
+	public boolean satisfiesPolygon() {
+		return this.points.size() >= 3;
+	}
+
+	@Override
+	public int getPolygonFillColor() {
+		int id = this.area.getMode() == GPSFilterMode.INCLUDE ? POLYGON_INCLUDE_FILL_COLOR : POLYGON_EXCLUDE_FILL_COLOR;
+		return adjustAlpha( getActivity().getResources().getColor( id ), 255 * 0.5f );
+	}
+
+	@Override
+	public int getPolygonStrokeColor() {
+		return getActivity().getResources().getColor( POLYGON_STROKE_COLOR );
+	}
+
+	/**
+	 * Alpha-adjusts a given color setting the alpha-component to alphaArg, rounded.
+	 *
+	 * @param color the color.
+	 * @param alphaArg the alpha value to use.
+	 * @return the color.
+	 */
+	private int adjustAlpha( int color, float alphaArg ) {
+		int alpha = Math.round( alphaArg );
+		int red = Color.red( color );
+		int green = Color.green( color );
+		int blue = Color.blue( color );
+		return Color.argb( alpha, red, green, blue );
+	}
+
+	@Override
+	public float getZoomFactor() {
+		return MAP_MY_LOCATION_ZOOM;
+	}
+
+	public void moveToCurrentLocation() {
+		Context context = this.getActivity();
+
+		GPSFilterLocationRetriever retriever = new GPSFilterLocationRetriever( new Criteria() );
+		Location loc = retriever.getLocation( context );
+
+		if ( loc == null ) {
+			// User turned off location fetching, send it to device location settings.
+			this.gotoLocationSettings();
+		} else {
+			// First move to the last known location..
+			this.provider.moveCamera( loc, false );
+
+			// Check if location fix is out dated, if it is, request a new location, ONCE.
+			long elapsedTime = System.currentTimeMillis() - loc.getTime();
+			if ( elapsedTime > MAX_LOCATION_FIX_AGE ) {
+				// Therefore, we request a single fix.
+				retriever.requestSingleUpdate( context, new LocationAdapter() {
+					@Override
+					public void onLocationChanged( Location loc ) {
+						provider.moveCamera( loc, true );
+					}
+				} );
+			}
+		}
+	}
+
+	/**
+	 * Sends users to android location settings.
+	 */
+	private void gotoLocationSettings() {
+		Intent i = new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
+		this.getActivity().startActivity( i );
+	}
+
+	@Override
+	public void onMapReady() {
+		if ( this.isFresh() ) {
+			this.moveToCurrentLocation();
+		}
+
+		this.setupMarkers();
 	}
 
 	/**
@@ -274,44 +302,37 @@ public class LocationGUIHandler implements LocationGUIReceiver {
 		}
 	}
 
-	/**
-	 * Returns whether or not this activity instance is considered<br/>
-	 * fresh. It is fresh when the area is either new, or the polygon is undefined.
-	 *
-	 * @return true if new & undefined polygon.
-	 */
-	public boolean isFresh() {
-		return this.points.isEmpty();
+	@Override
+	public boolean onMapClick( GPSLatLng loc ) {
+		if ( !this.clickListener.onMapClick( loc ) ) {
+			this.addPoint( loc );
+		}
+
+		return true;
 	}
 
-	/**
-	 * Moves the user to its current location.
-	 */
-	private void moveToCurrentLocation() {
-		Context context = this.getActivity();
+	@Override
+	public void onMarkerDrag( GPSLatLng loc ) {
+		this.provider.updateGuiPolygon();
+	}
 
-		GPSFilterLocationRetriever retriever = new GPSFilterLocationRetriever( new Criteria() );
-		Location loc = retriever.getLocation( context );
-
-		if ( loc == null ) {
-			// User turned off location fetching, send it to device location settings.
-			Intent i = new Intent( android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS );
-			this.getActivity().startActivity( i );
-		} else {
-			// First move to the last known location..
-			this.provider.moveCamera( loc, false );
-
-			// Check if location fix is out dated, if it is, request a new location, ONCE.
-			long elapsedTime = System.currentTimeMillis() - loc.getTime();
-			if ( elapsedTime > MAX_LOCATION_FIX_AGE ) {
-				// Therefore, we request a single fix.
-				retriever.requestSingleUpdate( context, new LocationAdapter() {
-					@Override
-					public void onLocationChanged( Location loc ) {
-						provider.moveCamera( loc, true );
-					}
-				} );
-			}
+	@Override
+	public void onMarkerDragEnd( int pointIndex, GPSLatLng loc ) {
+		if ( pointIndex == -1 ) {
+			Log.wtf( TAG, "Should never happen!" );
+			return;
 		}
+
+		this.replacePoint( pointIndex, loc );
+	}
+
+	private void replacePoint( int pointIndex, GPSLatLng point ) {
+		this.points.set( pointIndex, point );
+
+		this.commit();
+	}
+
+	@Override
+	public void onMarkerDragStart( GPSLatLng loc ) {
 	}
 }

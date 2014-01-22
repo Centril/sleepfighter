@@ -16,13 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package se.toxbee.sleepfighter.gps;
+package se.toxbee.sleepfighter.gps.gui;
 
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 import android.view.ViewGroup;
-
-import java.util.List;
 
 import se.toxbee.sleepfighter.model.gps.GPSLatLng;
 
@@ -35,74 +32,31 @@ import se.toxbee.sleepfighter.model.gps.GPSLatLng;
  * @since Jan 8, 2014
  */
 public interface LocationGUIProvider {
-	public interface LocationGUIReceiver {
-		/**
-		 * Returns a FragmentActivity to add view to, etc.
-		 *
-		 * @return the activity.
-		 */
-		public FragmentActivity getActivity();
-
-		/**
-		 * Computes the padding to use when moving camera to polygon.
-		 *
-		 * @return the padding.
-		 */
-		public int computeMoveCameraPadding();
-
-		/**
-		 * Returns the fill-color to use.
-		 *
-		 * @return the color value.
-		 */
-		public int getPolygonFillColor();
-
-		/**
-		 * Returns the stroke-color to use.
-		 *
-		 * @return the color value.
-		 */
-		public int getPolygonStrokeColor();
-
-		/**
-		 * Returns the zoom factor to use.
-		 *
-		 * @return the zoom factor.
-		 */
-		public float getZoomFactor();
-
-		/**
-		 * Returns true if n(points) >= 3.
-		 *
-		 * @return true if >= 3 points.
-		 */
-		public boolean satisfiesPolygon();
-
-		/**
-		 * Invoked when the map is ready.
-		 */
-		public void onMapReady();
-
-		public void onMapClick( GPSLatLng loc );
-		public void onMarkerDrag( GPSLatLng loc );
-		public void onMarkerDragEnd( int pointIndex, GPSLatLng loc );
-		public void onMarkerDragStart( GPSLatLng loc );
-		public boolean onMarkerClick( GPSLatLng loc );
-	}
+	/* --------------------------------
+	 * Map initialization and status.
+	 * --------------------------------
+	 */
 
 	/**
-	 * Returs true if the GUI is alive.
+	 * Returns whether or not the provider is available.
 	 *
-	 * @return true if the GUI is alive.
+	 * @param allowError if unavailable, and allowError is true,
+	 *                      the provider is allowed to show an error to the user.
+	 * @return true if available.
 	 */
-	public boolean isAlive();
+	public boolean isAvailable( boolean allowError );
 
 	/**
-	 * Whether or not the current markers satisfy being a polygon (having 3 edges / markers).
+	 * Initializes the map.
 	 *
-	 * @return true if it satisfies being a polygon.
+	 * @param viewContainer the parent view that will contain the map / gui-provider.
 	 */
-	public boolean satisfiesPolygon();
+	public void initMap( ViewGroup viewContainer );
+
+	/* --------------------------------
+	 * Points / Markers related.
+	 * --------------------------------
+	 */
 
 	/**
 	 * Returns true if there are any points.
@@ -110,13 +64,6 @@ public interface LocationGUIProvider {
 	 * @return true if any points.
 	 */
 	public boolean hasPoints();
-
-	/**
-	 * Returns a list of all the points.
-	 *
-	 * @return a list.
-	 */
-	public List<GPSLatLng> getPoints();
 
 	/**
 	 * Adds a marker on map at loc.
@@ -135,20 +82,28 @@ public interface LocationGUIProvider {
 	 */
 	public void clearPoints();
 
+	/* --------------------------------
+	 * Polygon related.
+	 * --------------------------------
+	 */
+
+	/**
+	 * Whether or not the current markers satisfy being a polygon (having 3 edges / markers).
+	 *
+	 * @return true if it satisfies being a polygon.
+	 */
+	public boolean satisfiesPolygon();
+
 	/**
 	 * Updates the GUI polygon, removing the old one,<br/>
 	 * adding a new one if we have >= 3 points.
 	 */
 	public void updateGuiPolygon();
 
-	/**
-	 * Initializes the map, returning true if successful.
-	 *
-	 * @param viewContainer the parent view that will contain the map / gui-provider.
-	 * @param errorOnFail if true, an init error should display an error to user.
-	 * @return true if map was initalized.
+	/* --------------------------------
+	 * Zoom & Location related.
+	 * --------------------------------
 	 */
-	public boolean initMap( ViewGroup viewContainer, boolean errorOnFail );
 
 	/**
 	 * Initializes the camera to the polygon.<br/>
