@@ -21,7 +21,7 @@ package se.toxbee.sleepfighter.gps.gui;
 import android.support.v4.app.FragmentActivity;
 
 /**
- * LocationGUIReceiver receives and communicates with a.json {@link LocationGUIProvider}.
+ * LocationGUIReceiver receives and communicates with a {@link LocationGUIProvider}.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0
@@ -29,7 +29,7 @@ import android.support.v4.app.FragmentActivity;
  */
 public interface LocationGUIReceiver extends OnMapClick, OnMarkerDragListener {
 	/**
-	 * Returns a.json FragmentActivity to add view to, etc.
+	 * Returns a FragmentActivity to add view to, etc.
 	 *
 	 * @return the activity.
 	 */
