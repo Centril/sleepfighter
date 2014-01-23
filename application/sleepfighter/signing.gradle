@@ -1,0 +1,89 @@
+def fetchProps( path ) {
+	def Properties props = new Properties()
+	def propFile = file( path )
+	if ( propFile.canRead() ) {
+		props.load( new FileInputStream( propFile ) )
+		return props;
+	}
+
+	return null;
+}
+
+// Signing configuration:
+android {
+	project.ext.releaseCfg = fetchProps( 'release.signing' )
+	if ( releaseCfg != null && releaseCfg.containsKey( 'key.store' ) ) {
+		def storeFileK = 'key.store'
+		def keyAliasK = 'key.alias'
+		def storePasswordK = 'key.store_password'
+		def keyPasswordK = 'key.password'
+
+		signingConfigs {
+			debug {
+				storeFile file("sleepfighter.debug.keystore")
+				keyAlias 'androiddebugkey'
+				storePassword 'android'
+				keyPassword 'android'
+			}
+			release {
+				storeFile file( releaseCfg.get( storeFileK ) )
+				keyAlias releaseCfg.containsKey( keyAliasK ) ? releaseCfg.get( storeFileK ) : 'null'
+				storePassword releaseCfg.containsKey( storePasswordK ) ? releaseCfg.get( storePasswordK ) : 'null'
+				keyPassword releaseCfg.containsKey( keyPasswordK ) ? releaseCfg.get( keyPasswordK ) : 'null'
+			}
+		}
+	} else {
+		project.ext.releaseCfg = null
+		signingConfigs {
+			debug {
+				storeFile file("sleepfighter.debug.keystore")
+				keyAlias 'androiddebugkey'
+				storePassword 'android'
+				keyPassword 'android'
+			}
+			release {
+				// Nothing here, resolve via cmd.
+				keyAlias 'null'
+				storePassword 'null'
+				keyPassword 'null'
+			}
+		}
+	}
+	buildTypes {
+		debug {
+			signingConfig signingConfigs.debug
+		}
+		release {
+			signingConfig signingConfigs.release
+		}
+	}
+}
+
+apply plugin: 'lgio'
+
+task askForPasswords << {
+	if ( project.releaseCfg == null ) {
+		def storeFile = file( io.readLineReq( "Keystore file, rel path" ) )
+		android.signingConfigs.release.storeFile = storeFile
+	}
+
+	def release = android.signingConfigs.release
+
+	if ( release.keyAlias == 'null' ) {
+		release.keyAlias = io.readLineReq( "Key alias" )
+	}
+
+	if ( release.storePassword == 'null' ) {
+		release.storePassword = io.readPasswordReq( "Keystore password" )
+	}
+
+	if ( release.keyPassword == 'null' ) {
+		release.keyPassword = io.readPasswordReq( "Key password" )
+	}
+}
+
+tasks.whenTaskAdded { theTask ->
+	if ( theTask.name.equals( "packageRelease" ) ) {
+		theTask.dependsOn "askForPasswords"
+	}
+}
