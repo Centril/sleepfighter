@@ -21,21 +21,15 @@ package se.toxbee.sleepfighter.activity;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.location.Criteria;
-import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,28 +52,21 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.google.common.collect.Lists;
-
 import net.engio.mbassy.listener.Handler;
 
-import java.util.List;
-
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.android.location.LocationAdapter;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
 import se.toxbee.sleepfighter.android.utils.Toaster;
 import se.toxbee.sleepfighter.app.SFApplication;
-import se.toxbee.sleepfighter.gps.GPSFilterLocationRetriever;
-import se.toxbee.sleepfighter.gps.LocationGUIHandler;
-import se.toxbee.sleepfighter.gps.LocationGUIHandler.LocationGUIClient;
-import se.toxbee.sleepfighter.gps.LocationGUIProvider;
-import se.toxbee.sleepfighter.gps.LocationGUIProvider.LocationGUIReceiver;
-import se.toxbee.sleepfighter.gps.google.GoogleLocationProvider;
+import se.toxbee.sleepfighter.gps.factory.LocationGUIProviderFactory;
+import se.toxbee.sleepfighter.gps.gui.LocationGUIHandler;
+import se.toxbee.sleepfighter.gps.gui.LocationGUIProvider;
+import se.toxbee.sleepfighter.gps.gui.OnMapClick;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.model.gps.GPSFilterMode;
-import se.toxbee.sleepfighter.model.gps.GPSFilterPolygon;
 import se.toxbee.sleepfighter.model.gps.GPSLatLng;
+import se.toxbee.sleepfighter.preference.AppPreferenceManager;
 
 /**
  * EditGPSFilterAreaActivity is the activity for editing an GPSFilterArea.
@@ -88,7 +75,7 @@ import se.toxbee.sleepfighter.model.gps.GPSLatLng;
  * @version 1.0
  * @since Oct 6, 2013
  */
-public class EditGPSFilterAreaActivity extends FragmentActivity implements LocationGUIClient {
+public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMapClick {
 	private static final String TAG = EditGPSFilterAreaActivity.class.getSimpleName();
 
 	public static final String EXTRAS_AREA_ID = "gpsfilter_area_id";
@@ -418,28 +405,23 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements Locat
 	private void setupMap() {
 		ViewGroup viewContainer = (ViewGroup) this.findViewById( R.id.edit_gpsfilter_area_mapcontainer );
 
-		this.mapHandler = new LocationGUIHandler( this );
-		this.mapHandler.setupMap( viewContainer );
-	}
+		AppPreferenceManager prefs = SFApplication.get().getPrefs();
+		LocationGUIProviderFactory factory = new LocationGUIProviderFactory( prefs, this, this.area, this );
+		LocationGUIProvider provider = factory.produce( null );
 
-	@Override
-	public GPSFilterArea getArea() {
-		return this.area;
-	}
-
-	@Override
-	public FragmentActivity getActivity() {
-		return this;
+		this.mapHandler = factory.getHandler();
+		this.mapHandler.setupMap( provider, viewContainer );
 	}
 
 	@Override
 	public boolean onMapClick( GPSLatLng loc ) {
-		if ( this.splashInfoContainer.getVisibility() == View.VISIBLE ) {
-			this.hideSplash();
-			return true;
+		boolean isVisible = splashInfoContainer.getVisibility() == View.VISIBLE;
+
+		if ( isVisible ) {
+			hideSplash();
 		}
 
-		return false;
+		return isVisible;
 	}
 
 	private void addManualDialog() {
