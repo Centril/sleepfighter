@@ -6,16 +6,14 @@ def getVersionCode() { 8 }
 def getMinSdk() { 9 }
 def getTargetSdk() { 19 }
 
-def fetchProps( path ) {
-	def Properties props = new Properties()
-	def propFile = file( path )
-	if ( propFile.canRead() ) {
-		props.load( new FileInputStream( propFile ) )
-		return props;
-	}
+// Generate BuildTimestamp.java.
+apply from: 'timestamp.gradle'
 
-	return null;
-}
+// Add all dependencies.
+apply from: 'dependencies.gradle'
+
+// Apply signing configuration.
+apply from: 'signing.gradle'
 
 android {
 	buildToolsVersion "19.0.1"
@@ -34,12 +32,6 @@ android {
 		targetCompatibility JavaVersion.VERSION_1_7
 	}
 
-	// Fix: multiple jars have this file.
-	packagingOptions {
-		exclude 'META-INF/LICENSE.txt'
-		exclude 'META-INF/NOTICE.txt'
-	}
-
 	// Proguard settings:
     buildTypes {
         release {
@@ -47,51 +39,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-
-	// Signing configuration:
-	project.ext.releaseCfg = fetchProps( 'release.signing' )
-	if ( releaseCfg != null && releaseCfg.containsKey( 'key.store' ) ) {
-		def storeFileK = 'key.store'
-		def keyAliasK = 'key.alias'
-		def storePasswordK = 'key.store_password'
-		def keyPasswordK = 'key.password'
-
-		signingConfigs {
-			debug {
-				storeFile file("sleepfighter.debug.keystore")
-				keyAlias 'androiddebugkey'
-				storePassword 'android'
-				keyPassword 'android'
-			}
-			release {
-				storeFile file( releaseCfg.get( storeFileK ) )
-				keyAlias releaseCfg.containsKey( keyAliasK ) ? releaseCfg.get( storeFileK ) : 'null'
-				storePassword releaseCfg.containsKey( storePasswordK ) ? releaseCfg.get( storePasswordK ) : 'null'
-				keyPassword releaseCfg.containsKey( keyPasswordK ) ? releaseCfg.get( keyPasswordK ) : 'null'
-			}
-		}
-	} else {
-		project.ext.releaseCfg = null
-		signingConfigs {
-			debug {
-				storeFile file("sleepfighter.debug.keystore")
-				keyAlias 'androiddebugkey'
-				storePassword 'android'
-				keyPassword 'android'
-			}
-			release {
-				// Nothing here, resolve via cmd.
-			}
-		}
-	}
-	buildTypes {
-		debug {
-			signingConfig signingConfigs.debug
-		}
-		release {
-			signingConfig signingConfigs.release
-		}
-	}
 
 	// Introduce "releaseDebug" extending release but debuggable.
 	buildTypes {
@@ -109,43 +56,53 @@ android {
 	}
 }
 
-task askForPasswords << {
-	// Must create String because System.readPassword() returns char[]
-	// (and assigning that below fails silently)
+// Add "provided" (not included in APK) configuration.
+configurations { provided }
+sourceSets.each{ type -> src.compileClasspath += configurations.provided }
 
-	if ( project.releaseCfg == null ) {
-		def storeFile = file( new String( System.console().readPassword("\nKeystore file: ") ) )
-		android.signingConfigs.release.storeFile = storeFile
-	}
-
-	def keyAlias = new String( System.console().readPassword("\nKey alias: ") )
-	def storePw = new String( System.console().readPassword("Keystore password: ") )
-	def keyPw = new String( System.console().readPassword("Key password: ") )
-
-	android.signingConfigs.release.keyPassword = keyAlias
-	android.signingConfigs.release.keyPassword = storePw
-	android.signingConfigs.release.keyPassword = keyPw
-}
-tasks.whenTaskAdded { theTask ->
-	if ( theTask.name.equals( "packageRelease" ) ) {
-		theTask.dependsOn "askForPasswords"
-	}
+// Fix: multiple jars have this file.
+android.packagingOptions {
+	exclude 'META-INF/LICENSE.txt'
+	exclude 'META-INF/NOTICE.txt'
+	exclude 'META-INF/services/javax.annotation.processing.Processor'
 }
 
-// Declare dependencies.
-dependencies {
-	// From repositories, e.g Maven.
-    compile 'com.android.support:support-v4:+'
-    compile 'com.google.guava:guava:+' // was 15.0
-    compile 'joda-time:joda-time:+' // was 2.3
-    compile 'com.google.android.gms:play-services:+'
-	compile 'com.j256.ormlite:ormlite-core:+' // was 4.47
-	compile 'com.j256.ormlite:ormlite-android:+'
-	compile 'org.apache.commons:commons-math3:+' // was 3.2
-	compile 'net.engio:mbassador:1.1.9'
-	compile 'com.mobeta.android.dslv:drag-sort-listview:0.6.1'
-	compile 'net.simonvt.numberpicker:android-numberpicker:1.0.0@aar'
+android.applicationVariants.all{ v ->
+	def base = "${buildDir}/classes/${v.name}"
 
-	// Add all jars in libs directory.
-	compile fileTree( dir: 'libs', include: '*.jar' )
+	/*
+	def t = "${v.name}CopyFiles"
+	task "$t" (type: Copy) {
+		from "${base}/META-INF/"
+		into "${buildDir}/assets/${v.name}/META-INF/"
+	}
+	v.mergeAssets.mustRunAfter "$t"
+	v.mergeAssets.dependsOn "$t"
+	*/
+
+	def j = "${v.name}MetaINFServicesJar"
+	task "$j" (type: Jar) {
+		from "${base}/META-INF/"
+		into "/META-INF/"
+		archiveName "${v.name}/metainfservices.jar"
+	}
+
+	def d = "${v.name}MetaINFServicesJarDependencies"
+	task "$d" (dependsOn: "$j") {
+		project.dependencies.add( 'compile', "${buildDir}/libs/${v.name}/metainfservices.jar" )
+	}
+
+	v.javaCompile.dependsOn "$d"
+
+	//v.javaCompile.dependsOn "$t"
+	/*
+	gaeRun {
+		gradle.taskGraph.whenReady { taskGraph ->
+			if (taskGraph.hasTask(":gaeRun")) {
+				project.dependencies.add("compile", "org.slf4j:slf4j-log4j12:${slf4jVersion}") // log4j binding
+				project.dependencies.add("compile", "org.slf4j:jul-to-slf4j:${slf4jVersion}") //java.util.logging bridge
+			}
+		}
+	}
+	*/
 }
