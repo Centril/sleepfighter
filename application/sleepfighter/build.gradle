@@ -56,49 +56,5 @@ android {
 	}
 }
 
-// Fix: multiple jars have this file.
-android.packagingOptions {
-	exclude 'META-INF/LICENSE.txt'
-	exclude 'META-INF/NOTICE.txt'
-	exclude 'META-INF/services/javax.annotation.processing.Processor'
-}
-
-android.applicationVariants.all{ v ->
-	def base = "${buildDir}/classes/${v.name}"
-
-	/*
-	def t = "${v.name}CopyFiles"
-	task "$t" (type: Copy) {
-		from "${base}/META-INF/"
-		into "${buildDir}/assets/${v.name}/META-INF/"
-	}
-	v.mergeAssets.mustRunAfter "$t"
-	v.mergeAssets.dependsOn "$t"
-	*/
-
-	def j = "${v.name}MetaINFServicesJar"
-	task "$j" (type: Jar) {
-		from "${base}/META-INF/"
-		into "/META-INF/"
-		archiveName "${v.name}/metainfservices.jar"
-	}
-
-	def d = "${v.name}MetaINFServicesJarDependencies"
-	task "$d" (dependsOn: "$j") {
-		project.dependencies.add( 'compile', "${buildDir}/libs/${v.name}/metainfservices.jar" )
-	}
-
-	v.javaCompile.dependsOn "$d"
-
-	//v.javaCompile.dependsOn "$t"
-	/*
-	gaeRun {
-		gradle.taskGraph.whenReady { taskGraph ->
-			if (taskGraph.hasTask(":gaeRun")) {
-				project.dependencies.add("compile", "org.slf4j:slf4j-log4j12:${slf4jVersion}") // log4j binding
-				project.dependencies.add("compile", "org.slf4j:jul-to-slf4j:${slf4jVersion}") //java.util.logging bridge
-			}
-		}
-	}
-	*/
-}
+// Fix META-INF stuff.
+apply from: 'metainf-fix.gradle'

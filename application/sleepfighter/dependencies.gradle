@@ -29,6 +29,6 @@ dependencies {
 	compile fileTree( dir: 'libs', include: '*.jar' )
 
 	// compile time only:
-	//compile 'org.kohsuke.metainf-services:metainf-services:1.5'
+	provided 'org.kohsuke.metainf-services:metainf-services:1.5'
 	//apt 'org.kohsuke.metainf-services:metainf-services:1.5'
 }
