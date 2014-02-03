@@ -56,10 +56,6 @@ android {
 	}
 }
 
-// Add "provided" (not included in APK) configuration.
-configurations { provided }
-sourceSets.each{ type -> src.compileClasspath += configurations.provided }
-
 // Fix: multiple jars have this file.
 android.packagingOptions {
 	exclude 'META-INF/LICENSE.txt'
