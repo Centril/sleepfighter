@@ -39,22 +39,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-
-	// Introduce "releaseDebug" extending release but debuggable.
-	buildTypes {
-		debugRelease.initWith( buildTypes.release )
-		debugRelease {
-			debuggable      true
-			signingConfig  signingConfigs.debug
-		}
-	}
-	sourceSets.debugRelease.setRoot( 'src/release' )
-
-	// Suffix all build types with type except for release, allowing parallel installs.
-	buildTypes.each{ type ->
-		type.packageNameSuffix = type.name == 'release' ? '' : ".$type.name"
-	}
 }
+
+// Fix build types.
+apply from: 'buildtypes.gradle'
 
 // Fix META-INF stuff.
 apply from: 'metainf-fix.gradle'
