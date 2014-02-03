@@ -63,11 +63,7 @@ public class PolyUtil {
 	 * @return true if the point lies inside.
 	 */
 	public static boolean containsLocation( GPSLatLng point, double[][] polygon ) {
-		if ( polygon == null ) {
-			return false;
-		}
-
-		final int size = polygon[0].length;
+		final int size = polygon == null ? 0 : polygon[0].length;
 		if ( size == 0 ) {
 			return false;
 		}
@@ -75,9 +71,8 @@ public class PolyUtil {
 		double lat3 = toRadians( point.getLat() );
 		double lng3 = toRadians( point.getLng() );
 
-		int last = size - 1;
-		double lat1 = latitude( polygon, last );
-		double lng1 = longitude( polygon, last );
+		double lat1 = latitude( polygon, size - 1 );
+		double lng1 = longitude( polygon, size - 1 );
 
 		int nIntersect = 0;
 
