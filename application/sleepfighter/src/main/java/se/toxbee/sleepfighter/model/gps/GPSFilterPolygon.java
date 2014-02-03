@@ -18,13 +18,10 @@
  ******************************************************************************/
 package se.toxbee.sleepfighter.model.gps;
 
+import com.google.common.collect.Lists;
+
 import java.io.Serializable;
 import java.util.List;
-
-import nsidc.spheres.Point;
-import nsidc.spheres.SphericalPolygon;
-
-import com.google.common.collect.Lists;
 
 /**
  * GPSFilterPolygon defines a spherical polygon with (lat, lng) vectors to filter.<br/>
@@ -70,18 +67,7 @@ public class GPSFilterPolygon implements Serializable {
 	 * @return true if it contains the point, otherwise false.
 	 */
 	public boolean contains( GPSLatLng point ) {
-		SphericalPolygon spherical = this.convertToSpherical();
-		Point p = new Point( point.getLat(), point.getLng() );
-		return spherical.contains( p );
-	}
-
-	/**
-	 * Converts polygon to a SphericalPolygon for math operations.
-	 * 
-	 * @return the SphericalPolygon.
-	 */
-	private SphericalPolygon convertToSpherical() {
-		return new SphericalPolygon( this.poly[0], this.poly[1] );
+		return PolyUtil.containsLocation( point, this.poly );
 	}
 
 	/**
