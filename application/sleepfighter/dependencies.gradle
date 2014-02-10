@@ -25,10 +25,6 @@ dependencies {
 	compile 'org.slf4j:slf4j-android:1.6.1-RC1'
 	compile 'org.osmdroid:bonuspack:4.0.0-SNAPSHOT'
 
-	// Add all jars in libs directory.
-	compile fileTree( dir: 'libs', include: '*.jar' )
-
-	// compile time only:
-	provided 'org.kohsuke.metainf-services:metainf-services:1.5'
-	//apt 'org.kohsuke.metainf-services:metainf-services:1.5'
+	provided 'se.toxbee.fimpl:fimpl-annotate:0.1'
+	compile 'se.toxbee.fimpl:fimpl-metainf:0.1'
 }

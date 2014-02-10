@@ -6,20 +6,11 @@ buildscript {
 		maven {
 			url 'https://github.com/Centril/mvn-repo/raw/master/maven-deploy'
 		}
-
-		// Used for gradle-apt-plugin
-		/*
-		maven {
-			url "https://oss.sonatype.org/content/repositories/snapshots/"
-		}
-		*/
 	}
 	dependencies {
 		classpath 'com.android.tools.build:gradle:+'
 
 		classpath 'se.toxbee.lgio:gradle-plugin-lgio:+'
-
-		//classpath 'com.jimdo.gradle:gradle-apt-plugin:+'
 	}
 }
 
