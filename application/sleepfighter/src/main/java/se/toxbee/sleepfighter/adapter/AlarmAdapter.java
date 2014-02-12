@@ -1,34 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2013 See AUTHORS file.
- * 
- * This file is part of SleepFighter.
- * 
- * SleepFighter is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * SleepFighter is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+/*
+ * Copyright 2014 toxbee.se
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.toxbee.sleepfighter.adapter;
 
-import java.util.List;
-
-import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePicker;
-import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePickerDialog;
-import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.time.AlarmTime;
-import se.toxbee.sleepfighter.model.time.CountdownTime;
-import se.toxbee.sleepfighter.model.time.ExactTime;
-import se.toxbee.sleepfighter.text.DateTextUtils;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
@@ -41,6 +28,18 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import java.util.List;
+
+import se.toxbee.sleepfighter.R;
+import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePicker;
+import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePickerDialog;
+import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.CountdownTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
+import se.toxbee.sleepfighter.text.DateTextUtils;
+import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	public AlarmAdapter( Context context, List<Alarm> alarms ) {

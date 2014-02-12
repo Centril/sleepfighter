@@ -1,12 +1,11 @@
 /*
- * Copyright (C) 2007 The Android Open Source Project
- * Copyright (C) 2013 Ivan Kovac navratnanos@gmail.com
+ * Copyright 2014 toxbee.se
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package se.toxbee.sleepfighter.android.component.secondpicker;
 
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.Locale;
-
-import net.simonvt.numberpicker.NumberPicker;
-import se.toxbee.sleepfighter.R;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -30,6 +24,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+
+import net.simonvt.numberpicker.NumberPicker;
+
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.Locale;
+
+import se.toxbee.sleepfighter.R;
 
 /**
  * A view for selecting the time of day, in either 24 hour or AM/PM mode.

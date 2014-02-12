@@ -1,53 +1,21 @@
-/*******************************************************************************
- * Copyright (c) 2013 See AUTHORS file.
- * 
- * This file is part of SleepFighter.
- * 
- * SleepFighter is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * SleepFighter is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+/*
+ * Copyright 2014 toxbee.se
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.toxbee.sleepfighter.activity;
 
-import java.util.Locale;
-
-import net.engio.mbassy.listener.Handler;
-import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePicker;
-import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePickerDialog;
-import se.toxbee.sleepfighter.android.preference.EnablePlusSettingsPreference;
-import se.toxbee.sleepfighter.android.preference.MultiSelectListPreference;
-import se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference;
-import se.toxbee.sleepfighter.android.preference.TimepickerPreference;
-import se.toxbee.sleepfighter.android.preference.VolumePreference;
-import se.toxbee.sleepfighter.android.utils.DialogUtils;
-import se.toxbee.sleepfighter.app.SFApplication;
-import se.toxbee.sleepfighter.audio.AudioDriver;
-import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
-import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
-import se.toxbee.sleepfighter.helper.AlarmTimeRefresher;
-import se.toxbee.sleepfighter.helper.AlarmTimeRefresher.RefreshedEvent;
-import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.Alarm.AudioChangeEvent;
-import se.toxbee.sleepfighter.model.Alarm.Field;
-import se.toxbee.sleepfighter.model.Alarm.MetaChangeEvent;
-import se.toxbee.sleepfighter.model.AlarmList;
-import se.toxbee.sleepfighter.model.time.AlarmTime;
-import se.toxbee.sleepfighter.model.time.CountdownTime;
-import se.toxbee.sleepfighter.model.time.ExactTime;
-import se.toxbee.sleepfighter.speech.SpeechLocalizer;
-import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
-import se.toxbee.sleepfighter.text.DateTextUtils;
-import se.toxbee.sleepfighter.utils.debug.Debug;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
@@ -76,11 +44,42 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import net.engio.mbassy.listener.Handler;
+
+import java.util.Locale;
+
+import se.toxbee.sleepfighter.R;
+import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePicker;
+import se.toxbee.sleepfighter.android.component.secondpicker.SecondTimePickerDialog;
+import se.toxbee.sleepfighter.android.preference.EnablePlusSettingsPreference;
+import se.toxbee.sleepfighter.android.preference.MultiSelectListPreference;
+import se.toxbee.sleepfighter.android.preference.NumberPickerDialogPreference;
+import se.toxbee.sleepfighter.android.preference.TimepickerPreference;
+import se.toxbee.sleepfighter.android.preference.VolumePreference;
+import se.toxbee.sleepfighter.android.utils.DialogUtils;
+import se.toxbee.sleepfighter.app.SFApplication;
+import se.toxbee.sleepfighter.audio.AudioDriver;
+import se.toxbee.sleepfighter.audio.factory.AudioDriverFactory;
+import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher;
+import se.toxbee.sleepfighter.helper.AlarmTimeRefresher.RefreshedEvent;
+import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.model.Alarm.AudioChangeEvent;
+import se.toxbee.sleepfighter.model.Alarm.Field;
+import se.toxbee.sleepfighter.model.Alarm.MetaChangeEvent;
+import se.toxbee.sleepfighter.model.AlarmList;
+import se.toxbee.sleepfighter.model.time.AlarmTime;
+import se.toxbee.sleepfighter.model.time.CountdownTime;
+import se.toxbee.sleepfighter.model.time.ExactTime;
+import se.toxbee.sleepfighter.speech.SpeechLocalizer;
+import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
+import se.toxbee.sleepfighter.text.DateTextUtils;
+import se.toxbee.sleepfighter.utils.debug.Debug;
+
 /**
  * Contains preferences for specific alarms.
  * 
  * @author Hassel
- *
  */
 public class AlarmSettingsActivity extends PreferenceActivity {
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";

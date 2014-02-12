@@ -1,13 +1,11 @@
-package se.toxbee.sleepfighter.android.component.secondpicker;
-
 /*
- * Copyright (C) 2007 The Android Open Source Project
- * Copyright (C) 2013 Ivan Kovac  navratnanos@gmail.com
+ * Copyright 2014 toxbee.se
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +14,8 @@ package se.toxbee.sleepfighter.android.component.secondpicker;
  * limitations under the License.
  */
 
-import se.toxbee.sleepfighter.R;
+package se.toxbee.sleepfighter.android.component.secondpicker;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +26,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.TimePicker;
+
+import se.toxbee.sleepfighter.R;
 
 /**
  * A dialog that prompts the user for the time of day using a {@link TimePicker}.

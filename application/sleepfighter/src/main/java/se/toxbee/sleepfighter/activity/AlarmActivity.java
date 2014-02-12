@@ -1,43 +1,20 @@
-/*******************************************************************************
- * Copyright (c) 2013 See AUTHORS file.
- * 
- * This file is part of SleepFighter.
- * 
- * SleepFighter is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * SleepFighter is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+/*
+ * Copyright 2014 toxbee.se
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package se.toxbee.sleepfighter.activity;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.joda.time.DateTime;
-
-import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.android.power.WakeLocker;
-import se.toxbee.sleepfighter.android.utils.DialogUtils;
-import se.toxbee.sleepfighter.app.SFApplication;
-import se.toxbee.sleepfighter.audio.VibrationManager;
-import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
-import se.toxbee.sleepfighter.helper.NotificationHelper;
-import se.toxbee.sleepfighter.model.Alarm;
-import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
-import se.toxbee.sleepfighter.preference.AlarmControlPreferences;
-import se.toxbee.sleepfighter.preference.ChallengeGlobalPreferences;
-import se.toxbee.sleepfighter.service.AlarmPlannerService;
-import se.toxbee.sleepfighter.service.AlarmPlannerService.Command;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -59,6 +36,27 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.joda.time.DateTime;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import se.toxbee.sleepfighter.R;
+import se.toxbee.sleepfighter.android.power.WakeLocker;
+import se.toxbee.sleepfighter.android.utils.DialogUtils;
+import se.toxbee.sleepfighter.app.SFApplication;
+import se.toxbee.sleepfighter.audio.VibrationManager;
+import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
+import se.toxbee.sleepfighter.helper.NotificationHelper;
+import se.toxbee.sleepfighter.model.Alarm;
+import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
+import se.toxbee.sleepfighter.preference.AlarmControlPreferences;
+import se.toxbee.sleepfighter.preference.ChallengeGlobalPreferences;
+import se.toxbee.sleepfighter.service.AlarmPlannerService;
+import se.toxbee.sleepfighter.service.AlarmPlannerService.Command;
+import se.toxbee.sleepfighter.utils.debug.Debug;
+import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 /**
  * The activity for when an alarm rings/occurs.

@@ -1,26 +1,46 @@
-/*******************************************************************************
- * Copyright (c) 2013 See AUTHORS file.
- * 
- * This file is part of SleepFighter.
- * 
- * SleepFighter is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * SleepFighter is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+/*
+ * Copyright 2014 toxbee.se
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.toxbee.sleepfighter.activity;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.mobeta.android.dslv.DragSortListView;
+import com.mobeta.android.dslv.DragSortListView.DropListener;
+
+import net.engio.mbassy.listener.Handler;
 
 import java.util.Arrays;
 
-import net.engio.mbassy.listener.Handler;
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.adapter.AlarmAdapter;
 import se.toxbee.sleepfighter.android.component.dialog.TogglableTitleBar;
@@ -43,26 +63,6 @@ import se.toxbee.sleepfighter.preference.DisplayPreferences;
 import se.toxbee.sleepfighter.receiver.AlarmReceiver;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.text.DateTextUtils;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import com.mobeta.android.dslv.DragSortListView;
-import com.mobeta.android.dslv.DragSortListView.DropListener;
 
 public class MainActivity extends Activity {
 	private static final String EXTRAS_IS_REORDER_MODE = "is_reorder_mode";
