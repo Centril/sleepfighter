@@ -1,6 +1,0 @@
-1.2.1
----------------------
-- Fixed BUG SortChallenge bugs, issues 11, 12, 14
-- Added FEATURE Countdown alarms.
-- Added FEATURE Sorting alarms.
-- (dev) Changed to gradle based build.
