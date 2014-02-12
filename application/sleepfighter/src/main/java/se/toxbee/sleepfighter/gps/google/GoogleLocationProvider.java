@@ -18,6 +18,7 @@
  */
 package se.toxbee.sleepfighter.gps.google;
 
+import android.app.Activity;
 import android.location.Location;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,7 +31,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -43,7 +43,9 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-import se.toxbee.sleepfighter.gps.LocationGUIProvider;
+import se.toxbee.fimpl.annotation.ProvidedImplementation;
+import se.toxbee.sleepfighter.gps.gui.LocationGUIProvider;
+import se.toxbee.sleepfighter.gps.gui.LocationGUIReceiver;
 import se.toxbee.sleepfighter.model.gps.GPSLatLng;
 
 /**
@@ -54,63 +56,58 @@ import se.toxbee.sleepfighter.model.gps.GPSLatLng;
  * @version 1.0
  * @since Jan 8, 2014
  */
-public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickListener, OnMarkerDragListener, OnMarkerClickListener, MapReadyCallback {
+@ProvidedImplementation(of = LocationGUIProvider.class, priority = Integer.MAX_VALUE)
+public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickListener, OnMarkerDragListener, MapReadyCallback {
 	public static final int STROKE_WIDTH = 2;
-
-	public GoogleLocationProvider( LocationGUIReceiver receiver ) {
-		this.receiver = receiver;
-	}
-
-	private final LocationGUIReceiver receiver;
 
 	private GoogleMap googleMap = null;
 	private List<Marker> markers = null;
 	private Polygon poly = null;
 
+	private LocationGUIReceiver receiver;
+
 	@Override
-	public boolean initMap( ViewGroup viewContainer, boolean errorOnFail ) {
-		this.markers = Lists.newArrayList();
-		int status = this.isServiceAvailable();
+	public void bind( LocationGUIReceiver receiver ) {
+		this.receiver = receiver;
+	}
+
+	@Override
+	public boolean isAvailable( boolean allowError ) {
+		Activity activity = this.receiver.getActivity();
+
+		// Google Play Services available?
+		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable( activity );
+
 		if ( status == ConnectionResult.SUCCESS ) {
-			// Google Play Services are available.
-			if ( this.googleMap == null ) {
-				// Make fragment.
-				GoogleMapFragment fragment = new GoogleMapFragment();
-				fragment.setMapCallback( this );
-
-				// Attach it.
-				FragmentManager fragManager = this.receiver.getActivity().getSupportFragmentManager();
-				FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
-				fragmentTransaction.add( viewContainer.getId(), fragment );
-				fragmentTransaction.commit();
-			}
-
 			return true;
-		} else if ( errorOnFail ) {
-			// Google Play Services are not available.
+		}
+
+		if ( allowError ) {
 			int requestCode = 10;
-			GooglePlayServicesUtil.getErrorDialog( status, this.receiver.getActivity(), requestCode ).show();
+			GooglePlayServicesUtil.getErrorDialog( status, activity, requestCode ).show();
 		}
 
 		return false;
 	}
 
-	private int isServiceAvailable() {
-		return GooglePlayServicesUtil.isGooglePlayServicesAvailable( this.receiver.getActivity() );
-	}
-
 	@Override
-	public boolean isAlive() {
-		return this.googleMap != null;
+	public void initMap( ViewGroup viewContainer ) {
+		// Make fragment.
+		GoogleMapFragment fragment = new GoogleMapFragment();
+		fragment.setMapCallback( this );
+
+		// Attach it.
+		FragmentManager fragManager = this.receiver.getActivity().getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragManager.beginTransaction();
+		fragmentTransaction.add( viewContainer.getId(), fragment );
+		fragmentTransaction.commit();
 	}
 
 	@Override
 	public void onMapReady( GoogleMap map ) {
 		this.googleMap = map;
 
-		if ( !this.isAlive() ) {
-			return;
-		}
+		this.markers = Lists.newArrayList();
 
 		this.configMap();
 
@@ -127,7 +124,17 @@ public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickLi
 		// Bind events for markers.
 		this.googleMap.setOnMapClickListener( this );
 		this.googleMap.setOnMarkerDragListener( this );
-		this.googleMap.setOnMarkerClickListener( this );
+
+		// Setup polygon.
+		PolygonOptions options = new PolygonOptions()
+			.add( new LatLng( 0, 0 ) ) // dummy point.
+			.visible( false )
+			.geodesic( true )
+			.fillColor( this.receiver.getPolygonFillColor() )
+			.strokeColor( this.receiver.getPolygonStrokeColor() )
+			.strokeWidth( STROKE_WIDTH );
+
+		this.poly = this.googleMap.addPolygon( options );
 	}
 
 	@Override
@@ -139,25 +146,7 @@ public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickLi
 		return !this.markers.isEmpty();
 	}
 
-	@Override
-	public List<GPSLatLng> getPoints() {
-		List<GPSLatLng> points = Lists.newArrayListWithCapacity( this.markers.size() );
-		for ( Marker marker : this.markers ) {
-			points.add( this.fromLocation( marker.getPosition() ) );
-		}
-
-		return points;
-	}
-
-	private GPSLatLng fromLocation( LatLng loc ) {
-		return new GPSLatLng( loc.latitude, loc.longitude );
-	}
-
 	public void addPoint( GPSLatLng loc ) {
-		if ( !this.isAlive() ) {
-			return;
-		}
-
 		LatLng pos = this.convertLocation( loc );
 		MarkerOptions options = new MarkerOptions().flat( true ).draggable( true ).position( pos );
 		this.markers.add( this.googleMap.addMarker( options ) );
@@ -175,6 +164,10 @@ public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickLi
 		this.markers.clear();
 	}
 
+	private GPSLatLng convertLocation( LatLng loc ) {
+		return new GPSLatLng( loc.latitude, loc.longitude );
+	}
+
 	private LatLng convertLocation( Location loc ) {
 		return new LatLng( loc.getLatitude(), loc.getLongitude() );
 	}
@@ -184,38 +177,21 @@ public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickLi
 	}
 
 	public void updateGuiPolygon() {
-		if ( !this.isAlive() ) {
-			return;
+		boolean isPoly = this.satisfiesPolygon();
+		if ( isPoly ) {
+			List<LatLng> points = Lists.newArrayListWithCapacity( this.markers.size() );
+			for ( Marker marker : this.markers ) {
+				points.add( marker.getPosition() );
+			}
+
+			this.poly.setPoints( points );
 		}
 
-		if ( this.poly != null ) {
-			this.poly.remove();
-		}
-
-		// A polygon is at minimum a triangle.
-		if ( !this.satisfiesPolygon() ) {
-			return;
-		}
-
-		PolygonOptions options = new PolygonOptions();
-		options.geodesic( true )
-		       .strokeWidth( STROKE_WIDTH )
-		       .fillColor( this.receiver.getPolygonFillColor() )
-		       .strokeColor( this.receiver.getPolygonStrokeColor() );
-
-		for ( Marker marker : this.markers ) {
-			options.add( marker.getPosition() );
-		}
-
-		this.poly = this.googleMap.addPolygon( options );
+		this.poly.setVisible( isPoly );
 	}
 
 	@Override
 	public void initCameraToPolygon() {
-		if ( !this.isAlive() ) {
-			return;
-		}
-
 		// Add listener that moves camera so that all markers are in users view.
 		this.googleMap.setOnCameraChangeListener( new OnCameraChangeListener() {
 			@Override
@@ -241,7 +217,7 @@ public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickLi
 			return;
 		}
 
-		final LatLngBounds.Builder builder = LatLngBounds.builder();
+		LatLngBounds.Builder builder = LatLngBounds.builder();
 		for ( Marker marker : this.markers ) {
 			builder.include( marker.getPosition() );
 		}
@@ -251,10 +227,6 @@ public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickLi
 	}
 
 	private void moveCamera( CameraUpdate update, boolean animate ) {
-		if ( !this.isAlive() ) {
-			return;
-		}
-
 		if ( animate ) {
 			this.googleMap.animateCamera( update );
 		} else {
@@ -264,26 +236,21 @@ public class GoogleLocationProvider implements LocationGUIProvider, OnMapClickLi
 
 	@Override
 	public void onMapClick( LatLng latLng ) {
-		this.receiver.onMapClick( this.fromLocation( latLng ) );
+		this.receiver.onMapClick( this.convertLocation( latLng ) );
 	}
 
 	@Override
 	public void onMarkerDrag( Marker marker ) {
-		this.receiver.onMarkerDrag( this.fromLocation( marker.getPosition() ) );
+		this.receiver.onMarkerDrag( this.convertLocation( marker.getPosition() ) );
 	}
 
 	@Override
 	public void onMarkerDragEnd( Marker marker ) {
-		this.receiver.onMarkerDragEnd( this.markers.indexOf( marker ), this.fromLocation( marker.getPosition() ) );
+		this.receiver.onMarkerDragEnd( this.markers.indexOf( marker ), this.convertLocation( marker.getPosition() ) );
 	}
 
 	@Override
 	public void onMarkerDragStart( Marker marker ) {
-		this.receiver.onMarkerDragStart( this.fromLocation( marker.getPosition() ) );
-	}
-
-	@Override
-	public boolean onMarkerClick( final Marker marker ) {
-		return this.receiver.onMarkerClick( this.fromLocation( marker.getPosition() ) );
+		this.receiver.onMarkerDragStart( this.convertLocation( marker.getPosition() ) );
 	}
 }
