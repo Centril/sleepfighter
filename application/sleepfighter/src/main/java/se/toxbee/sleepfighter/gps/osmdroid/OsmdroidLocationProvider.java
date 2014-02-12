@@ -42,6 +42,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.toxbee.fimpl.annotation.ProvidedImplementation;
 import se.toxbee.sleepfighter.gps.gui.LocationGUIProvider;
 import se.toxbee.sleepfighter.gps.gui.LocationGUIReceiver;
 import se.toxbee.sleepfighter.gps.osmdroid.DraggableMarkerList.MarkerDragListener;
@@ -56,20 +57,22 @@ import se.toxbee.sleepfighter.model.gps.GPSLatLng;
  * @version 1.0
  * @since Jan 8, 2014
  */
+@ProvidedImplementation(of = LocationGUIProvider.class)
 public class OsmdroidLocationProvider implements LocationGUIProvider, MapEventsReceiver, MarkerDragListener<OverlayItem> {
 	public static final int STROKE_WIDTH = 2;
-
-	public OsmdroidLocationProvider( LocationGUIReceiver receiver ) {
-		this.receiver = receiver;
-	}
-
-	private final LocationGUIReceiver receiver;
 
 	private OsmdroidMapView mapView;
 	private DraggableMarkerList<OverlayItem> markers;
 	private FolderOverlay polygons;
 
 	private android.os.Handler handler;
+
+	private LocationGUIReceiver receiver;
+
+	@Override
+	public void bind( LocationGUIReceiver receiver ) {
+		this.receiver = receiver;
+	}
 
 	@Override
 	public boolean isAvailable( boolean allowError ) {
