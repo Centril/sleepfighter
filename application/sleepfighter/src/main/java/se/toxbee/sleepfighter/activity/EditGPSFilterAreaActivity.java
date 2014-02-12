@@ -66,7 +66,6 @@ import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
 import se.toxbee.sleepfighter.model.gps.GPSFilterAreaSet;
 import se.toxbee.sleepfighter.model.gps.GPSFilterMode;
 import se.toxbee.sleepfighter.model.gps.GPSLatLng;
-import se.toxbee.sleepfighter.preference.AppPreferenceManager;
 
 /**
  * EditGPSFilterAreaActivity is the activity for editing an GPSFilterArea.
@@ -405,8 +404,7 @@ public class EditGPSFilterAreaActivity extends FragmentActivity implements OnMap
 	private void setupMap() {
 		ViewGroup viewContainer = (ViewGroup) this.findViewById( R.id.edit_gpsfilter_area_mapcontainer );
 
-		AppPreferenceManager prefs = SFApplication.get().getPrefs();
-		LocationGUIProviderFactory factory = new LocationGUIProviderFactory( prefs, this, this.area, this );
+		LocationGUIProviderFactory factory = new LocationGUIProviderFactory( this, this.area, this );
 		LocationGUIProvider provider = factory.produce( null );
 
 		this.mapHandler = factory.getHandler();

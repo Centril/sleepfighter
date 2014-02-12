@@ -21,10 +21,10 @@ dependencies {
 	compile 'org.apache.commons:commons-math3:+' // was 3.2
 
 	// osmdroid
-	compile 'org.osmdroid:osmdroid-android:4.0'
+	compile 'org.osmdroid:osmdroid-android:4.1'
 	compile 'org.slf4j:slf4j-android:1.6.1-RC1'
 	compile 'org.osmdroid:bonuspack:4.0.0-SNAPSHOT'
 
-	provided 'se.toxbee.fimpl:fimpl-annotate:0.1'
-	compile 'se.toxbee.fimpl:fimpl-metainf:0.1'
+	provided 'se.toxbee.fimpl:fimpl-annotate:0.2.0'
+	compile 'se.toxbee.fimpl:fimpl-metainf:0.2.0'
 }

@@ -38,6 +38,13 @@ public interface LocationGUIProvider {
 	 */
 
 	/**
+	 * Binds the receiver to the provider.
+	 *
+	 * @param receiver the receiver to bind.
+	 */
+	public void bind( LocationGUIReceiver receiver );
+
+	/**
 	 * Returns whether or not the provider is available.
 	 *
 	 * @param allowError if unavailable, and allowError is true,
