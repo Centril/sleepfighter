@@ -1,21 +1,19 @@
-/*******************************************************************************
- * Copyright (c) 2013 See AUTHORS file.
- * 
- * This file is part of SleepFighter.
- * 
- * SleepFighter is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * SleepFighter is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+/*
+ * Copyright 2014 toxbee.se
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package se.toxbee.sleepfighter.model;
 
 import java.util.Arrays;
@@ -211,7 +209,7 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	@DatabaseField
 	private int unnamedPlacement;
 
-	/** The value for unnamed strings is {@value #UNNAMED} */
+	/** The value for unnamed strings is {@value null} */
 	public static final String UNNAMED = null;
 
 	/** Whether this alarm is the preset alarm (the default alarm). */
@@ -226,7 +224,7 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	 * --------------------------------
 	 */
 
-	/** The value {@link #getNextMillis()} returns when Alarm can't happen. */
+	/** The value {@link #getNextMillis(long)} returns when Alarm can't happen. */
 	public static final Long NEXT_NON_REAL = null;
 
 	@DatabaseField
@@ -488,7 +486,7 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	/**
 	 * Returns the unnamed placement.<br/>
 	 * The unnamed placement is a number that is set for Alarms that honor {@link #isUnnamed()}.<br/>
-	 * It is a leaping number that is set upon addition to {@link AlarmList#add(int, Alarm)}.
+	 * It is a leaping number that is set upon addition to {@link AlarmList#add(Object)}.
 	 *
 	 * Let us assume that we have 3 alarms which all start out as unnamed.
 	 * Their placements will be 1,2,3,4.
@@ -606,7 +604,7 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	 * @return the time in unix epoch timestamp when alarm will next ring.
 	 */
 	public synchronized Long getNextMillis( long now ) {
-		return this.canHappen() ? Long.valueOf( this.getTime().scheduledTimestamp( now, this.enabledDays ) ) : NEXT_NON_REAL;
+		return this.canHappen() ? Long.valueOf( this.getTime().scheduledTimestamp( now, (Object) this.enabledDays ) ) : NEXT_NON_REAL;
 	}
 
 	/**
@@ -907,7 +905,7 @@ public class Alarm implements IdProvider, MessageBusHolder, Comparable<Alarm> {
 	 *
 	 * <p>Sets the {@link SnoozeConfig}, bypassing any and all checks, and does not send any event to bus.</p>
 	 *
-	 * @param source the {@link SnoozeConfig} to set.
+	 * @param config the {@link SnoozeConfig} to set.
 	 */
 	public void setFetched(SnoozeConfig config) {
 		this.snoozeConfig = config;
