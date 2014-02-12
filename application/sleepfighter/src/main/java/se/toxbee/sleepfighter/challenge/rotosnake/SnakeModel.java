@@ -1,21 +1,18 @@
-/*******************************************************************************
- * Copyright (c) 2013 See AUTHORS file.
- * 
- * This file is part of SleepFighter.
- * 
- * SleepFighter is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * SleepFighter is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with SleepFighter. If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
+/*
+ * Copyright 2014 toxbee.se
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package se.toxbee.sleepfighter.challenge.rotosnake;
 
@@ -100,11 +97,11 @@ public class SnakeModel {
 
 	/**
 	 * Returns an immutable view of the list of empty positions.
-	 * 
+	 *
 	 * @return List of empty positions.
 	 */
 	public List<Position> getEmptyPositions() {
-		return Collections.unmodifiableList(this.emptyPos);
+		return Collections.unmodifiableList( this.emptyPos );
 	}
 
 	/**
@@ -141,7 +138,6 @@ public class SnakeModel {
 	 *            Random Number Generator.
 	 */
 	public SnakeModel(Dimension size, Direction startDirection, Random rng) {
-
 		// Init RNG.
 		this.rng = rng;
 
@@ -204,8 +200,7 @@ public class SnakeModel {
 	/**
 	 * Update the direction of the snake.
 	 * 
-	 * @param The
-	 *            wanted direction.
+	 * @param newDirection The new wanted direction.
 	 */
 	public void updateDirection(Direction newDirection) {
 		// Don't change direction if it is opposite to current one or if it is
@@ -300,8 +295,8 @@ public class SnakeModel {
 	}
 
 	/**
-	 * @param newHeadPos
-	 * @param otherPos
+	 * @param newHeadPos the new position of the head.
+	 * @param otherPos the other position to check against head.
 	 * @return true if Snake (newHeadPos) collides with another object
 	 *         (typically fruit) occupying otherPos
 	 */
