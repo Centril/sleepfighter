@@ -37,8 +37,8 @@
     </plurals>
 
     <!-- Challenges -->
-    <string name="btn_complete">Lyckas!</string>
-    <string name="btn_fail">Misslyckas!</string>
+   <!-- <string name="btn_complete">Lyckas!</string> -->
+   <!-- <string name="btn_fail">Misslyckas!</string> -->
     <string name="start_challenge">Avsluta galenskapen!</string>
     <string name="challenge_points">Utmaningspoäng</string>
     <string name="challenge_toggle_content_desc">Sätt på/av utmaningar</string>

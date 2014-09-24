@@ -27,7 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 * @version 1.0
 * @since Jan, 08, 2014
 */
-final class GoogleMapFragment extends SupportMapFragment {
+public final class GoogleMapFragment extends SupportMapFragment {
 	private MapReadyCallback callback;
 
 	public void setMapCallback( MapReadyCallback callback ) {

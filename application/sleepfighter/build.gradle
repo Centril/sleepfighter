@@ -56,3 +56,6 @@ apply from: 'buildtypes.gradle'
 
 // Fix META-INF stuff.
 apply from: 'metainf-fix.gradle'
+
+// Lint settings.
+apply from: 'lint.gradle'
