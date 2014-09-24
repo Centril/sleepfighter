@@ -3,6 +3,9 @@
 
 -verbose
 
+# For now:
+-keep class se.toxbee.** { *; }
+
 # OBFUSCATION: FOSS = NONO.
 -dontobfuscate
 
@@ -50,6 +53,8 @@
 }
 
 # KEEP: R class.
+-keepattributes InnerClasses
+-keep class **.R
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
