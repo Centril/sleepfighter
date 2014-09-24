@@ -18,6 +18,8 @@ package se.toxbee.commons.message;
 
 import net.engio.mbassy.bus.MBassador;
 import net.engio.mbassy.bus.config.BusConfiguration;
+import net.engio.mbassy.bus.config.Feature;
+import net.engio.mbassy.bus.config.IBusConfiguration;
 
 /**
  * The message bus for handling events.
@@ -29,11 +31,19 @@ import net.engio.mbassy.bus.config.BusConfiguration;
 public class MessageBus<T extends Message> extends MBassador<T> {
 	private static final String TAG = MessageBus.class.getSimpleName();
 
+	private static IBusConfiguration makeConfig() {
+		return new BusConfiguration()
+				.addFeature( Feature.SyncPubSub.Default() )
+				.addFeature( Feature.AsynchronousHandlerInvocation.Default() )
+				.addFeature( Feature.AsynchronousMessageDispatch.Default() );
+	}
+
 	/**
 	 * Constructs bus with default bus config.
 	 */
 	public MessageBus() {
-		this( BusConfiguration.Default() );
+		this( makeConfig() );
+
 	}
 
 	/**
@@ -41,7 +51,7 @@ public class MessageBus<T extends Message> extends MBassador<T> {
 	 *
 	 * @param config the bus config.
 	 */
-	public MessageBus( BusConfiguration config ) {
+	public MessageBus( IBusConfiguration config ) {
 		super( config );
 	}
 

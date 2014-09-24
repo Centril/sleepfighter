@@ -18,8 +18,8 @@ package se.toxbee.sleepfighter.app;
 
 import android.util.Log;
 
-import net.engio.mbassy.IPublicationErrorHandler;
-import net.engio.mbassy.PublicationError;
+import net.engio.mbassy.bus.error.IPublicationErrorHandler;
+import net.engio.mbassy.bus.error.PublicationError;
 
 /**
  * Forwards exceptions gotten during publish to logcat.

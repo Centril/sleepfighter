@@ -27,6 +27,6 @@ android {
 
 	// Suffix all build types with type except for release, allowing parallel installs.
 	buildTypes.each{ type ->
-		type.packageNameSuffix = type.name == 'release' ? '' : ".$type.name"
+		type.applicationIdSuffix = type.name == 'release' ? '' : ".$type.name"
 	}
 }

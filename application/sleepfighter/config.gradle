@@ -1,0 +1,8 @@
+ext.config = [
+	versionCode: 8,
+	versionName: "2.0",
+
+	minSDK: 			9,		// GINGERBREAD	= 2.3
+	targetSDK: 			20,		// KITKAT_WATCH	= 4.4W / 4.4L
+	buildToolsVersion: "20.0.0"	// Latest is 20.0.0
+]

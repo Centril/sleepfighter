@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
+apply plugin: 'android-sdk-manager'
 apply plugin: 'android'
 apply plugin: 'idea'
 
-// Config:
-def getVersionCode() { 8 }
-def getMinSdk() { 9 }
-def getTargetSdk() { 19 }
+apply from: 'config.gradle'
 
 // Generate BuildTimestamp.java.
 apply from: 'timestamp.gradle'
@@ -32,14 +30,15 @@ apply from: 'dependencies.gradle'
 apply from: 'signing.gradle'
 
 android {
-	buildToolsVersion "19.0.1"
+	buildToolsVersion config.buildToolsVersion
 
 	// Override manifest stuff.
-    compileSdkVersion getTargetSdk()
+    compileSdkVersion config.targetSDK
     defaultConfig {
-        minSdkVersion getMinSdk()
-        targetSdkVersion getTargetSdk()
-	    versionCode getVersionCode()
+        minSdkVersion config.minSDK
+        targetSdkVersion config.targetSDK
+	    versionCode config.versionCode
+	    versionName config.versionName
     }
 
 	// Using Java 7, but no try-with-resources.
