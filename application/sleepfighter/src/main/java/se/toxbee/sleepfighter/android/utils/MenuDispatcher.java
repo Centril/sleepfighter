@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import se.toxbee.sleepfighter.utils.collect.ReflectiveIdDispatcher;
+import se.toxbee.commons.collect.ReflectiveIdDispatcher;
 
 /**
  * {@link MenuDispatcher} is a simple utility for quick menu inflating and dispatching.

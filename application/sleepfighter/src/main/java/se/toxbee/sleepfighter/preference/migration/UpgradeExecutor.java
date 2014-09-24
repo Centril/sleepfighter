@@ -21,10 +21,10 @@ import android.util.Log;
 
 import se.toxbee.sleepfighter.android.utils.ContextUtils;
 import se.toxbee.sleepfighter.preference.AppPreferenceManager;
-import se.toxbee.sleepfighter.utils.migration.IMigrationException;
-import se.toxbee.sleepfighter.utils.migration.IMigrationExecutor;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode.PreferenceEditCallback;
+import se.toxbee.commons.migration.IMigrationException;
+import se.toxbee.commons.migration.IMigrationExecutor;
+import se.toxbee.commons.prefs.PreferenceNode;
+import se.toxbee.commons.prefs.PreferenceNode.PreferenceEditCallback;
 
 /**
  * {@link UpgradeExecutor} runs upgrades for the entire app.

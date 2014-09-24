@@ -18,7 +18,7 @@ package se.toxbee.sleepfighter.audio.playlist;
 
 import java.util.List;
 
-import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.commons.model.IdProvider;
 import android.content.Context;
 import android.net.Uri;
 

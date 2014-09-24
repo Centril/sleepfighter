@@ -16,8 +16,8 @@
 
 package se.toxbee.sleepfighter.model.time;
 
-import se.toxbee.sleepfighter.utils.model.Refreshable;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
+import se.toxbee.commons.model.Refreshable;
+import se.toxbee.commons.string.StringUtils;
 
 import com.google.common.collect.ComparisonChain;
 

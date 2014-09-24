@@ -26,7 +26,7 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeConfig;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
 import se.toxbee.sleepfighter.model.time.ExactTime;
-import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
+import se.toxbee.commons.collect.PrimitiveArrays;
 
 /**
  * PresetAlarmFactory is responsible for creating our preset.<br/>

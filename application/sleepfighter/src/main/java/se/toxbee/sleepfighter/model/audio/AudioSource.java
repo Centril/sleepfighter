@@ -19,7 +19,7 @@ package se.toxbee.sleepfighter.model.audio;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.commons.model.IdProvider;
 
 /**
  * <p>AudioSource is the model for knowing where to look for audio and with what to read it and get metadata</p>

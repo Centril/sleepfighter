@@ -23,7 +23,7 @@ import com.google.common.collect.Maps;
 import java.util.Locale;
 import java.util.Map;
 
-import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
+import se.toxbee.commons.model.LocalizationProvider;
 
 /**
  * SFLocalizationProvider is the LocalizationProvider for SFApplication.

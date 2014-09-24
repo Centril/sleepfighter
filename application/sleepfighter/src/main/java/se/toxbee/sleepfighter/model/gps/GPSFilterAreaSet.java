@@ -19,7 +19,7 @@ package se.toxbee.sleepfighter.model.gps;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.toxbee.sleepfighter.utils.collect.IdObservableList;
+import se.toxbee.commons.collect.IdObservableList;
 
 /**
  * GPSFilterAreaSet defines a set of GPSFilterArea:s that an alarm has.<br/>

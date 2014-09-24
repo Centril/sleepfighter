@@ -31,12 +31,12 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Map;
 
-import se.toxbee.sleepfighter.utils.prefs.BasePreferenceManager;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceManager;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
+import se.toxbee.commons.prefs.BasePreferenceManager;
+import se.toxbee.commons.prefs.PreferenceManager;
+import se.toxbee.commons.prefs.PreferenceNode;
 
 /**
- * {@link SharedPreferenceNode} is an adapter for {@link SharedPreferences}.
+ * {@link SharedPreferenceManager} is an adapter for {@link SharedPreferences}.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
  * @version 1.0

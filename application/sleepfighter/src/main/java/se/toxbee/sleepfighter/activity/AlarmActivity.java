@@ -42,6 +42,7 @@ import org.joda.time.DateTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import se.toxbee.commons.string.StringUtils;
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.android.power.WakeLocker;
 import se.toxbee.sleepfighter.android.utils.DialogUtils;
@@ -55,8 +56,6 @@ import se.toxbee.sleepfighter.preference.AlarmControlPreferences;
 import se.toxbee.sleepfighter.preference.ChallengeGlobalPreferences;
 import se.toxbee.sleepfighter.service.AlarmPlannerService;
 import se.toxbee.sleepfighter.service.AlarmPlannerService.Command;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 /**
  * The activity for when an alarm rings/occurs.
@@ -67,6 +66,7 @@ import se.toxbee.sleepfighter.utils.string.StringUtils;
  * @since Sep 20, 2013
  */
 public class AlarmActivity extends Activity {
+	private static final String TAG = AlarmActivity.class.getSimpleName();
 
 	public static final String EXTRA_ALARM_ID = "alarm_id";
 
@@ -342,7 +342,7 @@ public class AlarmActivity extends Activity {
 		// Check if result is from a challenge
 		if (requestCode == CHALLENGE_REQUEST_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
-				Debug.d("done with challenge");
+				Log.d( TAG, "done with challenge" );
 
 				// If completed, stop the alarm
 				stopAlarm();

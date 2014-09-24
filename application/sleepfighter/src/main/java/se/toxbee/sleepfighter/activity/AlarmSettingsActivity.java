@@ -32,6 +32,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,7 +75,6 @@ import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
 import se.toxbee.sleepfighter.text.DateTextUtils;
-import se.toxbee.sleepfighter.utils.debug.Debug;
 
 /**
  * Contains preferences for specific alarms.
@@ -82,6 +82,8 @@ import se.toxbee.sleepfighter.utils.debug.Debug;
  * @author Hassel
  */
 public class AlarmSettingsActivity extends PreferenceActivity {
+	private static final String TAG = AlarmSettingsActivity.class.getSimpleName();
+
 	public static final String EXTRA_ALARM_IS_NEW = "alarm_is_new";
 
 	private static final String NAME = "pref_alarm_name";
@@ -416,7 +418,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 		findPreference(SPEECH_SAMPLE).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
-				Debug.d("speech sample here");
+				Log.d( TAG, "speech sample here" );
 			
 				TextToSpeech tts = SFApplication.get().getTts();
 				
@@ -424,7 +426,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 				
 				
 				String s = new SpeechLocalizer(tts, AlarmSettingsActivity.this).getSpeech("Dry and mostly cloudy");
-				Debug.d("s: " + s);
+				Log.d( TAG, "s: " + s);
 				TextToSpeechUtil.speakAlarm(tts, s);				
 				return true;
 			}
@@ -496,7 +498,7 @@ public class AlarmSettingsActivity extends PreferenceActivity {
 
 	@Handler
 	public void handleAudioChange( AudioChangeEvent evt ) {
-		Debug.d("handle audio change");
+		Log.d( TAG, "handle audio change");
 		if ( evt.getModifiedField() == Field.AUDIO_SOURCE ) {
 			this.updateRingerSummary();
 		}

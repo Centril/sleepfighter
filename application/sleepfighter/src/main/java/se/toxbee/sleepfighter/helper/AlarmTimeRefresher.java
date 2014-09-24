@@ -23,8 +23,8 @@ import java.util.TimerTask;
 
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmList;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
+import se.toxbee.commons.message.Message;
+import se.toxbee.commons.message.MessageBus;
 
 /**
  * AlarmTimeRefresher has the responsibility of asynchronously refreshing all alarms.

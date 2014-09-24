@@ -17,7 +17,7 @@
 package se.toxbee.sleepfighter.preference;
 
 import se.toxbee.sleepfighter.model.SortMode;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
+import se.toxbee.commons.prefs.PreferenceNode;
 
 /**
  * {@link DisplayPreferences} carries preferences for display, style, theme related things.

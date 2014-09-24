@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.commons.model.IdProvider;
 
 /**
  * ChallengeConfig models what challenge to produce, and with what settings.

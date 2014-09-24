@@ -19,9 +19,9 @@ package se.toxbee.sleepfighter.challenge.sort;
 import java.util.BitSet;
 import java.util.Random;
 
-import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
-import se.toxbee.sleepfighter.utils.math.IntMath;
-import se.toxbee.sleepfighter.utils.math.RandomMath;
+import se.toxbee.commons.collect.PrimitiveArrays;
+import se.toxbee.commons.math.IntMath;
+import se.toxbee.commons.math.RandomMath;
 
 /**
  * ClusteredGaussianListGenerator is an implementation of NumberListGenerator

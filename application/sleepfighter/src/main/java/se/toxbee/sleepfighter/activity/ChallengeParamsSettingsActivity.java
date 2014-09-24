@@ -39,7 +39,7 @@ import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
+import se.toxbee.commons.string.StringUtils;
 
 /**
  * ChallengeParamsSettingsActivity is the activity for configuring the parameters/settings for one ChallengeType.

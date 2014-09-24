@@ -16,7 +16,7 @@
 
 package se.toxbee.sleepfighter.preference;
 
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
+import se.toxbee.commons.prefs.PreferenceNode;
 
 /**
  * {@link LocationFilterPreferences} handles location-filter specific preferences.

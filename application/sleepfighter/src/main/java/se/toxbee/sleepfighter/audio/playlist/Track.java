@@ -19,7 +19,7 @@ package se.toxbee.sleepfighter.audio.playlist;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.commons.model.IdProvider;
 
 /**
  * Track models a track in a Playlist.

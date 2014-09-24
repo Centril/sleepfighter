@@ -18,8 +18,7 @@ package se.toxbee.sleepfighter.audio;
 
 import android.content.Context;
 import android.os.Vibrator;
-
-import se.toxbee.sleepfighter.utils.debug.Debug;
+import android.util.Log;
 
 /**
  * Responsible for making the device vibrate when the alarm goes off. 
@@ -27,8 +26,10 @@ import se.toxbee.sleepfighter.utils.debug.Debug;
 public enum VibrationManager {
 	INSTANCE;
 
+	private static final String TAG = VibrationManager.class.getSimpleName();
+
 	private static final long[] PATTERN = { 0, 1000, 1000 };
-	private boolean startedVibration = false; 
+	private boolean startedVibration = false;
 	
 	public static VibrationManager getInstance() {
 		return INSTANCE;
@@ -46,7 +47,7 @@ public enum VibrationManager {
 			vib.vibrate( PATTERN, 0 );
 			this.startedVibration = true;
 		} catch ( Exception e ) {
-			Debug.e( e );
+			Log.e( TAG, e.toString() );
 		}
 	}
 
@@ -61,7 +62,7 @@ public enum VibrationManager {
 			vib.cancel();
 			this.startedVibration = false;
 		} catch ( Exception e ) {
-			Debug.e( e );
+			Log.e( TAG, e.toString() );
 		}
 	}
 

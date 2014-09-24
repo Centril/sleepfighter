@@ -23,22 +23,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import se.toxbee.sleepfighter.android.power.WakeLocker;
 import se.toxbee.sleepfighter.service.LocationFetcherService;
-import se.toxbee.sleepfighter.utils.debug.Debug;
 
 /**
  * 10 seconds before an alarm goes off onReceiver is called for this class.
  * In onReceive() LocationService is started, which fetches the current location and the weather of that location. 
  */
 public class LocationReceiver extends BroadcastReceiver {
+	private static final String TAG = LocationReceiver.class.getSimpleName();
 
 	private static final int SECOND_TO_MS_FACTOR = 1000;
-	
+
 	private Context context;
 
 	/**
@@ -50,11 +51,11 @@ public class LocationReceiver extends BroadcastReceiver {
 		if (status != ConnectionResult.SUCCESS) {
 			// Google Play Services are not available.
 			int requestCode = 10;
-			Debug.d("google play not available: " + requestCode);
+			Log.d( TAG, "google play not available: " + requestCode );
 			/*GooglePlayServicesUtil.getErrorDialog(status, this, requestCode)
 					.show();*/
 		} else {
-			Debug.d("google maps is setup");
+			Log.d( TAG, "google maps is setup");
 			// google map is availabel
 		}
 	}
@@ -72,7 +73,7 @@ public class LocationReceiver extends BroadcastReceiver {
 		Intent serviceIntent = new Intent(context,LocationFetcherService.class);
 		this.context.startService(serviceIntent);
 
-		Debug.d("receive location receiver");
+		Log.d( TAG, "receive location receiver");
 	}
 
 
@@ -83,8 +84,7 @@ public class LocationReceiver extends BroadcastReceiver {
 	 * @param alarmTime the time of earliest alarm in Unix time.
 	 */
 	public static void scheduleFix( Context context, long alarmTime ) {
-		
-		Debug.d("schedule fix location receiver");
+		Log.d( TAG, "schedule fix location receiver");
 
 		long unixTime = alarmTime - 10 * SECOND_TO_MS_FACTOR;
 

@@ -24,10 +24,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import se.toxbee.sleepfighter.utils.geom.Dimension;
-import se.toxbee.sleepfighter.utils.geom.Direction;
-import se.toxbee.sleepfighter.utils.geom.FinalPosition;
-import se.toxbee.sleepfighter.utils.geom.Position;
+import se.toxbee.commons.geom.Dimension;
+import se.toxbee.commons.geom.Direction;
+import se.toxbee.commons.geom.FinalPosition;
+import se.toxbee.commons.geom.Position;
 
 /**
  * Snake game. Original author Mazdak, modified by Laszlo for SleepFighter.

@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -34,14 +35,13 @@ import android.widget.TextView.OnEditorActionListener;
 
 import java.util.Random;
 
+import se.toxbee.commons.math.RandomMath;
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.android.component.web.CustomWebView;
 import se.toxbee.sleepfighter.challenge.BaseChallenge;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.math.RandomMath;
 
 /**
  * A Class for randomly generating simple arithmetic challenges.
@@ -49,6 +49,8 @@ import se.toxbee.sleepfighter.utils.math.RandomMath;
  * @author Laszlo Sall Vesselenyi, Danny Lam, Johan Hasselqvist, Eric Arnebäck
  */
 public class MathChallenge extends BaseChallenge {
+	private static final String TAG = MathChallenge.class.getSimpleName();
+
 	/**
 	 * PrototypeDefinition for MathChallenge.
 	 *
@@ -104,7 +106,7 @@ public class MathChallenge extends BaseChallenge {
 	public void start(final Activity activity, ChallengeResolvedParams params) {
 	
 		boolean hardProblems =  getHardProblemsSetting(params);
-		Debug.d("hard problems: " +hardProblems);
+		Log.d( TAG, "hard problems: " + hardProblems );
 
 		if(!hardProblems) {
 			this.problemType = ProblemType.simple;
@@ -179,8 +181,7 @@ public class MathChallenge extends BaseChallenge {
 		
 		w.setWebViewClient(new WebViewClient() {
 			public void onPageFinished(WebView view, String url) {
-
-				Debug.d("page finished");
+				Log.d( TAG, "page finished");
 				
 				EditText t = (EditText)MathChallenge.this.activity().findViewById(R.id.answerField);
 				t.requestFocus();
@@ -190,7 +191,7 @@ public class MathChallenge extends BaseChallenge {
 				// For the harder math problems, the keyboard takes up too much space
 				//  and gets in the way. 
 				if(problemType == ProblemType.simple) {
-					Debug.d("show keyboard");
+					Log.d( TAG, "show keyboard");
 					InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 				}
@@ -259,8 +260,8 @@ public class MathChallenge extends BaseChallenge {
 		try {
 			int guess = Integer.parseInt(editText.getText().toString());
 			int solution = this.problemSolution;
-			Debug.d(guess + "");
-			Debug.d(solution + "");
+			Log.d( TAG, guess + "");
+			Log.d( TAG, solution + "");
 			
 			if (guess == solution) {
 				complete();

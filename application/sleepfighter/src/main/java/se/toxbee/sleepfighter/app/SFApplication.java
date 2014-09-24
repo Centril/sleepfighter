@@ -20,11 +20,15 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import se.toxbee.commons.message.Message;
+import se.toxbee.commons.message.MessageBus;
+import se.toxbee.commons.model.LocalizationProvider;
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.android.preference.SharedPreferenceManager;
 import se.toxbee.sleepfighter.android.utils.ActivityUtils;
@@ -41,15 +45,13 @@ import se.toxbee.sleepfighter.persist.PersistenceManager;
 import se.toxbee.sleepfighter.preference.AppPreferenceManager;
 import se.toxbee.sleepfighter.preference.migration.UpgradeExecutor;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
-import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
 
 /**
  * A custom implementation of Application for SleepFighter.
  */
 public class SFApplication extends Application implements LocalizationProvider, TextToSpeech.OnInitListener {
+	private static final String TAG = SFApplication.class.getSimpleName();
+
 	private static final boolean CLEAN_START = false;
 	public static final boolean DEBUG = true;
 
@@ -76,7 +78,8 @@ public class SFApplication extends Application implements LocalizationProvider, 
 	// called when the text to speech engine is initialized. 
 	@Override
 	public void onInit(int status) {
-		Debug.d("on init tts");
+		Log.d( TAG, "on init tts" );
+
 		tts.setLanguage(TextToSpeechUtil.getBestLanguage(tts, this));
 		TextToSpeechUtil.config(tts);
 	}
@@ -202,7 +205,8 @@ public class SFApplication extends Application implements LocalizationProvider, 
 	 */
 	public synchronized MessageBus<Message> getBus() {
 		if ( this.bus == null ) {
-			this.bus = new MessageBus<Message>();
+			this.bus = new MessageBus<>();
+			this.bus.addErrorHandler( new LogcatErrorHandler() );
 		}
 		return bus;
 	}

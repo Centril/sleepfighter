@@ -19,7 +19,7 @@ package se.toxbee.sleepfighter.challenge;
 import android.app.Activity;
 import android.os.Bundle;
 
-import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
+import se.toxbee.commons.message.MessageBusHolder;
 
 /**
  * Interface implemented by challenges.

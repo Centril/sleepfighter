@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnUtteranceCompletedListener;
+import android.util.Log;
 
 import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.activity.AlarmActivity;
@@ -38,7 +39,6 @@ import se.toxbee.sleepfighter.preference.WeatherPreferences;
 import se.toxbee.sleepfighter.service.FadeVolumeService;
 import se.toxbee.sleepfighter.speech.SpeechLocalizer;
 import se.toxbee.sleepfighter.speech.TextToSpeechUtil;
-import se.toxbee.sleepfighter.utils.debug.Debug;
 
 /**
  * <p>AlarmReceiver is responsible for receiving broadcasts<br/>
@@ -54,6 +54,8 @@ import se.toxbee.sleepfighter.utils.debug.Debug;
 // UtteranceProgressListener not available in api < 15
 @SuppressWarnings("deprecation")
 public class AlarmReceiver extends BroadcastReceiver {
+	private static final String TAG = AlarmReceiver.class.getSimpleName();
+
 	private Context context;
 	private Alarm alarm;
 
@@ -217,7 +219,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		@Override
 		public void onUtteranceCompleted(String utteranceId) {
 			// now start playing the music now that the speech is over.
-			Debug.d("utterance completed.");
+			Log.d( TAG, "utterance completed." );
 			restoreVolume();
 		}
 	};

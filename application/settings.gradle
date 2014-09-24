@@ -1,1 +1,1 @@
-include ':sleepfighter'
+include ':sleepfighter', ':toxbee-commons', ':toxbee-ormlite'

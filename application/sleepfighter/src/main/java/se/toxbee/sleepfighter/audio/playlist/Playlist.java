@@ -20,7 +20,7 @@ import android.net.Uri;
 
 import com.google.common.base.Objects;
 
-import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.commons.model.IdProvider;
 
 /**
  * Playlist models playlist information.

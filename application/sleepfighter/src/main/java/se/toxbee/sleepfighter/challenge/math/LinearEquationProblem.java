@@ -17,6 +17,7 @@
 package se.toxbee.sleepfighter.challenge.math;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.RealMatrix;
@@ -24,9 +25,8 @@ import org.apache.commons.math3.linear.RealVector;
 
 import java.util.Random;
 
+import se.toxbee.commons.math.MatrixUtil;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.math.MatrixUtil;
 
 /*
  * Challenge: Solve a system of linear equations with three variables.
@@ -36,7 +36,8 @@ import se.toxbee.sleepfighter.utils.math.MatrixUtil;
  * and are thus trivially solved using Gaussian elimination. 
  */
 public class LinearEquationProblem implements MathProblem {
-	
+	private static final String TAG = LinearEquationProblem.class.getSimpleName();
+
 	private final Context context;
 	
 	// we use a 3x3 coefficent matrix.
@@ -73,40 +74,37 @@ public class LinearEquationProblem implements MathProblem {
 	private RealVector createSolutionVector() {
 		RealVector s;
 		do {
-			s = MatrixUtil.createRandomVector(rng, MATRIX_SIZE, -10, 10, true);
-		} while(isBoringSolution(s));
+			s = MatrixUtil.createRandomVector( rng, MATRIX_SIZE, -10, 10, true );
+		} while ( isBoringSolution( s ) );
 
 		return s;
 	}
 	
 	public void newProblem() {
-		
 		generateProblem();
-		Debug.d("coeff: " + this.A);
-		Debug.d("constants: " + this.b);
+		Log.d( TAG, "coeff: " + this.A );
+		Log.d( TAG, "constants: " + this.b);
 
 		// now render the problem
 		doRender();
-		Debug.d("rendered problem: " + this.renderedString);
+		Log.d( TAG, "rendered problem: " + this.renderedString);
 
 	}
 	
 	// find a system of linear equations with a real solution(because real solutions are easy to input with the android keyboard)
 	private void generateProblem() {
-		
 		this.A = createCoefficients();
 		
 		int attempts = 0;
 		RealVector solution;
 		boolean foundb = false;
-		do { 
-			
-			Debug.d("try again");
+		do {
+			Log.d( TAG, "try again");
 			
 			// if after 40 attempts we still can't find a good constants vector, we should give up on this 
 			// coefficient matrix and try creating a new one.
 			if(attempts == 40) {
-				Debug.d("new coefficients matrix");
+				Log.d( TAG, "new coefficients matrix");
 				
 				this.A = createCoefficients();
 				attempts = 0;
@@ -126,8 +124,8 @@ public class LinearEquationProblem implements MathProblem {
 			attempts++;
 			
 		} while(!foundb);
-		
-		Debug.d("solution: " + solution.toString());
+
+		Log.d( TAG, "solution: " + solution.toString());
 		
 		// solve for either x1 or x2
 		this.variableToSolveFor = rng.nextBoolean() ? 0 : 1;

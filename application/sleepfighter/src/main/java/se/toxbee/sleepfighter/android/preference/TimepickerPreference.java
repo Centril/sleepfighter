@@ -22,7 +22,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
 
-import se.toxbee.sleepfighter.utils.string.StringUtils;
+import se.toxbee.commons.string.StringUtils;
 
 /**
  * A DialogPreference with containing a TimePicker.

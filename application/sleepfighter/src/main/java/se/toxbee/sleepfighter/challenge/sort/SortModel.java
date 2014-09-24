@@ -22,8 +22,8 @@ import android.os.Parcelable;
 import java.util.Arrays;
 import java.util.Random;
 
-import static se.toxbee.sleepfighter.utils.collect.PrimitiveArrays.reverseOrder;
-import static se.toxbee.sleepfighter.utils.collect.PrimitiveArrays.shuffle;
+import static se.toxbee.commons.collect.PrimitiveArrays.reverseOrder;
+import static se.toxbee.commons.collect.PrimitiveArrays.shuffle;
 
 /**
  * SortModel is the model for SortChallenge.<br/>

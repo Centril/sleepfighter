@@ -39,7 +39,7 @@ import se.toxbee.sleepfighter.model.time.AlarmTime;
 import se.toxbee.sleepfighter.model.time.CountdownTime;
 import se.toxbee.sleepfighter.model.time.ExactTime;
 import se.toxbee.sleepfighter.text.DateTextUtils;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
+import se.toxbee.commons.string.StringUtils;
 
 public class AlarmAdapter extends ArrayAdapter<Alarm> {
 	public AlarmAdapter( Context context, List<Alarm> alarms ) {

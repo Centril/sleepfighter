@@ -16,7 +16,7 @@
 
 package se.toxbee.sleepfighter.preference;
 
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
+import se.toxbee.commons.prefs.PreferenceNode;
 
 /**
  * {@link AppPreferenceNode} is the base node for all app preference nodes.

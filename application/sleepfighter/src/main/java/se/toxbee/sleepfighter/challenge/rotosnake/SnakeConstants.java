@@ -18,8 +18,8 @@ package se.toxbee.sleepfighter.challenge.rotosnake;
 
 import android.graphics.Color;
 
-import se.toxbee.sleepfighter.utils.geom.Dimension;
-import se.toxbee.sleepfighter.utils.geom.FinalPosition;
+import se.toxbee.commons.geom.Dimension;
+import se.toxbee.commons.geom.FinalPosition;
 
 /**
  * Configuration constants for the game Snake. Original author Centril, modified

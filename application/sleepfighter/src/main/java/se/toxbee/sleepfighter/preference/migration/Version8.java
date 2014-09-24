@@ -16,8 +16,8 @@
 
 package se.toxbee.sleepfighter.preference.migration;
 
-import se.toxbee.sleepfighter.utils.migration.IMigrationException;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
+import se.toxbee.commons.migration.IMigrationException;
+import se.toxbee.commons.prefs.PreferenceNode;
 
 public class Version8 extends Migrater.Adapter {
 	@Override

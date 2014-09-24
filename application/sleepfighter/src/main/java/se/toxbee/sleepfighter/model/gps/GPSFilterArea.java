@@ -27,12 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
-import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
-import se.toxbee.sleepfighter.utils.model.IdProvider;
-import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
+import se.toxbee.commons.message.Message;
+import se.toxbee.commons.message.MessageBus;
+import se.toxbee.commons.message.MessageBusHolder;
+import se.toxbee.commons.model.IdProvider;
+import se.toxbee.commons.model.LocalizationProvider;
+import se.toxbee.commons.string.StringUtils;
 
 /**
  * GPSFilterArea defines an exclusion area.<br/>

@@ -25,12 +25,12 @@ import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.time.AlarmTime;
 import se.toxbee.sleepfighter.model.time.CountdownTime;
 import se.toxbee.sleepfighter.model.time.ExactTime;
-import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
-import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
-import se.toxbee.sleepfighter.utils.model.IdProvider;
-import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
+import se.toxbee.commons.collect.PrimitiveArrays;
+import se.toxbee.commons.message.Message;
+import se.toxbee.commons.message.MessageBus;
+import se.toxbee.commons.message.MessageBusHolder;
+import se.toxbee.commons.model.IdProvider;
+import se.toxbee.commons.model.LocalizationProvider;
 import android.provider.Settings;
 
 import com.google.common.base.Objects;

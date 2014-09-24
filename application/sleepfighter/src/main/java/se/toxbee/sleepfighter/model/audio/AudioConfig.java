@@ -16,10 +16,10 @@
 
 package se.toxbee.sleepfighter.model.audio;
 
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
-import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
-import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.commons.message.Message;
+import se.toxbee.commons.message.MessageBus;
+import se.toxbee.commons.message.MessageBusHolder;
+import se.toxbee.commons.model.IdProvider;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

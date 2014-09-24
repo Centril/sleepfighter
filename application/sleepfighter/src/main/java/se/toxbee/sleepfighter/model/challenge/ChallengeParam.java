@@ -23,8 +23,8 @@ import com.j256.ormlite.table.DatabaseTable;
 import java.util.Map;
 
 import se.toxbee.sleepfighter.persist.dao.ChallengeParamDao;
-import se.toxbee.sleepfighter.utils.model.IdProvider;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
+import se.toxbee.commons.model.IdProvider;
+import se.toxbee.commons.string.StringUtils;
 
 /**
  * ChallengeParam models one parameter for a ChallengeConfig<br/>

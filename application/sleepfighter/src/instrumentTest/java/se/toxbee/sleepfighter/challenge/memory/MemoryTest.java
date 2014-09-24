@@ -16,12 +16,13 @@
 
 package se.toxbee.sleepfighter.challenge.memory;
 
+import android.util.Log;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import se.toxbee.sleepfighter.utils.debug.Debug;
-
 public class MemoryTest extends TestCase {
+	private static final String TAG = MemoryTest.class.getSimpleName();
 
 	// there should be an exception if the number of cards is odd. 
 	public void testOdd()  {
@@ -42,7 +43,7 @@ public class MemoryTest extends TestCase {
 	
 	public boolean testPlaceOutCards(int rows, int cols) {
 		Memory mem = new Memory(rows, cols);
-		Debug.d(mem.toString());
+		Log.d( TAG, mem.toString() );
 		
 		// Requirement 1: there should not be any onoccupied spaces.
 		for(int i = 0; i < rows; ++i) {
@@ -72,7 +73,7 @@ public class MemoryTest extends TestCase {
 		
 		return true;
 	}
-	
+
 	public void testPlaceOutCards() {
 		/*
 		 * Since placeOutCards is based on Random numbers, it is quite difficult to rigorously test.
@@ -87,16 +88,14 @@ public class MemoryTest extends TestCase {
 			testPlaceOutCards(6,6);
 		}
 	}
-	
+
 	public void testGetCard() {
-		
-		
 		Memory mem = new Memory(4, 3);
-	
-		Debug.d(mem.toString());
-		
+
+		Log.d( TAG, mem.toString());
+
 		// we already knows that getCard(row, col) works. We are testing getCard(i)
-		
+
 		assertEquals(mem.getCard(0, 2), mem.getCard(2));
 		assertEquals(mem.getCard(1, 1), mem.getCard(4));
 

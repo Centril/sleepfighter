@@ -17,17 +17,18 @@
 package se.toxbee.sleepfighter.challenge.math;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.Random;
 
+import se.toxbee.commons.math.RandomMath;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.math.RandomMath;
 
 /*
  * Challenge: Compute the greatest common divisor of two numbers. 
  */
 public class GCDProblem implements MathProblem {
+	private static final String TAG = GCDProblem.class.getSimpleName();
 	private final Context context;
 	
 	// ranges of the numbers to compute the gcd of. 
@@ -47,7 +48,7 @@ public class GCDProblem implements MathProblem {
 	}
 	
 	public int solution() {
-		Debug.d("solution is " + solution);
+		Log.d( TAG, "solution is " + solution );
 		return this.solution;
 	}
 
@@ -86,7 +87,7 @@ public class GCDProblem implements MathProblem {
 		
 		String format =  context.getResources().getString(R.string.gdc_challenge_desc);
 		this.renderedString =String.format(format, "$" + number1 + "$",  "$" + number2 + "$");
-		Debug.d(solution + "");
+		Log.d( TAG, solution + "");
 	}
 	
 	

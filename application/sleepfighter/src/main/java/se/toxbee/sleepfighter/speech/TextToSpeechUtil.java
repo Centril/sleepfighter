@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,10 +29,10 @@ import java.util.List;
 import java.util.Locale;
 
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.utils.debug.Debug;
 
 public class TextToSpeechUtil {
-	
+	private static final String TAG = TextToSpeechUtil.class.getSimpleName();
+
 	private static final String UTTERANCE_ID = "alarm_speech";
 	private static final int CHECK_TTS_DATA_REQUEST_CODE = 2;
 
@@ -55,7 +56,7 @@ public class TextToSpeechUtil {
 	 *            the String that is to be spoken
 	 */
 	public static void speakAlarm(TextToSpeech tts, String string) {
-		Debug.d("now speaking: " + string);
+		Log.d( TAG, "now speaking: " + string );
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
 				String.valueOf(AudioManager.STREAM_MUSIC));
@@ -89,7 +90,7 @@ public class TextToSpeechUtil {
 		// localeList now contains the available locales for tts. 
 		
 		Locale current = context.getResources().getConfiguration().locale;
-		Debug.d("current locale: " + current);
+		Log.d( TAG,"current locale: " + current);
 		
 		
 		

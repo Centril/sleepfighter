@@ -27,8 +27,8 @@ import se.toxbee.sleepfighter.gps.gui.LocationGUIHandler;
 import se.toxbee.sleepfighter.gps.gui.LocationGUIProvider;
 import se.toxbee.sleepfighter.gps.gui.OnMapClick;
 import se.toxbee.sleepfighter.model.gps.GPSFilterArea;
-import se.toxbee.sleepfighter.utils.factory.IFactory;
-import se.toxbee.sleepfighter.utils.reflect.ReflectionUtil;
+import se.toxbee.commons.factory.IFactory;
+import se.toxbee.commons.reflect.ReflectionUtil;
 
 /**
  * LocationGUIProviderFactory is the factory for LocationGUIProvider.

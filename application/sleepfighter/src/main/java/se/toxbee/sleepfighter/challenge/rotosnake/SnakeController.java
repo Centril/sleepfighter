@@ -17,18 +17,20 @@
 package se.toxbee.sleepfighter.challenge.rotosnake;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.beans.PropertyChangeSupport;
 import java.util.Random;
 
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.geom.Direction;
+import se.toxbee.commons.geom.Direction;
 
 /**
  * Controller class for Snake. Original author Mazdak, modified by Laszlo for
  * SleepFighter.
  */
 public class SnakeController {
+	private static final String TAG = SnakeController.class.getSimpleName();
+
 	/** Random Number Generator (RNG) */
 	private final Random rng;
 
@@ -137,7 +139,7 @@ public class SnakeController {
 				try {
 					Thread.sleep(updateSpeed());
 				} catch (InterruptedException e) {
-					Debug.d("GameThread (SnakeChallenge) sleep interrupted!");
+					Log.d( TAG, "GameThread (SnakeChallenge) sleep interrupted!" );
 				}
 			}
 		}

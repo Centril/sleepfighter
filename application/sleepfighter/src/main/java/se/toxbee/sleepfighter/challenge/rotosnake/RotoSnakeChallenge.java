@@ -30,7 +30,7 @@ import se.toxbee.sleepfighter.challenge.BaseChallenge;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
-import se.toxbee.sleepfighter.utils.geom.Direction;
+import se.toxbee.commons.geom.Direction;
 
 /**
  * A challenge that requires the player to rotate the device to control the

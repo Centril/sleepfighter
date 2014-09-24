@@ -21,19 +21,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.audio.AudioDriver;
-import se.toxbee.sleepfighter.utils.debug.Debug;
 
 /**
  * Used to fade in the volume of the ringtone once the speech is over.
  */
 public class FadeVolumeService extends Service {
-
+	private static final String TAG = FadeVolumeService.class.getSimpleName();
 	private Runnable increaseVol;
 	private Handler h;
-
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -48,7 +47,7 @@ public class FadeVolumeService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Debug.d("on start");
+		Log.d( TAG, "on start" );
 
 		if(intent == null) {
 			this.stopSelf();
@@ -85,7 +84,7 @@ public class FadeVolumeService extends Service {
 
 				if(curVol < origVolume){
 					curVol += 1;
-					Debug.d("volume: " + curVol);
+					Log.d( TAG, "volume: " + curVol);
 
 					// wait 0.02seconds. 
 					h.postDelayed(increaseVol, 20);
@@ -103,5 +102,4 @@ public class FadeVolumeService extends Service {
 	public void onDestroy(){
 		super.onDestroy();
 	}
-
 }

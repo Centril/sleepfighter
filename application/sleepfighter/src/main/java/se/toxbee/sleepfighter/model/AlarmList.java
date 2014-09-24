@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import se.toxbee.sleepfighter.model.Alarm.AlarmEvent;
-import se.toxbee.sleepfighter.utils.collect.IdObservableList;
+import se.toxbee.commons.collect.IdObservableList;
 
 /**
  * {@link AlarmList} manages all the existing alarms.

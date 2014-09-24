@@ -16,34 +16,31 @@
 
 package se.toxbee.sleepfighter.speech;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-import se.toxbee.sleepfighter.utils.debug.Debug;
-
 // gets the current weather from forecast.io given the current coordinates. 
 public class WeatherDataFetcher {
-
 	private static final String KEY = "cb8a0d4b48c35b562d1b427b3f77552d";
-	
+	private static final String TAG = WeatherDataFetcher.class.getSimpleName();
+
 	// the json weather data.
 	private String jsonData;
 
-	
-	// build the url used to access the weather data, given latitudes and longitudes. 
+	// build the url used to access the weather data, given latitudes and longitudes.
 	public WeatherDataFetcher(double lat, double lon) throws IOException {
-			// fetch the json data form forecast.io
-	
-		Debug.d("about to fetch json data");
-		
-			jsonData = httpGET(buildUrl(lat, lon));
-			
-			Debug.d("done fetching json data");
+		// fetch the json data form forecast.io
+		Log.d( TAG, "about to fetch json data" );
 
+		jsonData = httpGET(buildUrl(lat, lon));
+
+		Log.d( TAG, "done fetching json data");
 	}
-	
+
 	// get a summary of the weather condition
 	public String getSummary() {
 		
@@ -70,18 +67,16 @@ public class WeatherDataFetcher {
 		
 		return (String) jsonData.subSequence(i, endI-1);
 	}
-	
+
 	private String buildUrl(double lat, double lon) {
 		String s = "https://api.forecast.io/forecast/" + KEY + "/" +
 				doubleToString(lat) + "," + doubleToString(lon);
 		return s;
 	}
-	
-	
+
 	private static String doubleToString(double d) {
 		return String.valueOf(d).replace(",", ".");
 	}
-	
 
 	private String httpGET(String requestURL) throws IOException {
 
@@ -123,6 +118,4 @@ public class WeatherDataFetcher {
 
 		return response;
 	}
-
-	
 }

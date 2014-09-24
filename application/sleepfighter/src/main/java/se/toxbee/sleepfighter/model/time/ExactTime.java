@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.MutableDateTime;
 
-import se.toxbee.sleepfighter.utils.model.Codifiable;
+import se.toxbee.commons.model.Codifiable;
 
 import com.google.common.primitives.Booleans;
 

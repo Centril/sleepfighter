@@ -19,8 +19,8 @@ package se.toxbee.sleepfighter.challenge;
 import android.app.Activity;
 
 import se.toxbee.sleepfighter.challenge.ChallengeProgressEvent.Type;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
+import se.toxbee.commons.message.Message;
+import se.toxbee.commons.message.MessageBus;
 
 /**
  * BaseChallenge is the base class for all challenges.

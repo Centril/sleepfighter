@@ -18,6 +18,10 @@ package se.toxbee.sleepfighter.persist.migration;
 
 import java.sql.SQLException;
 
+import se.toxbee.ormlite.migration.Migrater.Adapter;
+import se.toxbee.ormlite.migration.MigrationException;
+import se.toxbee.ormlite.migration.MigrationUtil;
+
 /**
  * Migration to version 25.
  *
@@ -25,7 +29,7 @@ import java.sql.SQLException;
  * @version 1.0
  * @since Nov 15, 2013
  */
-public class Version25 extends Migrater.Adapter {
+public class Version25 extends Adapter {
 	@Override
 	public void applyMigration( MigrationUtil util ) throws MigrationException {
 		try {

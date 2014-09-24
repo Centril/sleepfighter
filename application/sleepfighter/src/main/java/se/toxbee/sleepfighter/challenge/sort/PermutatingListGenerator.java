@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.IntArray;
 
 import java.util.Random;
 
-import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
+import se.toxbee.commons.collect.PrimitiveArrays;
 
 /**
  * PermutatingListGenerator uses "permutations" for generating numbers.<br/>

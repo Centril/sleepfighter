@@ -16,7 +16,7 @@
 
 package se.toxbee.sleepfighter.challenge;
 
-import se.toxbee.sleepfighter.utils.message.Message;
+import se.toxbee.commons.message.Message;
 
 /**
  * ChallengeProgressEvent occurs when a Challenge is:<br/>

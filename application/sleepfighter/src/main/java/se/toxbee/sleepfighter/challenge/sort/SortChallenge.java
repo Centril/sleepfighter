@@ -38,8 +38,8 @@ import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
 import se.toxbee.sleepfighter.challenge.sort.SortModel.Order;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
-import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
-import se.toxbee.sleepfighter.utils.math.RandomMath;
+import se.toxbee.commons.collect.PrimitiveArrays;
+import se.toxbee.commons.math.RandomMath;
 
 /**
  * SortChallenge is a challenge where user sorts generated numbers ASC/DESC.

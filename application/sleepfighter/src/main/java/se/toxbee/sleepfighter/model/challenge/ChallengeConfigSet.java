@@ -28,10 +28,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
-import se.toxbee.sleepfighter.utils.message.MessageBusHolder;
-import se.toxbee.sleepfighter.utils.model.IdProvider;
+import se.toxbee.commons.message.Message;
+import se.toxbee.commons.message.MessageBus;
+import se.toxbee.commons.message.MessageBusHolder;
+import se.toxbee.commons.model.IdProvider;
 
 /**
  * ChallengeConfigSet models the set of challenges that are enabled for an Alarm.

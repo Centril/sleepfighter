@@ -26,6 +26,7 @@ import com.j256.ormlite.support.ConnectionSource;
 import java.sql.SQLException;
 import java.util.Collection;
 
+import se.toxbee.ormlite.PersistenceException;
 import se.toxbee.sleepfighter.model.challenge.ChallengeParam;
 
 /**

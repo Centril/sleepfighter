@@ -34,7 +34,7 @@ import se.toxbee.sleepfighter.R;
 import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.AlarmTimestamp;
-import se.toxbee.sleepfighter.utils.collect.PrimitiveArrays;
+import se.toxbee.commons.collect.PrimitiveArrays;
 import android.content.res.Resources;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;

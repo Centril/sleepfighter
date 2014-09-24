@@ -22,6 +22,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -33,7 +34,6 @@ import java.io.IOException;
 
 import se.toxbee.sleepfighter.app.SFApplication;
 import se.toxbee.sleepfighter.speech.WeatherDataFetcher;
-import se.toxbee.sleepfighter.utils.debug.Debug;
 
 /*
  * Retrieves the current location, then fetches the weather of that location, and then shuts down. 
@@ -41,18 +41,19 @@ import se.toxbee.sleepfighter.utils.debug.Debug;
 public class LocationFetcherService extends Service implements
 		GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
+	private static final String TAG = LocationFetcherService.class.getSimpleName();
 	private LocationClient locationClient;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		locationClient = new LocationClient(this, this, this);
-		Debug.d("LocationService oncreate");
+		Log.d( TAG, "LocationService oncreate" );
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Debug.d("LocationService startcommand");
+		Log.d( TAG,"LocationService startcommand");
 		
 		locationClient.connect();
 		return Service.START_STICKY;
@@ -71,7 +72,7 @@ public class LocationFetcherService extends Service implements
 	@Override
 	public void onConnected(Bundle arg0) {
 		
-		Debug.d("LocationService onconnected");
+		Log.d( TAG,"LocationService onconnected");
 
 		Long time = 60*1000L;
 
@@ -85,7 +86,7 @@ public class LocationFetcherService extends Service implements
 
 	@Override
 	public void onLocationChanged(Location location) {
-		Debug.d("LocationService onLocationChanged");
+		Log.d( TAG,"LocationService onLocationChanged");
 		this.fetchWeatherData(location);	
 		this.stopSelf();
 	}
@@ -102,7 +103,7 @@ public class LocationFetcherService extends Service implements
 		 */
 		if (connectionResult.hasResolution()) {
 
-			Debug.d("Connection failed we are dead.");
+			Log.d( TAG,"Connection failed we are dead.");
 
 		} else {
 			/*
@@ -111,7 +112,7 @@ public class LocationFetcherService extends Service implements
 			 */
 			
 			
-			Debug.d("Connection failed with no resolution. Error code:" + connectionResult.getErrorCode());
+			Log.d( TAG,"Connection failed with no resolution. Error code:" + connectionResult.getErrorCode());
 
 		}
 	}
@@ -123,17 +124,17 @@ public class LocationFetcherService extends Service implements
 	@Override
 	public void onDisconnected() {
 		// Display the connection status
-		Debug.d("Disconnected. Please re-connect.");
+		Log.d( TAG,"Disconnected. Please re-connect.");
 	}
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		Debug.d("LocationService onBind");
+		Log.d( TAG,"LocationService onBind");
 		return null;
 	}
 	
 	private void fetchWeatherData(Location location) {
-		Debug.d("about to execute WeatherDataTask");
+		Log.d( TAG,"about to execute WeatherDataTask");
 
 		new WeatherDataTask().execute(location.getLatitude(),
 				location.getLongitude());
@@ -141,13 +142,13 @@ public class LocationFetcherService extends Service implements
 	
 	private static class WeatherDataTask extends AsyncTask<Double, Void, WeatherDataFetcher> {
 		protected void onPostExecute(WeatherDataFetcher weather) {
-			Debug.d("done loading url");
+			Log.d( TAG,"done loading url");
 			SFApplication.get().getPrefs().weather.setTemp( weather == null ? null : weather.getSummary() );
 		}
 
 		@Override
 		protected WeatherDataFetcher doInBackground(Double... params) {
-			Debug.d("now executing weather data task");
+			Log.d( TAG,"now executing weather data task");
 
 			try {
 				return new WeatherDataFetcher(params[0], params[1]);

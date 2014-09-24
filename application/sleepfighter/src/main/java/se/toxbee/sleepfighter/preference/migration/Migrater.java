@@ -16,8 +16,8 @@
 
 package se.toxbee.sleepfighter.preference.migration;
 
-import se.toxbee.sleepfighter.utils.migration.IMigration;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
+import se.toxbee.commons.migration.IMigration;
+import se.toxbee.commons.prefs.PreferenceNode;
 
 public interface Migrater extends IMigration<PreferenceNode> {
 	public abstract class Adapter extends IMigration.Adapter<PreferenceNode> implements Migrater {

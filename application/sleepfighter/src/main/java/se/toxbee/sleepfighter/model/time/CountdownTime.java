@@ -22,7 +22,7 @@ import com.google.common.primitives.Longs;
 import org.joda.time.MutableDateTime;
 import org.joda.time.Period;
 
-import se.toxbee.sleepfighter.utils.model.CodifiableLong;
+import se.toxbee.commons.model.CodifiableLong;
 
 /**
  * <p>CountdownTime is a time occurring at an exact UNIX epoch timestamp.<br/>

@@ -18,6 +18,7 @@ package se.toxbee.sleepfighter.speech;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -27,13 +28,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import se.toxbee.commons.string.StringUtils;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.string.StringUtils;
 
 // used for localizing weather summaries. 
 class WeatherTranslator {
-	
+	private static final String TAG = WeatherTranslator.class.getSimpleName();
 	private final Locale locale;
 	
 	private final Context context;
@@ -103,7 +103,7 @@ class WeatherTranslator {
 		// convert to lowercase.
 		weatherSummary = weatherSummary.toLowerCase(Locale.ENGLISH);
 		
-		Debug.d("weather summary: " + weatherSummary);
+		Log.d( TAG, "weather summary: " + weatherSummary );
 		
 		if(TextToSpeechUtil.isJapanese(this.locale)) {
 			return translateToJapanese(weatherSummary);

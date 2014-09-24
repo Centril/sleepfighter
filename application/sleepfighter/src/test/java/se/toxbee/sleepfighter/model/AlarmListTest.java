@@ -26,8 +26,8 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import se.toxbee.sleepfighter.model.time.ExactTime;
-import se.toxbee.sleepfighter.utils.message.Message;
-import se.toxbee.sleepfighter.utils.message.MessageBus;
+import se.toxbee.commons.message.Message;
+import se.toxbee.commons.message.MessageBus;
 
 public class AlarmListTest {
 	@Test

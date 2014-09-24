@@ -19,6 +19,7 @@ package se.toxbee.sleepfighter.challenge.memory;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
@@ -32,7 +33,6 @@ import se.toxbee.sleepfighter.challenge.BaseChallenge;
 import se.toxbee.sleepfighter.challenge.ChallengePrototypeDefinition;
 import se.toxbee.sleepfighter.challenge.ChallengeResolvedParams;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
-import se.toxbee.sleepfighter.utils.debug.Debug;
 
 /**
  * Example implementation of Challenge.
@@ -41,8 +41,9 @@ import se.toxbee.sleepfighter.utils.debug.Debug;
  * @version 1.0
  * @since Sep 28, 2013
  */
-
 public class MemoryChallenge extends BaseChallenge implements View.OnClickListener {
+	private static final String TAG = MemoryChallenge.class.getSimpleName();
+
 	/**
 	 * PrototypeDefinition for MemoryChallenge.
 	 *
@@ -81,8 +82,7 @@ public class MemoryChallenge extends BaseChallenge implements View.OnClickListen
 	}
 
 	public void onClick(View v) {
-      
-		Debug.d("button click");
+		Log.d( TAG, "button click" );
 		
 		if(waitingForCardsToFlipOver || waitingForLastCardsToBeRemoved) {
 			// we are still waiting, so you can't pick any cards now, so block all input
@@ -209,7 +209,7 @@ public class MemoryChallenge extends BaseChallenge implements View.OnClickListen
 		super.start( activity, params );
 
 		mem = new Memory(ROWS, COLS);
-		Debug.d(mem.toString());
+		Log.d( TAG, mem.toString());
 		this.database = new MemoryCardImageDatabase(mem);
 
 		commonStart(-1);

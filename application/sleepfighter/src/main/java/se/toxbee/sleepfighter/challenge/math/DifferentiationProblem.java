@@ -17,29 +17,30 @@
 package se.toxbee.sleepfighter.challenge.math;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 
 import java.util.Random;
 
+import se.toxbee.commons.math.RandomMath;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.math.RandomMath;
 
 /*
  * Challenge: compute the value of a derivative. 
  */
 public class DifferentiationProblem implements MathProblem {
-	
+	private static final String TAG = DifferentiationProblem.class.getSimpleName();
+
 	private final Context context;
-	
+
 	// See the documentation of DerivativeStructure for details. 
 	private static final int PARAMETERS = 1;
 	private static final int INDEX = 0;
-	
+
 	// so we only ask for second derivatives. 
 	private static final int ORDER = 1;
-	
+
 	// Used for storing a function and its string representatin. Utilized in DiffentiationProblem
 	private static class Function {
 		
@@ -110,7 +111,7 @@ public class DifferentiationProblem implements MathProblem {
 	}
 	
 	public int solution() {
-		Debug.d("solution is " + solution);
+		Log.d( TAG, "solution is " + solution );
 		return this.solution;
 	}
 	
@@ -123,7 +124,7 @@ public class DifferentiationProblem implements MathProblem {
 		
 		String format =  context.getResources().getString(R.string.differentiation_challenge_desc);
 		this.renderedString += "<br>" + String.format(format, "$f'(" + this.x + ")$");
-		Debug.d("solution is " + solution);	
+		Log.d( TAG, "solution is " + solution );
 	}
 	
 	// The identity function f(x) = x

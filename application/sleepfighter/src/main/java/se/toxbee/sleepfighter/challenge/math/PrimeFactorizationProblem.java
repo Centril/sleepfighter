@@ -17,25 +17,25 @@
 package se.toxbee.sleepfighter.challenge.math;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.Random;
 
+import se.toxbee.commons.math.RandomMath;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.math.RandomMath;
 
 /*
  * Challenge: Compute the largest prime factor of a number. 
  */
 public class PrimeFactorizationProblem implements MathProblem {
+	private static final String TAG = PrimeFactorizationProblem.class.getSimpleName();
 	
 	// we'll use these primes in the creation of the number.
 	private static final int[] PRIMES = new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59};
 
 	private static final int MIN_VALUE = 3000;
 	private static final int MAX_VALUE = 40000;
-	
-	
+
 	private final Context context;
 	
 	private int solution;
@@ -49,7 +49,7 @@ public class PrimeFactorizationProblem implements MathProblem {
 	}
 	
 	public int solution() {
-		Debug.d("solution is " + solution);
+		Log.d( TAG, "solution is " + solution );
 		return this.solution;
 	}
 	
@@ -87,7 +87,7 @@ public class PrimeFactorizationProblem implements MathProblem {
 		String format =  context.getResources().getString(R.string.prime_factor_challenge_desc);
 		
 		this.renderedString = String.format(format, "$" + n + "$");
-		Debug.d(solution + "");
+		Log.d( TAG, solution + "");
 	}
 	
 	public PrimeFactorizationProblem(final Context context, final Random random) {

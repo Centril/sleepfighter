@@ -16,9 +16,9 @@
 
 package se.toxbee.sleepfighter.preference;
 
-import se.toxbee.sleepfighter.utils.model.LocalizationProvider;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode;
-import se.toxbee.sleepfighter.utils.prefs.PreferenceNode.PreferenceEditCallback;
+import se.toxbee.commons.model.LocalizationProvider;
+import se.toxbee.commons.prefs.PreferenceNode;
+import se.toxbee.commons.prefs.PreferenceNode.PreferenceEditCallback;
 
 /**
  * {@link ChallengeGlobalPreferences} handles global challenge related preferences.

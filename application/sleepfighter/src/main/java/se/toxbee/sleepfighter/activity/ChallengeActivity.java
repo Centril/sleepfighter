@@ -35,7 +35,7 @@ import se.toxbee.sleepfighter.helper.AlarmIntentHelper;
 import se.toxbee.sleepfighter.model.Alarm;
 import se.toxbee.sleepfighter.model.challenge.ChallengeConfigSet;
 import se.toxbee.sleepfighter.model.challenge.ChallengeType;
-import se.toxbee.sleepfighter.utils.math.RandomMath;
+import se.toxbee.commons.math.RandomMath;
 
 /**
  * An activity for different types of challenges.<br/>

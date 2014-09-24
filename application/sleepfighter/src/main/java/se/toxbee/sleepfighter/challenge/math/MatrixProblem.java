@@ -17,20 +17,21 @@
 package se.toxbee.sleepfighter.challenge.math;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.util.Random;
 
+import se.toxbee.commons.math.MatrixUtil;
 import se.toxbee.sleepfighter.R;
-import se.toxbee.sleepfighter.utils.debug.Debug;
-import se.toxbee.sleepfighter.utils.math.MatrixUtil;
 
 /*
  * Challenge: compute the matrix product of two 3x3 matrices. Then compute the determinant of the product.
  */
 public class MatrixProblem implements MathProblem {
-	
+	private static final String TAG = MatrixProblem.class.getSimpleName();
+
 	private final Context context;
 	
 	private static final int MAX_INT = 7;
@@ -50,7 +51,7 @@ public class MatrixProblem implements MathProblem {
 	}
 	
 	public int solution() {
-		Debug.d("solution is " + solution);
+		Log.d( TAG, "solution is " + solution );
 		return this.solution;
 	}
 	

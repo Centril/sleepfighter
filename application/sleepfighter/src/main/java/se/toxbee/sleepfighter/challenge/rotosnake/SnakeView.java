@@ -29,8 +29,8 @@ import java.util.List;
 
 import se.toxbee.sleepfighter.challenge.snake.CircleEntity;
 import se.toxbee.sleepfighter.challenge.snake.Segment;
-import se.toxbee.sleepfighter.utils.geom.Dimension;
-import se.toxbee.sleepfighter.utils.geom.Position;
+import se.toxbee.commons.geom.Dimension;
+import se.toxbee.commons.geom.Position;
 
 /**
  * The view class responsible for rendering a single position in the challenge.
