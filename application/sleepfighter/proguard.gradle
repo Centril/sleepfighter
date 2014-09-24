@@ -16,10 +16,8 @@
 
 android {
 	// Proguard settings:
-	buildTypes {
-		release {
-			runProguard false
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-		}
+	buildTypes.each { type ->
+		type.runProguard true
+		type.proguardFiles fileTree(dir: 'proguard', include: '*.pro', exclude: (type.name == 'release' ? "release-only.pro" : "not-release.pro"))
 	}
 }
