@@ -17,10 +17,10 @@
 package se.toxbee.commons.geom;
 
 /**
- * <p>Position models a two-dimensional position using integers.<br/>
+ * <p>{@link Position} models a two-dimensional position using integers.<br/>
  * Whether or not it is immutable is up to the implementing class.</p>
  *
- * <p><strong>NOTE:</strong> Position2D is <strong>NOT</strong> a Vector,<br/>
+ * <p><strong>NOTE:</strong> Position is <strong>NOT</strong> a Vector,<br/>
  * but some operations common to vector classes are provided such as add, mul, etc.
  *
  * @author Centril<twingoow@gmail.com> / Mazdak Farrokhzad.
@@ -67,7 +67,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Sets the x-axis-component of the coordinate.
 	 *
 	 * @param x the new x value.
-	 * @return the Position2D with the new x-axis-component.
+	 * @return the {@link Position} with the new x-axis-component.
 	 */
 	public Position x( int x );
 
@@ -75,7 +75,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Sets the y-axis-component of the coordinate.
 	 *
 	 * @param y the new x value.
-	 * @return the Position2D with the new y-axis-component.
+	 * @return the {@link Position} with the new y-axis-component.
 	 */
 	public Position y( int y );
 
@@ -84,7 +84,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 *
 	 * @param x the new x value.
 	 * @param y the new x value.
-	 * @return the Position2D with the new x & y-axis-component.
+	 * @return the {@link Position} with the new x & y-axis-component.
 	 */
 	public Position set( int x, int y );
 
@@ -92,7 +92,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Copies the coordinate of another position object.
 	 *
 	 * @param pos the position to copy values from.
-	 * @return the Position2D with the new x & y-axis-component.
+	 * @return the {@link Position} with the new x & y-axis-component.
 	 */
 	public Position set( Position pos );
 
@@ -115,7 +115,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 *
 	 * @param x the x value to add to x-axis-component.
 	 * @param y the y value to add to y-axis-component.
-	 * @return the Position2D with x & y added.
+	 * @return the {@link Position} with x & y added.
 	 */
 	public Position add( int x, int y );
 
@@ -123,7 +123,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Adds the coordinates of another position object to this position.
 	 *
 	 * @param pos the position to use values from.
-	 * @return the Position2D with the added x & y-values.
+	 * @return the {@link Position} with the added x & y-values.
 	 */
 	public Position add( Position pos );
 
@@ -131,7 +131,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Adds x to the x-axis-component of the coordinate.
 	 *
 	 * @param x the x value to add to x-axis-component.
-	 * @return the Position2D with x added.
+	 * @return the {@link Position} with x added.
 	 */
 	public Position addX( int x );
 
@@ -139,7 +139,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Adds y to the y-axis-component of the coordinate.
 	 *
 	 * @param y the y value to add to y-axis-component.
-	 * @return the Position2D with y added.
+	 * @return the {@link Position} with y added.
 	 */
 	public Position addY( int y );
 
@@ -148,7 +148,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 *
 	 * @param x the x value to add to x-axis-component.
 	 * @param y the y value to add to y-axis-component.
-	 * @return the Position2D with x & y subtracted.
+	 * @return the {@link Position} with x & y subtracted.
 	 */
 	public Position sub( int x, int y );
 
@@ -156,7 +156,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Subtracts the coordinates of another position object to this position.
 	 *
 	 * @param pos the position to use values from.
-	 * @return the Position2D with the subtracted x & y-values.
+	 * @return the {@link Position} with the subtracted x & y-values.
 	 */
 	public Position sub( Position pos );
 
@@ -164,7 +164,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Subtracts x to the x-axis-component of the coordinate.
 	 *
 	 * @param x the x value to add to x-axis-component.
-	 * @return the Position2D with x added.
+	 * @return the {@link Position} with x added.
 	 */
 	public Position subX( int x );
 
@@ -172,7 +172,7 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Subtracts y to the y-axis-component of the coordinate.
 	 *
 	 * @param y the y value to add to y-axis-component.
-	 * @return the Position2D with y added.
+	 * @return the {@link Position} with y added.
 	 */
 	public Position subY( int y );
 
@@ -180,14 +180,14 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * Multiplies the coordinates of this position by factor.
 	 *
 	 * @param factor the factor to multiply with.
-	 * @return the Position2D with coordinates multiplied with factor.
+	 * @return the {@link Position} with coordinates multiplied with factor.
 	 */
 	public Position mul( int factor );
 
 	/**
 	 * Alias of {@link #sub(Position)}.
 	 *
-	 * @see #sub(Position2D).
+	 * @see #sub(Position).
 	 */
 	public Position distance( Position rhs );
 
@@ -203,16 +203,16 @@ public interface Position extends Dimension, Cloneable, Comparable<Position> {
 	 * This has the same effect as calling {@link #move(Direction, int)} with 1 as scale.
 	 * 
 	 * @param direction the direction to move to.
-	 * @return the Position2D with moved coordinates.
+	 * @return the {@link Position} with moved coordinates.
 	 */
 	public Position move( Direction direction );
 
 	/**
 	 * Moves the position to direction by scale amount.
 	 * 
-	 * @param dir the direction to move to.
+	 * @param direction the direction to move to.
 	 * @param scale the scale to move by.
-	 * @return the Position2D with moved coordinates.
+	 * @return the {@link Position} with moved coordinates.
 	 */
 	public Position move( Direction direction, int scale );
 

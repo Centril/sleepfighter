@@ -96,7 +96,7 @@ public class MutablePosition extends BasePosition {
 
 	@Override
 	public Position addY( int y ) {
-		this.y = y;
+		this.y += y;
 		return this;
 	}
 
