@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- buildscript {
+buildscript {
 	repositories {
 		mavenCentral()
 
@@ -23,16 +23,20 @@
 		}
 	}
 	dependencies {
+		// Android Plugin.
 		classpath 'com.android.tools.build:gradle:+'
+
+		// Loading Android SDK.
 		classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.+'
 
+		// LGIO ("CLI" for signing).
 		classpath 'se.toxbee.lgio:gradle-plugin-lgio:+'
 	}
 }
 
-apply plugin: 'idea'
-
 allprojects {
+	apply plugin: 'idea'
+
 	repositories {
 		mavenCentral()
 		maven {

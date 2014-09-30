@@ -17,11 +17,11 @@
 apply plugin: 'java'
 
 dependencies {
-	// google guava
-	compile 'com.google.guava:guava:+'
+	// Google Guava:
+	compile 'com.google.guava:guava:18.0'
 
 	// apache commons math3
-	compile 'org.apache.commons:commons-math3:+'
+	compile 'org.apache.commons:commons-math3:3.+'
 
 	// mbassador (event bus)
 	compile 'net.engio:mbassador:1.2.0'
@@ -31,9 +31,6 @@ dependencies {
  * Testing config:
  */
 apply plugin: 'groovy'
-repositories {
-	mavenCentral()
-}
 dependencies {
 	testCompile 'cglib:cglib-nodep:3.1'
 	testCompile 'org.objenesis:objenesis:2.1'
