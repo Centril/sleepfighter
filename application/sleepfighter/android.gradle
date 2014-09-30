@@ -14,31 +14,21 @@
  * limitations under the License.
  */
 
-apply plugin: 'android-sdk-manager'
-apply plugin: 'android'
+android {
+	buildToolsVersion config.buildToolsVersion
 
-apply from: 'config.gradle'
+	// Override manifest stuff.
+    compileSdkVersion config.targetSDK
+    defaultConfig {
+        minSdkVersion config.minSDK
+        targetSdkVersion config.targetSDK
+	    versionCode config.versionCode
+	    versionName config.versionName
+    }
 
-// Generate BuildTimestamp.java.
-apply from: 'timestamp.gradle'
-
-// Add all dependencies.
-apply from: 'dependencies.gradle'
-
-// Apply signing configuration.
-apply from: 'signing.gradle'
-
-// General android configs.
-apply from: 'android.gradle'
-
-// Proguard settings.
-apply from: 'proguard.gradle'
-
-// Fix build types.
-apply from: 'buildtypes.gradle'
-
-// Fix META-INF stuff.
-apply from: 'metainf-fix.gradle'
-
-// Lint settings.
-apply from: 'lint.gradle'
+	// Using Java 7, but no try-with-resources.
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_1_7
+		targetCompatibility JavaVersion.VERSION_1_7
+	}
+}
